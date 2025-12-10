@@ -68,21 +68,28 @@ The project includes a GitHub Actions workflow for automated deployment.
 
 ### Setup Steps:
 
-1. **Create repository secrets** in your source repository:
+1. **Ensure pnpm-lock.yaml is committed**:
+   ```bash
+   pnpm install
+   git add pnpm-lock.yaml
+   git commit -m "Add pnpm lockfile"
+   ```
+
+2. **Create repository secrets** in your source repository:
    - `TARGET_REPO`: The target repository (e.g., `username/pages-repo`)
    - `CUSTOM_DOMAIN`: (Optional) Your custom domain
    - `BASE_URL`: (Optional) Base URL if deploying to a subdirectory
 
-2. **Generate a Personal Access Token**:
+3. **Generate a Personal Access Token**:
    - Go to GitHub Settings > Developer settings > Personal access tokens
    - Create a token with `repo` permissions
    - Add it as a secret named `GITHUB_TOKEN` (usually available by default)
 
-3. **Configure the target repository**:
+4. **Configure the target repository**:
    - Go to the target repository settings
    - Enable GitHub Pages
    - Set source to "Deploy from a branch"
-   - Select the `gh-pages` branch
+   - Select the `main` branch (for .github.io repos)
 
 ### Manual Trigger
 
