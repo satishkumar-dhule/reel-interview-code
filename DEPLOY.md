@@ -75,17 +75,16 @@ The project includes a GitHub Actions workflow for automated deployment.
    git commit -m "Add pnpm lockfile"
    ```
 
-2. **Create repository secrets** in your source repository:
-   - `TARGET_REPO`: The target repository (e.g., `username/pages-repo`)
-   - `CUSTOM_DOMAIN`: (Optional) Your custom domain
-   - `BASE_URL`: (Optional) Base URL if deploying to a subdirectory
-
-3. **Generate a Personal Access Token**:
+2. **Generate a Personal Access Token**:
    - Go to GitHub Settings > Developer settings > Personal access tokens
    - Create a token with `repo` permissions
-   - Add it as a secret named `GITHUB_TOKEN` (usually available by default)
+   - Add it as a secret named `GH_TOKEN` in your repository settings
 
-4. **Configure the target repository**:
+3. **Optional secrets** (only if needed):
+   - `CUSTOM_DOMAIN`: For custom domain setup
+   - `BASE_URL`: For subdirectory deployment
+
+3. **Configure the target repository**:
    - Go to the target repository settings
    - Enable GitHub Pages
    - Set source to "Deploy from a branch"
@@ -114,6 +113,7 @@ Make sure you have push access to the target repository.
 4. **Custom domain not working**: Ensure DNS is configured and CNAME file is correct
 5. **pnpm lockfile missing**: Ensure `pnpm-lock.yaml` is committed to the repository
 6. **Corporate npm registry**: The `.npmrc` file forces use of public registry
+7. **Lockfile compatibility**: GitHub Actions uses `--no-frozen-lockfile` to handle version differences
 
 ### Debug Mode:
 
