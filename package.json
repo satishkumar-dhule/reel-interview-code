@@ -11,7 +11,8 @@
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
     "db:push": "drizzle-kit push",
-    "deploy:pages": "tsx script/deploy-pages.ts"
+    "deploy:pages": "tsx script/deploy-pages.ts",
+    "preview": "pnpm run build:client && pnpm exec serve dist/public -s -p 3333"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -68,6 +69,7 @@
     "react-day-picker": "^9.11.1",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.0",
+    "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.9",
     "react-syntax-highlighter": "^16.1.0",
     "recharts": "^2.15.4",
@@ -101,6 +103,7 @@
     "esbuild": "^0.25.0",
     "gh-pages": "^6.1.1",
     "postcss": "^8.5.6",
+    "serve": "^14.2.5",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.20.5",
     "typescript": "5.6.3",

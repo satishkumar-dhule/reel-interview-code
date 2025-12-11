@@ -8,6 +8,7 @@ import { useProgress } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ReactMarkdown from 'react-markdown';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Popover from '@radix-ui/react-popover';
 import * as Switch from '@radix-ui/react-switch';
@@ -198,28 +199,61 @@ export default function Reels() {
 
   const isCompleted = completed.includes(currentQuestion.id);
 
-  // Helper to detect code blocks in explanation
+  // Render markdown explanation with code highlighting
   const renderExplanation = (text: string) => {
-    // Simple split by code blocks ```code```
-    const parts = text.split(/(```[\s\S]*?```)/g);
-    return parts.map((part, index) => {
-      if (part.startsWith('```') && part.endsWith('```')) {
-        const content = part.slice(3, -3).replace(/^[a-z]+\n/, ''); // remove language hint if any for now
-        // Try to extract language
-        const match = part.match(/^```([a-z]+)\n/);
-        const lang = match ? match[1] : 'text';
-        
-        return (
-          <div key={index} className="my-4 rounded overflow-hidden border border-white/10 text-xs">
-            <SyntaxHighlighter language={lang} style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#0a0a0a' }}>
-              {content}
-            </SyntaxHighlighter>
-          </div>
-        );
-      }
-      // Render standard text with newlines
-      return <div key={index} className="whitespace-pre-wrap mb-4">{part}</div>;
-    });
+    return (
+      <ReactMarkdown
+        components={{
+          code({ node, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || '');
+            const isInline = !match && !String(children).includes('\n');
+            
+            if (isInline) {
+              return (
+                <code className="bg-white/10 px-1.5 py-0.5 rounded text-primary text-[0.9em]" {...props}>
+                  {children}
+                </code>
+              );
+            }
+            
+            return (
+              <div className="my-4 rounded overflow-hidden border border-white/10 text-xs">
+                <SyntaxHighlighter
+                  language={match ? match[1] : 'text'}
+                  style={vscDarkPlus}
+                  customStyle={{ margin: 0, padding: '1rem', background: '#0a0a0a' }}
+                >
+                  {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              </div>
+            );
+          },
+          p({ children }) {
+            return <p className="mb-4">{children}</p>;
+          },
+          strong({ children }) {
+            return <strong className="font-bold text-white">{children}</strong>;
+          },
+          em({ children }) {
+            return <em className="italic text-white/90">{children}</em>;
+          },
+          ul({ children }) {
+            return <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>;
+          },
+          ol({ children }) {
+            return <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>;
+          },
+          li({ children }) {
+            return <li className="text-white/80">{children}</li>;
+          },
+          a({ href, children }) {
+            return <a href={href} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>;
+          },
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    );
   };
 
   return (
