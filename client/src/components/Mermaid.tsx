@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { X, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
-// @ts-ignore - Use the full ESM bundle to avoid dynamic import issues on GitHub Pages
-import mermaid from 'mermaid/dist/mermaid.esm.mjs';
+import mermaid from 'mermaid';
 
 // Initialize mermaid once
 let initialized = false;

@@ -144,7 +144,7 @@
 /* Mermaid Container */
 .mermaid-container {
   max-width: 100%;
-  overflow-x: auto;
+  overflow: visible;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -158,35 +158,29 @@
 /* Mobile mermaid adjustments */
 @media (max-width: 640px) {
   .mermaid-mobile-fit {
-    max-height: 180px;
-    overflow: hidden;
+    overflow: visible;
   }
   
   .mermaid-container svg {
     max-width: 100%;
-    max-height: 170px;
     width: auto !important;
-    transform: scale(0.7);
-    transform-origin: top center;
+    height: auto !important;
+    transform: scale(0.6);
+    transform-origin: top left;
   }
   
   .mermaid-container .nodeLabel,
   .mermaid-container .label,
   .mermaid-container text {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-  }
-  
-  .mermaid-container .edgeLabel,
-  .mermaid-container .edgeLabel text {
-    font-size: 10px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
   }
 }
 
 /* Tablet adjustments */
 @media (min-width: 641px) and (max-width: 1024px) {
   .mermaid-container svg {
-    transform: scale(0.9);
+    transform: scale(0.85);
     transform-origin: top center;
   }
 }
