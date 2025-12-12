@@ -1252,5 +1252,19 @@
     "difficulty": "advanced",
     "channel": "devops",
     "subChannel": "general"
+  },
+  {
+    "id": "de-127",
+    "question": "How would you implement a multi-stage Docker build to optimize image size while maintaining the ability to debug production issues? Explain the trade-offs between build-time and runtime optimization.",
+    "answer": "Use multi-stage builds with separate compile and runtime stages, keeping debug symbols in intermediate layer for production debugging.",
+    "explanation": "**Multi-Stage Docker Build Strategy:**\n\n**Stage 1 (Builder):**\n- Contains full build tools (compilers, debug symbols)\n- Builds application with debug information\n- Creates optimized binary\n\n**Stage 2 (Runtime):**\n- Minimal base image (alpine/slim)\n- Copies only compiled binary and runtime dependencies\n- Excludes build tools and debug symbols\n\n**Trade-offs:**\n- **Build-time optimization:** Larger builder image, longer build process\n- **Runtime optimization:** Smaller production image, faster deployment\n- **Debugging capability:** Need to maintain builder artifacts or use separate debug image\n\n**Implementation:**\n```dockerfile\n# Build stage\nFROM golang:1.19 AS builder\nWORKDIR /app\nCOPY . .\nRUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .\n\n# Runtime stage\nFROM alpine:latest\nRUN apk --no-cache add ca-certificates\nWORKDIR /root/\nCOPY --from=builder /app/main .\nCMD [\"./main\"]\n```\n\n**Advanced Debugging:**\n- Use separate debug image with symbols\n- Implement health checks and logging\n- Consider build cache optimization",
+    "tags": [
+      "docker",
+      "containers"
+    ],
+    "difficulty": "advanced",
+    "channel": "devops",
+    "subChannel": "docker",
+    "diagram": "graph TD\n    A[Source Code] --> B[Builder Stage]\n    B --> C[Compile with Debug]\n    C --> D[Optimized Binary]\n    D --> E[Runtime Stage]\n    E --> F[Minimal Image]\n    F --> G[Production Container]\n    B -.-> H[Debug Image]\n    H --> I[Debug Symbols]"
   }
 ]
