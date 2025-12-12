@@ -341,7 +341,6 @@ export default function Reels() {
             if (language === 'mermaid') {
               return (
                 <div className="my-4 bg-black/40 border border-white/10 p-2 sm:p-4 rounded-lg overflow-x-auto">
-                  <div className="text-[8px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-2 border-b border-primary/20 pb-1 w-fit">Diagram</div>
                   <Mermaid chart={codeContent} />
                 </div>
               );
@@ -905,24 +904,14 @@ export default function Reels() {
                     <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6 pb-16 sm:pb-20">
                       {/* Diagram - full width on top */}
                       {currentQuestion.diagram && (
-                        <div>
-                          <div className="text-[8px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-2 border-b border-primary/20 pb-1 w-fit">
-                            Visualization
-                          </div>
-                          <div className="bg-black/30 border border-white/10 p-3 sm:p-4 rounded-lg overflow-x-auto">
-                            <Mermaid chart={currentQuestion.diagram} />
-                          </div>
+                        <div className="bg-black/30 border border-white/10 p-3 sm:p-4 rounded-lg overflow-x-auto">
+                          <Mermaid chart={currentQuestion.diagram} />
                         </div>
                       )}
 
                       {/* Explanation - below diagram */}
-                      <div>
-                        <div className="text-[8px] sm:text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 border-b border-white/10 pb-1 w-fit">
-                          Explanation
-                        </div>
-                        <div className="text-[11px] sm:text-sm md:text-base text-white/80 leading-5 sm:leading-7">
-                          {renderExplanation(currentQuestion.explanation)}
-                        </div>
+                      <div className="text-[11px] sm:text-sm md:text-base text-white/80 leading-5 sm:leading-7">
+                        {renderExplanation(currentQuestion.explanation)}
                       </div>
                       
                       {isCompleted && (

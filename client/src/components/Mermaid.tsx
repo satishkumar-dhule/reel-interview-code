@@ -263,18 +263,21 @@ export function Mermaid({ chart }: MermaidProps) {
     );
   }
 
-  // Normal view with expand button
+  // Normal view with expand button (desktop only)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  
   return (
     <div className="relative group">
       <div 
         ref={ref}
-        className="w-full flex justify-center my-1 sm:my-4 overflow-x-auto mermaid-container mermaid-mobile-fit cursor-pointer"
-        onClick={() => setIsExpanded(true)}
+        className={`w-full flex justify-center my-1 sm:my-4 overflow-x-auto mermaid-container mermaid-mobile-fit ${!isMobile ? 'cursor-pointer' : ''}`}
+        onClick={() => !isMobile && setIsExpanded(true)}
         dangerouslySetInnerHTML={{ __html: svgContent }}
       />
+      {/* Expand button - hidden on mobile */}
       <button
         onClick={(e) => { e.stopPropagation(); setIsExpanded(true); }}
-        className="absolute top-1 right-1 p-1.5 bg-black/70 hover:bg-primary rounded opacity-0 group-hover:opacity-100 transition-all border border-white/20"
+        className="absolute top-1 right-1 p-1.5 bg-black/70 hover:bg-primary rounded opacity-0 group-hover:opacity-100 transition-all border border-white/20 hidden sm:block"
         title="Expand diagram"
       >
         <Maximize2 className="w-3 h-3 text-white" />
