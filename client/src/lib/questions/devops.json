@@ -1366,5 +1366,50 @@
     "subChannel": "docker",
     "diagram": "graph TD\n    A[Source Code] --> B[Builder Stage]\n    B --> C[Compile with Debug]\n    C --> D[Optimized Binary]\n    D --> E[Runtime Stage]\n    E --> F[Minimal Image]\n    F --> G[Production Container]\n    B -.-> H[Debug Image]\n    H --> I[Debug Symbols]",
     "lastUpdated": "2025-12-12T09:07:04.187Z"
+  },
+  {
+    "id": "de-135",
+    "question": "You have a Helm chart that needs to deploy different configurations for staging and production environments. The staging environment should use 2 replicas with 512Mi memory limit, while production should use 5 replicas with 2Gi memory limit. How would you structure your values files and templates to handle this requirement?",
+    "answer": "Use values-staging.yaml and values-production.yaml files with environment-specific configs, then deploy with helm install -f values-{env}.yaml",
+    "explanation": "## Environment-Specific Helm Configurations\n\n### Solution Structure\n\n1. **Base values.yaml**:\n```yaml\napp:\n  name: myapp\n  image:\n    repository: myapp\n    tag: latest\n\ndeployment:\n  replicas: 3\n  resources:\n    limits:\n      memory: 1Gi\n    requests:\n      memory: 512Mi\n```\n\n2. **values-staging.yaml**:\n```yaml\ndeployment:\n  replicas: 2\n  resources:\n    limits:\n      memory: 512Mi\n    requests:\n      memory: 256Mi\n```\n\n3. **values-production.yaml**:\n```yaml\ndeployment:\n  replicas: 5\n  resources:\n    limits:\n      memory: 2Gi\n    requests:\n      memory: 1Gi\n```\n\n4. **Deployment template** (templates/deployment.yaml):\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: {{ .Values.app.name }}\nspec:\n  replicas: {{ .Values.deployment.replicas }}\n  template:\n    spec:\n      containers:\n      - name: {{ .Values.app.name }}\n        image: {{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}\n        resources:\n          {{- toYaml .Values.deployment.resources | nindent 10 }}\n```\n\n### Deployment Commands\n\n```bash\n# Staging deployment\nhelm install myapp-staging ./mychart -f values-staging.yaml\n\n# Production deployment\nhelm install myapp-prod ./mychart -f values-production.yaml\n```\n\n### Key Benefits\n\n- **Value Inheritance**: Environment files override base values\n- **DRY Principle**: Common configurations in base values.yaml\n- **Environment Isolation**: Clear separation of concerns\n- **Template Reusability**: Single template works for all environments",
+    "tags": [
+      "helm",
+      "k8s"
+    ],
+    "difficulty": "intermediate",
+    "channel": "devops",
+    "subChannel": "helm",
+    "diagram": "graph TD\n    A[Base values.yaml] --> B[Common Config]\n    C[values-staging.yaml] --> D[Staging Overrides]\n    E[values-production.yaml] --> F[Production Overrides]\n    \n    B --> G[Helm Template Engine]\n    D --> G\n    F --> G\n    \n    G --> H[Staging Deployment]\n    G --> I[Production Deployment]\n    \n    H --> J[2 Replicas<br/>512Mi Memory]\n    I --> K[5 Replicas<br/>2Gi Memory]\n    \n    style A fill:#e1f5fe\n    style C fill:#fff3e0\n    style E fill:#ffebee\n    style H fill:#fff3e0\n    style I fill:#ffebee",
+    "lastUpdated": "2025-12-12T09:15:12.319Z"
+  },
+  {
+    "id": "de-136",
+    "question": "You have a GitOps workflow where application configs are stored in a separate config repository from the application code. A developer pushes code changes that require updating both the application image tag and adding a new environment variable. Describe the complete GitOps flow from code commit to deployment, including how you handle the dependency between application and config changes.",
+    "answer": "Code push triggers CI to build image, update config repo with new tag/env var, ArgoCD detects config changes and deploys to cluster.",
+    "explanation": "## GitOps Flow with Separate Config Repository\n\n### 1. Initial Code Push\n- Developer commits application code changes to the **application repository**\n- CI/CD pipeline is triggered (GitHub Actions, Jenkins, etc.)\n\n### 2. Build and Image Management\n- CI builds new container image with updated code\n- Image is tagged (e.g., `v1.2.3` or commit SHA) and pushed to container registry\n- CI runs tests and security scans\n\n### 3. Config Repository Update\n- CI pipeline makes automated commit to **config repository**\n- Updates include:\n  - New image tag in deployment manifests\n  - Addition of new environment variable in ConfigMap/Secret\n- This can be done via:\n  - Direct commit with service account\n  - Pull request for review (recommended)\n\n### 4. GitOps Controller Detection\n- ArgoCD/Flux detects changes in config repository\n- Compares desired state (Git) vs actual state (cluster)\n- Identifies drift and plans synchronization\n\n### 5. Deployment Execution\n- GitOps controller applies changes to Kubernetes cluster\n- Rolling update deploys new image with environment variables\n- Health checks ensure successful deployment\n\n### 6. Monitoring and Rollback\n- Monitor application metrics and logs\n- If issues arise, rollback via Git revert\n- GitOps controller automatically reverts cluster state\n\n### Key Benefits\n- **Separation of concerns**: App code vs infrastructure config\n- **Audit trail**: All changes tracked in Git\n- **Declarative**: Desired state defined in Git\n- **Automated**: Reduces manual deployment errors",
+    "tags": [
+      "gitops",
+      "argocd"
+    ],
+    "difficulty": "intermediate",
+    "channel": "devops",
+    "subChannel": "gitops",
+    "diagram": "graph TD\n    A[Developer Commits Code] --> B[CI Pipeline Triggered]\n    B --> C[Build & Test Application]\n    C --> D[Build Container Image]\n    D --> E[Push Image to Registry]\n    E --> F[Update Config Repository]\n    F --> G[Commit New Image Tag + Env Vars]\n    G --> H[ArgoCD Detects Config Changes]\n    H --> I[Compare Desired vs Actual State]\n    I --> J[Apply Changes to Cluster]\n    J --> K[Rolling Update Deployment]\n    K --> L[Health Checks Pass]\n    L --> M[Deployment Complete]\n    \n    N[Config Repository] --> H\n    O[Application Repository] --> A\n    P[Container Registry] --> J\n    \n    style A fill:#e1f5fe\n    style M fill:#c8e6c9\n    style H fill:#fff3e0",
+    "lastUpdated": "2025-12-12T09:15:31.620Z"
+  },
+  {
+    "id": "de-137",
+    "question": "You have a Terraform configuration that creates an AWS S3 bucket. After running 'terraform apply', you realize you need to add versioning to the bucket. What's the safest way to modify your existing infrastructure?",
+    "answer": "Add versioning block to existing resource, run terraform plan to review changes, then terraform apply to update the bucket in-place.",
+    "explanation": "## Safe Infrastructure Updates with Terraform\n\nWhen modifying existing Terraform resources, follow these steps:\n\n1. **Modify the configuration**: Add the versioning block to your existing `aws_s3_bucket` resource\n2. **Plan first**: Run `terraform plan` to see what changes will be made\n3. **Review carefully**: Ensure Terraform shows an \"update in-place\" operation, not destroy/recreate\n4. **Apply changes**: Run `terraform apply` to update the existing bucket\n\n### Example Configuration:\n```hcl\nresource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-example-bucket\"\n}\n\nresource \"aws_s3_bucket_versioning\" \"example\" {\n  bucket = aws_s3_bucket.example.id\n  versioning_configuration {\n    status = \"Enabled\"\n  }\n}\n```\n\n### Why This Approach is Safe:\n- **No data loss**: Updates bucket settings without destroying it\n- **Predictable**: `terraform plan` shows exactly what will change\n- **Reversible**: Can disable versioning later if needed\n- **Best practice**: Always plan before applying changes",
+    "tags": [
+      "terraform",
+      "iac"
+    ],
+    "difficulty": "beginner",
+    "channel": "devops",
+    "subChannel": "terraform",
+    "diagram": "graph TD\n    A[Existing S3 Bucket] --> B[Modify Terraform Config]\n    B --> C[Add Versioning Block]\n    C --> D[terraform plan]\n    D --> E{Review Changes}\n    E -->|Safe Update| F[terraform apply]\n    E -->|Destructive Change| G[Revise Configuration]\n    G --> D\n    F --> H[Updated S3 Bucket with Versioning]\n    \n    style A fill:#e1f5fe\n    style H fill:#c8e6c9\n    style D fill:#fff3e0\n    style F fill:#f3e5f5",
+    "lastUpdated": "2025-12-12T09:15:44.757Z"
   }
 ]

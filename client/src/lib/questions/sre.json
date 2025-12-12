@@ -247,5 +247,20 @@
     "subChannel": "capacity-planning",
     "diagram": "graph TD\n    A[Load Balancer] --> B[Service A - 15 instances]\n    B --> C[Service B - 8 instances]\n    B --> D[Service C - 5 instances]\n    B --> E[Cache Layer]\n    F[Circuit Breaker] --> B\n    G[Auto Scaler] --> B\n    G --> C\n    G --> D\n    H[Monitoring] --> I[Alerts]\n    I --> G\n    J[Load Shedder] --> A\n    K[CDN] --> A\n    \n    style B fill:#ff9999\n    style C fill:#99ccff\n    style D fill:#99ff99\n    style E fill:#ffcc99\n    style F fill:#ff6666\n    style J fill:#cc99ff",
     "lastUpdated": "2025-12-12T09:07:04.188Z"
+  },
+  {
+    "id": "sr-133",
+    "question": "What's the difference between logs, metrics, and traces in observability?",
+    "answer": "Logs: events, Metrics: numbers over time, Traces: request journeys.",
+    "explanation": "**The Three Pillars of Observability**:\n\n1. **Logs**: Timestamped events showing what happened\n   - Structured logs with key-value pairs\n   - Error messages, debug info\n   - \"User login failed at 2:15 PM\"\n\n2. **Metrics**: Numerical data aggregated over time\n   - CPU usage, request count, error rate\n   - Charts and dashboards\n   - \"95th percentile latency: 200ms\"\n\n3. **Traces**: End-to-end request flow across services\n   - Shows path through distributed systems\n   - Identifies bottlenecks and failures\n   - \"API call took 500ms across 3 services\"\n\n**Why all three?** Logs tell you *what* happened, metrics show *how much*, traces reveal *where*.",
+    "tags": [
+      "metrics",
+      "monitoring"
+    ],
+    "difficulty": "beginner",
+    "channel": "sre",
+    "subChannel": "observability",
+    "diagram": "graph TD\n    A[Request] --> B[Frontend]\n    B --> C[API Gateway]\n    C --> D[Service A]\n    C --> E[Service B]\n    D --> F[Database]\n    \n    G[Logs] --> H[\"Error: DB timeout\"]\n    I[Metrics] --> J[\"CPU: 80%\"]\n    K[Traces] --> L[\"500ms total\"]\n    \n    style G fill:#ff9999\n    style I fill:#99ccff\n    style K fill:#99ff99",
+    "lastUpdated": "2025-12-12T09:14:39.919Z"
   }
 ]
