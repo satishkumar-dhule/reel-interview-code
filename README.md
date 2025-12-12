@@ -43,6 +43,13 @@
 - **Persistent State** - Automatically saves progress and preferences
 - **Offline Support** - Works offline with cached data
 
+### LinkedIn Post Generator
+- **Auto-Generated Posts** - Convert questions into engaging LinkedIn posts
+- **SVG Diagrams** - Mermaid diagrams rendered as SVG for better sharing
+- **HTML Previews** - See how posts look before sharing
+- **Copy-Ready Text** - One-click copy to clipboard
+- **Post Manager CLI** - Manage and view generated posts locally
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -170,6 +177,36 @@ Automatically removes duplicate questions:
 - Maintains question quality and uniqueness
 - Provides detailed duplicate analysis
 - Commits changes and triggers deployment
+
+### LinkedIn Post Generator
+**Trigger:** Daily at 18:00 UTC (or manual via workflow_dispatch)
+
+Automatically generates LinkedIn posts from questions:
+- Converts 5 recent questions into engaging LinkedIn posts
+- Renders mermaid diagrams as SVG for better sharing
+- Creates HTML previews to visualize posts
+- Generates copy-ready text for easy sharing
+- Stores posts in `linkedin-posts/` directory
+- Includes metadata for tracking and analytics
+
+**Local Usage:**
+```bash
+# Generate posts for recent questions
+node script/linkedin-post-generator.js
+
+# Manage posts with CLI
+node script/linkedin-post-manager.js list              # List all posts
+node script/linkedin-post-manager.js view <id>        # View post content
+node script/linkedin-post-manager.js copy <id>        # Copy to clipboard
+node script/linkedin-post-manager.js preview <id>     # Show preview path
+```
+
+**Post Structure:**
+Each generated post includes:
+- `post.txt` - Copy-paste ready text for LinkedIn
+- `preview.html` - Visual preview of the post
+- `diagram.svg` - Rendered diagram (if available)
+- `metadata.json` - Post metadata and tracking info
 
 ```bash
 # Manual trigger

@@ -75,8 +75,9 @@ export default function About() {
             <ArrowLeft className="w-2.5 h-2.5" /> Back
           </button>
           <h1 className="text-base sm:text-xl font-bold tracking-tighter uppercase truncate">
-            <span className="text-primary mr-1">&gt;</span>About
+            <span className="text-primary mr-1">&gt;</span>Code Reels
           </h1>
+          <p className="text-muted-foreground text-[8px] sm:text-[9px] mt-0.5">Master technical interviews with interactive learning reels</p>
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
@@ -95,11 +96,11 @@ export default function About() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="border border-border p-2 bg-card"
+            className="border-2 border-primary/50 p-2 bg-primary/5 rounded-lg"
           >
-            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1">$ Mission</h2>
-            <p className="text-[8px] sm:text-[9px] text-muted-foreground leading-tight">
-              AI-powered interview prep platform with daily questions across 6 domains. Open-source, community-driven.
+            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1">🎯 Mission</h2>
+            <p className="text-[8px] sm:text-[9px] text-foreground leading-tight">
+              AI-powered interview prep platform with daily questions across 6 domains. Open-source, community-driven, and always improving.
             </p>
           </motion.div>
 
@@ -108,14 +109,26 @@ export default function About() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.05 }}
-            className="border border-border p-2 bg-card"
+            className="border border-border p-2 bg-card rounded-lg"
           >
-            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1">📊 Stats</h2>
+            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1.5">📊 By The Numbers</h2>
             <div className="grid grid-cols-4 gap-1">
-              <div className="text-center"><div className="text-sm font-bold text-primary">130+</div><div className="text-[7px] text-muted-foreground">Q's</div></div>
-              <div className="text-center"><div className="text-sm font-bold text-primary">6</div><div className="text-[7px] text-muted-foreground">Cats</div></div>
-              <div className="text-center"><div className="text-sm font-bold text-primary">3</div><div className="text-[7px] text-muted-foreground">Lvls</div></div>
-              <div className="text-center"><div className="text-sm font-bold text-primary">∞</div><div className="text-[7px] text-muted-foreground">Daily</div></div>
+              <div className="text-center border border-primary/30 p-1 rounded bg-primary/5">
+                <div className="text-sm font-bold text-primary">130+</div>
+                <div className="text-[7px] text-muted-foreground">Questions</div>
+              </div>
+              <div className="text-center border border-primary/30 p-1 rounded bg-primary/5">
+                <div className="text-sm font-bold text-primary">6</div>
+                <div className="text-[7px] text-muted-foreground">Channels</div>
+              </div>
+              <div className="text-center border border-primary/30 p-1 rounded bg-primary/5">
+                <div className="text-sm font-bold text-primary">3</div>
+                <div className="text-[7px] text-muted-foreground">Levels</div>
+              </div>
+              <div className="text-center border border-primary/30 p-1 rounded bg-primary/5">
+                <div className="text-sm font-bold text-primary">∞</div>
+                <div className="text-[7px] text-muted-foreground">Growing</div>
+              </div>
             </div>
           </motion.div>
 
@@ -124,9 +137,9 @@ export default function About() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="border border-border p-2 bg-card sm:col-span-2"
+            className="border border-border p-2 bg-card sm:col-span-2 rounded-lg"
           >
-            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1">✨ Features</h2>
+            <h2 className="text-[9px] sm:text-xs font-bold uppercase tracking-tight text-primary mb-1.5">✨ Key Features</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
               {[
                 { icon: <Brain className="w-3 h-3" />, label: 'AI-Powered' },
@@ -134,9 +147,9 @@ export default function About() {
                 { icon: <Target className="w-3 h-3" />, label: 'Multi-Domain' },
                 { icon: <Flame className="w-3 h-3" />, label: 'Daily Updates' },
               ].map((f, i) => (
-                <div key={i} className="border border-border/50 p-1 text-center">
+                <div key={i} className="border border-primary/30 p-1 text-center rounded bg-primary/5 hover:bg-primary/10 transition-colors">
                   <div className="text-primary mb-0.5 flex justify-center">{f.icon}</div>
-                  <div className="text-[7px] font-bold uppercase tracking-tight">{f.label}</div>
+                  <div className="text-[7px] font-bold uppercase tracking-tight text-foreground">{f.label}</div>
                 </div>
               ))}
             </div>

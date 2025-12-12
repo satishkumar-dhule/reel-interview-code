@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Stats from "@/pages/Stats";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
+import LinkedInPost from "@/pages/LinkedInPost";
 import Reels from "@/pages/Reels";
 import MermaidTest from "@/pages/MermaidTest";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/stats" component={Stats} />
+      <Route path="/linkedin" component={LinkedInPost} />
       <Route path="/test/mermaid" component={MermaidTest} />
       <Route path="/channel/:id" component={Reels} />
       <Route path="/channel/:id/:index" component={Reels} />

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { channels, getQuestions } from '../lib/data';
 import { motion } from 'framer-motion';
-import { Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, Star, AlertCircle, Sparkles } from 'lucide-react';
+import { Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, Star, AlertCircle, Sparkles, Share2 } from 'lucide-react';
 import { useProgress } from '../hooks/use-progress';
 import { useTheme } from '../context/ThemeContext';
 
@@ -45,6 +45,13 @@ export default function Home() {
         <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-2">
           <div className="flex gap-2 sm:gap-4">
              <button 
+               onClick={() => setLocation('/linkedin')}
+               className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
+               title="LinkedIn Posts"
+             >
+                <Share2 className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">LinkedIn</span>
+             </button>
+             <button 
                onClick={() => setLocation('/about')}
                className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
                title="About"
@@ -86,7 +93,7 @@ export default function Home() {
           </div>
           <div className="hidden md:block text-right text-xs text-muted-foreground">
             STATUS: ONLINE<br/>
-            VERSION: 2.1.0
+            VERSION: 2.2.0
           </div>
         </div>
       </header>

@@ -1,0 +1,70 @@
+name: Generate LinkedIn Posts
+
+on:
+  schedule:
+    # Run daily at 18:00 UTC (after all other bots)
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-posts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install mermaid-cli
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      - name: Generate LinkedIn posts
+        run: node script/linkedin-post-generator.js
+
+      - name: Upload posts as artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: linkedin-posts
+          path: linkedin-posts/
+          retention-days: 30
+
+      - name: Commit and push posts
+        if: always()
+        run: |
+          git config user.name "Code Reels Bot"
+          git config user.email "bot@code-reels.dev"
+          
+          if [ -d "linkedin-posts" ] && [ -n "$(git status --porcelain linkedin-posts/)" ]; then
+            git add linkedin-posts/
+            git commit -m "chore: generate LinkedIn posts [skip ci]"
+            git push
+          fi
+
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 📱 LinkedIn Posts Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Posts are available in the artifacts and \`linkedin-posts/\` directory." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Each post includes:" >> $GITHUB_STEP_SUMMARY
+          echo "- 📄 \`post.txt\` - Copy-paste ready text" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 \`preview.html\` - Visual preview" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 \`diagram.svg\` - Diagram (if available)" >> $GITHUB_STEP_SUMMARY
+          echo "- 📋 \`metadata.json\` - Post metadata" >> $GITHUB_STEP_SUMMARY

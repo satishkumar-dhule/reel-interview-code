@@ -3,6 +3,8 @@ import { useLocation, useRoute } from 'wouter';
 import { getQuestions, getChannel } from '../lib/data';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mermaid } from '../components/Mermaid';
+import { LinkedInPostPreview } from '../components/LinkedInPostPreview';
+import { LinkedInPostAdvanced } from '../components/LinkedInPostAdvanced';
 import { ArrowLeft, ArrowRight, Share2, Terminal, ChevronRight, Hash, ChevronDown, Check, Timer, List, Flag, Bookmark, Grid3X3, LayoutList, Zap, Target, Flame, Star, AlertCircle } from 'lucide-react';
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +15,40 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Popover from '@radix-ui/react-popover';
 import * as Switch from '@radix-ui/react-switch';
 import * as Slider from '@radix-ui/react-slider';
+
+// LinkedIn post generator
+function generateLinkedInPost(question: any) {
+  const lines = [];
+  
+  lines.push('🎯 Technical Interview Question\n');
+  lines.push(`❓ ${question.question}\n`);
+  
+  const difficultyEmoji: Record<string, string> = {
+    'beginner': '🟢',
+    'intermediate': '🟡',
+    'advanced': '🔴'
+  };
+  lines.push(`${difficultyEmoji[question.difficulty] || '⚪'} ${question.difficulty.toUpperCase()}\n`);
+  
+  lines.push(`📚 ${question.channel} / ${question.subChannel}\n`);
+  lines.push(`\n💡 Quick Answer:\n${question.answer}\n`);
+  
+  const explanationPreview = question.explanation
+    .split('\n')
+    .filter((line: string) => line.trim().length > 0)
+    .slice(0, 3)
+    .join('\n');
+  
+  lines.push(`\n📖 Key Points:\n${explanationPreview}\n`);
+  
+  const tags = question.tags.map((t: string) => `#${t.replace(/[^a-z0-9]/gi, '')}`).join(' ');
+  lines.push(`\n${tags}`);
+  
+  lines.push('\n\n💬 Have you encountered this in interviews? Share your approach in the comments!\n');
+  lines.push('🔗 Practice more questions on Code Reels: https://reel-interview.github.io/');
+  
+  return lines.join('');
+}
 
 // Custom hook for swipe detection
 function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
@@ -81,6 +117,9 @@ export default function Reels() {
     const saved = localStorage.getItem(`marked-${channelId}`);
     return saved ? JSON.parse(saved) : [];
   });
+
+  const [showLinkedInPreview, setShowLinkedInPreview] = useState(false);
+  const [useAdvancedPreview, setUseAdvancedPreview] = useState(true);
 
   // Toggle bookmark for current question
   const toggleMark = (questionId: string) => {
@@ -387,6 +426,21 @@ export default function Reels() {
     );
   };
 
+  // LinkedIn Preview Modal
+  const linkedInPreview = showLinkedInPreview && currentQuestion ? (
+    useAdvancedPreview ? (
+      <LinkedInPostAdvanced 
+        question={currentQuestion}
+        onClose={() => setShowLinkedInPreview(false)}
+      />
+    ) : (
+      <LinkedInPostPreview 
+        question={currentQuestion}
+        onClose={() => setShowLinkedInPreview(false)}
+      />
+    )
+  ) : null;
+
   return (
     <div className="h-screen w-full bg-black text-white overflow-hidden flex font-mono">
       {/* Top Navigation Bar */}
@@ -481,6 +535,13 @@ export default function Reels() {
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <div className="flex gap-1 sm:gap-2 mr-1 sm:mr-4">
+            <button
+              onClick={() => setShowLinkedInPreview(true)}
+              className="p-1 sm:p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors hover:border-primary hover:text-primary"
+              title="Share on LinkedIn"
+            >
+              <Share2 className="w-3 h-3 sm:w-4 sm:h-4" />
+            </button>
             <a 
               href="https://github.com/satishkumar-dhule/code-reels/issues/new"
               target="_blank"
@@ -1022,6 +1083,11 @@ export default function Reels() {
             <span>v2.4</span>
          </div>
       </div>
+
+      {/* LinkedIn Post Preview Modal */}
+      <AnimatePresence>
+        {linkedInPreview}
+      </AnimatePresence>
     </div>
   );
 }
