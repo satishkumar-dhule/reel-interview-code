@@ -2,8 +2,8 @@
 
 > A modern, interactive platform for mastering technical interview questions across multiple domains. Built with React, TypeScript, and Node.js.
 
-[![GitHub Stars](https://img.shields.io/github/stars/satishkumar-dhule/reel-interview-code?style=social)](https://github.com/satishkumar-dhule/reel-interview-code)
-[![GitHub Forks](https://img.shields.io/github/forks/satishkumar-dhule/reel-interview-code?style=social)](https://github.com/satishkumar-dhule/reel-interview-code)
+[![GitHub Stars](https://img.shields.io/github/stars/satishkumar-dhule/code-reels?style=social)](https://github.com/satishkumar-dhule/code-reels)
+[![GitHub Forks](https://img.shields.io/github/forks/satishkumar-dhule/code-reels?style=social)](https://github.com/satishkumar-dhule/code-reels)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **⭐ If you find this helpful, please consider giving us a star on GitHub! It helps us reach more developers.**
@@ -53,8 +53,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/satishkumar-dhule/reel-interview-code.git
-cd reel-interview-code
+git clone https://github.com/satishkumar-dhule/code-reels.git
+cd code-reels
 
 # Install dependencies
 pnpm install
@@ -274,8 +274,8 @@ We welcome contributions! Here's how to get started:
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/reel-interview-code.git
-   cd reel-interview-code
+   git clone https://github.com/YOUR_USERNAME/code-reels.git
+   cd code-reels
    ```
 
 2. **Install Dependencies**
@@ -390,8 +390,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Support & Community
 
-- **Issues** - Report bugs or request features on [GitHub Issues](https://github.com/satishkumar-dhule/reel-interview-code/issues)
-- **Discussions** - Ask questions and share ideas on [GitHub Discussions](https://github.com/satishkumar-dhule/reel-interview-code/discussions)
+- **Issues** - Report bugs or request features on [GitHub Issues](https://github.com/satishkumar-dhule/code-reels/issues)
+- **Discussions** - Ask questions and share ideas on [GitHub Discussions](https://github.com/satishkumar-dhule/code-reels/discussions)
 - **Email** - Contact maintainers for other inquiries
 
 ## 🌟 Show Your Support
@@ -404,9 +404,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/satishkumar-dhule/reel-interview-code)
+- [GitHub Repository](https://github.com/satishkumar-dhule/code-reels)
 - [Live Demo](https://reel-interview.github.io/)
-- [Issues & Discussions](https://github.com/satishkumar-dhule/reel-interview-code/issues)
+- [Issues & Discussions](https://github.com/satishkumar-dhule/code-reels/issues)
 
 ---
 

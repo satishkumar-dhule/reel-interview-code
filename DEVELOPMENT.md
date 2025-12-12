@@ -49,8 +49,8 @@ Learn_Reels is a full-stack web application built with:
 
 ```bash
 # Clone repository
-git clone https://github.com/satishkumar-dhule/reel-interview-code.git
-cd reel-interview-code
+git clone https://github.com/satishkumar-dhule/code-reels.git
+cd code-reels
 
 # Install dependencies
 pnpm install

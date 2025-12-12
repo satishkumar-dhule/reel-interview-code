@@ -52,7 +52,7 @@ export default function Home() {
                 <BarChart2 className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Stats</span>
              </button>
              <a 
-               href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+               href="https://github.com/satishkumar-dhule/code-reels/issues/new"
                target="_blank"
                rel="noopener noreferrer"
                className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
@@ -61,7 +61,7 @@ export default function Home() {
                 <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Issue</span>
              </a>
              <a 
-               href="https://github.com/satishkumar-dhule/reel-interview-code"
+               href="https://github.com/satishkumar-dhule/code-reels"
                target="_blank"
                rel="noopener noreferrer"
                className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
@@ -159,7 +159,7 @@ export default function Home() {
         </div>
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-[9px] sm:text-xs uppercase tracking-widest border-t border-border pt-2 sm:pt-3">
           <a 
-            href="https://github.com/satishkumar-dhule/reel-interview-code"
+            href="https://github.com/satishkumar-dhule/code-reels"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
@@ -168,7 +168,7 @@ export default function Home() {
           </a>
           <span className="text-border hidden sm:inline">•</span>
           <a 
-            href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+            href="https://github.com/satishkumar-dhule/code-reels/issues/new"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
@@ -177,7 +177,7 @@ export default function Home() {
           </a>
           <span className="text-border hidden sm:inline">•</span>
           <a 
-            href="https://github.com/satishkumar-dhule/reel-interview-code/discussions"
+            href="https://github.com/satishkumar-dhule/code-reels/discussions"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-primary transition-colors"

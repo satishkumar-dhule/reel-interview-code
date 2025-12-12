@@ -14,8 +14,8 @@ We are committed to providing a welcoming and inclusive environment for all cont
 - **Review questions** - Help identify questions that need improvement
 
 ### 2. Report Issues
-- Found a bug? [Open an issue](https://github.com/satishkumar-dhule/reel-interview-code/issues/new)
-- Have a suggestion? [Start a discussion](https://github.com/satishkumar-dhule/reel-interview-code/discussions)
+- Found a bug? [Open an issue](https://github.com/satishkumar-dhule/code-reels/issues/new)
+- Have a suggestion? [Start a discussion](https://github.com/satishkumar-dhule/code-reels/discussions)
 
 ### 3. Code Contributions
 - Fix bugs
@@ -41,8 +41,8 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ```bash
 # Fork the repository
-git clone https://github.com/YOUR_USERNAME/reel-interview-code.git
-cd reel-interview-code
+git clone https://github.com/YOUR_USERNAME/code-reels.git
+cd code-reels
 
 # Install dependencies
 pnpm install

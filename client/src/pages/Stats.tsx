@@ -108,7 +108,7 @@ export default function Stats() {
         </h1>
         <div className="flex gap-2 sm:gap-3">
           <a 
-            href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+            href="https://github.com/satishkumar-dhule/code-reels/issues/new"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 transition-colors p-1"
@@ -117,7 +117,7 @@ export default function Stats() {
             <AlertCircle className="w-3 h-3" />
           </a>
           <a 
-            href="https://github.com/satishkumar-dhule/reel-interview-code"
+            href="https://github.com/satishkumar-dhule/code-reels"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 transition-colors p-1"

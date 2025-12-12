@@ -482,7 +482,7 @@ export default function Reels() {
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <div className="flex gap-1 sm:gap-2 mr-1 sm:mr-4">
             <a 
-              href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+              href="https://github.com/satishkumar-dhule/code-reels/issues/new"
               target="_blank"
               rel="noopener noreferrer"
               className="p-1 sm:p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors"
@@ -491,7 +491,7 @@ export default function Reels() {
               <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
             </a>
             <a 
-              href="https://github.com/satishkumar-dhule/reel-interview-code"
+              href="https://github.com/satishkumar-dhule/code-reels"
               target="_blank"
               rel="noopener noreferrer"
               className="p-1 sm:p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors"
