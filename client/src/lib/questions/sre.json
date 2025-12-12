@@ -248,5 +248,35 @@
     "subChannel": "observability",
     "diagram": "graph TD\n    A[Request] --> B[Frontend]\n    B --> C[API Gateway]\n    C --> D[Service A]\n    C --> E[Service B]\n    D --> F[Database]\n    \n    G[Logs] --> H[\"Error: DB timeout\"]\n    I[Metrics] --> J[\"CPU: 80%\"]\n    K[Traces] --> L[\"500ms total\"]\n    \n    style G fill:#ff9999\n    style I fill:#99ccff\n    style K fill:#99ff99",
     "lastUpdated": "2025-12-12T09:14:39.919Z"
+  },
+  {
+    "id": "sr-142",
+    "question": "You receive a PagerDuty alert at 3 AM: 'Production API is returning 500 errors'. What are your first three steps in handling this incident?",
+    "answer": "Acknowledge alert, assess impact, and form response team.",
+    "explanation": "**Incident Response First Steps**:\n\n1. **Acknowledge Alert (0-2 mins)**\n   - Accept PagerDuty incident\n   - Set status to 'Investigating'\n   - Prevent escalation\n\n2. **Assess Impact (2-5 mins)**\n   - Check monitoring dashboards\n   - Verify error rates and latency\n   - Determine user impact scope\n\n3. **Form Response Team (5-10 mins)**\n   - Notify on-call engineer\n   - Create incident channel (Slack)\n   - Document initial timeline\n\n**Key Principles**:\n- Stay calm under pressure\n- Communicate clearly\n- Document everything\n- Follow runbook if available",
+    "tags": [
+      "incident",
+      "postmortem"
+    ],
+    "difficulty": "beginner",
+    "channel": "sre",
+    "subChannel": "incident-management",
+    "diagram": "graph TD\n    A[PagerDuty Alert] --> B[Acknowledge Incident]\n    B --> C[Assess Impact]\n    C --> D[Check Dashboards]\n    C --> E[Verify Error Rates]\n    C --> F[Determine User Impact]\n    D --> G[Form Response Team]\n    E --> G\n    F --> G\n    G --> H[Notify On-Call]\n    G --> I[Create Slack Channel]\n    G --> J[Document Timeline]",
+    "lastUpdated": "2025-12-12T10:04:51.668Z"
+  },
+  {
+    "id": "sr-143",
+    "question": "Your web application currently handles 1000 requests per minute during peak hours. Each request takes an average of 200ms to process. If you expect traffic to double in the next 6 months, how many additional server instances do you need if each server can handle 50 concurrent requests?",
+    "answer": "Need 2 more instances. Current: 1000 req/min ÷ 60s = 16.67 req/s × 0.2s = 3.33 concurrent. Double = 6.67. Need 1 more instance minimum.",
+    "explanation": "## Capacity Planning Calculation\n\n**Step 1: Calculate current concurrent requests**\n- Current load: 1000 requests/minute = 16.67 requests/second\n- Processing time: 200ms = 0.2 seconds\n- Concurrent requests = 16.67 × 0.2 = 3.33 concurrent requests\n\n**Step 2: Calculate future requirements**\n- Expected traffic: 2000 requests/minute = 33.33 requests/second\n- Future concurrent requests = 33.33 × 0.2 = 6.67 concurrent requests\n\n**Step 3: Determine server capacity**\n- Each server handles 50 concurrent requests\n- Current servers needed: 3.33 ÷ 50 = 0.067 servers (1 server sufficient)\n- Future servers needed: 6.67 ÷ 50 = 0.133 servers (1 server sufficient)\n\n**However**, for safety margin and avoiding saturation:\n- Add buffer capacity (typically 20-30%)\n- Consider peak spikes beyond average\n- Plan for gradual scaling\n\n**Recommendation**: Add 1-2 additional instances to handle growth safely.",
+    "tags": [
+      "capacity",
+      "scaling"
+    ],
+    "difficulty": "beginner",
+    "channel": "sre",
+    "subChannel": "capacity-planning",
+    "diagram": "graph TD\n    A[Current Load<br/>1000 req/min] --> B[16.67 req/sec]\n    B --> C[3.33 concurrent<br/>requests]\n    D[Future Load<br/>2000 req/min] --> E[33.33 req/sec]\n    E --> F[6.67 concurrent<br/>requests]\n    G[Server Capacity<br/>50 concurrent] --> H{Scaling Decision}\n    C --> H\n    F --> H\n    H --> I[Add 1-2 Instances<br/>for safety margin]",
+    "lastUpdated": "2025-12-12T10:05:04.369Z"
   }
 ]

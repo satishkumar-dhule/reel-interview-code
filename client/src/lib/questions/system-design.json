@@ -227,5 +227,20 @@
     "subChannel": "infrastructure",
     "diagram": "graph TD\n    A[Client Browser] -->|WebSocket| B[CloudFront Edge]\n    B -->|WebSocket| C[API Gateway WebSocket]\n    C --> D[Lambda Auth]\n    C --> E[Lambda Router]\n    E --> F[Lambda Document Handler]\n    E --> G[Lambda Sync Handler]\n    F --> H[DynamoDB Global Table]\n    G --> I[EventBridge Bus]\n    I --> J[Cross-Region EventBridge]\n    J --> K[Other Region Lambda]\n    F --> L[ElastiCache Redis]\n    K --> M[DynamoDB Replica]\n    A --> N[Service Worker]\n    N --> O[IndexedDB Storage]\n    P[Route 53] -->|Latency Routing| B\n    Q[CloudWatch] -->|Metrics| E",
     "lastUpdated": "2025-12-12T09:38:09.154Z"
+  },
+  {
+    "id": "sy-144",
+    "question": "Design a distributed rate limiting system that can handle 1M+ requests per second across multiple data centers while maintaining consistency and preventing thundering herd problems during cache misses.",
+    "answer": "Use sliding window counters with Redis Cluster, consistent hashing, and circuit breakers with jittered backoff for cache miss protection.",
+    "explanation": "## Architecture Components\n\n### 1. Distributed Counter Storage\n- **Redis Cluster** with consistent hashing for horizontal scaling\n- **Sliding window counters** using sorted sets with timestamps\n- **Multi-level caching**: L1 (local), L2 (regional), L3 (global)\n\n### 2. Rate Limiting Algorithm\n```\nkey = user_id:window_start_time\ncount = ZCOUNT key (now-window_size) now\nif count < limit:\n  ZADD key now unique_request_id\n  EXPIRE key window_size\n  return ALLOW\nelse:\n  return DENY\n```\n\n### 3. Consistency Strategy\n- **Eventually consistent** across regions (acceptable for rate limiting)\n- **Strong consistency** within data center using Redis transactions\n- **Conflict resolution**: Last-writer-wins with vector clocks\n\n### 4. Thundering Herd Prevention\n- **Circuit breaker pattern** with exponential backoff\n- **Jittered cache refresh** (random 10-30% of TTL)\n- **Probabilistic early expiration** to spread load\n- **Request coalescing** for identical cache misses\n\n### 5. High Availability\n- **Multi-master Redis setup** with cross-region replication\n- **Graceful degradation**: Allow requests when cache unavailable\n- **Health checks** and automatic failover\n- **Rate limit approximation** during partial failures",
+    "tags": [
+      "dist-sys",
+      "architecture"
+    ],
+    "difficulty": "advanced",
+    "channel": "system-design",
+    "subChannel": "distributed-systems",
+    "diagram": "graph TD\n    A[Client Request] --> B[Load Balancer]\n    B --> C[Rate Limiter Service]\n    C --> D{Local Cache Hit?}\n    D -->|Yes| E[Check Counter]\n    D -->|No| F[Circuit Breaker]\n    F -->|Open| G[Allow Request]\n    F -->|Closed| H[Redis Cluster]\n    H --> I[Sliding Window Counter]\n    I --> J{Under Limit?}\n    J -->|Yes| K[Increment Counter]\n    J -->|No| L[Reject Request]\n    K --> M[Update Local Cache]\n    M --> N[Forward Request]\n    E --> J\n    \n    subgraph Redis Cluster\n        H1[Redis Master 1]\n        H2[Redis Master 2]\n        H3[Redis Master 3]\n        H1 -.-> H2\n        H2 -.-> H3\n        H3 -.-> H1\n    end\n    \n    subgraph Multi-DC\n        DC1[Data Center 1]\n        DC2[Data Center 2]\n        DC1 -.->|Async Replication| DC2\n    end",
+    "lastUpdated": "2025-12-12T10:05:21.929Z"
   }
 ]
