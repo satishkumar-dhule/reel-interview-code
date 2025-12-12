@@ -93,7 +93,7 @@
   {
     "id": "gh-4",
     "question": "What is Docker and how does containerization differ from traditional virtualization?",
-    "answer": "Docker is a containerization platform that packages applications with their dependencies into isolated containers. Unlike VMs, containers share the host OS kernel, making them lightweight and faster to start up.",
+    "answer": "Docker is a containerization platform that packages applications with their dependencies into isolated containers. Unlike VMs, containers share the host OS kernel, making them lightweight and faster t",
     "explanation": "# Docker Containerization\n\n## Key Concepts:\n- **Containers**: Isolated runtime environments that bundle applications with all dependencies\n- **Images**: Read-only templates used to create containers\n- **Dockerfile**: Text file with instructions to build Docker images\n\n## Benefits over Virtual Machines:\n- **Lightweight**: Share host OS kernel (no guest OS needed)\n- **Fast startup**: Seconds vs minutes for VMs\n- **Resource efficient**: Lower memory and CPU overhead\n- **Portability**: Run consistently across different environments\n\n## Common Use Cases:\n- Application deployment and scaling\n- Development environment consistency\n- Microservices architecture\n- CI/CD pipeline integration",
     "tags": [
       "docker",
@@ -167,9 +167,9 @@
   },
   {
     "id": "gh-9",
-    "question": "What is a Pod in Kubernetes and why is it considered the smallest deployable unit?",
-    "answer": "A Pod is Kubernetes' smallest deployable unit that encapsulates one or more containers with shared storage, networking, and runtime specifications.",
-    "explanation": "A Pod is the fundamental building block of Kubernetes applications that represents a single running process in your cluster.\n\n## Key Components\n- **Containers**: One or more tightly coupled containers that work together\n- **Shared Network**: All containers share the same IP address and network namespace\n- **Shared Storage**: Access to shared volumes for data persistence and communication\n- **Runtime Context**: Configuration for how containers should run together\n\n## Why Smallest Deployable Unit?\n- **Atomic Operation**: Pods are scheduled, created, and destroyed as a single unit\n- **Resource Sharing**: Containers in a Pod can efficiently share resources via localhost\n- **Co-location**: Ensures related processes run on the same node for performance\n- **Lifecycle Management**: All containers in a Pod share the same fate (start/stop together)\n\n## Common Use Cases\n- **Single Container**: Most common scenario (web server, database)\n- **Multi-Container**: Main app + sidecar proxy for logging/monitoring\n- **Helper Processes**: Application + background worker processes\n\n## Example YAML\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: web-app\nspec:\n  containers:\n  - name: nginx\n    image: nginx:latest\n    ports:\n    - containerPort: 80\n  - name: log-agent\n    image: fluentd:latest\n    volumeMounts:\n    - name: shared-logs\n      mountPath: /var/log/nginx\n```",
+    "question": "What is a Pod in Kubernetes and how does it function as the smallest deployable unit?",
+    "answer": "A Pod is Kubernetes' smallest deployable unit that encapsulates one or more containers with shared storage, networking, and runtime specifications. It represents a single running process in the cluste",
+    "explanation": "# Kubernetes Pods Explained\n\nA Pod is the fundamental building block of Kubernetes applications:\n\n## Key Components\n- **Containers**: One or more tightly coupled containers\n- **Shared Network**: All containers share the same IP address and network namespace\n- **Shared Storage**: Access to shared volumes for data persistence\n- **Runtime Context**: Configuration for how containers should run\n\n## Use Cases\n- **Single Container**: Most common scenario (web server, database)\n- **Multi-Container**: Co-located services (main app + sidecar proxy)\n- **Co-scheduling**: Ensure related processes run on the same node\n\n## Lifecycle\n- Pods are ephemeral and can be recreated\n- IP addresses can change between recreations\n- Should be managed via higher-level controllers (Deployments, StatefulSets)\n\n## Example YAML\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: web-app\nspec:\n  containers:\n  - name: nginx\n    image: nginx:latest\n    ports:\n    - containerPort: 80\n```",
     "tags": [
       "k8s",
       "orchestration"
@@ -177,8 +177,8 @@
     "difficulty": "beginner",
     "channel": "devops",
     "subChannel": "kubernetes",
-    "diagram": "graph TD\n    A[Pod: Smallest Unit] --> B[Shared Network Namespace]\n    A --> C[Shared Storage Volumes]\n    A --> D[Container 1: nginx]\n    A --> E[Container 2: log-agent]\n    B --> F[Single IP Address]\n    B --> G[Shared Port Space]\n    C --> H[Persistent Data]\n    I[Kubernetes Scheduler] --> A\n    J[Worker Node] --> A\n    K[Deployment Controller] --> A",
-    "lastUpdated": "2025-12-12T10:15:00.000Z"
+    "diagram": "graph TD\n    A[Pod] --> B[Shared Network Namespace]\n    A --> C[Shared Volume]\n    A --> D[Container 1: nginx]\n    A --> E[Container 2: log-agent]\n    B --> F[Shared IP Address]\n    B --> G[Port Space]\n    C --> H[Persistent Storage]\n    I[Deployment Controller] --> A\n    J[Kubernetes Node] --> A",
+    "lastUpdated": "2025-12-12T10:03:54.663Z"
   },
   {
     "id": "gh-10",
@@ -280,9 +280,9 @@
   },
   {
     "id": "gh-16",
-    "question": "What is Infrastructure as Code and why has it become essential for modern DevOps practices?",
-    "answer": "Infrastructure as Code (IaC) manages and provisions infrastructure through version-controlled definition files instead of manual configuration or interactive tools.",
-    "explanation": "**Infrastructure as Code (IaC)** transforms infrastructure management by treating infrastructure like application code:\n\n• **Declarative Configuration**: Define desired infrastructure state using code (HCL, YAML, JSON)\n• **Version Control**: Track all infrastructure changes in Git with full audit history\n• **Automation**: Provision and manage resources programmatically without manual intervention\n• **Reproducibility**: Create identical environments consistently across development, staging, and production\n• **Collaboration**: Enable teams to review infrastructure changes through pull requests\n\n**Key Benefits:**\n- Eliminates configuration drift between environments\n- Reduces human errors from manual setup\n- Enables rapid environment provisioning\n- Provides audit trails for compliance\n- Supports disaster recovery through code recreation",
+    "question": "What is Infrastructure as Code and how does it benefit DevOps practices?",
+    "answer": "Infrastructure as Code (IaC) is the practice of managing and provisioning infrastructure through machine-readable definition files rather than manual configuration.",
+    "explanation": "Infrastructure as Code (IaC) transforms infrastructure management from manual processes to automated, version-controlled workflows.\n\n**Key Benefits:**\n- **Version Control**: Track infrastructure changes like application code\n- **Reproducibility**: Consistently recreate environments\n- **Automation**: Reduce manual configuration errors\n- **Documentation**: Infrastructure definition serves as documentation\n- **Consistency**: Ensure uniform environments across deployments\n- **Scalability**: Easily scale infrastructure up or down\n\n**Common Tools**: Terraform, AWS CloudFormation, Ansible, Puppet",
     "tags": [
       "iac",
       "terraform",
@@ -291,14 +291,14 @@
     "difficulty": "beginner",
     "channel": "devops",
     "subChannel": "terraform",
-    "diagram": "graph TD\n    A[Developer writes IaC] --> B[Git Repository]\n    B --> C[CI/CD Pipeline]\n    C --> D[terraform plan]\n    D --> E[Review Changes]\n    E --> F[terraform apply]\n    F --> G[Cloud Resources]\n    G --> H[Infrastructure Ready]\n    I[Monitor & Validate] --> J[Feedback Loop]\n    J --> A",
-    "lastUpdated": "2025-12-12T10:05:12.467Z"
+    "diagram": "graph TD\n    A[Code Repository] --> B[CI/CD Pipeline]\n    B --> C[IaC Tool]\n    C --> D[Cloud Provider]\n    D --> E[Infrastructure]\n    E --> F[Monitoring & Feedback]\n    F --> A",
+    "lastUpdated": "2025-12-12T10:04:00.366Z"
   },
   {
     "id": "gh-17",
-    "question": "What is Terraform and how does it implement Infrastructure as Code (IaC) workflows?",
-    "answer": "Terraform is an open-source Infrastructure as Code (IaC) tool by HashiCorp that allows you to define, provision, and manage cloud infrastructure using declarative configuration files.",
-    "explanation": "Terraform enables infrastructure management through:\n\n- **Declarative Configuration**: Uses HCL (HashiCorp Configuration Language) to define desired infrastructure state\n- **Provider Architecture**: Supports multiple cloud providers (AWS, Azure, GCP, etc.) through plugins\n- **State Management**: Maintains a state file to track infrastructure resources and changes\n- **Workflow**: Follows plan-apply-destroy lifecycle for safe infrastructure changes\n- **Modularity**: Supports modules for reusable infrastructure components\n\n**Key Benefits**:\n- Version control infrastructure alongside application code\n- Automated provisioning and consistent deployments\n- Cost management through resource tracking\n- Multi-cloud and hybrid cloud support",
+    "question": "What is Terraform and how does it enable Infrastructure as Code workflows?",
+    "answer": "Terraform is HashiCorp's open-source IaC tool that uses declarative HCL to define, provision, and manage cloud infrastructure across multiple providers through stateful operations.",
+    "explanation": "**Terraform Core Concepts:**\n\n• **Declarative Configuration** - Define desired infrastructure state using HCL syntax rather than imperative scripts\n• **Multi-Cloud Support** - Manage resources across AWS, Azure, GCP, and 100+ other providers from single configuration\n• **State Management** - Tracks current infrastructure state in state files, enabling drift detection and incremental updates\n• **Planning Phase** - `terraform plan` shows exactly what changes will be made before execution\n• **Resource Graph** - Builds dependency graphs to understand resource relationships and optimal creation order\n\n**Key Workflow Commands:**\n```bash\nterraform init     # Initialize working directory\nterraform plan     # Preview changes\nterraform apply    # Apply configuration\nterraform destroy  # Remove resources\n```\n\n**Benefits Over Manual Infrastructure:**\n- **Version Control** - Infrastructure changes tracked in Git with full audit history\n- **Reproducibility** - Create identical environments consistently\n- **Collaboration** - Team members can review infrastructure changes via pull requests\n- **Automation** - Integrate with CI/CD pipelines for automated provisioning",
     "tags": [
       "iac",
       "terraform",
@@ -307,8 +307,8 @@
     "difficulty": "beginner",
     "channel": "devops",
     "subChannel": "terraform",
-    "diagram": "graph TD\n    A[Write HCL Configuration] --> B[terraform init]\n    B --> C[terraform plan]\n    C --> D{Review Changes}\n    D -->|Approved| E[terraform apply]\n    D -->|Reject| F[Modify Configuration]\n    E --> G[Provision Resources]\n    G --> H[Update State File]\n    F --> A\n    H --> I[terraform destroy]\n    I --> J[Clean up Resources]",
-    "lastUpdated": "2025-12-12T10:05:18.550Z"
+    "diagram": "graph TD\n    A[HCL Configuration Files] --> B[terraform init]\n    B --> C[terraform plan]\n    C --> D{Review Changes}\n    D -->|Approve| E[terraform apply]\n    D -->|Modify| A\n    E --> F[State File Management]\n    F --> G[Cloud Resources]\n    G --> H[Infrastructure Ready]\n    F --> I[terraform destroy]\n    I --> J[Cleanup Complete]\n    \n    K[Multiple Providers] --> G\n    L[Dependency Graph] --> E\n    M[Drift Detection] --> C",
+    "lastUpdated": "2025-12-12T10:03:58.024Z"
   },
   {
     "id": "gh-18",
@@ -328,9 +328,9 @@
   },
   {
     "id": "gh-19",
-    "question": "What is monitoring in DevOps and how does it differ from observability?",
-    "answer": "Monitoring is the practice of collecting and analyzing system metrics to detect issues, while observability provides deeper insights into system behavior.",
-    "explanation": "**Monitoring in DevOps** involves systematically collecting, analyzing, and acting on telemetry data to ensure system reliability and performance.\n\n## Key Components:\n\n### 1. Infrastructure Monitoring\n- **Metrics**: CPU, memory, disk usage, network throughput\n- **Health**: Server uptime, service availability, resource capacity\n- **Tools**: Prometheus, DataDog, New Relic\n\n### 2. Application Monitoring\n- **Performance**: Response times, latency, throughput\n- **Errors**: Exception rates, failure patterns, error budgets\n- **Business**: User engagement, conversion rates, feature adoption\n\n### 3. Log Management\n- **Collection**: Centralized log aggregation from all services\n- **Analysis**: Pattern recognition, root cause analysis\n- **Retention**: Compliance and forensic investigation\n\n### 4. Alerting Systems\n- **Thresholds**: Predefined limits trigger notifications\n- **Anomaly Detection**: ML-based identification of unusual patterns\n- **Escalation**: Tiered response procedures\n\n## Monitoring vs Observability:\n- **Monitoring**: Answers 'what' is happening (known metrics)\n- **Observability**: Answers 'why' it's happening (deep insights)\n- **Complementary**: Monitoring detects issues, observability explains them",
+    "question": "What is monitoring in DevOps and what are its key components?",
+    "answer": "Monitoring in DevOps is the practice of collecting and analyzing data about system performance and stability to ensure reliability.",
+    "explanation": "Monitoring in DevOps is the practice of collecting and analyzing data about the performance and stability of services and infrastructure to improve the system's reliability. Key aspects include:\n\n1. **Infrastructure Monitoring:**\n   - Server health and uptime\n   - Network performance metrics\n   - Resource utilization (CPU, memory, disk)\n\n2. **Application Monitoring:**\n   - Response times and latency\n   - Error rates and exceptions\n   - Request throughput and rates\n\n3. **User Experience Monitoring:**\n   - Page load times\n   - User interactions and behavior\n   - Conversion rates and business metrics\n\n4. **Log Management:**\n   - Centralized log collection\n   - Log analysis and correlation\n   - Security event monitoring\n\n5. **Alerting and Notifications:**\n   - Threshold-based alerts\n   - Anomaly detection\n   - Incident escalation workflows",
     "tags": [
       "observability",
       "monitoring",
@@ -339,8 +339,8 @@
     "difficulty": "beginner",
     "channel": "devops",
     "subChannel": "observability",
-    "diagram": "graph TD\n    A[Applications] --> B[Metrics Collection]\n    C[Infrastructure] --> B\n    D[User Experience] --> B\n    \n    B --> E[Time Series Database]\n    B --> F[Log Aggregation]\n    \n    E --> G[Visualization Dashboards]\n    F --> H[Log Analysis Tools]\n    \n    G --> I[Alerting System]\n    H --> I\n    \n    I --> J[DevOps Team]\n    J --> K[Incident Response]\n    K --> L[System Improvement]\n    L --> A\n    \n    style A fill:#e1f5fe\n    style E fill:#fff3e0\n    style G fill:#c8e6c9\n    style I fill:#ffebee",
-    "lastUpdated": "2025-12-12T10:04:39.942Z"
+    "diagram": "graph TD\n    A[Applications] --> M[Metrics Collection]\n    I[Infrastructure] --> M\n    L[Logs] --> M\n    M --> D[Dashboards]\n    M --> AL[Alerts]\n    D --> T[Teams]\n    AL --> T\n    T --> R[Response/Action]\n    R --> A\n    R --> I",
+    "lastUpdated": "2025-12-12T10:04:09.191Z"
   },
   {
     "id": "gh-20",
@@ -377,8 +377,8 @@
   {
     "id": "gh-22",
     "question": "What is Grafana and how does it integrate with different data sources for monitoring and visualization?",
-    "answer": "Grafana is an open-source analytics and monitoring platform that queries, visualizes, and alerts on metrics from multiple data sources.",
-    "explanation": "Grafana is a comprehensive open-source analytics and monitoring solution that provides powerful visualization and alerting capabilities for metrics and logs from various data sources.\n\n**Key Features:**\n• **Multi-source integration** - Connects to 60+ data sources including Prometheus, InfluxDB, Elasticsearch, MySQL, and cloud services\n• **Rich visualizations** - Offers graphs, heatmaps, histograms, geomaps, and custom panels for data representation\n• **Interactive dashboards** - Create dynamic, shareable dashboards with drill-down capabilities and variables\n• **Alerting system** - Set up notifications via email, Slack, PagerDuty when metrics exceed thresholds\n• **User management** - Role-based access control, teams, and organization management\n• **Templating** - Dynamic dashboards using variables for different environments or services\n• **Plugins ecosystem** - Extend functionality with community and enterprise plugins\n\n**Common Use Cases:**\n• Infrastructure monitoring and observability\n• Application performance monitoring (APM)\n• Business intelligence and analytics\n• IoT data visualization\n• Log analysis and correlation",
+    "answer": "Grafana is an open-source analytics and monitoring platform that connects to multiple data sources to create interactive dashboards, set up alerts, and visualize metrics from various systems in real-t",
+    "explanation": "Grafana is a comprehensive observability platform that serves as a unified interface for monitoring and analytics. Key capabilities include:\n\n- **Multi-source data integration**: Connects to Prometheus, InfluxDB, Elasticsearch, PostgreSQL, and 50+ other data sources\n- **Dynamic dashboard creation**: Build customizable panels with graphs, charts, heatmaps, and tables\n- **Real-time alerting**: Configure threshold-based alerts with notifications via Slack, email, PagerDuty\n- **Template variables**: Create interactive, parameterized dashboards for different environments\n- **Plugin ecosystem**: Extend functionality with custom plugins and community contributions\n- **Team collaboration**: Share dashboards, manage permissions, and organize resources in folders",
     "tags": [
       "observability",
       "monitoring",
@@ -387,14 +387,14 @@
     "difficulty": "beginner",
     "channel": "devops",
     "subChannel": "observability",
-    "diagram": "graph TD\n    A[Data Sources] --> B[Grafana Server]\n    C[Prometheus] --> B\n    D[InfluxDB] --> B\n    E[Elasticsearch] --> B\n    F[MySQL] --> B\n    B --> G[Query Engine]\n    G --> H[Visualization Engine]\n    H --> I[Dashboards]\n    H --> J[Panels]\n    B --> K[Alert Manager]\n    K --> L[Notifications]\n    M[Users] --> N[Web Interface]\n    N --> I\n    I --> O[Graphs]\n    I --> P[Tables]\n    I --> Q[Heatmaps]",
-    "lastUpdated": "2025-12-12T10:04:15.574Z"
+    "diagram": "graph TD\n    A[Data Sources] --> B[Grafana Core]\n    B --> C[Visualization Engine]\n    B --> D[Alert Manager]\n    B --> E[Dashboard Builder]\n    \n    A --> A1[Prometheus]\n    A --> A2[InfluxDB]\n    A --> A3[Elasticsearch]\n    A --> A4[PostgreSQL]\n    A --> A5[CloudWatch]\n    \n    C --> C1[Graphs & Charts]\n    C --> C2[Heatmaps]\n    C --> C3[Tables]\n    C --> C4[Gauges]\n    \n    D --> D1[Threshold Rules]\n    D --> D2[Notification Channels]\n    D --> D3[Alert Routing]\n    \n    E --> E1[Template Variables]\n    E --> E2[Panel Configuration]\n    E --> E3[Layout Management]",
+    "lastUpdated": "2025-12-12T10:04:09.644Z"
   },
   {
     "id": "gh-23",
-    "question": "Explain the key differences between monitoring and logging in DevOps, and when would you use each?",
-    "answer": "Monitoring tracks system health and performance metrics in real-time, while logging records discrete events for troubleshooting and analysis.",
-    "explanation": "## Key Differences\n\n### **Monitoring**\n- **Purpose**: Real-time system health tracking\n- **Data Type**: Metrics, performance indicators\n- **Usage**: Alerting, trend analysis, SLA compliance\n- **Examples**: CPU usage, response times, error rates\n- **Tools**: Prometheus, Grafana, Datadog\n\n### **Logging**\n- **Purpose**: Event recording and debugging\n- **Data Type**: Discrete events, messages\n- **Usage**: Root cause analysis, security auditing\n- **Examples**: Application errors, user actions, system events\n- **Tools**: ELK Stack, Splunk, Graylog\n\n### **When to Use Each**\n- **Monitoring**: System health dashboards, proactive alerts\n- **Logging**: Debugging specific issues, audit trails",
+    "question": "Explain the difference between monitoring and logging",
+    "answer": "Monitoring and logging are two different practices in DevOps:",
+    "explanation": "Monitoring and logging are two different practices in DevOps:\n\n1. **Monitoring:**\n- Focuses on collecting and analyzing data about the performance and stability of services and infrastructure to improve the system's reliability.\n- Key aspects include:\n- Infrastructure Monitoring\n- Application Monitoring\n- User Experience Monitoring\n\n2. **Logging:**\n- Focuses on collecting and analyzing log data to help diagnose and troubleshoot issues.\n- Key aspects include:\n- Log aggregation\n- Security analytics\n- Application performance monitoring\n- Website search\n- Business analytics",
     "tags": [
       "observability",
       "monitoring",
@@ -403,14 +403,14 @@
     "difficulty": "intermediate",
     "channel": "devops",
     "subChannel": "observability",
-    "diagram": "graph TD\n    subgraph \"Monitoring\"\n        M[Metrics Collection] --> A[Real-time Alerts]\n        M --> D[Performance Dashboards]\n        A --> T[Threshold Alerts]\n    end\n    \n    subgraph \"Logging\"\n        L[Event Recording] --> S[Log Aggregation]\n        S --> R[Root Cause Analysis]\n        S --> Audit[Audit Trail]\n    end\n    \n    I[Infrastructure] --> M\n    I --> L\n    A --> C[Corrective Action]\n    R --> C",
-    "lastUpdated": "2025-12-12T10:04:23.386Z"
+    "diagram": "\ngraph TD\n    subgraph Monitoring\n    M[Metrics] --> Dash[Dashboard]\n    end\n    subgraph Logging\n    L[Logs] --> Search[Search/Analyze]\n    end\n",
+    "lastUpdated": "2025-12-12T09:07:04.187Z"
   },
   {
     "id": "gh-24",
-    "question": "What is DevSecOps and how does it differ from traditional DevOps security approaches?",
-    "answer": "DevSecOps integrates security throughout the entire software development lifecycle by making security a shared responsibility embedded in CI/CD pipelines, rather than a separate final-stage gate.",
-    "explanation": "DevSecOps represents a cultural and technical shift where security becomes an integral part of development operations rather than an afterthought. Unlike traditional approaches where security teams review code just before deployment, DevSecOps implements automated security checks throughout the development process.\n\n**Key differences from traditional DevOps security:**\n- **Shift-left approach**: Security testing begins early in development, not just before production\n- **Automated security integration**: Security tools are embedded directly in CI/CD pipelines\n- **Shared responsibility**: Developers own security alongside their feature development\n- **Continuous monitoring**: Ongoing security assessment rather than periodic audits\n\n**Core DevSecOps principles:**\n- Security as code: Treating security policies and configurations as version-controlled artifacts\n- Infrastructure as code security: Automated validation of cloud resource configurations\n- Static and dynamic analysis: Code scanning integrated into build processes\n- Secret management: Automated detection and secure handling of credentials\n- Compliance as code: Automated verification against security standards and regulations\n- Continuous security testing: Regular penetration testing and vulnerability assessments",
+    "question": "What is DevSecOps?",
+    "answer": "DevSecOps is the practice of integrating security practices within the DevOps process. It creates a 'security as code' culture with ongoing, flexible ...",
+    "explanation": "DevSecOps is the practice of integrating security practices within the DevOps process. It creates a 'security as code' culture with ongoing, flexible collaboration between release engineers and security teams.\n\nKey principles include:\n- Security automation\n- Early security testing\n- Continuous security monitoring\n- Security as part of CI/CD pipeline\n- Rapid security feedback",
     "tags": [
       "security",
       "devsecops"
@@ -418,8 +418,8 @@
     "difficulty": "advanced",
     "channel": "devops",
     "subChannel": "security",
-    "diagram": "graph TD\n    A[Developer] --> B[Code Commit]\n    B --> C[Automated Security Scan]\n    C --> D[Static Analysis]\n    D --> E[Dependency Check]\n    E --> F[Build & Test]\n    F --> G[Dynamic Analysis]\n    G --> H[Deploy to Staging]\n    H --> I[Security Validation]\n    I --> J[Deploy to Production]\n    J --> K[Continuous Monitoring]\n    K --> L[Vulnerability Detection]\n    L --> M[Automated Remediation]\n    M --> A\n    \n    style C fill:#ffeb3b\n    style D fill:#ffeb3b\n    style E fill:#ffeb3b\n    style G fill:#ffeb3b\n    style I fill:#ffeb3b\n    style K fill:#ffeb3b\n    style L fill:#ffeb3b",
-    "lastUpdated": "2025-12-12T10:04:46.787Z"
+    "diagram": "\ngraph LR\n    Dev --> Sec[Security]\n    Sec --> Ops\n    Ops --> Dev\n",
+    "lastUpdated": "2025-12-12T09:07:04.187Z"
   },
   {
     "id": "gh-25",
@@ -453,9 +453,9 @@
   },
   {
     "id": "gh-27",
-    "question": "What is Git and how does it facilitate collaborative software development through its distributed architecture?",
-    "answer": "Git is a distributed version control system that tracks changes in source code, enabling multiple developers to work simultaneously on projects while maintaining a complete history of all modification",
-    "explanation": "Git is a distributed version control system that revolutionized collaborative software development by providing a decentralized approach to code management.\n\n**Key Concepts:**\n- **Repository**: Complete project history with all files and metadata\n- **Commit**: Snapshot of changes with unique hash identifier\n- **Branch**: Independent line of development for features or fixes\n- **Merge**: Integration of changes from different branches\n- **Pull Request**: Mechanism for code review and integration\n- **Clone**: Local copy of remote repository\n- **Push/Pull**: Synchronize changes between local and remote repositories\n\n**Distributed Architecture Benefits:**\n- Every developer has full repository copy\n- Offline work capability\n- Faster operations (no network dependency)\n- Better backup and redundancy\n- Flexible collaboration workflows",
+    "question": "What is Git?",
+    "answer": "Git is a distributed version control system that tracks changes in source code during software development. It's designed for coordinating work among ...",
+    "explanation": "Git is a distributed version control system that tracks changes in source code during software development. It's designed for coordinating work among programmers, but it can be used to track changes in any set of files.\n\nKey concepts include:\n- Repository\n- Commit\n- Branch\n- Merge\n- Pull Request\n- Clone\n- Push/Pull",
     "tags": [
       "git",
       "vcs"
@@ -463,8 +463,8 @@
     "difficulty": "advanced",
     "channel": "devops",
     "subChannel": "git",
-    "diagram": "graph TD\n    A[Working Directory] -->|git add| B[Staging Area]\n    B -->|git commit| C[Local Repository]\n    C -->|git push| D[Remote Repository]\n    D -->|git pull/fetch| C\n    E[Developer 1] --> A\n    F[Developer 2] --> A\n    G[Feature Branch] -->|git merge| C\n    H[Main Branch] -->|git checkout| A",
-    "lastUpdated": "2025-12-12T10:04:58.385Z"
+    "diagram": "\ngraph LR\n    Local[Local Repo] --> Push[Push]\n    Push --> Remote[Remote Repo]\n    Remote --> Pull[Pull]\n    Pull --> Local\n",
+    "lastUpdated": "2025-12-12T09:07:04.187Z"
   },
   {
     "id": "gh-28",
