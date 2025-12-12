@@ -81,11 +81,25 @@ jobs:
           done
           exit 1
 
+      - name: Trigger deploy
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-pages.yml',
+              ref: 'main'
+            });
+            console.log('Triggered deploy workflow');
+
       - name: Summary
         run: |
           echo "## Daily Question Generator" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.check.outputs.changed }}" == "true" ]; then
-            echo "✅ New question added!" >> $GITHUB_STEP_SUMMARY
+            echo "✅ New question added and deploy triggered!" >> $GITHUB_STEP_SUMMARY
           else
             echo "ℹ️ No question added (OpenCode failed or duplicate)" >> $GITHUB_STEP_SUMMARY
           fi
