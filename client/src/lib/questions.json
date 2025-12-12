@@ -1704,5 +1704,19 @@
     "channel": "sre",
     "subChannel": "observability",
     "diagram": "graph TD\n    M[Monitoring] --> L[Latency]\n    M --> T[Traffic]\n    M --> E[Errors]\n    M --> S[Saturation]"
+  },
+  {
+    "id": "da-125",
+    "question": "Explain database indexing and when to use it.",
+    "answer": "Indexes speed up data retrieval at the cost of write performance.",
+    "explanation": "**How Indexes Work**:\n- Create a sorted data structure (B-tree, Hash)\n- Points to actual data location\n- Trades write speed for read speed\n\n**When to Use**:\n- Frequently queried columns\n- WHERE clause columns\n- JOIN columns\n- ORDER BY columns\n\n**When NOT to Use**:\n- Small tables\n- Frequently updated columns\n- Low cardinality columns",
+    "tags": [
+      "sql",
+      "indexing"
+    ],
+    "difficulty": "intermediate",
+    "channel": "database",
+    "subChannel": "sql",
+    "diagram": "graph LR\n    Query --> Index[(Index)]\n    Index --> Data[(Data)]\n    style Index fill:#4ade80"
   }
 ]
