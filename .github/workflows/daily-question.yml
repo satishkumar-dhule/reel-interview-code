@@ -488,62 +488,27 @@ jobs:
             git reset --hard origin/main
             
             # Re-run the question generation on latest base with dedup
-            node << 'REGEN_SCRIPT'
-            const fs = require('fs');
-            const QUESTIONS_FILE = 'client/src/lib/questions.json';
-            const questions = JSON.parse(fs.readFileSync(QUESTIONS_FILE, 'utf8'));
-            
-            // Read the generated question from env (set by previous step)
-            const newQuestion = JSON.parse(process.env.NEW_QUESTION || '{}');
-            if (!newQuestion.id) {
-              console.log('No new question to add');
-              process.exit(0);
-            }
-            
-            // Smart dedup functions
-            function normalizeText(text) {
-              return text.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
-            }
-            function getKeywords(text) {
-              const stopWords = new Set(['what', 'is', 'the', 'a', 'an', 'how', 'does', 'do', 'are', 'in', 'of', 'to', 'and', 'for', 'with', 'between', 'explain', 'describe', 'difference']);
-              return normalizeText(text).split(' ').filter(w => w.length > 2 && !stopWords.has(w));
-            }
-            function calculateSimilarity(t1, t2) {
-              const w1 = new Set(getKeywords(t1)), w2 = new Set(getKeywords(t2));
-              if (!w1.size || !w2.size) return 0;
-              const inter = [...w1].filter(w => w2.has(w)).length;
-              return inter / new Set([...w1, ...w2]).size;
-            }
-            function isDuplicate(q, existing) {
-              const norm = normalizeText(q);
-              for (const e of existing) {
-                if (normalizeText(e.question) === norm) return true;
-                if (calculateSimilarity(q, e.question) >= 0.6) return true;
-              }
-              return false;
-            }
-            
-            // Check for duplicates
-            if (isDuplicate(newQuestion.question, questions)) {
-              console.log('Question is duplicate, skipping');
-              process.exit(0);
-            }
-            
-            // Generate new unique ID based on current questions
+            node -e '
+            const fs = require("fs");
+            const QUESTIONS_FILE = "client/src/lib/questions.json";
+            const questions = JSON.parse(fs.readFileSync(QUESTIONS_FILE, "utf8"));
+            const newQuestion = JSON.parse(process.env.NEW_QUESTION || "{}");
+            if (!newQuestion.id) { console.log("No new question to add"); process.exit(0); }
+            const normalize = t => t.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+            const stopWords = new Set(["what","is","the","a","an","how","does","do","are","in","of","to","and","for","with","between","explain","describe","difference"]);
+            const keywords = t => normalize(t).split(" ").filter(w => w.length > 2 && !stopWords.has(w));
+            const similarity = (a, b) => { const w1 = new Set(keywords(a)), w2 = new Set(keywords(b)); if (!w1.size || !w2.size) return 0; return [...w1].filter(w => w2.has(w)).length / new Set([...w1, ...w2]).size; };
+            const isDup = (q, arr) => arr.some(e => normalize(e.question) === normalize(q) || similarity(q, e.question) >= 0.6);
+            if (isDup(newQuestion.question, questions)) { console.log("Question is duplicate, skipping"); process.exit(0); }
             const prefix = newQuestion.channel.substring(0, 2);
-            const existingIds = new Set(questions.map(q => q.id));
-            let counter = questions.length + 1;
-            let newId;
-            do {
-              newId = prefix + '-' + counter;
-              counter++;
-            } while (existingIds.has(newId));
+            const ids = new Set(questions.map(q => q.id));
+            let c = questions.length + 1, newId;
+            do { newId = prefix + "-" + c++; } while (ids.has(newId));
             newQuestion.id = newId;
-            
             questions.push(newQuestion);
             fs.writeFileSync(QUESTIONS_FILE, JSON.stringify(questions, null, 2));
-            console.log('Added question with ID:', newId);
-            REGEN_SCRIPT
+            console.log("Added question with ID:", newId);
+            '
             
             # Check if there are changes to commit
             if git diff --quiet client/src/lib/questions.json; then
