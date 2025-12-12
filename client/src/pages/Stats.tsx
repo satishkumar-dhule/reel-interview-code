@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useGlobalStats } from "../hooks/use-progress";
 import { channels, getQuestions, getAllQuestions, getQuestionDifficulty } from "../lib/data";
-import { ArrowLeft, Trophy, Flame, Calendar, Zap } from "lucide-react";
+import { ArrowLeft, Trophy, Flame, Calendar, Zap, Star, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 // Generate activity data for a given number of days
@@ -106,6 +106,26 @@ export default function Stats() {
         <h1 className="text-sm sm:text-lg font-bold uppercase tracking-tight">
           <span className="text-primary">&gt;</span> Stats
         </h1>
+        <div className="flex gap-2 sm:gap-3">
+          <a 
+            href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 transition-colors p-1"
+            title="Report Issue"
+          >
+            <AlertCircle className="w-3 h-3" />
+          </a>
+          <a 
+            href="https://github.com/satishkumar-dhule/reel-interview-code"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 transition-colors p-1"
+            title="Star on GitHub"
+          >
+            <Star className="w-3 h-3" />
+          </a>
+        </div>
       </header>
 
       {/* Main Grid - fits viewport */}

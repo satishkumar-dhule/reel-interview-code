@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { channels, getQuestions } from '../lib/data';
 import { motion } from 'framer-motion';
-import { Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch } from 'lucide-react';
+import { Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, Star, AlertCircle } from 'lucide-react';
 import { useProgress } from '../hooks/use-progress';
 import { useTheme } from '../context/ThemeContext';
 
@@ -51,6 +51,24 @@ export default function Home() {
              >
                 <BarChart2 className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Stats</span>
              </button>
+             <a 
+               href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
+               title="Report Issue"
+             >
+                <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Issue</span>
+             </a>
+             <a 
+               href="https://github.com/satishkumar-dhule/reel-interview-code"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
+               title="Star on GitHub"
+             >
+                <Star className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Star</span>
+             </a>
              <button 
                onClick={cycleTheme}
                className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
@@ -134,9 +152,39 @@ export default function Home() {
         })}
       </div>
 
-      <footer className="mt-6 sm:mt-12 text-center text-muted-foreground text-[9px] sm:text-xs uppercase tracking-widest">
-        <span className="hidden sm:inline">Use Arrow Keys to Navigate // 'T' for Theme // 'S' for Stats</span>
-        <span className="sm:hidden">Tap to Select Module</span>
+      <footer className="mt-6 sm:mt-12 space-y-2 sm:space-y-3">
+        <div className="text-center text-muted-foreground text-[9px] sm:text-xs uppercase tracking-widest">
+          <span className="hidden sm:inline">Use Arrow Keys to Navigate // 'T' for Theme // 'S' for Stats</span>
+          <span className="sm:hidden">Tap to Select Module</span>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-[9px] sm:text-xs uppercase tracking-widest border-t border-border pt-2 sm:pt-3">
+          <a 
+            href="https://github.com/satishkumar-dhule/reel-interview-code"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          >
+            <Star className="w-3 h-3" /> Star on GitHub
+          </a>
+          <span className="text-border hidden sm:inline">•</span>
+          <a 
+            href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          >
+            <AlertCircle className="w-3 h-3" /> Report Issue
+          </a>
+          <span className="text-border hidden sm:inline">•</span>
+          <a 
+            href="https://github.com/satishkumar-dhule/reel-interview-code/discussions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Discuss
+          </a>
+        </div>
       </footer>
     </div>
   );

@@ -24,7 +24,8 @@ function runOpenCode(prompt) {
     let output = '';
     let resolved = false;
     
-    const proc = spawn('opencode', ['run', '--format', 'json', prompt], {
+    // Use plain text output (no --format json) for simpler parsing
+    const proc = spawn('opencode', ['run', prompt], {
       timeout: TIMEOUT_MS,
       stdio: ['ignore', 'pipe', 'pipe']
     });
@@ -73,29 +74,28 @@ async function runWithRetries(prompt) {
   return null;
 }
 
-function extractTextFromJsonEvents(output) {
-  if (!output) return null;
-  const lines = output.split('\n').filter(l => l.trim());
-  let fullText = '';
-  for (const line of lines) {
-    try {
-      const event = JSON.parse(line);
-      if (event.type === 'text' && event.part?.text) {
-        fullText += event.part.text;
-      }
-    } catch(e) {}
-  }
-  return fullText || output;
-}
-
 function parseJson(response) {
   if (!response) return null;
-  const text = extractTextFromJsonEvents(response);
-  try { return JSON.parse(text.trim()); } catch (e) {}
-  const patterns = [/```json\s*([\s\S]*?)\s*```/, /```\s*([\s\S]*?)\s*```/, /(\{[\s\S]*\})/];
+  
+  // Try direct parse first
+  try { return JSON.parse(response.trim()); } catch (e) {}
+  
+  // Try to find JSON in markdown code blocks or raw JSON
+  const patterns = [
+    /```json\s*([\s\S]*?)\s*```/,
+    /```\s*([\s\S]*?)\s*```/,
+    /(\{"question"[\s\S]*?"diagram"[^}]*\})/,
+    /(\{[\s\S]*\})/
+  ];
   for (const p of patterns) {
-    const m = text.match(p);
-    if (m) { try { return JSON.parse(m[1].trim()); } catch (e) {} }
+    const m = response.match(p);
+    if (m) {
+      try {
+        let jsonStr = m[1].trim()
+          .replace(/,\s*}/g, '}');
+        return JSON.parse(jsonStr);
+      } catch (e) {}
+    }
   }
   return null;
 }
@@ -173,11 +173,13 @@ async function main() {
     process.exit(0);
   }
 
+  console.log('\nResponse length:', response.length);
+  
   const improved = parseJson(response);
 
   if (!improved || !improved.question || !improved.answer || !improved.explanation) {
     console.log('\n❌ Invalid response format. No improvements made.');
-    console.log('Response preview:', response.substring(0, 300));
+    console.log('Response preview:', response.substring(0, 500));
     process.exit(0);
   }
 

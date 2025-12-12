@@ -3,7 +3,7 @@ import { useLocation, useRoute } from 'wouter';
 import { getQuestions, getChannel } from '../lib/data';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mermaid } from '../components/Mermaid';
-import { ArrowLeft, ArrowRight, Share2, Terminal, ChevronRight, Hash, ChevronDown, Check, Timer, List, Flag, Bookmark, Grid3X3, LayoutList, Zap, Target, Flame } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Share2, Terminal, ChevronRight, Hash, ChevronDown, Check, Timer, List, Flag, Bookmark, Grid3X3, LayoutList, Zap, Target, Flame, Star, AlertCircle } from 'lucide-react';
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -481,6 +481,24 @@ export default function Reels() {
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <div className="flex gap-1 sm:gap-2 mr-1 sm:mr-4">
+            <a 
+              href="https://github.com/satishkumar-dhule/reel-interview-code/issues/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 sm:p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+              title="Report Issue"
+            >
+              <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+            </a>
+            <a 
+              href="https://github.com/satishkumar-dhule/reel-interview-code"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 sm:p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+              title="Star on GitHub"
+            >
+              <Star className="w-3 h-3 sm:w-4 sm:h-4" />
+            </a>
             <button 
                 onClick={prevQuestion}
                 disabled={currentIndex === 0}
