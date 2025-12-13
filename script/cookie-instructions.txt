@@ -1,0 +1,163 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                   OpenRouter Cookie Extraction Guide                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📋 STEP-BY-STEP INSTRUCTIONS:
+
+1️⃣  OPEN OPENROUTER
+   → Go to: https://openrouter.ai
+   → Log in (or create a free account)
+
+2️⃣  OPEN DEVELOPER TOOLS
+   
+   Chrome/Edge:
+   → Press F12 (Windows/Linux)
+   → Press Cmd+Option+I (Mac)
+   → Or right-click → Inspect
+   
+   Firefox:
+   → Press F12 (Windows/Linux)
+   → Press Cmd+Option+I (Mac)
+   → Or right-click → Inspect Element
+
+3️⃣  NAVIGATE TO COOKIES
+   
+   Chrome/Edge:
+   → Click "Application" tab (top of DevTools)
+   → Left sidebar: Expand "Cookies"
+   → Click "https://openrouter.ai"
+   
+   Firefox:
+   → Click "Storage" tab (top of DevTools)
+   → Left sidebar: Expand "Cookies"
+   → Click "https://openrouter.ai"
+
+4️⃣  COPY COOKIES
+   
+   You'll see a table with columns: Name, Value, Domain, etc.
+   
+   Method A (Recommended):
+   → Right-click on any cookie row
+   → Select "Copy All" or "Copy as cURL"
+   → Extract the Cookie header value
+   
+   Method B (Manual):
+   → Copy each cookie in format: name=value
+   → Separate multiple cookies with semicolon and space
+   → Example: cookie1=abc123; cookie2=def456; cookie3=ghi789
+
+5️⃣  FORMAT THE COOKIE STRING
+   
+   Your final cookie should look like:
+   
+   sessionid=abc123xyz; token=def456uvw; auth=ghi789rst
+   
+   ⚠️  Important:
+   - Include ALL cookies from openrouter.ai
+   - Separate with semicolon and space ("; ")
+   - No quotes around individual values
+   - Keep it as one continuous line
+
+6️⃣  ADD TO .ENV FILE
+   
+   Create/edit .env file in project root:
+   
+   VITE_OPENROUTER_COOKIE="sessionid=abc123xyz; token=def456uvw; auth=ghi789rst"
+   
+   ⚠️  Important:
+   - Put quotes around the entire cookie string
+   - No spaces around the = sign
+   - Save the file
+
+7️⃣  TEST IT
+   
+   Run the test script:
+   
+   $ node script/test-openrouter-cookie.js
+   
+   ✅ Success: You'll see "OpenRouter is working!"
+   ❌ Failed: Cookie may be invalid or expired
+
+8️⃣  START DEVELOPMENT
+   
+   $ pnpm dev
+   
+   Open http://localhost:5001 and test AI features!
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              TROUBLESHOOTING                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+❌ "No cookie auth credentials found"
+   → Cookie is missing or invalid
+   → Extract a fresh cookie from browser
+   → Make sure you're logged into openrouter.ai
+
+❌ "401 Unauthorized"
+   → Cookie has expired
+   → Log into openrouter.ai again
+   → Extract fresh cookie
+
+❌ Test script fails
+   → Check .env file exists in project root
+   → Verify VITE_OPENROUTER_COOKIE is set
+   → Check for typos in variable name
+   → Ensure quotes are around the value
+
+❌ AI features not working in browser
+   → Restart dev server after updating .env
+   → Clear browser cache
+   → Check browser console for errors
+   → Verify cookie in .env file
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              SECURITY NOTES                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🔒 KEEP YOUR COOKIE SAFE:
+   ✓ .env file is gitignored (won't be committed)
+   ✓ Never share your cookie publicly
+   ✓ Don't commit .env to version control
+   ✓ Rotate cookie periodically
+
+🔒 PRODUCTION DEPLOYMENT:
+   ✓ Add cookie to GitHub Secrets (not .env)
+   ✓ Secret name: OPENROUTER_COOKIE
+   ✓ GitHub Actions will inject it at build time
+   ✓ See OPENROUTER_SETUP.md for details
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              NEED MORE HELP?                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📖 Full Documentation:
+   → OPENROUTER_SETUP.md - Complete setup guide
+   → AI_QUICK_START.md - Quick start guide
+   → AI_FEATURES.md - Feature documentation
+
+🛠️  Helper Scripts:
+   → node script/get-openrouter-cookie.js - Interactive extraction
+   → node script/test-openrouter-cookie.js - Test your cookie
+
+💬 Still stuck?
+   → Check browser console for error messages
+   → Verify you're logged into openrouter.ai
+   → Try the fallback mode (works without cookie)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                           ALTERNATIVE: NO SETUP                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Don't want to set up cookies? No problem!
+
+AI features work without any setup using:
+   → HuggingFace API (free, no auth)
+   → Smart mock responses (always works)
+
+Just run: pnpm dev
+
+Responses will be slower and less accurate, but still helpful!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Good luck! 🚀

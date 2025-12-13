@@ -2,7 +2,21 @@
 
 > A modern, interactive platform for mastering technical interview questions across multiple domains. Built with React, TypeScript, and Node.js.
 
-## 🎉 NEW: Redesigned Q&A Interface (v3.0)
+## 🎉 NEW: AI-Powered Learning Assistant (v3.1)
+
+**Free AI tutor integrated into every question!** Uses free OpenRouter models with smart fallbacks.
+
+- **🎓 AI Tutor** - Ask follow-up questions and get instant explanations
+- **💼 Mock Interviewer** - Practice answers and get feedback
+- **👨‍💻 Code Reviewer** - Submit solutions for review
+- **💡 Progressive Hints** - 3-level hint system without spoiling
+- **🔗 Related Questions** - Discover similar topics to practice
+- **⚡ Real-time Streaming** - See AI responses as they're generated
+
+📖 **Setup**: See [OPENROUTER_SETUP.md](OPENROUTER_SETUP.md) for cookie authentication setup  
+📖 **Features**: See [AI_FEATURES.md](AI_FEATURES.md) for complete guide
+
+## 🎨 Redesigned Q&A Interface (v3.0)
 
 The question and answer interface has been completely redesigned with:
 - **Enhanced Diagram Viewer** - Zoom, pan, and fullscreen support for complex diagrams
@@ -70,8 +84,12 @@ cd code-reels
 # Install dependencies
 pnpm install
 
-# Set up environment variables
-cp .env.example .env.local
+# Set up environment variables (optional - for AI features)
+cp .env.example .env
+
+# Optional: Set up AI features with OpenRouter
+# See OPENROUTER_SETUP.md for detailed instructions
+node script/get-openrouter-cookie.js
 ```
 
 ### Development

@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SEOHead } from '../components/SEOHead';
 import { QuestionPanel } from '../components/QuestionPanel';
 import { AnswerPanel } from '../components/AnswerPanel';
+import { AIChat } from '../components/AIChat';
 import { trackQuestionView, trackAnswerRevealed } from '../hooks/use-analytics';
 import { 
   ArrowLeft, ArrowRight, Share2, ChevronDown, Check, Timer, List, 
   Flag, Grid3X3, LayoutList, Zap, Target, Flame, Star, AlertCircle, 
-  Terminal, Bookmark, X, Settings
+  Terminal, Bookmark, X, Settings, Sparkles
 } from 'lucide-react';
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
@@ -77,6 +78,7 @@ export default function ReelsRedesigned() {
     const saved = localStorage.getItem(`marked-${channelId}`);
     return saved ? JSON.parse(saved) : [];
   });
+  const [showAIChat, setShowAIChat] = useState(false);
 
   const toggleMark = (questionId: string) => {
     setMarkedQuestions(prev => {
@@ -509,6 +511,14 @@ export default function ReelsRedesigned() {
               </Popover.Portal>
             </Popover.Root>
 
+            <button 
+              onClick={() => setShowAIChat(!showAIChat)} 
+              className={`hover:text-primary transition-colors ${showAIChat ? 'text-primary' : ''}`}
+              title="AI Tutor"
+            >
+              <Sparkles className="w-4 h-4" />
+            </button>
+
             <button onClick={handleShare} className="hover:text-primary transition-colors" title="Share">
               <Share2 className="w-4 h-4" />
             </button>
@@ -629,6 +639,15 @@ export default function ReelsRedesigned() {
             <span>v3.0</span>
           </div>
         </div>
+
+        {/* AI Chat Panel */}
+        {currentQuestion && (
+          <AIChat 
+            question={currentQuestion}
+            isOpen={showAIChat}
+            onClose={() => setShowAIChat(false)}
+          />
+        )}
       </div>
     </>
   );

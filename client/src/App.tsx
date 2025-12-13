@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Reels from "@/pages/ReelsRedesigned";
 import MermaidTest from "@/pages/MermaidTest";
+import CookieTest from "@/pages/CookieTest";
 import { ThemeProvider } from "./context/ThemeContext";
 import { usePageViewTracking, useSessionTracking, useInteractionTracking } from "./hooks/use-analytics";
 
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/stats" component={Stats} />
       <Route path="/test/mermaid" component={MermaidTest} />
+      <Route path="/test/cookie" component={CookieTest} />
       <Route path="/channel/:id" component={Reels} />
       <Route path="/channel/:id/:index" component={Reels} />
       <Route component={NotFound} />
