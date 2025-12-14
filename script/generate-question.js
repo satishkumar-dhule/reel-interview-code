@@ -1,15 +1,12 @@
-import fs from 'fs';
 import {
-  QUESTIONS_DIR,
-  loadAllQuestions,
-  loadChannelQuestions,
-  saveChannelQuestions,
-  generateUniqueId,
-  isDuplicate,
+  getAllUnifiedQuestions,
+  addUnifiedQuestion,
+  generateUnifiedId,
+  isDuplicateUnified,
   runWithRetries,
   parseJson,
   validateQuestion,
-  updateIndexFile,
+  updateUnifiedIndexFile,
   writeGitHubOutput
 } from './utils.js';
 
@@ -176,16 +173,17 @@ function getRandomSubChannel(channel) {
 }
 
 async function main() {
-  console.log('=== Daily Question Generator (OpenCode Free Tier) ===\n');
-  console.log('Mode: 1 question per channel\n');
+  console.log('=== Daily Question Generator (Unified Storage) ===\n');
+  console.log('Mode: 1 question per channel (can map to multiple channels)\n');
 
   const inputDifficulty = process.env.INPUT_DIFFICULTY || 'random';
+  const inputAdditionalChannels = process.env.INPUT_ADDITIONAL_CHANNELS || '';
   
-  // Get all channels - either from directory or config
+  // Get all channels from config
   const channels = getAllChannels();
   console.log(`Found ${channels.length} channels: ${channels.join(', ')}\n`);
 
-  const allQuestions = loadAllQuestions();
+  const allQuestions = getAllUnifiedQuestions();
   console.log(`Loaded ${allQuestions.length} existing questions`);
   console.log(`Target: Generate 1 question per channel (${channels.length} total)\n`);
 
@@ -205,7 +203,7 @@ async function main() {
     console.log(`Sub-channel: ${subChannelConfig.subChannel}`);
     console.log(`Difficulty: ${difficulty}`);
 
-    const prompt = `Generate a unique technical interview question for ${channel} (${subChannelConfig.subChannel}). Difficulty: ${difficulty}. Return ONLY valid JSON with no other text: {"question": "the question text", "answer": "brief answer under 150 chars", "explanation": "detailed markdown explanation", "diagram": "mermaid diagram starting with graph TD or LR"}`;
+    const prompt = `Generate a unique technical interview question for ${channel} (${subChannelConfig.subChannel}). Difficulty: ${difficulty}. Return ONLY valid JSON with no other text: {"question": "the question text", "answer": "brief answer under 150 chars", "explanation": "detailed markdown explanation", "diagram": "mermaid diagram starting with graph TD or LR", "relatedChannels": ["list of other channels this question could belong to"]}`;
 
     const response = await runWithRetries(prompt);
     
@@ -223,47 +221,65 @@ async function main() {
       continue;
     }
 
-    if (isDuplicate(data.question, allQuestions)) {
+    if (isDuplicateUnified(data.question)) {
       console.log('❌ Duplicate question detected.');
       failedAttempts.push({ channel, reason: 'Duplicate detected' });
       continue;
     }
 
-    const channelQuestions = loadChannelQuestions(channel);
-
     const newQuestion = {
-      id: generateUniqueId(allQuestions, channel),
+      id: generateUnifiedId(),
       question: data.question,
       answer: data.answer.substring(0, 200),
       explanation: data.explanation,
       tags: subChannelConfig.tags,
       difficulty: difficulty,
-      channel: channel,
-      subChannel: subChannelConfig.subChannel,
       diagram: data.diagram || 'graph TD\n    A[Concept] --> B[Implementation]',
       lastUpdated: new Date().toISOString()
     };
 
-    channelQuestions.push(newQuestion);
-    saveChannelQuestions(channel, channelQuestions);
-    updateIndexFile();
+    // Build channel mappings - primary channel + any related channels
+    const channelMappings = [{ channel, subChannel: subChannelConfig.subChannel }];
     
-    allQuestions.push(newQuestion);
-    addedQuestions.push(newQuestion);
+    // Add related channels if provided by AI and they exist in our config
+    if (data.relatedChannels && Array.isArray(data.relatedChannels)) {
+      data.relatedChannels.forEach(relatedChannel => {
+        if (channelConfigs[relatedChannel] && relatedChannel !== channel) {
+          // Pick a relevant subchannel for the related channel
+          const relatedSubChannel = getRandomSubChannel(relatedChannel);
+          channelMappings.push({ 
+            channel: relatedChannel, 
+            subChannel: relatedSubChannel.subChannel 
+          });
+        }
+      });
+    }
+
+    // Add question to unified storage with all channel mappings
+    addUnifiedQuestion(newQuestion, channelMappings);
+    updateUnifiedIndexFile();
+    
+    addedQuestions.push({ ...newQuestion, mappedChannels: channelMappings });
 
     console.log(`✅ Added: ${newQuestion.id}`);
     console.log(`Q: ${newQuestion.question.substring(0, 60)}...`);
+    if (channelMappings.length > 1) {
+      console.log(`📎 Also mapped to: ${channelMappings.slice(1).map(m => m.channel).join(', ')}`);
+    }
   }
 
   // Print summary
+  const totalQuestions = getAllUnifiedQuestions().length;
   console.log('\n\n=== SUMMARY ===');
   console.log(`Total Questions Added: ${addedQuestions.length}/${channels.length}`);
   
   if (addedQuestions.length > 0) {
     console.log('\n✅ Successfully Added Questions:');
     addedQuestions.forEach((q, idx) => {
-      console.log(`  ${idx + 1}. [${q.id}] ${q.channel}/${q.subChannel} (${q.difficulty})`);
+      const channels = q.mappedChannels.map(m => `${m.channel}/${m.subChannel}`).join(', ');
+      console.log(`  ${idx + 1}. [${q.id}] (${q.difficulty})`);
       console.log(`     Q: ${q.question.substring(0, 70)}${q.question.length > 70 ? '...' : ''}`);
+      console.log(`     Channels: ${channels}`);
     });
   }
 
@@ -274,13 +290,13 @@ async function main() {
     });
   }
 
-  console.log(`\nTotal Questions in Database: ${allQuestions.length}`);
+  console.log(`\nTotal Questions in Database: ${totalQuestions}`);
   console.log('=== END SUMMARY ===\n');
 
   writeGitHubOutput({
     added_count: addedQuestions.length,
     failed_count: failedAttempts.length,
-    total_questions: allQuestions.length,
+    total_questions: totalQuestions,
     added_ids: addedQuestions.map(q => q.id).join(',')
   });
 }

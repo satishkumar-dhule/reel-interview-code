@@ -1,4 +1,273 @@
 {
-  "channels": {},
-  "lastUpdated": ""
+  "channels": {
+    "algorithms": {
+      "subChannels": {
+        "data-structures": [
+          "al-1",
+          "al-165"
+        ],
+        "sorting": [
+          "al-2",
+          "al-163"
+        ],
+        "dynamic-programming": [
+          "al-3",
+          "al-152",
+          "al-164",
+          "al-166",
+          "al-167",
+          "al-170"
+        ]
+      }
+    },
+    "database": {
+      "subChannels": {
+        "sql": [
+          "db-1",
+          "da-125",
+          "da-145",
+          "da-156"
+        ],
+        "transactions": [
+          "db-2",
+          "da-128",
+          "da-134",
+          "da-172",
+          "da-170"
+        ],
+        "fundamentals": [
+          "gh-67"
+        ],
+        "nosql": [
+          "da-129"
+        ]
+      }
+    },
+    "devops": {
+      "subChannels": {
+        "cicd": [
+          "do-2",
+          "gh-10",
+          "gh-11"
+        ],
+        "terraform": [
+          "do-3",
+          "gh-16",
+          "gh-17",
+          "gh-18",
+          "de-137"
+        ],
+        "general": [
+          "gh-1",
+          "gh-2",
+          "gh-3",
+          "gh-35",
+          "gh-36",
+          "gh-37",
+          "gh-38",
+          "gh-39",
+          "gh-40",
+          "gh-41",
+          "gh-42",
+          "gh-43",
+          "gh-44",
+          "gh-45",
+          "gh-46",
+          "gh-52",
+          "gh-53",
+          "gh-54",
+          "gh-55",
+          "gh-56",
+          "gh-57",
+          "gh-58",
+          "gh-64",
+          "gh-65",
+          "gh-74",
+          "gh-75",
+          "gh-81",
+          "gh-82",
+          "gh-83",
+          "gh-84",
+          "gh-85",
+          "gh-86",
+          "gh-87",
+          "gh-88",
+          "gh-89",
+          "gh-90",
+          "gh-91",
+          "gh-92",
+          "gh-93",
+          "gh-94",
+          "gh-95",
+          "gh-96",
+          "gh-97",
+          "gh-98",
+          "gh-99",
+          "gh-100",
+          "gh-101",
+          "gh-102",
+          "gh-103",
+          "gh-104",
+          "gh-105"
+        ],
+        "containers": [
+          "gh-4",
+          "gh-5",
+          "gh-6"
+        ],
+        "kubernetes": [
+          "gh-7",
+          "gh-8",
+          "gh-9",
+          "gh-47",
+          "gh-48",
+          "gh-49",
+          "gh-50",
+          "gh-51"
+        ],
+        "aws": [
+          "gh-12",
+          "gh-13",
+          "gh-14",
+          "gh-15",
+          "gh-66"
+        ],
+        "observability": [
+          "gh-19",
+          "gh-20",
+          "gh-21",
+          "gh-22",
+          "gh-23"
+        ],
+        "security": [
+          "gh-24",
+          "gh-25"
+        ],
+        "linux": [
+          "gh-26"
+        ],
+        "git": [
+          "gh-27",
+          "gh-28"
+        ],
+        "ansible": [
+          "gh-29",
+          "gh-30"
+        ],
+        "networking": [
+          "gh-68",
+          "gh-69",
+          "gh-70",
+          "gh-71",
+          "gh-72"
+        ],
+        "docker": [
+          "de-127"
+        ],
+        "helm": [
+          "de-135"
+        ],
+        "gitops": [
+          "de-136"
+        ]
+      }
+    },
+    "frontend": {
+      "subChannels": {
+        "react": [
+          "fe-1",
+          "fr-161"
+        ],
+        "javascript": [
+          "fe-2",
+          "fe-3",
+          "fr-157",
+          "fr-162",
+          "fr-173"
+        ],
+        "performance": [
+          "fr-154",
+          "fr-163",
+          "fr-172"
+        ]
+      }
+    },
+    "sre": {
+      "subChannels": {
+        "observability": [
+          "sre-1",
+          "gh-76",
+          "gh-77",
+          "gh-78",
+          "gh-79",
+          "sr-124",
+          "sr-133",
+          "sr-155"
+        ],
+        "reliability": [
+          "sre-2",
+          "gh-59",
+          "gh-60",
+          "gh-61",
+          "gh-62",
+          "gh-63",
+          "sr-147"
+        ],
+        "incident-management": [
+          "gh-73",
+          "sr-126",
+          "sr-142"
+        ],
+        "slo-sli": [
+          "sr-130",
+          "sr-154",
+          "sr-169"
+        ],
+        "capacity-planning": [
+          "sr-131",
+          "sr-143",
+          "sr-148",
+          "sr-149"
+        ],
+        "chaos-engineering": [
+          "sr-146",
+          "sr-150",
+          "sr-153"
+        ]
+      }
+    },
+    "system-design": {
+      "subChannels": {
+        "infrastructure": [
+          "sd-1",
+          "gh-31",
+          "gh-32",
+          "gh-33",
+          "gh-34",
+          "sy-141",
+          "sy-169",
+          "sy-171"
+        ],
+        "distributed-systems": [
+          "sd-2",
+          "sd-3",
+          "sy-137",
+          "sy-144",
+          "sy-158"
+        ],
+        "database": [
+          "sd-4"
+        ],
+        "api-design": [
+          "sd-5",
+          "sy-132",
+          "sy-138",
+          "sy-139",
+          "sy-140",
+          "sy-151"
+        ]
+      }
+    }
+  },
+  "lastUpdated": "2025-12-14T10:08:54.382Z"
 }

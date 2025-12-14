@@ -1,52 +1,37 @@
-import fs from 'fs';
 import {
-  QUESTIONS_DIR,
-  loadAllQuestions,
-  loadChannelQuestions,
-  saveChannelQuestions,
+  loadUnifiedQuestions,
+  saveUnifiedQuestions,
+  loadChannelMappings,
+  getAllUnifiedQuestions,
   runWithRetries,
   parseJson,
   validateQuestion,
-  updateIndexFile,
-  writeGitHubOutput,
-  calculateSimilarity,
-  getQuestionsFile
+  updateUnifiedIndexFile,
+  writeGitHubOutput
 } from './utils.js';
 
-function loadAllQuestionsWithFile() {
-  const all = [];
-  try {
-    fs.readdirSync(QUESTIONS_DIR)
-      .filter(f => f.endsWith('.json'))
-      .forEach(f => {
-        try {
-          const questions = JSON.parse(fs.readFileSync(`${QUESTIONS_DIR}/${f}`, 'utf8'));
-          questions.forEach(q => all.push({ ...q, _file: f }));
-        } catch (e) {}
-      });
-  } catch (e) {}
-  return all;
-}
-
-// Get all available channels from the questions directory
+// Get all channels from mappings
 function getAllChannels() {
-  try {
-    return fs.readdirSync(QUESTIONS_DIR)
-      .filter(f => f.endsWith('.json') && f !== 'index.ts')
-      .map(f => f.replace('.json', ''));
-  } catch (e) {
-    return [];
-  }
+  const mappings = loadChannelMappings();
+  return Object.keys(mappings);
 }
 
-// Group questions by channel
-function groupQuestionsByChannel(questions) {
-  const byChannel = {};
-  questions.forEach(q => {
-    if (!byChannel[q.channel]) byChannel[q.channel] = [];
-    byChannel[q.channel].push(q);
+// Get questions that belong to a specific channel
+function getQuestionsForChannel(channel) {
+  const questions = loadUnifiedQuestions();
+  const mappings = loadChannelMappings();
+  
+  const channelMapping = mappings[channel];
+  if (!channelMapping) return [];
+  
+  const questionIds = new Set();
+  Object.values(channelMapping.subChannels || {}).forEach(ids => {
+    ids.forEach(id => questionIds.add(id));
   });
-  return byChannel;
+  
+  return Array.from(questionIds)
+    .map(id => ({ ...questions[id], _channel: channel }))
+    .filter(q => q.id != null);
 }
 
 function needsImprovement(q) {
@@ -61,15 +46,15 @@ function needsImprovement(q) {
 }
 
 async function main() {
-  console.log('=== Question Improvement Bot (OpenCode Free Tier) ===\n');
+  console.log('=== Question Improvement Bot (Unified Storage) ===\n');
   console.log('Mode: 1 question per channel\n');
 
-  const allQuestions = loadAllQuestionsWithFile();
   const channels = getAllChannels();
+  const allQuestions = getAllUnifiedQuestions();
   
   console.log(`Loaded ${allQuestions.length} questions from ${channels.length} channels`);
 
-  // Find improvable questions and group by channel
+  // Find improvable questions
   const improvableQuestions = allQuestions.filter(q => needsImprovement(q).length > 0);
   console.log(`Found ${improvableQuestions.length} questions needing improvement\n`);
 
@@ -83,37 +68,36 @@ async function main() {
     return;
   }
 
-  // Group improvable questions by channel
-  const byChannel = groupQuestionsByChannel(improvableQuestions);
-  
-  // Sort each channel's questions by lastUpdated (oldest first)
-  Object.keys(byChannel).forEach(channel => {
-    byChannel[channel].sort((a, b) => {
-      const dateA = new Date(a.lastUpdated || 0).getTime();
-      const dateB = new Date(b.lastUpdated || 0).getTime();
-      return dateA - dateB;
-    });
+  // Sort by lastUpdated (oldest first)
+  improvableQuestions.sort((a, b) => {
+    const dateA = new Date(a.lastUpdated || 0).getTime();
+    const dateB = new Date(b.lastUpdated || 0).getTime();
+    return dateA - dateB;
   });
 
   const improvedQuestions = [];
   const failedAttempts = [];
-  const skippedChannels = [];
+  const processedIds = new Set();
 
   // Process 1 question per channel
   for (let i = 0; i < channels.length; i++) {
     const channel = channels[i];
-    const channelImprovable = byChannel[channel];
+    const channelQuestions = getQuestionsForChannel(channel);
     
     console.log(`\n--- Channel ${i + 1}/${channels.length}: ${channel} ---`);
     
-    if (!channelImprovable || channelImprovable.length === 0) {
+    // Find improvable question for this channel that hasn't been processed
+    const channelImprovable = channelQuestions
+      .filter(q => needsImprovement(q).length > 0 && !processedIds.has(q.id))
+      .sort((a, b) => new Date(a.lastUpdated || 0).getTime() - new Date(b.lastUpdated || 0).getTime());
+    
+    if (channelImprovable.length === 0) {
       console.log('✅ No questions need improvement in this channel');
-      skippedChannels.push(channel);
       continue;
     }
 
-    // Pick the oldest question that needs improvement
     const question = channelImprovable[0];
+    processedIds.add(question.id);
     const issues = needsImprovement(question);
     
     console.log(`ID: ${question.id}`);
@@ -138,47 +122,41 @@ async function main() {
       continue;
     }
 
-    // Load channel questions and find the question to update
-    const channelQuestions = loadChannelQuestions(question.channel);
+    // Update question in unified storage
+    const questions = loadUnifiedQuestions();
     
-    const qIndex = channelQuestions.findIndex(q => q.id === question.id);
-    if (qIndex === -1) {
-      console.log('❌ Question not found in channel file.');
-      failedAttempts.push({ id: question.id, channel, reason: 'Not found in file' });
+    if (!questions[question.id]) {
+      console.log('❌ Question not found in unified storage.');
+      failedAttempts.push({ id: question.id, channel, reason: 'Not found' });
       continue;
     }
 
-    // Update the question
-    channelQuestions[qIndex] = {
-      ...channelQuestions[qIndex],
+    questions[question.id] = {
+      ...questions[question.id],
       question: data.question,
       answer: data.answer.substring(0, 200),
       explanation: data.explanation,
-      diagram: data.diagram || channelQuestions[qIndex].diagram,
+      diagram: data.diagram || questions[question.id].diagram,
       lastUpdated: new Date().toISOString()
     };
 
-    saveChannelQuestions(question.channel, channelQuestions);
-    updateIndexFile();
+    saveUnifiedQuestions(questions);
+    updateUnifiedIndexFile();
     
-    improvedQuestions.push(channelQuestions[qIndex]);
+    improvedQuestions.push(questions[question.id]);
     console.log(`✅ Improved: ${question.id}`);
   }
 
   // Print summary
-  const processedChannels = channels.length - skippedChannels.length;
+  const totalQuestions = getAllUnifiedQuestions().length;
   console.log('\n\n=== SUMMARY ===');
-  console.log(`Channels Processed: ${processedChannels}/${channels.length}`);
-  console.log(`Total Questions Improved: ${improvedQuestions.length}/${processedChannels}`);
-  
-  if (skippedChannels.length > 0) {
-    console.log(`\n⏭️ Skipped Channels (no improvements needed): ${skippedChannels.join(', ')}`);
-  }
+  console.log(`Channels Processed: ${channels.length}`);
+  console.log(`Total Questions Improved: ${improvedQuestions.length}`);
   
   if (improvedQuestions.length > 0) {
     console.log('\n✅ Successfully Improved Questions:');
     improvedQuestions.forEach((q, idx) => {
-      console.log(`  ${idx + 1}. [${q.id}] ${q.channel}/${q.subChannel}`);
+      console.log(`  ${idx + 1}. [${q.id}]`);
       console.log(`     Q: ${q.question.substring(0, 70)}${q.question.length > 70 ? '...' : ''}`);
     });
   }
@@ -190,14 +168,13 @@ async function main() {
     });
   }
 
-  console.log(`\nTotal Questions in Database: ${allQuestions.length}`);
+  console.log(`\nTotal Questions in Database: ${totalQuestions}`);
   console.log('=== END SUMMARY ===\n');
 
   writeGitHubOutput({
     improved_count: improvedQuestions.length,
     failed_count: failedAttempts.length,
-    skipped_channels: skippedChannels.length,
-    total_questions: allQuestions.length,
+    total_questions: totalQuestions,
     improved_ids: improvedQuestions.map(q => q.id).join(',')
   });
 }

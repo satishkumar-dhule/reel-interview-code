@@ -229,3 +229,170 @@ export function writeGitHubOutput(data) {
     });
   }
 }
+
+// ============================================
+// UNIFIED QUESTION STORAGE (New Architecture)
+// ============================================
+// Questions are stored in a single file (all-questions.json)
+// Channel mappings are stored separately (channel-mappings.json)
+// This allows the same question to belong to multiple channels
+
+export const ALL_QUESTIONS_FILE = `${QUESTIONS_DIR}/all-questions.json`;
+export const CHANNEL_MAPPINGS_FILE = `${QUESTIONS_DIR}/channel-mappings.json`;
+
+// Load all questions from unified storage
+export function loadUnifiedQuestions() {
+  try {
+    const data = JSON.parse(fs.readFileSync(ALL_QUESTIONS_FILE, 'utf8'));
+    return data.questions || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// Save all questions to unified storage
+export function saveUnifiedQuestions(questions) {
+  fs.mkdirSync(QUESTIONS_DIR, { recursive: true });
+  const data = {
+    questions,
+    lastUpdated: new Date().toISOString()
+  };
+  fs.writeFileSync(ALL_QUESTIONS_FILE, JSON.stringify(data, null, 2));
+}
+
+// Load channel mappings
+export function loadChannelMappings() {
+  try {
+    const data = JSON.parse(fs.readFileSync(CHANNEL_MAPPINGS_FILE, 'utf8'));
+    return data.channels || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// Save channel mappings
+export function saveChannelMappings(mappings) {
+  fs.mkdirSync(QUESTIONS_DIR, { recursive: true });
+  const data = {
+    channels: mappings,
+    lastUpdated: new Date().toISOString()
+  };
+  fs.writeFileSync(CHANNEL_MAPPINGS_FILE, JSON.stringify(data, null, 2));
+}
+
+// Add a question to unified storage and map to channels
+export function addUnifiedQuestion(question, channels) {
+  const questions = loadUnifiedQuestions();
+  const mappings = loadChannelMappings();
+  
+  // Add question to unified storage
+  questions[question.id] = question;
+  saveUnifiedQuestions(questions);
+  
+  // Map question to each channel/subchannel
+  channels.forEach(({ channel, subChannel }) => {
+    if (!mappings[channel]) {
+      mappings[channel] = { subChannels: {} };
+    }
+    if (!mappings[channel].subChannels[subChannel]) {
+      mappings[channel].subChannels[subChannel] = [];
+    }
+    if (!mappings[channel].subChannels[subChannel].includes(question.id)) {
+      mappings[channel].subChannels[subChannel].push(question.id);
+    }
+  });
+  
+  saveChannelMappings(mappings);
+}
+
+// Get questions for a specific channel (resolves IDs to full questions)
+export function getQuestionsForChannel(channel) {
+  const questions = loadUnifiedQuestions();
+  const mappings = loadChannelMappings();
+  
+  const channelMapping = mappings[channel];
+  if (!channelMapping) return [];
+  
+  const questionIds = new Set();
+  Object.values(channelMapping.subChannels || {}).forEach(ids => {
+    ids.forEach(id => questionIds.add(id));
+  });
+  
+  return Array.from(questionIds)
+    .map(id => questions[id])
+    .filter(q => q != null);
+}
+
+// Get questions for a specific subchannel
+export function getQuestionsForSubChannel(channel, subChannel) {
+  const questions = loadUnifiedQuestions();
+  const mappings = loadChannelMappings();
+  
+  const ids = mappings[channel]?.subChannels?.[subChannel] || [];
+  return ids.map(id => questions[id]).filter(q => q != null);
+}
+
+// Get all questions as array (for compatibility)
+export function getAllUnifiedQuestions() {
+  const questions = loadUnifiedQuestions();
+  return Object.values(questions);
+}
+
+// Generate unique ID for unified storage
+export function generateUnifiedId() {
+  const questions = loadUnifiedQuestions();
+  const existingIds = new Set(Object.keys(questions));
+  let counter = Object.keys(questions).length + 1;
+  let id;
+  do {
+    id = `q-${counter++}`;
+  } while (existingIds.has(id));
+  return id;
+}
+
+// Check if question is duplicate in unified storage
+export function isDuplicateUnified(questionText, threshold = 0.6) {
+  const questions = getAllUnifiedQuestions();
+  return questions.some(q => calculateSimilarity(questionText, q.question) >= threshold);
+}
+
+// Update unified index file for TypeScript imports
+export function updateUnifiedIndexFile() {
+  const content = `// Auto-generated index file for unified question storage
+import allQuestionsData from "./all-questions.json";
+import channelMappingsData from "./channel-mappings.json";
+
+export const questionsById: Record<string, any> = allQuestionsData.questions || {};
+export const channelMappings: Record<string, any> = channelMappingsData.channels || {};
+
+// Get all questions as array
+export const allQuestions = Object.values(questionsById);
+
+// Get questions for a channel
+export function getQuestionsForChannel(channel: string): any[] {
+  const mapping = channelMappings[channel];
+  if (!mapping) return [];
+  
+  const ids = new Set<string>();
+  Object.values(mapping.subChannels || {}).forEach((subIds: any) => {
+    (subIds as string[]).forEach(id => ids.add(id));
+  });
+  
+  return Array.from(ids).map(id => questionsById[id]).filter(q => q != null);
+}
+
+// Get questions for a subchannel
+export function getQuestionsForSubChannel(channel: string, subChannel: string): any[] {
+  const ids = channelMappings[channel]?.subChannels?.[subChannel] || [];
+  return ids.map((id: string) => questionsById[id]).filter((q: any) => q != null);
+}
+
+// Legacy compatibility - questions by channel
+export const questionsByChannel: Record<string, any[]> = {};
+Object.keys(channelMappings).forEach(channel => {
+  questionsByChannel[channel] = getQuestionsForChannel(channel);
+});
+`;
+  
+  fs.writeFileSync(`${QUESTIONS_DIR}/index.ts`, content);
+}
