@@ -62,9 +62,9 @@ export function QuestionPanel({
   const DifficultyIcon = difficultyConfig.icon;
 
   return (
-    <div className="w-full h-full flex flex-col justify-center px-4 sm:px-6 md:px-10 lg:px-16 py-6 relative">
+    <div className="w-full h-full flex flex-col justify-center px-3 sm:px-6 md:px-10 lg:px-16 py-4 sm:py-6 relative">
       {/* Header badges */}
-      <div className="absolute top-4 left-4 sm:left-6 md:left-10 lg:left-16 right-4 flex flex-wrap items-center gap-2 sm:gap-3">
+      <div className="absolute top-2 sm:top-4 left-3 sm:left-6 md:left-10 lg:left-16 right-3 sm:right-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
         {/* Question ID */}
         <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded">
           <Hash className="w-3 h-3 text-primary" />
@@ -115,43 +115,43 @@ export function QuestionPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="max-w-3xl mx-auto w-full space-y-6 sm:space-y-8"
+        className="max-w-3xl mx-auto w-full space-y-3 sm:space-y-6"
       >
-        {/* Question text */}
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-white">
+        {/* Question text - More compact on mobile */}
+        <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold leading-snug sm:leading-tight tracking-tight text-white">
           {question.question}
         </h1>
 
-        {/* Tags */}
+        {/* Tags - Fewer on mobile */}
         {question.tags && question.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {question.tags.slice(0, 6).map(tag => (
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            {question.tags.slice(0, 4).map(tag => (
               <span 
                 key={tag} 
-                className="px-2.5 py-1 bg-white/5 text-[10px] sm:text-xs font-mono uppercase tracking-wider border border-white/10 text-white/50 rounded"
+                className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/5 text-[9px] sm:text-[10px] font-mono uppercase tracking-wider border border-white/10 text-white/50 rounded"
               >
                 #{tag}
               </span>
             ))}
-            {question.tags.length > 6 && (
-              <span className="px-2.5 py-1 text-xs text-white/30">
-                +{question.tags.length - 6} more
+            {question.tags.length > 4 && (
+              <span className="px-2 py-0.5 text-[9px] sm:text-xs text-white/30">
+                +{question.tags.length - 4}
               </span>
             )}
           </div>
         )}
 
-        {/* Timer display */}
+        {/* Timer display - Compact on mobile */}
         {timerEnabled && timeLeft > 0 && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-3 px-4 py-3 bg-primary/5 border-l-4 border-primary rounded"
+            className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 bg-primary/5 border-l-4 border-primary rounded"
           >
-            <Clock className="w-5 h-5 text-primary" />
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-white/50 mb-0.5">Time Remaining</div>
-              <div className="text-2xl font-mono font-bold text-primary tabular-nums">
+              <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/50 mb-0.5">Time Left</div>
+              <div className="text-lg sm:text-2xl font-mono font-bold text-primary tabular-nums">
                 {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}
               </div>
             </div>
@@ -159,11 +159,11 @@ export function QuestionPanel({
         )}
       </motion.div>
 
-      {/* Bottom hint */}
-      <div className="absolute bottom-4 left-4 sm:left-6 md:left-10 lg:left-16 right-4">
-        <div className="text-[10px] text-white/20 uppercase tracking-widest">
+      {/* Bottom hint - Hidden on very small screens */}
+      <div className="absolute bottom-2 sm:bottom-4 left-3 sm:left-6 md:left-10 lg:left-16 right-3 sm:right-4 hidden xs:block">
+        <div className="text-[9px] sm:text-[10px] text-white/20 uppercase tracking-widest">
           <span className="hidden sm:inline">Press → to reveal answer</span>
-          <span className="sm:hidden">Tap right panel to reveal</span>
+          <span className="sm:hidden">Tap below to reveal</span>
         </div>
       </div>
     </div>

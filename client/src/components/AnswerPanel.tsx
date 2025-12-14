@@ -134,38 +134,38 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
       transition={{ duration: 0.3 }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
-        {/* Diagram Section - Full width, prominent */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+        {/* Diagram Section - Compact on mobile */}
         {question.diagram && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-1 h-5 bg-primary" />
-              <h2 className="text-sm font-bold uppercase tracking-widest text-white/70">Visual Diagram</h2>
+          <div className="mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="w-1 h-4 sm:h-5 bg-primary" />
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Diagram</h2>
             </div>
             <EnhancedMermaid chart={question.diagram} />
           </div>
         )}
 
-        {/* Quick Answer Section */}
+        {/* Quick Answer Section - Compact on mobile */}
         {question.answer && question.answer !== question.explanation && (
-          <div className="mb-8 p-4 sm:p-6 bg-primary/5 border border-primary/20 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <Lightbulb className="w-4 h-4 text-primary" />
-              <h2 className="text-sm font-bold uppercase tracking-widest text-primary">Quick Answer</h2>
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-primary">Quick Answer</h2>
             </div>
-            <p className="text-sm sm:text-base text-white/90 leading-relaxed">
+            <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
               {question.answer}
             </p>
           </div>
         )}
 
-        {/* Detailed Explanation */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <BookOpen className="w-4 h-4 text-white/70" />
-            <h2 className="text-sm font-bold uppercase tracking-widest text-white/70">Detailed Explanation</h2>
+        {/* Detailed Explanation - Smaller text on mobile */}
+        <div className="mb-4 sm:mb-6">
+          <div className="flex items-center gap-2 mb-2 sm:mb-3">
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/70" />
+            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Explanation</h2>
           </div>
-          <div className="prose prose-invert max-w-none text-sm sm:text-base">
+          <div className="prose prose-invert max-w-none text-xs sm:text-sm leading-relaxed">
             {renderMarkdown(question.explanation)}
           </div>
         </div>

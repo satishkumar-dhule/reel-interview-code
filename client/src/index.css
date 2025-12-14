@@ -146,13 +146,22 @@
   max-width: 100%;
   overflow: visible;
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  min-height: 100px;
 }
 
 .mermaid-container svg {
   max-width: 100%;
   height: auto !important;
-  display: block;
+  display: block !important;
   margin: 0 auto;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Force visibility of all diagram elements */
+.mermaid-container * {
+  visibility: visible !important;
 }
 
 /* Mermaid Fullscreen - ensure SVG is visible */
@@ -177,19 +186,35 @@
     overflow: visible;
   }
   
+  .mermaid-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   .mermaid-container svg {
-    max-width: 100%;
+    max-width: none !important;
     width: auto !important;
     height: auto !important;
-    transform: scale(0.6);
-    transform-origin: top left;
+    min-width: 100%;
+    transform: scale(0.75);
+    transform-origin: top center;
+    display: block !important;
+    margin: 0 auto;
   }
   
   .mermaid-container .nodeLabel,
   .mermaid-container .label,
   .mermaid-container text {
-    font-size: 11px !important;
-    font-weight: 500 !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Ensure diagram is visible */
+  .mermaid-container * {
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
@@ -207,12 +232,54 @@
     overflow-x: hidden;
     width: 100%;
     position: relative;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
   }
   
   /* Prevent horizontal scroll */
   body {
     overflow-y: auto;
     overflow-x: hidden;
+  }
+  
+  /* Fix for mobile Safari address bar */
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Better spacing for mobile */
+  .prose p {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .prose ul, .prose ol {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .prose li {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .prose h1, .prose h2, .prose h3 {
+    margin-top: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Compact code blocks on mobile */
+  .prose pre {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+    padding: 0.75rem !important;
+    font-size: 0.75rem !important;
   }
 }
 
@@ -221,6 +288,11 @@
   button, a {
     min-height: 36px;
     min-width: 36px;
+  }
+  
+  /* Larger touch targets for important buttons */
+  button:not(.p-1):not(.p-1.5):not(.p-2) {
+    padding: 0.5rem 0.75rem;
   }
 }
 

@@ -98,6 +98,22 @@
     "answer": "Trie provides O(k) prefix search, space-efficient for common prefixes.",
     "explanation": "## Trie Structure\n\nA Trie (prefix tree) stores strings character by character, sharing common prefixes.\n\n```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n    \n    def insert(self,word):\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end = True\n```\n\n## Advantages over Hash Map\n\n**Prefix Search**: Find all words with prefix in O(k) where k = prefix length\n**Space Efficiency**: Common prefixes shared (e.g., 'app', 'apple', 'application')\n**Sorted Output**: Lexicographic order traversal\n**No Collisions**: Unlike hash maps\n\n## Use Cases\n- Autocomplete systems\n- Spell checkers\n- IP routing tables\n- Dictionary implementations",
     "tags": [
+      "data-structure",
+      "string",
+      "prefix"
+    ],
+    "difficulty": "intermediate",
+    "channel": "layers",
+    "subChannel": "data-structures",
+    "diagram": "graph TD\n    A[Root] --> A1[a] --> P1[pp] --> P2[p] --> P3[l] --> E1[apple]\n    A --> A2[a] --> P4[pp] --> P5[l] --> E2[apply]\n    A --> A3[a] --> P6[pp] --> P7[l] --> E3[application]\n    A --> A4[a] --> P8[pp] --> P9[l] --> E4[approach]\n    \n    style A fill:#FF6B6B\n    style E1 fill:#4ECDC4\n    style E2 fill:#4ECDC4\n    style E3 fill:#4ECDC4\n    style E4 fill:#95E1D3",
+    "lastUpdated": "2025-12-13T17:01:42.123Z"
+  },
+  {
+    "id": "al-165",
+    "question": "Implement a Trie data structure for efficient prefix search. What are its advantages over a hash map?",
+    "answer": "Trie provides O(k) prefix search, space-efficient for common prefixes.",
+    "explanation": "## Trie Structure\n\nA Trie (prefix tree) stores strings character by character, sharing common prefixes.\n\n```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n    \n    def insert(self,word):\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end = True\n```\n\n## Advantages over Hash Map\n\n**Prefix Search**: Find all words with prefix in O(k) where k = prefix length\n**Space Efficiency**: Common prefixes shared (e.g., 'app', 'apple', 'application')\n**Sorted Output**: Lexicographic order traversal\n**No Collisions**: Unlike hash maps\n\n## Use Cases\n- Autocomplete systems\n- Spell checkers\n- IP routing tables\n- Dictionary implementations",
+    "tags": [
       "struct",
       "basics"
     ],

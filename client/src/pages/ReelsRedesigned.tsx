@@ -531,8 +531,8 @@ export default function ReelsRedesigned() {
               transition={{ duration: 0.2 }}
               className="w-full h-full flex flex-col lg:flex-row overflow-hidden"
             >
-              {/* Left: Question Panel */}
-              <div className="w-full lg:w-[35%] min-h-[30vh] lg:min-h-0 lg:h-full border-b lg:border-b-0 lg:border-r border-white/10 bg-gradient-to-br from-black to-black/95 shrink-0">
+              {/* Left: Question Panel - Reduced height on mobile */}
+              <div className="w-full lg:w-[35%] h-auto max-h-[35vh] lg:max-h-none lg:h-full border-b lg:border-b-0 lg:border-r border-white/10 bg-gradient-to-br from-black to-black/95 shrink-0 overflow-y-auto lg:overflow-y-visible">
                 <QuestionPanel
                   question={currentQuestion}
                   questionNumber={currentIndex + 1}
@@ -544,8 +544,8 @@ export default function ReelsRedesigned() {
                 />
               </div>
 
-              {/* Right: Answer Panel */}
-              <div className="w-full lg:w-[65%] flex-1 lg:h-full bg-black/50 relative flex flex-col overflow-hidden min-h-0">
+              {/* Right: Answer Panel - Takes remaining space */}
+              <div className="w-full lg:w-[65%] flex-1 lg:h-full bg-black/50 relative flex flex-col overflow-hidden">
                 {!showAnswer ? (
                   <button 
                     onClick={() => {
@@ -560,13 +560,13 @@ export default function ReelsRedesigned() {
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.3 }}
-                      className="flex flex-col items-center"
+                      className="flex flex-col items-center px-4"
                     >
-                      <Terminal className="w-16 h-16 mb-6 text-white/10 group-hover:text-primary/50 transition-colors duration-300" />
-                      <span className="text-sm font-bold uppercase tracking-widest text-white/30 group-hover:text-white transition-colors">
+                      <Terminal className="w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 text-white/10 group-hover:text-primary/50 transition-colors duration-300" />
+                      <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/30 group-hover:text-white transition-colors text-center">
                         Tap to Reveal Answer
                       </span>
-                      <span className="mt-4 text-xs text-white/20 font-mono">[OR PRESS →]</span>
+                      <span className="mt-2 sm:mt-4 text-[10px] sm:text-xs text-white/20 font-mono">[OR PRESS →]</span>
                     </motion.div>
                   </button>
                 ) : (

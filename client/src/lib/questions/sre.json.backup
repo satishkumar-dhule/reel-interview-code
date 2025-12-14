@@ -401,6 +401,21 @@
     "lastUpdated": "2025-12-13T01:09:58.799Z"
   },
   {
+    "id": "sr-155",
+    "question": "What is the difference between metrics, logs, and traces in observability, and when would you use each?",
+    "answer": "Metrics: aggregated numbers over time. Logs: discrete events. Traces: request flow across services. Use all three for complete observability.",
+    "explanation": "## The Three Pillars of Observability\n\n### Metrics\n**What**: Numerical measurements aggregated over time (CPU usage, request rate, error count)\n**When to use**: \n- Monitoring system health and performance trends\n- Setting up alerts and SLOs\n- Understanding resource utilization\n**Example**: `http_requests_total`, `memory_usage_bytes`\n\n### Logs\n**What**: Discrete event records with timestamps and context\n**When to use**:\n- Debugging specific issues\n- Auditing and compliance\n- Understanding what happened at a specific point in time\n**Example**: `[2025-12-13 10:30:45] ERROR: Database connection failed`\n\n### Traces\n**What**: End-to-end journey of a request through distributed systems\n**When to use**:\n- Identifying bottlenecks in microservices\n- Understanding service dependencies\n- Debugging latency issues across services\n**Example**: A single API call traced through API Gateway → Auth Service → Database\n\n### Why All Three?\nEach pillar answers different questions:\n- **Metrics**: \"Is there a problem?\"\n- **Logs**: \"What happened?\"\n- **Traces**: \"Where is the problem in the request flow?\"\n\nUsing all three together provides complete visibility into system behavior and enables faster incident resolution.",
+    "tags": [
+      "metrics",
+      "monitoring"
+    ],
+    "difficulty": "beginner",
+    "channel": "sre",
+    "subChannel": "observability",
+    "diagram": "graph TD\n    A[Observability] --> B[Metrics]\n    A --> C[Logs]\n    A --> D[Traces]\n    B --> E[Aggregated Numbers]\n    B --> F[Time Series Data]\n    B --> G[Alerts & Dashboards]\n    C --> H[Discrete Events]\n    C --> I[Structured/Unstructured]\n    C --> J[Debugging Context]\n    D --> K[Request Flow]\n    D --> L[Service Dependencies]\n    D --> M[Latency Analysis]\n    E --> N[Example: CPU 75%]\n    H --> O[Example: Error Log]\n    K --> P[Example: API → DB]",
+    "lastUpdated": "2025-12-13T01:10:12.282Z"
+  },
+  {
     "id": "sr-169",
     "question": "Your API service has an SLO of 99.9% availability. If you have 5 incidents this month with downtimes of 10min, 5min, 15min, 8min, and 12min, did you meet your SLO? (Assume 30-day month)",
     "answer": "No. Total downtime: 50min out of 43,200min = 99.88% availability, which violates 99.9% SLO",

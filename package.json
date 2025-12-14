@@ -35,7 +35,9 @@
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "deploy:pages": "tsx script/deploy-pages.ts",
-    "preview": "pnpm run build:client && pnpm exec serve dist/public -s -p 3333"
+    "preview": "pnpm run build:client && pnpm exec serve dist/public -s -p 3333",
+    "validate:questions": "node script/validate-questions.js",
+    "fix:duplicates": "node script/fix-duplicate-questions.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
