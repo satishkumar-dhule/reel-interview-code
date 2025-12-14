@@ -83,6 +83,27 @@ export default function ReelsRedesigned() {
     selectedSubChannel,
     selectedDifficulty
   );
+
+  // Reset index when filters change and ensure it's within bounds
+  useEffect(() => {
+    if (totalQuestions > 0 && currentIndex >= totalQuestions) {
+      setCurrentIndex(0);
+    }
+  }, [totalQuestions, currentIndex]);
+
+  // Handler for subchannel change - ensures clean state transition
+  const handleSubChannelChange = (newSubChannel: string) => {
+    setCurrentIndex(0);
+    setSelectedSubChannel(newSubChannel);
+    setShowAnswer(false);
+  };
+
+  // Handler for difficulty change - ensures clean state transition
+  const handleDifficultyChange = (newDifficulty: string) => {
+    setCurrentIndex(0);
+    setSelectedDifficulty(newDifficulty);
+    setShowAnswer(false);
+  };
   
   const { completed, markCompleted, lastVisitedIndex, saveLastVisitedIndex } = useProgress(channelId || '');
   const { toast } = useToast();
@@ -206,7 +227,7 @@ export default function ReelsRedesigned() {
           }
         }
       }
-      else if (e.key === 'ArrowLeft' || e.key === 'Escape') setLocation('/');
+      else if (e.key === 'ArrowLeft' || e.key === 'Escape') goBack();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -221,6 +242,14 @@ export default function ReelsRedesigned() {
   const prevQuestion = () => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  const goBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      setLocation('/');
     }
   };
 
@@ -255,8 +284,8 @@ export default function ReelsRedesigned() {
     return (
       <div className="h-screen w-full bg-black text-white flex flex-col font-mono">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Home
+          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Back
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -274,8 +303,8 @@ export default function ReelsRedesigned() {
     return (
       <div className="h-screen w-full bg-black text-white flex flex-col font-mono">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Home
+          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Back
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -294,18 +323,25 @@ export default function ReelsRedesigned() {
     );
   }
   
-  if (!currentQuestion) {
+  if (!currentQuestion || totalQuestions === 0) {
     return (
-      <div className="h-screen w-full bg-black text-white flex flex-col font-mono">
+      <div className="h-screen w-full bg-black text-white flex flex-col font-mono" data-testid="no-questions-view">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Home
+          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Back
           </button>
+          <span className="text-xs text-white/50 uppercase tracking-widest">{channel?.name}</span>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-white/50">
             <div className="text-xl mb-2">NO_DATA_FOUND</div>
-            <div className="text-xs">Try selecting a different topic</div>
+            <div className="text-xs mb-4">No questions available for this filter</div>
+            <button 
+              onClick={() => { setSelectedSubChannel('all'); setSelectedDifficulty('all'); setCurrentIndex(0); }}
+              className="px-4 py-2 bg-primary text-black text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
+            >
+              Reset Filters
+            </button>
           </div>
         </div>
       </div>
@@ -328,32 +364,33 @@ export default function ReelsRedesigned() {
         <div className="h-14 px-4 z-50 flex justify-between items-center border-b border-white/10 bg-black/90 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <button 
-              onClick={() => setLocation('/')}
+              onClick={goBack}
               className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors group shrink-0"
             >
               <span className="border border-white/20 px-2 py-1 group-hover:border-primary transition-colors">ESC</span> 
-              <span className="hidden sm:inline">Home</span>
+              <span className="hidden sm:inline">Back</span>
             </button>
             
             <div className="h-4 w-px bg-white/20 hidden sm:block shrink-0" />
             
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary truncate">{channel.name}</span>
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0 overflow-hidden">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary truncate max-w-[80px] sm:max-w-none">{channel.name}</span>
               
+              {/* Subchannel dropdown - hidden on very small screens */}
               {channel.subChannels && (
-                <>
+                <div className="hidden xs:flex items-center gap-1">
                   <span className="text-white/30 hidden sm:inline">›</span>
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest hover:text-white text-white/70 outline-none">
-                      <span className="truncate max-w-[100px]">{channel.subChannels.find(s => s.id === selectedSubChannel)?.name}</span>
+                      <span className="truncate max-w-[60px] sm:max-w-[100px]">{channel.subChannels.find(s => s.id === selectedSubChannel)?.name}</span>
                       <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
                     </DropdownMenu.Trigger>
-                    <DropdownMenu.Content className="bg-black border border-white/20 p-1 z-50 min-w-[200px] shadow-xl" align="start">
+                    <DropdownMenu.Content className="bg-black border border-white/20 p-1 z-[100] min-w-[200px] shadow-xl" align="start">
                       {channel.subChannels.map(sub => (
                         <DropdownMenu.Item 
                           key={sub.id} 
                           className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex justify-between outline-none"
-                          onSelect={() => { setSelectedSubChannel(sub.id); setCurrentIndex(0); }}
+                          onSelect={() => handleSubChannelChange(sub.id)}
                         >
                           {sub.name}
                           {selectedSubChannel === sub.id && <Check className="w-3 h-3 text-primary" />}
@@ -361,13 +398,14 @@ export default function ReelsRedesigned() {
                       ))}
                     </DropdownMenu.Content>
                   </DropdownMenu.Root>
-                </>
+                </div>
               )}
 
               <div className="h-4 w-px bg-white/20 hidden sm:block shrink-0" />
               
+              {/* Difficulty dropdown */}
               <DropdownMenu.Root>
-                <DropdownMenu.Trigger className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest hover:text-white text-white/70 outline-none">
+                <DropdownMenu.Trigger className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest hover:text-white text-white/70 outline-none p-1">
                   {selectedDifficulty === 'all' && <Target className="w-3 h-3 shrink-0" />}
                   {selectedDifficulty === 'beginner' && <Zap className="w-3 h-3 text-green-400 shrink-0" />}
                   {selectedDifficulty === 'intermediate' && <Target className="w-3 h-3 text-yellow-400 shrink-0" />}
@@ -377,20 +415,20 @@ export default function ReelsRedesigned() {
                   </span>
                   <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content className="bg-black border border-white/20 p-1 z-50 min-w-[150px] shadow-xl" align="start">
-                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => { setSelectedDifficulty('all'); setCurrentIndex(0); }}>
+                <DropdownMenu.Content className="bg-black border border-white/20 p-1 z-[100] min-w-[150px] shadow-xl" align="start">
+                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => handleDifficultyChange('all')}>
                     <Target className="w-3 h-3" /> All
                     {selectedDifficulty === 'all' && <Check className="w-3 h-3 text-primary ml-auto" />}
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => { setSelectedDifficulty('beginner'); setCurrentIndex(0); }}>
+                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => handleDifficultyChange('beginner')}>
                     <Zap className="w-3 h-3 text-green-400" /> Beginner
                     {selectedDifficulty === 'beginner' && <Check className="w-3 h-3 text-primary ml-auto" />}
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => { setSelectedDifficulty('intermediate'); setCurrentIndex(0); }}>
+                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => handleDifficultyChange('intermediate')}>
                     <Target className="w-3 h-3 text-yellow-400" /> Intermediate
                     {selectedDifficulty === 'intermediate' && <Check className="w-3 h-3 text-primary ml-auto" />}
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => { setSelectedDifficulty('advanced'); setCurrentIndex(0); }}>
+                  <DropdownMenu.Item className="text-xs text-white p-2 hover:bg-white/10 cursor-pointer flex items-center gap-2 outline-none" onSelect={() => handleDifficultyChange('advanced')}>
                     <Flame className="w-3 h-3 text-red-400" /> Advanced
                     {selectedDifficulty === 'advanced' && <Check className="w-3 h-3 text-primary ml-auto" />}
                   </DropdownMenu.Item>
@@ -399,14 +437,18 @@ export default function ReelsRedesigned() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="flex gap-1 mr-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* GitHub links - hidden on mobile */}
+            <div className="hidden sm:flex gap-1 mr-2">
               <a href="https://github.com/satishkumar-dhule/code-reels/issues/new" target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors" title="Report Issue">
                 <AlertCircle className="w-4 h-4" />
               </a>
               <a href="https://github.com/satishkumar-dhule/code-reels" target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors" title="Star on GitHub">
                 <Star className="w-4 h-4" />
               </a>
+            </div>
+            {/* Navigation buttons */}
+            <div className="flex gap-1">
               <button onClick={prevQuestion} disabled={currentIndex === 0} className="p-1.5 hover:bg-white/10 border border-white/10 rounded disabled:opacity-30 transition-colors" title="Previous">
                 <ArrowLeft className="w-4 h-4" />
               </button>

@@ -113,7 +113,7 @@
     @apply border-border;
   }
   body {
-    @apply font-sans antialiased bg-background text-foreground overflow-hidden selection:bg-primary selection:text-primary-foreground transition-colors duration-300;
+    @apply font-sans antialiased bg-background text-foreground selection:bg-primary selection:text-primary-foreground transition-colors duration-300;
   }
 }
 
@@ -252,18 +252,21 @@
 
 /* Mobile viewport fixes */
 @media (max-width: 640px) {
-  html, body {
+  html {
     overflow-x: hidden;
     width: 100%;
-    position: relative;
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   
-  /* Prevent horizontal scroll */
   body {
-    overflow-y: auto;
+    overflow-y: auto !important;
     overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: auto;
   }
   
   /* Fix for mobile Safari address bar */
@@ -272,6 +275,7 @@
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
   
   /* Prevent text size adjustment on orientation change */

@@ -97,13 +97,16 @@ test.describe('All Channels Page', () => {
     await expect(page.locator('h3:has-text("DevOps")')).toBeVisible();
   });
 
-  test('should navigate back to home', async ({ page }) => {
+  test('should navigate back using back button', async ({ page }) => {
+    // First go to home, then to channels
+    await page.goto('/');
+    await page.waitForTimeout(500);
     await page.goto('/channels');
     
-    // Click back button
-    await page.getByText('Back to Home').click();
+    // Click back button - should use browser history
+    await page.getByRole('button', { name: /back/i }).click();
     
-    // Should be on home page
+    // Should navigate back (to home in this case)
     await expect(page).toHaveURL('/');
   });
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { allChannelsConfig, categories, ChannelConfig } from '../lib/channels-config';
@@ -93,6 +93,23 @@ export default function AllChannels() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const goBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      setLocation('/');
+    }
+  };
+
+  // ESC key handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') goBack();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Create question count map
   const questionCounts: Record<string, number> = {};
   stats.forEach(s => {
@@ -119,17 +136,17 @@ export default function AllChannels() {
         title="All Channels - Code Reels"
         description="Browse and subscribe to interview prep channels"
       />
-      <div className="min-h-screen bg-black text-white font-mono">
+      <div className="min-h-screen bg-black text-white font-mono overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between mb-4">
               <button
-                onClick={() => setLocation('/')}
+                onClick={goBack}
                 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Home
+                Back
               </button>
               <div className="text-xs text-white/50">
                 {preferences.subscribedChannels.length} channels subscribed
@@ -186,7 +203,7 @@ export default function AllChannels() {
         </div>
 
         {/* Channel Grid */}
-        <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="max-w-6xl mx-auto px-4 py-6 pb-20">
           {selectedCategory ? (
             // Flat grid when category is selected
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
