@@ -62,7 +62,7 @@ export function QuestionPanel({
   const DifficultyIcon = difficultyConfig.icon;
 
   return (
-    <div className="w-full h-full flex flex-col justify-center px-3 sm:px-6 md:px-10 lg:px-16 py-4 sm:py-6 relative">
+    <div className="w-full h-full flex flex-col justify-center px-3 sm:px-6 md:px-10 lg:px-16 py-4 sm:py-6 relative overflow-y-auto custom-scrollbar">
       {/* Header badges */}
       <div className="absolute top-2 sm:top-4 left-3 sm:left-6 md:left-10 lg:left-16 right-3 sm:right-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
         {/* Question ID */}
@@ -115,10 +115,20 @@ export function QuestionPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="max-w-3xl mx-auto w-full space-y-3 sm:space-y-6"
+        className={`max-w-3xl mx-auto w-full ${
+          question.question.length > 200 ? 'space-y-2 sm:space-y-3' : 'space-y-3 sm:space-y-6'
+        }`}
       >
-        {/* Question text - More compact on mobile */}
-        <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold leading-snug sm:leading-tight tracking-tight text-white">
+        {/* Question text - Smart sizing based on length */}
+        <h1 className={`font-bold text-white ${
+          question.question.length > 250 
+            ? 'text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed' // Very long questions
+            : question.question.length > 150
+            ? 'text-sm sm:text-base md:text-lg lg:text-xl leading-snug' // Long questions
+            : question.question.length > 80
+            ? 'text-base sm:text-lg md:text-xl lg:text-2xl leading-snug sm:leading-tight' // Medium questions
+            : 'text-base sm:text-xl md:text-2xl lg:text-3xl leading-tight tracking-tight' // Short questions
+        }`}>
           {question.question}
         </h1>
 
@@ -166,6 +176,11 @@ export function QuestionPanel({
           <span className="sm:hidden">Tap below to reveal</span>
         </div>
       </div>
+
+      {/* Scroll indicator for long questions on mobile */}
+      {question.question.length > 150 && (
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent pointer-events-none lg:hidden" />
+      )}
     </div>
   );
 }

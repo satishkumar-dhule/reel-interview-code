@@ -148,6 +148,11 @@
   -webkit-overflow-scrolling: touch;
   position: relative;
   min-height: 100px;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  isolation: isolate; /* Create stacking context */
 }
 
 .mermaid-container svg {
@@ -162,6 +167,11 @@
 /* Force visibility of all diagram elements */
 .mermaid-container * {
   visibility: visible !important;
+}
+
+/* Clear space after diagrams */
+.mermaid-container + * {
+  margin-top: 1.5rem;
 }
 
 /* Mermaid Fullscreen - ensure SVG is visible */
@@ -191,6 +201,12 @@
     overflow-x: auto;
     overflow-y: visible;
     -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .mermaid-container svg {
@@ -198,8 +214,8 @@
     width: auto !important;
     height: auto !important;
     min-width: 100%;
-    transform: scale(0.75);
-    transform-origin: top center;
+    transform: scale(0.7);
+    transform-origin: center center;
     display: block !important;
     margin: 0 auto;
   }
@@ -207,14 +223,19 @@
   .mermaid-container .nodeLabel,
   .mermaid-container .label,
   .mermaid-container text {
-    font-size: 10px !important;
+    font-size: 9px !important;
     font-weight: 600 !important;
   }
   
-  /* Ensure diagram is visible */
+  /* Ensure diagram is visible and has proper spacing */
   .mermaid-container * {
     visibility: visible !important;
     opacity: 1 !important;
+  }
+  
+  /* Add clear space after diagram */
+  .mermaid-container + * {
+    margin-top: 1rem !important;
   }
 }
 
@@ -246,6 +267,8 @@
   #root {
     min-height: 100vh;
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
   
   /* Prevent text size adjustment on orientation change */
@@ -254,32 +277,93 @@
     text-size-adjust: 100%;
   }
   
-  /* Better spacing for mobile */
+  /* Ensure proper stacking and no overlaps */
+  * {
+    position: relative;
+  }
+  
+  /* Clear floats */
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Prevent content overflow */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure sections don't overlap */
+  section, article, div[class*="Panel"], div[class*="panel"] {
+    clear: both;
+    display: block;
+  }
+  
+  /* Better spacing for mobile - prevent overlaps */
+  .prose {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  
   .prose p {
+    margin-top: 0.75rem !important;
     margin-bottom: 0.75rem !important;
+    clear: both;
   }
   
   .prose ul, .prose ol {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-left: 1.25rem !important;
+    clear: both;
   }
   
   .prose li {
-    margin-top: 0.25rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-top: 0.375rem !important;
+    margin-bottom: 0.375rem !important;
   }
   
   .prose h1, .prose h2, .prose h3 {
-    margin-top: 1rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+    clear: both;
+  }
+  
+  .prose h1 {
+    font-size: 1.25rem !important;
+  }
+  
+  .prose h2 {
+    font-size: 1.125rem !important;
+  }
+  
+  .prose h3 {
+    font-size: 1rem !important;
   }
   
   /* Compact code blocks on mobile */
   .prose pre {
-    margin-top: 0.75rem !important;
-    margin-bottom: 0.75rem !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
     padding: 0.75rem !important;
-    font-size: 0.75rem !important;
+    font-size: 0.7rem !important;
+    overflow-x: auto !important;
+    clear: both;
+  }
+  
+  .prose code {
+    font-size: 0.8em !important;
+    word-break: break-all;
+  }
+  
+  /* Ensure blockquotes don't overlap */
+  .prose blockquote {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    clear: both;
   }
 }
 

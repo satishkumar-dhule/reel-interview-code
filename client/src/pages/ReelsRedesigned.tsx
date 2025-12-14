@@ -531,8 +531,12 @@ export default function ReelsRedesigned() {
               transition={{ duration: 0.2 }}
               className="w-full h-full flex flex-col lg:flex-row overflow-hidden"
             >
-              {/* Left: Question Panel - Reduced height on mobile */}
-              <div className="w-full lg:w-[35%] h-auto max-h-[35vh] lg:max-h-none lg:h-full border-b lg:border-b-0 lg:border-r border-white/10 bg-gradient-to-br from-black to-black/95 shrink-0 overflow-y-auto lg:overflow-y-visible">
+              {/* Left: Question Panel - Smart height based on question length */}
+              <div className={`w-full lg:w-[35%] h-auto ${
+                currentQuestion.question.length > 200 
+                  ? 'max-h-[40vh]' // More space for long questions
+                  : 'max-h-[30vh]' // Less space for short questions
+              } lg:max-h-none lg:h-full border-b lg:border-b-0 lg:border-r border-white/10 bg-gradient-to-br from-black to-black/95 shrink-0 overflow-y-auto lg:overflow-y-visible custom-scrollbar`}>
                 <QuestionPanel
                   question={currentQuestion}
                   questionNumber={currentIndex + 1}

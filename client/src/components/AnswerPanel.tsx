@@ -24,7 +24,7 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             
             if (isInline) {
               return (
-                <code className="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[0.9em] font-mono border border-primary/20" {...props}>
+                <code className="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[0.85em] font-mono border border-primary/20 whitespace-nowrap" {...props}>
                   {children}
                 </code>
               );
@@ -32,18 +32,18 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             
             if (language === 'mermaid') {
               return (
-                <div className="my-6">
+                <div className="my-4 sm:my-6 w-full clear-both">
                   <EnhancedMermaid chart={codeContent} />
                 </div>
               );
             }
             
             return (
-              <div className="my-6 rounded-lg overflow-hidden border border-white/10 shadow-lg">
-                <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/10">
+              <div className="my-4 sm:my-6 w-full rounded-lg overflow-hidden border border-white/10 shadow-lg clear-both">
+                <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 bg-white/5 border-b border-white/10">
                   <div className="flex items-center gap-2">
-                    <Code2 className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[10px] uppercase tracking-widest text-white/50">{language || 'code'}</span>
+                    <Code2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary shrink-0" />
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/50">{language || 'code'}</span>
                   </div>
                 </div>
                 <SyntaxHighlighter
@@ -51,12 +51,15 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
                   style={vscDarkPlus}
                   customStyle={{ 
                     margin: 0, 
-                    padding: '1.25rem', 
+                    padding: '0.75rem', 
                     background: '#0a0a0a',
-                    fontSize: '0.875rem',
-                    lineHeight: '1.6'
+                    fontSize: '0.7rem',
+                    lineHeight: '1.5',
+                    overflowX: 'auto'
                   }}
                   showLineNumbers={codeContent.split('\n').length > 5}
+                  wrapLines={true}
+                  wrapLongLines={true}
                 >
                   {codeContent}
                 </SyntaxHighlighter>
@@ -64,16 +67,16 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             );
           },
           p({ children }) {
-            return <p className="mb-4 leading-relaxed text-white/85">{children}</p>;
+            return <p className="mb-3 sm:mb-4 leading-relaxed text-white/85 clear-both">{children}</p>;
           },
           h1({ children }) {
-            return <h1 className="text-2xl font-bold mb-4 mt-8 text-white border-b border-white/10 pb-2">{children}</h1>;
+            return <h1 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 mt-4 sm:mt-6 md:mt-8 text-white border-b border-white/10 pb-2 clear-both">{children}</h1>;
           },
           h2({ children }) {
-            return <h2 className="text-xl font-bold mb-3 mt-6 text-white">{children}</h2>;
+            return <h2 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3 mt-4 sm:mt-6 text-white clear-both">{children}</h2>;
           },
           h3({ children }) {
-            return <h3 className="text-lg font-bold mb-2 mt-4 text-white/90">{children}</h3>;
+            return <h3 className="text-sm sm:text-base md:text-lg font-bold mb-2 mt-3 sm:mt-4 text-white/90 clear-both">{children}</h3>;
           },
           strong({ children }) {
             return <strong className="font-bold text-white">{children}</strong>;
@@ -82,19 +85,19 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             return <em className="italic text-primary/90">{children}</em>;
           },
           ul({ children }) {
-            return <ul className="list-none space-y-2 mb-4 ml-4">{children}</ul>;
+            return <ul className="list-none space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 ml-3 sm:ml-4 clear-both">{children}</ul>;
           },
           ol({ children }) {
-            return <ol className="list-none space-y-2 mb-4 ml-4 counter-reset-list">{children}</ol>;
+            return <ol className="list-none space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 ml-3 sm:ml-4 counter-reset-list clear-both">{children}</ol>;
           },
           li({ children, node }) {
             const isOrdered = node?.tagName === 'ol';
             return (
-              <li className="flex gap-3 text-white/80">
-                <span className="text-primary shrink-0 mt-0.5">
+              <li className="flex gap-2 sm:gap-3 text-white/80 clear-both">
+                <span className="text-primary shrink-0 mt-0.5 text-sm">
                   {isOrdered ? '→' : '•'}
                 </span>
-                <span className="flex-1">{children}</span>
+                <span className="flex-1 break-words">{children}</span>
               </li>
             );
           },
@@ -112,13 +115,13 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           },
           blockquote({ children }) {
             return (
-              <blockquote className="border-l-4 border-primary/50 pl-4 py-2 my-4 bg-primary/5 text-white/70 italic">
+              <blockquote className="border-l-4 border-primary/50 pl-3 sm:pl-4 py-2 my-3 sm:my-4 bg-primary/5 text-white/70 italic text-xs sm:text-sm clear-both">
                 {children}
               </blockquote>
             );
           },
           hr() {
-            return <hr className="my-8 border-white/10" />;
+            return <hr className="my-4 sm:my-6 md:my-8 border-white/10 clear-both" />;
           },
         }}
       >
@@ -134,23 +137,25 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
       transition={{ duration: 0.3 }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
-      <div className="max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
-        {/* Diagram Section - Compact on mobile */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 space-y-3 sm:space-y-4 md:space-y-6">
+        {/* Diagram Section - Full width, clear spacing */}
         {question.diagram && (
-          <div className="mb-4 sm:mb-6">
-            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+          <div className="w-full">
+            <div className="flex items-center gap-2 mb-3">
               <div className="w-1 h-4 sm:h-5 bg-primary" />
               <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Diagram</h2>
             </div>
-            <EnhancedMermaid chart={question.diagram} />
+            <div className="w-full mb-4">
+              <EnhancedMermaid chart={question.diagram} />
+            </div>
           </div>
         )}
 
-        {/* Quick Answer Section - Compact on mobile */}
+        {/* Quick Answer Section - Clear separation */}
         {question.answer && question.answer !== question.explanation && (
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg">
+          <div className="w-full p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
               <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-primary">Quick Answer</h2>
             </div>
             <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
@@ -159,10 +164,10 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </div>
         )}
 
-        {/* Detailed Explanation - Smaller text on mobile */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex items-center gap-2 mb-2 sm:mb-3">
-            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/70" />
+        {/* Detailed Explanation - Clear spacing */}
+        <div className="w-full">
+          <div className="flex items-center gap-2 mb-3">
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/70 shrink-0" />
             <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Explanation</h2>
           </div>
           <div className="prose prose-invert max-w-none text-xs sm:text-sm leading-relaxed">
@@ -175,26 +180,26 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg"
+            className="w-full flex items-center gap-3 p-3 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg"
           >
-            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-              <Check className="w-5 h-5 text-green-400" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
             </div>
             <div>
-              <div className="text-sm font-bold text-green-400 uppercase tracking-wide">Completed</div>
-              <div className="text-xs text-green-400/70">You've reviewed this question</div>
+              <div className="text-xs sm:text-sm font-bold text-green-400 uppercase tracking-wide">Completed</div>
+              <div className="text-[10px] sm:text-xs text-green-400/70">You've reviewed this question</div>
             </div>
           </motion.div>
         )}
 
         {/* Tags */}
         {question.tags && question.tags.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <div className="flex flex-wrap gap-2">
+          <div className="w-full pt-4 sm:pt-6 border-t border-white/10">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {question.tags.map(tag => (
                 <span 
                   key={tag} 
-                  className="px-3 py-1 bg-white/5 hover:bg-white/10 text-xs font-mono text-white/60 border border-white/10 rounded-full transition-colors"
+                  className="px-2 sm:px-3 py-0.5 sm:py-1 bg-white/5 hover:bg-white/10 text-[10px] sm:text-xs font-mono text-white/60 border border-white/10 rounded-full transition-colors"
                 >
                   #{tag}
                 </span>
