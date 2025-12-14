@@ -5,7 +5,7 @@ export interface ChannelConfig {
   description: string;
   icon: string;
   color: string;
-  category: 'engineering' | 'data' | 'cloud' | 'security' | 'management' | 'mobile' | 'ai';
+  category: 'engineering' | 'data' | 'cloud' | 'security' | 'management' | 'mobile' | 'ai' | 'testing';
   roles: string[]; // Which roles this channel is recommended for
 }
 
@@ -227,6 +227,44 @@ export const allChannelsConfig: ChannelConfig[] = [
     roles: ['mobile', 'frontend', 'fullstack']
   },
   
+  // Testing & QA
+  {
+    id: 'testing',
+    name: 'Testing',
+    description: 'Unit testing, integration testing, TDD & test strategies',
+    icon: 'check-circle',
+    color: 'text-green-500',
+    category: 'testing',
+    roles: ['frontend', 'backend', 'fullstack', 'mobile', 'qa']
+  },
+  {
+    id: 'e2e-testing',
+    name: 'E2E Testing',
+    description: 'Playwright, Cypress, Selenium & browser automation',
+    icon: 'monitor',
+    color: 'text-purple-500',
+    category: 'testing',
+    roles: ['frontend', 'fullstack', 'qa', 'sdet']
+  },
+  {
+    id: 'api-testing',
+    name: 'API Testing',
+    description: 'REST API testing, contract testing & load testing',
+    icon: 'zap',
+    color: 'text-yellow-500',
+    category: 'testing',
+    roles: ['backend', 'fullstack', 'qa', 'sdet']
+  },
+  {
+    id: 'performance-testing',
+    name: 'Performance Testing',
+    description: 'Load testing, stress testing, JMeter & k6',
+    icon: 'gauge',
+    color: 'text-orange-500',
+    category: 'testing',
+    roles: ['sre', 'backend', 'qa', 'sdet', 'devops']
+  },
+
   // Management & Soft Skills
   {
     id: 'engineering-management',
@@ -270,7 +308,9 @@ export const rolesConfig: RoleConfig[] = [
   { id: 'security', name: 'Security Engineer', description: 'AppSec, Penetration Testing, Compliance', icon: 'shield' },
   { id: 'architect', name: 'Solutions Architect', description: 'System Design, Cloud Architecture', icon: 'cpu' },
   { id: 'manager', name: 'Engineering Manager', description: 'Team Leadership, Hiring, Strategy', icon: 'users' },
-  { id: 'platform', name: 'Platform Engineer', description: 'Developer Experience, Internal Tools', icon: 'box' }
+  { id: 'platform', name: 'Platform Engineer', description: 'Developer Experience, Internal Tools', icon: 'box' },
+  { id: 'qa', name: 'QA Engineer', description: 'Testing, Quality Assurance, Test Automation', icon: 'check-circle' },
+  { id: 'sdet', name: 'SDET', description: 'Software Development Engineer in Test', icon: 'code' }
 ];
 
 // Get recommended channels for a role
@@ -291,6 +331,7 @@ export const categories = [
   { id: 'cloud', name: 'Cloud & DevOps', icon: 'cloud' },
   { id: 'data', name: 'Data', icon: 'database' },
   { id: 'ai', name: 'AI & ML', icon: 'brain' },
+  { id: 'testing', name: 'Testing & QA', icon: 'check-circle' },
   { id: 'security', name: 'Security', icon: 'shield' },
   { id: 'mobile', name: 'Mobile', icon: 'smartphone' },
   { id: 'management', name: 'Management', icon: 'users' }

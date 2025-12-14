@@ -175,6 +175,32 @@ const channelConfigs = {
     { subChannel: 'architecture', tags: ['new-architecture', 'bridgeless'] },
   ],
 
+  // Testing & QA Channels
+  'testing': [
+    { subChannel: 'unit-testing', tags: ['jest', 'mocha', 'pytest', 'junit'] },
+    { subChannel: 'integration-testing', tags: ['api-testing', 'database-testing', 'mocking'] },
+    { subChannel: 'tdd', tags: ['test-driven', 'red-green-refactor', 'test-first'] },
+    { subChannel: 'test-strategies', tags: ['test-pyramid', 'coverage', 'mutation-testing'] },
+  ],
+  'e2e-testing': [
+    { subChannel: 'playwright', tags: ['playwright', 'browser-automation', 'selectors'] },
+    { subChannel: 'cypress', tags: ['cypress', 'component-testing', 'fixtures'] },
+    { subChannel: 'selenium', tags: ['selenium', 'webdriver', 'grid'] },
+    { subChannel: 'visual-testing', tags: ['screenshot', 'visual-regression', 'percy'] },
+  ],
+  'api-testing': [
+    { subChannel: 'rest-testing', tags: ['postman', 'rest-assured', 'supertest'] },
+    { subChannel: 'contract-testing', tags: ['pact', 'consumer-driven', 'schema-validation'] },
+    { subChannel: 'graphql-testing', tags: ['graphql', 'apollo', 'introspection'] },
+    { subChannel: 'mocking', tags: ['wiremock', 'mockserver', 'msw'] },
+  ],
+  'performance-testing': [
+    { subChannel: 'load-testing', tags: ['jmeter', 'k6', 'gatling', 'locust'] },
+    { subChannel: 'stress-testing', tags: ['spike-testing', 'soak-testing', 'breakpoint'] },
+    { subChannel: 'profiling', tags: ['cpu-profiling', 'memory-profiling', 'flame-graphs'] },
+    { subChannel: 'benchmarking', tags: ['latency', 'throughput', 'percentiles'] },
+  ],
+
   // Management & Soft Skills Channels
   'engineering-management': [
     { subChannel: 'team-leadership', tags: ['delegation', 'mentoring', 'growth'] },

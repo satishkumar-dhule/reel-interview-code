@@ -7,7 +7,8 @@ import { motion } from 'framer-motion';
 import { 
   Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, 
   Star, AlertCircle, Sparkles, Plus, Server, Layers, Smartphone, Shield,
-  Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText
+  Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText,
+  CheckCircle, Monitor, Zap, Gauge
 } from 'lucide-react';
 import { useProgress } from '../hooks/use-progress';
 import { useTheme } from '../context/ThemeContext';
@@ -37,7 +38,11 @@ const iconMap: Record<string, React.ReactNode> = {
   'sparkles': <Sparkles className="w-4 h-4 sm:w-6 sm:h-6" />,
   'eye': <Eye className="w-4 h-4 sm:w-6 sm:h-6" />,
   'file-text': <FileText className="w-4 h-4 sm:w-6 sm:h-6" />,
-  'chart': <Activity className="w-4 h-4 sm:w-6 sm:h-6" />
+  'chart': <Activity className="w-4 h-4 sm:w-6 sm:h-6" />,
+  'check-circle': <CheckCircle className="w-4 h-4 sm:w-6 sm:h-6" />,
+  'monitor': <Monitor className="w-4 h-4 sm:w-6 sm:h-6" />,
+  'zap': <Zap className="w-4 h-4 sm:w-6 sm:h-6" />,
+  'gauge': <Gauge className="w-4 h-4 sm:w-6 sm:h-6" />
 };
 
 // Channel Card Component
