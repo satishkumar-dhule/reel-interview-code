@@ -703,9 +703,9 @@
   },
   {
     "id": "gh-48",
-    "question": "What are DaemonSets in Kubernetes?",
-    "answer": "DaemonSets ensure that all (or some) nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them.",
-    "explanation": "DaemonSets ensure that all (or some) nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them.\n\nUse cases:\n1. **Monitoring Agents**\n2. **Log Collectors**\n3. **Node-level Storage**\n4. **Network Plugins**\n\nExample of DaemonSet:\n```yaml\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\nname: fluentd-elasticsearch\nspec:\nselector:\nmatchLabels:\nname: fluentd-elasticsearch\ntemplate:\nmetadata:\nlabels:\nname: fluentd-elasticsearch\nspec:\ncontainers:\n- name: fluentd-elasticsearch\nimage: quay.io/fluentd_elasticsearch/fluentd:v2.5.2\n```",
+    "question": "What are DaemonSets in Kubernetes and how do they ensure node-level service deployment?",
+    "answer": "DaemonSets automatically deploy and maintain one Pod per node, ensuring node-level services run consistently across the entire cluster.",
+    "explanation": "DaemonSets are Kubernetes workload controllers that guarantee exactly one Pod runs on each eligible node in the cluster. They're essential for deploying node-level services that need to run everywhere.\n\n## Key Characteristics\n\n### 1. **Node Coverage Guarantee**\n- **Automatic Deployment**: Creates one Pod per node as nodes join the cluster\n- **Self-Healing**: Restarts failed Pods and replaces missing ones\n- **Node Selectivity**: Can target specific nodes using node selectors or taints/tolerations\n\n### 2. **Common Use Cases**\n- **Monitoring Agents**: Prometheus node exporter, Datadog agent\n- **Log Collection**: Fluentd, Logstash, Filebeat\n- **Network Plugins**: Calico CNI, Weave Net, Flannel\n- **Storage Solutions**: GlusterFS, Ceph OSDs\n- **Security Tools**: Falco, Sysdig, security scanners\n\n### 3. **Deployment Strategies**\n- **All Nodes**: Default behavior - runs on every cluster node\n- **Selective Nodes**: Use node selectors for specific node types\n- **Tolerated Nodes**: Deploy on tainted nodes (e.g., master nodes)\n\n## Example DaemonSet Configuration\n\n```yaml\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd-logging\n  labels:\n    app: fluentd-logging\nspec:\n  selector:\n    matchLabels:\n      app: fluentd-logging\n  template:\n    metadata:\n      labels:\n        app: fluentd-logging\n    spec:\n      tolerations:\n      - key: node-role.kubernetes.io/master\n        effect: NoSchedule\n      containers:\n      - name: fluentd\n        image: fluent/fluentd:v1.14-debian-1\n        resources:\n          limits:\n            memory: 200Mi\n          requests:\n            cpu: 100m\n            memory: 200Mi\n        volumeMounts:\n        - name: varlog\n          mountPath: /var/log\n        - name: varlibdockercontainers\n          mountPath: /var/lib/docker/containers\n          readOnly: true\n      volumes:\n      - name: varlog\n        hostPath:\n          path: /var/log\n      - name: varlibdockercontainers\n        hostPath:\n          path: /var/lib/docker/containers\n```",
     "tags": [
       "k8s",
       "advanced"
@@ -713,7 +713,8 @@
     "difficulty": "advanced",
     "channel": "devops",
     "subChannel": "kubernetes",
-    "lastUpdated": "2025-12-12T09:07:04.187Z"
+    "lastUpdated": "2025-12-12T09:07:04.187Z",
+    "diagram": "graph TD\n    subgraph \"DaemonSet Controller\"\n        A[DaemonSet Controller] --> B[Pod Management]\n        B --> C[Node 1: fluentd-pod]\n        B --> D[Node 2: fluentd-pod]\n        B --> E[Node 3: fluentd-pod]\n        B --> F[Node N: fluentd-pod]\n    end\n    \n    subgraph \"Cluster Nodes\"\n        G[Node 1] --> C\n        H[Node 2] --> D\n        I[Node 3] --> E\n        J[Node N] --> F\n        \n        C --> K[Host Path: /var/log]\n        D --> L[Host Path: /var/log]\n        E --> M[Host Path: /var/log]\n        F --> N[Host Path: /var/log]\n    end\n    \n    subgraph \"Node Lifecycle\"\n        O[New Node Added] --> P[DaemonSet Detects]\n        P --> Q[Creates Pod on New Node]\n        R[Node Removed] --> S[Pod Terminated]\n    end\n    \n    T[Cluster Events] --> A\n    U[API Server] --> A\n    \n    style A fill:#e1f5fe\n    style C fill:#c8e6c9\n    style D fill:#c8e6c9\n    style E fill:#c8e6c9\n    style F fill:#c8e6c9\n    style K fill:#fff3e0\n    style L fill:#fff3e0\n    style M fill:#fff3e0\n    style N fill:#fff3e0"
   },
   {
     "id": "gh-49",
