@@ -1269,18 +1269,6 @@
       ],
       "lastUpdated": "2025-12-12T09:07:04.187Z"
     },
-    "gh-98": {
-      "id": "gh-98",
-      "question": "What is Observability?",
-      "answer": "Observability is a measure of how well you can understand the internal state or condition of a complex system based only on knowledge of its external ...",
-      "explanation": "Observability is a measure of how well you can understand the internal state or condition of a complex system based only on knowledge of its external outputs (logs, metrics, traces). It's about being able to ask arbitrary questions about your system's behavior without having to pre-define all possible failure modes or dashboards in advance. While monitoring tells you *whether* a system is working, observability helps you understand *why* it isn't (or is) working.\n\n**Three Pillars of Observability:**\n1.  **Logs:**\n*   **What:** Immutable, timestamped records of discrete events that happened over time. Logs provide detailed, context-rich information about specific occurrences.\n*   **Use Cases:** Debugging specific errors, auditing, understanding event sequences.\n*   **Examples:** Application logs (e.g., stack traces), system logs, audit logs, web server access logs.\n2.  **Metrics:**\n*   **What:** Aggregated numerical representations of data about your system measured over intervals of time. Metrics are good for understanding trends, patterns, and overall system health.\n*   **Use Cases:** Dashboarding, alerting on thresholds, capacity planning, trend analysis.\n*   **Examples:** CPU utilization, memory usage, request counts, error rates, queue lengths, latency percentiles.\n3.  **Traces (Distributed Tracing):**\n*   **What:** Show the lifecycle of a request as it flows through a distributed system. A single trace is composed of multiple \"spans,\" where each span represents a unit of work (e.g., an API call, a database query) within a service.\n*   **Use Cases:** Understanding request paths, identifying bottlenecks in distributed systems, debugging latency issues, visualizing service dependencies.\n*   **Examples:** A trace showing a user request hitting an API gateway, then an authentication service, then a product service, and finally a database.\n\n**Diagram: The Three Pillars**\n```mermaid\ngraph TD\nO[Observability] --> L[Logs]\nO --> M[Metrics]\nO --> T[Traces]\n\nL --Provides--> LD[Detailed Event Context]\nM --Provides--> MA[Aggregated System Health & Trends]\nT --Provides--> TP[Request Flow & Bottleneck Analysis]\n\nsubgraph System\nApp1[Application/Service 1]\nApp2[Application/Service 2]\nApp3[Infrastructure]\nend\n\nApp1 --> L\nApp1 --> M\nApp1 -- Generates Spans For --> T\nApp2 --> L\nApp2 --> M\nApp2 -- Generates Spans For --> T\nApp3 --> L\nApp3 --> M\n```\n\n**Why is Observability Important?**\n*   **Complex Systems:** Modern applications are often distributed, microservice-based, and run on dynamic infrastructure, making them harder to understand and debug.\n*   **Unknown Unknowns:** Observability helps investigate issues you didn't anticipate or for which you don't have pre-built dashboards.\n*   **Faster Debugging & MTTR:** Enables quicker root cause analysis when incidents occur.\n*   **Better Performance Understanding:** Provides deep insights into how different parts of the system interact and perform.\n*   **Proactive Issue Detection:** While often used reactively, rich observability data can help identify anomalies before they become major problems.\n\n**Monitoring vs. Observability:**\n*   **Monitoring:** Typically involves collecting predefined sets of metrics and alerting when these metrics cross certain thresholds. It answers known questions (e.g., \"Is the CPU over 80%?\").\n*   **Observability:** Provides the tools and data to explore and understand system behavior, enabling you to answer new questions about states you didn't predict. It helps explore the unknown unknowns.\nMonitoring is a part of observability, but observability encompasses a broader capability to interrogate your system.\n\n**Key Enablers for Observability:**\n*   **Rich Instrumentation:** Applications and infrastructure must be thoroughly instrumented to emit quality logs, metrics, and traces.\n*   **Correlation:** The ability to correlate data across logs, metrics, and traces is crucial (e.g., linking a specific log entry to a trace ID and relevant metrics).\n*   **High Cardinality Data:** Ability to analyze data with many unique attribute values (e.g., user IDs, request IDs).\n*   **Querying & Analytics:** Powerful tools to query, visualize, and analyze the collected telemetry data.",
-      "difficulty": "advanced",
-      "tags": [
-        "advanced",
-        "cloud"
-      ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
-    },
     "gh-99": {
       "id": "gh-99",
       "question": "What is Tracing in Observability?",
@@ -2398,5 +2386,5 @@
       "lastUpdated": "2025-12-14T10:25:58.352Z"
     }
   },
-  "lastUpdated": "2025-12-14T10:25:58.353Z"
+  "lastUpdated": "2025-12-14T12:46:02.653Z"
 }
