@@ -198,10 +198,11 @@ export default function Reels() {
     setIsActive(true);
   }, [currentIndex, timerDuration, timerEnabled]);
 
-  // Track question view when it changes
+  // Track question view when it changes and mark as completed
   useEffect(() => {
     if (currentQuestion) {
       trackQuestionView(currentQuestion.id, currentQuestion.channel, currentQuestion.difficulty);
+      markCompleted(currentQuestion.id);
     }
   }, [currentIndex]);
 

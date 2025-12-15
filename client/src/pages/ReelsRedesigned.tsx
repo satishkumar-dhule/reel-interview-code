@@ -306,6 +306,7 @@ export default function ReelsRedesigned() {
   useEffect(() => {
     if (currentQuestion) {
       trackQuestionView(currentQuestion.id, currentQuestion.channel, currentQuestion.difficulty);
+      markCompleted(currentQuestion.id);
     }
   }, [currentIndex]);
 
