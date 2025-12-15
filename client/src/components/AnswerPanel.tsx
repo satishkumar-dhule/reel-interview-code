@@ -1,10 +1,14 @@
-import { motion } from 'framer-motion';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EnhancedMermaid } from './EnhancedMermaid';
 import { YouTubePlayer } from './YouTubePlayer';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ReactMarkdown from 'react-markdown';
-import { Check, BookOpen, Code2, Lightbulb, ExternalLink, Building2 } from 'lucide-react';
+import { 
+  Check, BookOpen, Code2, Lightbulb, ExternalLink, Building2, 
+  ChevronDown, ChevronUp 
+} from 'lucide-react';
 import type { Question } from '../lib/data';
 
 interface AnswerPanelProps {
@@ -12,7 +16,123 @@ interface AnswerPanelProps {
   isCompleted: boolean;
 }
 
+interface CollapsibleSectionProps {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  accentColor?: string;
+  onVisibilityChange?: (id: string, isVisible: boolean) => void;
+}
+
+function CollapsibleSection({ 
+  id, 
+  title, 
+  icon, 
+  children, 
+  defaultExpanded = true,
+  accentColor = 'primary',
+  onVisibilityChange 
+}: CollapsibleSectionProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [hasBeenViewed, setHasBeenViewed] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Track when section enters/exits viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setHasBeenViewed(true);
+            setIsExpanded(true);
+          } else if (hasBeenViewed && entry.boundingClientRect.top < 0) {
+            // Section has scrolled above viewport - collapse it
+            setIsExpanded(false);
+          }
+          onVisibilityChange?.(id, entry.isIntersecting);
+        });
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '-50px 0px -50px 0px'
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [id, hasBeenViewed, onVisibilityChange]);
+
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
+
+  const accentClasses = {
+    primary: 'bg-primary',
+    blue: 'bg-blue-500',
+    green: 'bg-green-500',
+    yellow: 'bg-yellow-500',
+    red: 'bg-red-500',
+  };
+
+  return (
+    <div ref={sectionRef} className="w-full mb-4 sm:mb-6 clear-both">
+      <button
+        onClick={toggleExpanded}
+        className="w-full flex items-center justify-between gap-2 mb-2 group cursor-pointer"
+      >
+        <div className="flex items-center gap-2">
+          <div className={`w-1 h-4 sm:h-5 ${accentClasses[accentColor as keyof typeof accentClasses] || accentClasses.primary} transition-all ${isExpanded ? 'opacity-100' : 'opacity-50'}`} />
+          <span className="text-white/70">{icon}</span>
+          <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+            {title}
+          </h2>
+        </div>
+        <motion.div
+          animate={{ rotate: isExpanded ? 0 : -90 }}
+          transition={{ duration: 0.2 }}
+          className="text-white/50 group-hover:text-white transition-colors"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </motion.div>
+      </button>
+      
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+
 export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleVisibilityChange = useCallback((id: string, isVisible: boolean) => {
+    setVisibleSections(prev => {
+      const next = new Set(prev);
+      if (isVisible) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  }, []);
+
   const renderMarkdown = (text: string) => {
     return (
       <ReactMarkdown
@@ -131,15 +251,17 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
     );
   };
 
+
   return (
     <motion.div
+      ref={scrollContainerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
-      <div className="max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 space-y-4 sm:space-y-5 md:space-y-7">
-        {/* Companies Section */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 space-y-2">
+        {/* Companies Section - Non-collapsible, always visible */}
         {question.companies && question.companies.length > 0 && (
           <div className="w-full mb-4 sm:mb-6 clear-both">
             <div className="flex items-center gap-2 p-2 sm:p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
@@ -159,52 +281,68 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </div>
         )}
 
-        {/* Video Explanations */}
+        {/* Video Explanations - Collapsible */}
         {(question.videos?.shortVideo || question.videos?.longVideo) && (
-          <YouTubePlayer 
-            shortVideo={question.videos.shortVideo} 
-            longVideo={question.videos.longVideo} 
-          />
+          <CollapsibleSection
+            id="videos"
+            title="Video Explanations"
+            icon={<Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            accentColor="red"
+            onVisibilityChange={handleVisibilityChange}
+          >
+            <YouTubePlayer 
+              shortVideo={question.videos.shortVideo} 
+              longVideo={question.videos.longVideo} 
+            />
+          </CollapsibleSection>
         )}
 
-        {/* Diagram Section - Full width, clear spacing */}
+        {/* Diagram Section - Collapsible */}
         {question.diagram && (
-          <div className="w-full mb-6 sm:mb-8 clear-both">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-1 h-4 sm:h-5 bg-primary" />
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Diagram</h2>
-            </div>
-            <div className="w-full mb-6">
+          <CollapsibleSection
+            id="diagram"
+            title="Diagram"
+            icon={<Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            accentColor="primary"
+            onVisibilityChange={handleVisibilityChange}
+          >
+            <div className="w-full">
               <EnhancedMermaid chart={question.diagram} />
             </div>
-          </div>
+          </CollapsibleSection>
         )}
 
-        {/* Quick Answer Section - Clear separation */}
+        {/* Quick Answer Section - Collapsible */}
         {question.answer && question.answer !== question.explanation && (
-          <div className="w-full p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg mb-6 sm:mb-8 clear-both">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-primary">Quick Answer</h2>
+          <CollapsibleSection
+            id="quick-answer"
+            title="Quick Answer"
+            icon={<Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            accentColor="yellow"
+            onVisibilityChange={handleVisibilityChange}
+          >
+            <div className="p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg">
+              <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
+                {question.answer}
+              </p>
             </div>
-            <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
-              {question.answer}
-            </p>
-          </div>
+          </CollapsibleSection>
         )}
 
-        {/* Detailed Explanation - Clear spacing */}
-        <div className="w-full mb-6 sm:mb-8 clear-both">
-          <div className="flex items-center gap-2 mb-3">
-            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/70 shrink-0" />
-            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/70">Explanation</h2>
-          </div>
+        {/* Detailed Explanation - Collapsible */}
+        <CollapsibleSection
+          id="explanation"
+          title="Explanation"
+          icon={<BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+          accentColor="primary"
+          onVisibilityChange={handleVisibilityChange}
+        >
           <div className="prose prose-invert max-w-none text-xs sm:text-sm leading-relaxed">
             {renderMarkdown(question.explanation)}
           </div>
-        </div>
+        </CollapsibleSection>
 
-        {/* Completion Badge */}
+        {/* Completion Badge - Non-collapsible */}
         {isCompleted && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -221,7 +359,7 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </motion.div>
         )}
 
-        {/* Tags */}
+        {/* Tags - Non-collapsible */}
         {question.tags && question.tags.length > 0 && (
           <div className="w-full pt-4 sm:pt-6 border-t border-white/10">
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -237,7 +375,7 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </div>
         )}
 
-        {/* Source Link */}
+        {/* Source Link - Non-collapsible */}
         {question.sourceUrl && (
           <div className="w-full pt-4 sm:pt-6 border-t border-white/10">
             <a
