@@ -151,12 +151,12 @@ export function QuestionPanel({
           </div>
         )}
 
-        {/* Timer display - Compact on mobile */}
+        {/* Timer display - Hidden on mobile */}
         {timerEnabled && timeLeft > 0 && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 bg-primary/5 border-l-4 border-primary rounded"
+            className="hidden sm:inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 bg-primary/5 border-l-4 border-primary rounded"
           >
             <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
             <div>

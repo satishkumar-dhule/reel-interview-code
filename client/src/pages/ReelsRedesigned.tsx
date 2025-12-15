@@ -140,7 +140,9 @@ export default function ReelsRedesigned() {
   const { completed, markCompleted, lastVisitedIndex, saveLastVisitedIndex } = useProgress(channelId || '');
   const { toast } = useToast();
   const [showAnswer, setShowAnswer] = useState(false);
-  const [timerEnabled, setTimerEnabled] = useState(true);
+  // Disable timer on mobile devices
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const [timerEnabled, setTimerEnabled] = useState(!isMobile);
   const [timerDuration, setTimerDuration] = useState(60);
   const [timeLeft, setTimeLeft] = useState(timerDuration);
   const [isActive, setIsActive] = useState(true);
@@ -165,14 +167,19 @@ export default function ReelsRedesigned() {
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progressPercent = totalQuestions > 0 ? ((currentIndex + 1) / totalQuestions) * 100 : 0;
 
-  // Load timer settings
+  // Load timer settings (disabled on mobile)
   useEffect(() => {
-    const savedTimerEnabled = localStorage.getItem('timer-enabled');
-    const savedTimerDuration = localStorage.getItem('timer-duration');
-    if (savedTimerEnabled !== null) setTimerEnabled(savedTimerEnabled === 'true');
-    if (savedTimerDuration !== null) setTimerDuration(parseInt(savedTimerDuration));
+    if (isMobile) {
+      setTimerEnabled(false);
+      setShowAnswer(true);
+    } else {
+      const savedTimerEnabled = localStorage.getItem('timer-enabled');
+      const savedTimerDuration = localStorage.getItem('timer-duration');
+      if (savedTimerEnabled !== null) setTimerEnabled(savedTimerEnabled === 'true');
+      if (savedTimerDuration !== null) setTimerDuration(parseInt(savedTimerDuration));
+    }
     trackActivity();
-  }, []);
+  }, [isMobile]);
 
   const handleTimerEnabledChange = (enabled: boolean) => {
     setTimerEnabled(enabled);
@@ -633,48 +640,50 @@ export default function ReelsRedesigned() {
               </Popover.Portal>
             </Popover.Root>
 
-            {/* Timer Settings */}
-            <Popover.Root>
-              <Popover.Trigger asChild>
-                <button className="flex items-center gap-2 hover:text-primary transition-colors" title="Timer Settings">
-                  <Settings className="w-4 h-4 opacity-50" />
-                  {timerEnabled ? (
-                    <span className="font-mono text-xs text-primary">{String(timeLeft).padStart(2, '0')}s</span>
-                  ) : (
-                    <span className="text-xs text-white/30">OFF</span>
-                  )}
-                </button>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content className="bg-black border border-white/20 p-4 w-72 z-50 shadow-xl" sideOffset={5}>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/70">Enable Timer</label>
-                      <Switch.Root checked={timerEnabled} onCheckedChange={handleTimerEnabledChange} className="w-[42px] h-[25px] bg-white/10 rounded-full relative data-[state=checked]:bg-primary outline-none cursor-default">
-                        <Switch.Thumb className="block w-[21px] h-[21px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
-                      </Switch.Root>
-                    </div>
+            {/* Timer Settings - Hidden on mobile */}
+            <div className="hidden sm:block">
+              <Popover.Root>
+                <Popover.Trigger asChild>
+                  <button className="flex items-center gap-2 hover:text-primary transition-colors" title="Timer Settings">
+                    <Settings className="w-4 h-4 opacity-50" />
+                    {timerEnabled ? (
+                      <span className="font-mono text-xs text-primary">{String(timeLeft).padStart(2, '0')}s</span>
+                    ) : (
+                      <span className="text-xs text-white/30">OFF</span>
+                    )}
+                  </button>
+                </Popover.Trigger>
+                <Popover.Portal>
+                  <Popover.Content className="bg-black border border-white/20 p-4 w-72 z-50 shadow-xl" sideOffset={5}>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold uppercase tracking-widest text-white/70">Enable Timer</label>
+                        <Switch.Root checked={timerEnabled} onCheckedChange={handleTimerEnabledChange} className="w-[42px] h-[25px] bg-white/10 rounded-full relative data-[state=checked]:bg-primary outline-none cursor-default">
+                          <Switch.Thumb className="block w-[21px] h-[21px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                        </Switch.Root>
+                      </div>
 
-                    <div className={`space-y-3 ${!timerEnabled ? 'opacity-30 pointer-events-none' : ''}`}>
-                      <div className="flex justify-between">
-                        <label className="text-xs font-bold uppercase tracking-widest text-white/70">Duration</label>
-                        <span className="text-xs font-mono text-primary">{timerDuration}s</span>
-                      </div>
-                      <Slider.Root className="relative flex items-center select-none touch-none w-full h-5" defaultValue={[timerDuration]} max={300} min={10} step={10} onValueChange={handleTimerDurationChange} disabled={!timerEnabled}>
-                        <Slider.Track className="bg-white/10 relative grow rounded-full h-[3px]">
-                          <Slider.Range className="absolute bg-primary rounded-full h-full" />
-                        </Slider.Track>
-                        <Slider.Thumb className="block w-4 h-4 bg-white rounded-full hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors" />
-                      </Slider.Root>
-                      <div className="flex justify-between text-[10px] text-white/30">
-                        <span>10s</span>
-                        <span>300s</span>
+                      <div className={`space-y-3 ${!timerEnabled ? 'opacity-30 pointer-events-none' : ''}`}>
+                        <div className="flex justify-between">
+                          <label className="text-xs font-bold uppercase tracking-widest text-white/70">Duration</label>
+                          <span className="text-xs font-mono text-primary">{timerDuration}s</span>
+                        </div>
+                        <Slider.Root className="relative flex items-center select-none touch-none w-full h-5" defaultValue={[timerDuration]} max={300} min={10} step={10} onValueChange={handleTimerDurationChange} disabled={!timerEnabled}>
+                          <Slider.Track className="bg-white/10 relative grow rounded-full h-[3px]">
+                            <Slider.Range className="absolute bg-primary rounded-full h-full" />
+                          </Slider.Track>
+                          <Slider.Thumb className="block w-4 h-4 bg-white rounded-full hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors" />
+                        </Slider.Root>
+                        <div className="flex justify-between text-[10px] text-white/30">
+                          <span>10s</span>
+                          <span>300s</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
+                  </Popover.Content>
+                </Popover.Portal>
+              </Popover.Root>
+            </div>
 
             <button onClick={handleShare} className="hover:text-primary transition-colors" title="Share">
               <Share2 className="w-4 h-4" />
