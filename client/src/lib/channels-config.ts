@@ -197,6 +197,33 @@ export const allChannelsConfig: ChannelConfig[] = [
     category: 'engineering',
     roles: ['sre', 'devops', 'security', 'backend']
   },
+  {
+    id: 'operating-systems',
+    name: 'Operating Systems',
+    description: 'OS concepts, processes, memory & file systems',
+    icon: 'monitor',
+    color: 'text-slate-500',
+    category: 'engineering',
+    roles: ['backend', 'sre', 'devops', 'security', 'platform']
+  },
+  {
+    id: 'linux',
+    name: 'Linux',
+    description: 'Linux administration, shell scripting & system tools',
+    icon: 'terminal',
+    color: 'text-yellow-600',
+    category: 'engineering',
+    roles: ['backend', 'sre', 'devops', 'security', 'platform', 'data-engineer']
+  },
+  {
+    id: 'unix',
+    name: 'Unix',
+    description: 'Unix fundamentals, commands & system programming',
+    icon: 'terminal',
+    color: 'text-gray-500',
+    category: 'engineering',
+    roles: ['backend', 'sre', 'devops', 'security', 'platform']
+  },
   
   // Mobile
   {

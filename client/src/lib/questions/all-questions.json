@@ -3845,7 +3845,85 @@
         "Uber"
       ],
       "lastUpdated": "2025-12-15T10:58:14.325Z"
+    },
+    "q-263": {
+      "id": "q-263",
+      "question": "How does demand paging work in virtual memory systems?",
+      "answer": "Pages load on-demand when accessed, not upfront.",
+      "explanation": "## Concept\nDemand paging loads pages into memory only when accessed, reducing initial memory footprint.\n\n## Implementation\n```c\n// Page fault handler\nif (!page_in_memory(virtual_address)) {\n    load_page_from_disk(virtual_address);\n    restart_instruction();\n}\n```\n\n## Trade-offs\n- **Pros**: Lower memory usage, faster startup\n- **Cons**: Page fault latency, thrashing\n\n## Pitfalls\n- Thrashing under memory pressure\n- Working set estimation errors",
+      "tags": [
+        "virtual-memory",
+        "paging",
+        "segmentation",
+        "cache"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart TD\n    A[Page Access] --> B{Page in RAM?}\n    B -->|No| C[Page Fault]\n    C --> D[Load from Disk]\n   D --> E[Update Page Table]\nE --> F[Restart Access]\nB -->|Yes| F",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Microsoft"
+      ],
+      "lastUpdated": "2025-12-15T13:27:53.972Z"
+    },
+    "q-264": {
+      "id": "q-264",
+      "question": "How do pipes work in Unix?",
+      "answer": "Pipes connect processes for data flow.",
+      "explanation": "## Concept\n\nPipes are unidirectional communication channels between processes.\n\n## Implementation\n\n```c\nint fd[2];\npipe(fd);\n```\n\n## Trade-offs\n\n- Pro: Simple IPC\n- Con: One-way only\n\n## Pitfalls\n\n- Buffer overflow risk\n- No bidirectional",
+      "tags": [
+        "posix",
+        "signals",
+        "pipes",
+        "sockets"
+      ],
+      "difficulty": "beginner",
+      "diagram": "graph LR\n    A[Process A] -->|writes| B[Process B]",
+      "sourceUrl": "https://man7.org/linux/man-pages/pipe.2",
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "lastUpdated": "2025-12-15T13:56:12.990Z"
+    },
+    "q-265": {
+      "id": "q-265",
+      "question": "How would you implement a system monitoring tool that combines htop, strace, and lsof functionality?",
+      "answer": "Use a modular architecture with separate modules for process monitoring, system calls, and network connections.",
+      "explanation": "## Concept\n\n## Implementation\n\n## Trade-offs\n\n## Pitfalls",
+      "tags": [
+        "top",
+        "htop",
+        "strace",
+        "lsof"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart LR\n    A[Main] --> B[Process Monitor]\n    A --> C[Strace Module]\n    A --> D[Network Monitor]",
+      "sourceUrl": "https://man7.org/linux/man-pages/",
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "lastUpdated": "2025-12-15T14:02:17.822Z"
     }
   },
-  "lastUpdated": "2025-12-15T10:58:14.328Z"
+  "lastUpdated": "2025-12-15T14:02:17.825Z"
 }

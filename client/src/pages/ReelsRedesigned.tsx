@@ -10,8 +10,9 @@ import { trackQuestionView, trackAnswerRevealed } from '../hooks/use-analytics';
 import { 
   ArrowLeft, ArrowRight, Share2, ChevronDown, Check, List, 
   Flag, Grid3X3, LayoutList, Zap, Target, Flame, Star, AlertCircle, 
-  Terminal, Bookmark, Settings, Building2
+  Terminal, Bookmark, Settings, Building2, Search
 } from 'lucide-react';
+import { SearchModal } from '../components/SearchModal';
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -169,6 +170,9 @@ export default function ReelsRedesigned() {
   const [subChannelDropdownOpen, setSubChannelDropdownOpen] = useState(false);
   const [difficultyDropdownOpen, setDifficultyDropdownOpen] = useState(false);
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
+  
+  // Search modal state
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [markedQuestions, setMarkedQuestions] = useState<string[]>(() => {
     const saved = localStorage.getItem(`marked-${channelId}`);
     return saved ? JSON.parse(saved) : [];
@@ -197,11 +201,13 @@ export default function ReelsRedesigned() {
     // Clear any existing timeout
     if (navHintTimeoutRef.current) {
       clearTimeout(navHintTimeoutRef.current);
+      navHintTimeoutRef.current = null;
     }
     setShowNavHint(false);
     
-    // Don't show hint on last question
-    if (isLastQuestion) return;
+    // Don't show hint on last question (check inline to avoid dependency issues)
+    const isLast = totalQuestions > 0 && currentIndex === totalQuestions - 1;
+    if (isLast || totalQuestions === 0) return;
     
     // Set timeout to show hint after 10 seconds
     navHintTimeoutRef.current = setTimeout(() => {
@@ -213,9 +219,10 @@ export default function ReelsRedesigned() {
     return () => {
       if (navHintTimeoutRef.current) {
         clearTimeout(navHintTimeoutRef.current);
+        navHintTimeoutRef.current = null;
       }
     };
-  }, [currentIndex, isLastQuestion]);
+  }, [currentIndex, totalQuestions]);
 
   // Load timer settings (disabled on mobile)
   useEffect(() => {
@@ -243,34 +250,39 @@ export default function ReelsRedesigned() {
     localStorage.setItem('timer-duration', String(duration));
   };
 
-  // Sync with URL
+  // Sync currentIndex with URL on initial load or URL change
+  const lastSyncedIndexRef = useRef<number | null>(null);
+  
   useEffect(() => {
     if (totalQuestions === 0) return;
+    
     if (hasIndexInUrl && paramIndex !== null) {
-      if (paramIndex >= totalQuestions) {
-        setCurrentIndex(0);
-      } else if (paramIndex >= 0) {
-        setCurrentIndex(paramIndex);
+      const validIndex = paramIndex >= totalQuestions ? 0 : Math.max(0, paramIndex);
+      // Only update if the URL index is different from what we last synced
+      if (lastSyncedIndexRef.current !== validIndex) {
+        setCurrentIndex(validIndex);
+        lastSyncedIndexRef.current = validIndex;
       }
-    } else {
-      if (lastVisitedIndex > 0 && lastVisitedIndex < totalQuestions) {
-        setCurrentIndex(lastVisitedIndex);
-        setLocation(`/channel/${channelId}/${lastVisitedIndex}`, { replace: true });
-      } else {
-        setCurrentIndex(0);
-      }
+    } else if (lastSyncedIndexRef.current === null) {
+      // Only set from lastVisitedIndex on first load without URL index
+      const idx = (lastVisitedIndex > 0 && lastVisitedIndex < totalQuestions) ? lastVisitedIndex : 0;
+      setCurrentIndex(idx);
+      lastSyncedIndexRef.current = idx;
     }
-  }, [hasIndexInUrl, paramIndex, totalQuestions, lastVisitedIndex, channelId]);
+  }, [hasIndexInUrl, paramIndex, totalQuestions, lastVisitedIndex]);
 
+  // Update URL when currentIndex changes from user interaction
   useEffect(() => {
     if (channelId && totalQuestions > 0) {
+      // Only update URL if currentIndex differs from what's in the URL
       const urlIndex = hasIndexInUrl ? paramIndex : null;
-      if (currentIndex !== urlIndex) {
+      if (urlIndex !== currentIndex) {
         setLocation(`/channel/${channelId}/${currentIndex}`, { replace: true });
       }
       saveLastVisitedIndex(currentIndex);
+      lastSyncedIndexRef.current = currentIndex;
     }
-  }, [currentIndex, channelId, totalQuestions]);
+  }, [currentIndex, channelId, totalQuestions, hasIndexInUrl, paramIndex, saveLastVisitedIndex]);
 
   // Timer logic
   useEffect(() => {
@@ -312,6 +324,16 @@ export default function ReelsRedesigned() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl+K to open search
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSearchModal(true);
+        return;
+      }
+      
+      // Don't handle navigation if search modal is open
+      if (showSearchModal) return;
+      
       // Close dropdowns on any arrow key navigation
       if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         closeAllDropdowns();
@@ -333,7 +355,7 @@ export default function ReelsRedesigned() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, showAnswer, totalQuestions, closeAllDropdowns]);
+  }, [currentIndex, showAnswer, totalQuestions, closeAllDropdowns, showSearchModal]);
 
   const nextQuestion = () => {
     if (currentIndex < totalQuestions - 1) {
@@ -523,8 +545,8 @@ export default function ReelsRedesigned() {
             
             <div className="h-4 w-px bg-white/20 hidden sm:block shrink-0" />
             
-            <div className="flex items-center gap-1 sm:gap-2 min-w-0 overflow-hidden">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary truncate max-w-[80px] sm:max-w-none">{channel.name}</span>
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary shrink-0">{channel.name}</span>
               
               {/* Subchannel dropdown - hidden on very small screens */}
               {channel.subChannels && (
@@ -636,6 +658,18 @@ export default function ReelsRedesigned() {
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Search button */}
+            <button 
+              onClick={() => setShowSearchModal(true)}
+              className="flex items-center gap-1.5 p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors group"
+              title="Search questions (⌘K)"
+            >
+              <Search className="w-4 h-4 text-white/70 group-hover:text-white" />
+              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] text-white/40 bg-white/5 border border-white/10 rounded">
+                ⌘K
+              </kbd>
+            </button>
+            
             {/* GitHub links - hidden on mobile */}
             <div className="hidden sm:flex gap-1 mr-2">
               <a href="https://github.com/satishkumar-dhule/code-reels/issues/new" target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors" title="Report Issue">
@@ -967,6 +1001,9 @@ export default function ReelsRedesigned() {
           </div>
         </div>
       </div>
+      
+      {/* Search Modal */}
+      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
     </>
   );
 }

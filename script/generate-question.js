@@ -156,6 +156,25 @@ const channelConfigs = {
     { subChannel: 'load-balancing', tags: ['l4', 'l7', 'consistent-hashing'] },
     { subChannel: 'cdn', tags: ['edge', 'caching', 'purging'] },
   ],
+  
+  // Operating Systems Channels
+  'operating-systems': [
+    { subChannel: 'processes', tags: ['process', 'threads', 'scheduling', 'context-switch'] },
+    { subChannel: 'memory', tags: ['virtual-memory', 'paging', 'segmentation', 'cache'] },
+    { subChannel: 'file-systems', tags: ['inodes', 'ext4', 'ntfs', 'journaling'] },
+    { subChannel: 'concurrency', tags: ['mutex', 'semaphore', 'deadlock', 'race-condition'] },
+  ],
+  'linux': [
+    { subChannel: 'administration', tags: ['systemd', 'cron', 'users', 'permissions'] },
+    { subChannel: 'shell-scripting', tags: ['bash', 'awk', 'sed', 'grep'] },
+    { subChannel: 'system-tools', tags: ['top', 'htop', 'strace', 'lsof'] },
+    { subChannel: 'networking', tags: ['iptables', 'netstat', 'ss', 'tcpdump'] },
+  ],
+  'unix': [
+    { subChannel: 'fundamentals', tags: ['posix', 'signals', 'pipes', 'sockets'] },
+    { subChannel: 'commands', tags: ['find', 'xargs', 'cut', 'sort'] },
+    { subChannel: 'system-programming', tags: ['fork', 'exec', 'ipc', 'shared-memory'] },
+  ],
 
   // Mobile Channels
   'ios': [

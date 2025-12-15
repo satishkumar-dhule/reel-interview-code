@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useChannelStats } from '../hooks/use-stats';
 import { useUserPreferences } from '../context/UserPreferencesContext';
-import { allChannelsConfig, ChannelConfig } from '../lib/channels-config';
+import { ChannelConfig } from '../lib/channels-config';
 import { motion } from 'framer-motion';
 import { 
   Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, 
   Star, AlertCircle, Sparkles, Plus, Server, Layers, Smartphone, Shield,
   Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText,
-  CheckCircle, Monitor, Zap, Gauge
+  CheckCircle, Monitor, Zap, Gauge, Search, X
 } from 'lucide-react';
+import { SearchModal } from '../components/SearchModal';
 import { useProgress } from '../hooks/use-progress';
 import { useTheme } from '../context/ThemeContext';
 import { SEOHead } from '../components/SEOHead';
@@ -52,13 +53,15 @@ function ChannelCard({
   index, 
   isSelected, 
   questionCount,
-  setLocation 
+  setLocation,
+  onUnsubscribe
 }: { 
   channel: ChannelConfig; 
   index: number; 
   isSelected: boolean;
   questionCount: number;
   setLocation: (path: string) => void;
+  onUnsubscribe: (channelId: string) => void;
 }) {
   const { completed } = useProgress(channel.id);
   const progress = questionCount > 0 ? Math.round((completed.length / questionCount) * 100) : 0;
@@ -76,6 +79,18 @@ function ChannelCard({
         ${isSelected ? 'border-primary ring-1 ring-primary' : ''}
       `}
     >
+      {/* Unsubscribe button - appears on hover */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onUnsubscribe(channel.id);
+        }}
+        className="absolute top-1 left-1 sm:top-2 sm:left-2 p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/20 hover:text-destructive transition-all z-10"
+        title="Unsubscribe from channel"
+      >
+        <X className="w-3 h-3 sm:w-4 sm:h-4" />
+      </button>
+      
       <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-[9px] sm:text-xs font-bold opacity-30 group-hover:opacity-100">
         [{String(index + 1).padStart(2, '0')}]
       </div>
@@ -143,15 +158,75 @@ function AddChannelsCard({ setLocation }: { setLocation: (path: string) => void 
   );
 }
 
+// Confirmation Dialog Component
+function ConfirmDialog({ 
+  isOpen, 
+  channelName, 
+  onConfirm, 
+  onCancel 
+}: { 
+  isOpen: boolean; 
+  channelName: string; 
+  onConfirm: () => void; 
+  onCancel: () => void; 
+}) {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={onCancel}>
+      <div 
+        className="bg-card border border-border p-6 max-w-sm w-full"
+        onClick={e => e.stopPropagation()}
+      >
+        <h3 className="text-lg font-bold mb-2">Unsubscribe from {channelName}?</h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          You can always subscribe again from the Channels page.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-bold uppercase tracking-widest hover:bg-muted transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm font-bold uppercase tracking-widest bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+          >
+            Unsubscribe
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [_, setLocation] = useLocation();
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [confirmUnsubscribe, setConfirmUnsubscribe] = useState<{ id: string; name: string } | null>(null);
   const { theme, cycleTheme } = useTheme();
   const { stats } = useChannelStats();
-  const { preferences, getSubscribedChannels } = useUserPreferences();
+  const { getSubscribedChannels, unsubscribeChannel } = useUserPreferences();
 
   // Get subscribed channels
   const subscribedChannels = getSubscribedChannels();
+  
+  // Handle unsubscribe with confirmation
+  const handleUnsubscribeClick = (channelId: string) => {
+    const channel = subscribedChannels.find(c => c.id === channelId);
+    if (channel) {
+      setConfirmUnsubscribe({ id: channelId, name: channel.name });
+    }
+  };
+  
+  const confirmUnsubscribeAction = () => {
+    if (confirmUnsubscribe) {
+      unsubscribeChannel(confirmUnsubscribe.id);
+      setConfirmUnsubscribe(null);
+    }
+  };
 
   // Create a map of channel ID to question count
   const questionCounts: Record<string, number> = {};
@@ -162,6 +237,16 @@ export default function Home() {
   // Keyboard navigation for channels
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl+K to open search
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSearchModal(true);
+        return;
+      }
+      
+      // Don't handle navigation if search modal is open
+      if (showSearchModal) return;
+      
       if (e.key === 'ArrowRight') {
         setSelectedIndex((prev) => (prev + 1) % (subscribedChannels.length + 1));
       } else if (e.key === 'ArrowLeft') {
@@ -180,7 +265,7 @@ export default function Home() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedIndex, setLocation, cycleTheme, subscribedChannels]);
+  }, [selectedIndex, setLocation, cycleTheme, subscribedChannels, showSearchModal]);
 
   return (
     <>
@@ -204,6 +289,13 @@ export default function Home() {
         </div>
         <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-2">
           <div className="flex gap-2 sm:gap-4 flex-wrap">
+             <button 
+               onClick={() => setShowSearchModal(true)}
+               className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
+               title="Search Questions (⌘K)"
+             >
+                <Search className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Search</span>
+             </button>
              <button 
                onClick={() => setLocation('/channels')}
                className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
@@ -284,6 +376,7 @@ export default function Home() {
               isSelected={index === selectedIndex}
               questionCount={questionCounts[channel.id] || 0}
               setLocation={setLocation}
+              onUnsubscribe={handleUnsubscribeClick}
             />
           ))}
           <AddChannelsCard setLocation={setLocation} />
@@ -328,6 +421,17 @@ export default function Home() {
         </div>
       </footer>
       </div>
+      
+      {/* Search Modal */}
+      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+      
+      {/* Unsubscribe Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!confirmUnsubscribe}
+        channelName={confirmUnsubscribe?.name || ''}
+        onConfirm={confirmUnsubscribeAction}
+        onCancel={() => setConfirmUnsubscribe(null)}
+      />
     </>
   );
 }

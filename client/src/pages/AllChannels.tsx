@@ -59,7 +59,7 @@ function ChannelCard({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className={`
-        p-4 border rounded-lg transition-all cursor-pointer
+        p-3 sm:p-4 border rounded-lg transition-all cursor-pointer min-h-[100px] sm:min-h-[140px]
         ${isSubscribed 
           ? 'border-primary bg-primary/5' 
           : 'border-white/20 hover:border-white/40 hover:bg-white/5'
@@ -67,28 +67,28 @@ function ChannelCard({
       `}
       onClick={onToggle}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-2 sm:mb-3">
         <div className={`${channel.color}`}>
-          {iconMap[channel.icon] || <Cpu className="w-5 h-5" />}
+          {iconMap[channel.icon] || <Cpu className="w-4 h-4 sm:w-5 sm:h-5" />}
         </div>
         <button
           className={`
-            p-1.5 rounded-full transition-all
+            p-1 sm:p-1.5 rounded-full transition-all shrink-0
             ${isSubscribed 
               ? 'bg-primary text-black' 
               : 'bg-white/10 text-white/50 hover:bg-white/20'
             }
           `}
         >
-          {isSubscribed ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {isSubscribed ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Plus className="w-3 h-3 sm:w-4 sm:h-4" />}
         </button>
       </div>
-      <h3 className="font-bold text-sm mb-1">{channel.name}</h3>
-      <p className="text-[10px] text-white/50 line-clamp-2 mb-2">{channel.description}</p>
-      <div className="flex items-center justify-between text-[10px]">
-        <span className="text-white/40">{questionCount} questions</span>
+      <h3 className="font-bold text-xs sm:text-sm mb-1 line-clamp-1">{channel.name}</h3>
+      <p className="text-[9px] sm:text-[10px] text-white/50 line-clamp-2 mb-2">{channel.description}</p>
+      <div className="flex items-center justify-between text-[9px] sm:text-[10px] gap-1">
+        <span className="text-white/40 shrink-0">{questionCount} Q</span>
         {isSubscribed && (
-          <span className="text-primary font-bold uppercase tracking-wider">Subscribed</span>
+          <span className="text-primary font-bold uppercase tracking-wider truncate">Subscribed</span>
         )}
       </div>
     </motion.div>
@@ -169,8 +169,8 @@ export default function AllChannels() {
             </h1>
 
             {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1">
+            <div className="flex flex-col gap-3">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                 <input
                   type="text"
@@ -180,11 +180,11 @@ export default function AllChannels() {
                   className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary"
                 />
               </div>
-              <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+              <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className={`
-                    px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full whitespace-nowrap transition-all
+                    px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full whitespace-nowrap transition-all shrink-0
                     ${!selectedCategory 
                       ? 'bg-primary text-black' 
                       : 'bg-white/10 text-white/60 hover:bg-white/20'
@@ -198,7 +198,7 @@ export default function AllChannels() {
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`
-                      px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full whitespace-nowrap transition-all
+                      px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full whitespace-nowrap transition-all shrink-0
                       ${selectedCategory === cat.id 
                         ? 'bg-primary text-black' 
                         : 'bg-white/10 text-white/60 hover:bg-white/20'
