@@ -182,6 +182,35 @@ export default function ReelsRedesigned() {
   const remainingQuestions = totalQuestions - currentIndex - 1;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progressPercent = totalQuestions > 0 ? ((currentIndex + 1) / totalQuestions) * 100 : 0;
+  
+  // Navigation hint state - shows after 10 seconds on same question
+  const [showNavHint, setShowNavHint] = useState(false);
+  const navHintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Show navigation hint after 10 seconds on same question (not on last question)
+  useEffect(() => {
+    // Clear any existing timeout
+    if (navHintTimeoutRef.current) {
+      clearTimeout(navHintTimeoutRef.current);
+    }
+    setShowNavHint(false);
+    
+    // Don't show hint on last question
+    if (isLastQuestion) return;
+    
+    // Set timeout to show hint after 10 seconds
+    navHintTimeoutRef.current = setTimeout(() => {
+      setShowNavHint(true);
+      // Auto-hide after 5 seconds
+      setTimeout(() => setShowNavHint(false), 5000);
+    }, 10000);
+    
+    return () => {
+      if (navHintTimeoutRef.current) {
+        clearTimeout(navHintTimeoutRef.current);
+      }
+    };
+  }, [currentIndex, isLastQuestion]);
 
   // Load timer settings (disabled on mobile)
   useEffect(() => {
@@ -866,6 +895,34 @@ export default function ReelsRedesigned() {
                     Home
                   </motion.button>
                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Navigation Hint - Shows after 10 seconds on same question */}
+        <AnimatePresence>
+          {showNavHint && !isLastQuestion && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-40"
+            >
+              <div className="bg-primary/90 text-black px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                <motion.div
+                  animate={{ x: isMobile ? [-3, 3, -3] : [0, 0, 0], y: isMobile ? [0, 0, 0] : [-3, 3, -3] }}
+                  transition={{ duration: 0.5, repeat: Infinity }}
+                >
+                  {isMobile ? (
+                    <ArrowLeft className="w-4 h-4" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4 rotate-90" />
+                  )}
+                </motion.div>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  {isMobile ? 'Swipe left for next' : 'Press ↓ for next'}
+                </span>
               </div>
             </motion.div>
           )}
