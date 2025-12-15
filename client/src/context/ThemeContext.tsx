@@ -79,7 +79,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem("theme") as Theme;
-    return themes.some(t => t.id === saved) ? saved : "unix";
+    return themes.some(t => t.id === saved) ? saved : "glassmorphism";
   });
   
   // Track if user has manually changed theme (disables auto-rotate)

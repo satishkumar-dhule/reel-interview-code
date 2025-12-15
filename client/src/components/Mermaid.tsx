@@ -171,7 +171,7 @@ export function Mermaid({ chart, themeOverride }: MermaidProps) {
   };
 
   // Determine which mermaid theme to use
-  const effectiveMermaidTheme = themeOverride || selectedMermaidTheme || appThemeToMermaid[appTheme] || 'dark';
+  const effectiveMermaidTheme = themeOverride || selectedMermaidTheme || appThemeToMermaid[appTheme] || 'forest';
 
   // Calculate optimal zoom to fit diagram in container
   const calculateOptimalZoom = useCallback(() => {
