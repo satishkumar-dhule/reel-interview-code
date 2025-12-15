@@ -2767,7 +2767,368 @@
       "difficulty": "beginner",
       "diagram": "flowchart LR\n    A[Situation<br/>Context] --> B[Task<br/>Objective]\n    B --> C[Action<br/>Your Steps]\n    C --> D[Result<br/>Outcome]\n    D --> E[Metrics<br/>Quantified Impact]\n    \n    style A fill:#e1f5fe\n    style B fill:#f3e5f5\n    style C fill:#e8f5e8\n    style D fill:#fff3e0\n    style E fill:#fce4ec",
       "lastUpdated": "2025-12-14T12:59:10.575Z"
+    },
+    "q-213": {
+      "id": "q-213",
+      "question": "How would you design a multi-tier caching strategy with cache warming, invalidation, and fallback for a 99.9% availability e-commerce platform?",
+      "answer": "Implement CDN + Redis cluster + local cache with write-through, TTL-based invalidation, and circuit breakers for fallback.",
+      "explanation": "## Multi-Tier Caching Architecture\n\n### Concept Overview\nA robust caching strategy requires multiple layers working together to ensure high availability and performance while maintaining data consistency.\n\n### Implementation Details\n\n**Cache Tiers:**\n- **CDN (L1):** Static assets, API responses with long TTL\n- **Redis Cluster (L2):** Hot data, session state, computed results\n- **Local Cache (L3):** Frequently accessed data per instance\n\n**Cache Warming Strategy:**\n- Pre-populate Redis during low-traffic periods\n- Use predictive algorithms based on access patterns\n- Implement background refresh for expiring keys\n\n**Invalidation Patterns:**\n- **Write-through:** Update cache immediately on database writes\n- **TTL-based:** Automatic expiration with staggered times\n- **Event-driven:** Pub/sub for immediate cache updates\n\n**Fallback Mechanisms:**\n- Circuit breakers to prevent cascade failures\n- Graceful degradation to database queries\n- Stale-while-revalidate for serving expired data\n\n### Code Example\n```javascript\n// Multi-tier cache with fallback\nclass MultiTierCache {\n  async get(key) {\n    // L3: Local cache\n    let value = await this.localCache.get(key);\n    if (value) return value;\n    \n    // L2: Redis with circuit breaker\n    try {\n      value = await this.redis.get(key);\n      if (value) {\n        await this.localCache.set(key, value, 60);\n        return value;\n      }\n    } catch (error) {\n      this.circuitBreaker.recordFailure();\n    }\n    \n    // Fallback: Database\n    value = await this.database.get(key);\n    if (value) {\n      await this.redis.set(key, value, 3600);\n      await this.localCache.set(key, value, 60);\n    }\n    return value;\n  }\n}\n```\n\n### Common Pitfalls\n- **Cache stampede:** Use request coalescing and early expiration\n- **Memory pressure:** Implement LRU eviction and monitoring\n- **Network partitions:** Design for eventual consistency\n- **Hot key concentration:** Use consistent hashing and key sharding",
+      "tags": [
+        "cache",
+        "redis",
+        "memcached",
+        "cdn"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Client Request] --> B{CDN Cache}\n    B -->|Hit| C[Return Response]\n    B -->|Miss| D[Load Balancer]\n    D --> E[Application Server]\n    E --> F{Local Cache}\n    F -->|Hit| G[Return Response]\n    F -->|Miss| H[Redis Cluster]\n    H -->|Hit| I[Update Local Cache]\n    H -->|Miss| J[Database]\n    J --> K[Update Redis]\n    K --> L[Update Local Cache]\n    L --> M[Return Response]\n    N[Cache Invalidation] --> O[Pub/Sub Events]\n    O --> P[Clear All Tiers]\n    Q[Background Warmer] --> R[Pre-populate Cache]",
+      "lastUpdated": "2025-12-15T01:14:07.965Z"
+    },
+    "q-214": {
+      "id": "q-214",
+      "question": "Given a directed weighted graph with up to 10^6 edges and frequent edge weight updates, design a data structure that supports dynamic shortest path queries with sub-millisecond response time?",
+      "answer": "Use a dynamic Dijkstra variant with incremental updates and hierarchical decomposition, maintaining O(log n) per update and query.",
+      "explanation": "## Concept Overview\nDynamic shortest path requires handling frequent edge weight updates while maintaining fast query responses. Traditional Dijkstra's O(E + V log V) is too slow for production scale.\n\n## Implementation Details\n- **Hierarchical Decomposition**: Partition graph into clusters using METIS or custom partitioning\n- **Multi-level Indexing**: Maintain precomputed distances between cluster boundaries\n- **Incremental Updates**: Use dynamic programming to update only affected paths\n- **Lazy Recomputation**: Defer full recomputation until query performance degrades\n\n## Code Structure\n```python\nclass DynamicShortestPath:\n    def __init__(self, graph):\n        self.clusters = self.partition_graph(graph)\n        self.cluster_distances = self.precompute_inter_cluster()\n        self.local_paths = {c: {} for c in self.clusters}\n    \n    def update_edge(self, u, v, new_weight):\n        cluster = self.get_cluster(u)\n        self.invalidate_local_paths(cluster, u, v)\n        self.update_inter_cluster_if_boundary(u, v, new_weight)\n    \n    def query(self, source, target):\n        return self.bidirectional_dijkstra(source, target)\n```\n\n## Common Pitfalls\n- **Memory Overhead**: Hierarchical structures can consume 3-5x memory\n- **Partition Quality**: Poor clustering leads to frequent cross-cluster queries\n- **Update Cascades**: Edge updates can trigger expensive recomputation cascades\n- **Concurrency**: Thread-safe updates require careful locking strategies",
+      "tags": [
+        "bfs",
+        "dfs",
+        "dijkstra",
+        "topological"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Client Query] --> B{Source/Target in Same Cluster?}\n    B -->|Yes| C[Local Dijkstra]\n    B -->|No| D[Multi-level Path Search]\n    D --> E[Cluster Boundary Search]\n    E --> F[Inter-cluster Distance Lookup]\n    F --> G[Local Path Assembly]\n    G --> H[Return Result]\n    I[Edge Update] --> J{Boundary Edge?}\n    J -->|Yes| K[Update Inter-cluster Index]\n    J -->|No| L[Invalidate Local Cache]\n    K --> M[Mark Affected Clusters]\n    L --> M",
+      "lastUpdated": "2025-12-15T01:14:16.817Z"
+    },
+    "q-215": {
+      "id": "q-215",
+      "question": "How would you implement a custom useDebounce hook that works with React's concurrent features and prevents stale closures?",
+      "answer": "Use useRef for latest value, useEffect with cleanup, and useCallback to maintain stable reference while handling concurrent renders.",
+      "explanation": "## Concept Overview\nA custom useDebounce hook delays function execution until after a specified wait time, crucial for search inputs and API calls.\n\n## Implementation Details\n- Use useRef to store the latest callback value, preventing stale closures\n- Implement cleanup in useEffect to cancel pending debounced calls\n- Return useCallback with stable dependencies for concurrent rendering\n- Handle component unmounting to prevent memory leaks\n\n## Code Example\n```javascript\nimport { useCallback, useRef, useEffect } from 'react';\n\nexport function useDebounce(callback, delay) {\n  const callbackRef = useRef(callback);\n  const timeoutRef = useRef(null);\n\n  useEffect(() => {\n    callbackRef.current = callback;\n  }, [callback]);\n\n  return useCallback((...args) => {\n    if (timeoutRef.current) {\n      clearTimeout(timeoutRef.current);\n    }\n    \n    timeoutRef.current = setTimeout(() => {\n      callbackRef.current(...args);\n    }, delay);\n  }, [delay]);\n}\n```\n\n## Common Pitfalls\n- Forgetting to update ref with latest callback causes stale closures\n- Not clearing timeout leads to multiple executions\n- Missing dependency array in useCallback causes unnecessary re-renders\n- Not handling component unmount can cause memory leaks",
+      "tags": [
+        "react",
+        "hooks",
+        "context",
+        "redux"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart LR\n    A[User Input] --> B[useDebounce Hook]\n    B --> C{Timeout Exists?}\n    C -->|Yes| D[Clear Previous Timeout]\n    C -->|No| E[Set New Timeout]\n    D --> E\n    E --> F[Wait Delay Period]\n    F --> G[Execute Callback]\n    G --> H[Update State/API Call]",
+      "lastUpdated": "2025-12-15T01:14:24.506Z"
+    },
+    "q-216": {
+      "id": "q-216",
+      "question": "How would you implement eventual consistency in a multi-region DynamoDB application with write conflicts?",
+      "answer": "Use DynamoDB Global Tables with conditional writes and version numbers/timestamps for conflict resolution.",
+      "explanation": "## Concept Overview\nEventual consistency in DynamoDB Global Tables allows writes in any region while asynchronously replicating data. Conflict resolution requires custom logic.\n\n## Implementation Details\n- Enable Global Tables for multi-region replication\n- Add version attribute or timestamp to each item\n- Use conditional writes with PutItem operation\n- Implement last-write-wins or custom merge logic\n\n## Code Example\n```javascript\nconst params = {\n  TableName: 'Users',\n  Item: {\n    userId: '123',\n    name: 'John',\n    version: Date.now(),\n    lastUpdatedRegion: process.env.AWS_REGION\n  },\n  ConditionExpression: 'attribute_not_exists(version) OR version < :newVersion',\n  ExpressionAttributeValues: {\n    ':newVersion': Date.now()\n  }\n};\nawait dynamodb.putItem(params).promise();\n```\n\n## Common Pitfalls\n- High write contention causing frequent conflicts\n- Network latency affecting replication timing\n- Inconsistent read patterns during replication delays\n- Not handling stale data appropriately in application logic",
+      "tags": [
+        "mongodb",
+        "dynamodb",
+        "cassandra",
+        "redis"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart LR\n    A[Client Write US-East] --> B[DynamoDB US-East]\n    C[Client Write EU-West] --> D[DynamoDB EU-West]\n    B --> E[Async Replication]\n    D --> E\n    E --> F[Conflict Resolution]\n    F --> G[Final State]",
+      "lastUpdated": "2025-12-15T01:14:36.568Z"
+    },
+    "q-217": {
+      "id": "q-217",
+      "question": "How would you design a GitOps multi-cluster deployment strategy using ArgoCD that handles blue-green deployments with zero-downtime rollback across 50+ clusters while maintaining state consistency?",
+      "answer": "Use ArgoCD ApplicationSets with cluster secrets, progressive sync strategies, and automated health checks for zero-downtime blue-green deployments.",
+      "explanation": "## Concept Overview\nGitOps multi-cluster management requires declarative configuration, automated synchronization, and robust rollback mechanisms. ArgoCD ApplicationSets enable scaling across multiple clusters while maintaining consistency.\n\n## Implementation Details\n- **ApplicationSets**: Use cluster generator with secret-based cluster discovery\n- **Progressive Sync**: Implement ArgoCD's sync waves for staged rollouts\n- **Health Checks**: Custom health check hooks for application readiness\n- **Rollback Strategy**: Git-based rollback with automated promotion/demotion\n\n## Code Example\n```yaml\napiVersion: argoproj.io/v1alpha1\nkind: ApplicationSet\nmetadata:\n  name: multi-cluster-app\nspec:\n  generators:\n  - clusters:\n      selector:\n        matchLabels:\n          env: production\n  template:\n    metadata:\n      name: '{{cluster.name}}-app'\n    spec:\n      project: default\n      source:\n        repoURL: https://github.com/org/app-config\n        targetRevision: main\n        path: manifests\n      destination:\n        server: '{{cluster.server}}'\n        namespace: production\n      syncPolicy:\n        automated:\n          prune: true\n          selfHeal: true\n        syncOptions:\n        - CreateNamespace=true\n        - PrunePropagationPolicy=foreground\n        retry:\n          limit: 3\n          backoff:\n            duration: 5s\n            factor: 2\n            maxDuration: 3m\n```\n\n## Common Pitfalls\n- **State Drift**: Inconsistent cluster states causing deployment failures\n- **Resource Limits**: ArgoCD controller hitting memory/CPU limits at scale\n- **Network Policies**: Blocking ArgoCD communication with clusters\n- **Secret Management**: Improper cluster credential rotation\n- **Sync Conflicts**: Manual changes overriding GitOps state",
+      "tags": [
+        "argocd",
+        "flux",
+        "declarative"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Git Repository] --> B[ArgoCD ApplicationSet Controller]\n    B --> C[Cluster Generator]\n    C --> D[Cluster 1 Secret]\n    C --> E[Cluster 2 Secret]\n    C --> F[Cluster N Secret]\n    B --> G[Application Template]\n    G --> H[Blue Deployment]\n    G --> I[Green Deployment]\n    H --> J[Health Check Service]\n    I --> K[Health Check Service]\n    J --> L[Traffic Router]\n    K --> L\n    L --> M[Production Traffic]\n    B --> N[Rollback Controller]\n    N --> O[Git Revert]\n    O --> P[Automated Sync]",
+      "lastUpdated": "2025-12-15T01:14:45.789Z"
+    },
+    "q-218": {
+      "id": "q-218",
+      "question": "How would you design a chaos engineering experiment to test database failover while maintaining transaction consistency across a microservices architecture?",
+      "answer": "Use controlled pod termination with circuit breakers, distributed transactions, and health checks to verify ACID compliance during failover.",
+      "explanation": "## Concept Overview\nChaos engineering for database failover involves systematically testing system resilience by simulating database failures while ensuring transaction consistency across microservices.\n\n## Implementation Details\n- **Chaos Monkey Integration**: Deploy Litmus Chaos experiments targeting database pods\n- **Transaction Monitoring**: Implement distributed tracing with OpenTelemetry\n- **Health Check Endpoints**: Custom readiness probes checking database connectivity\n- **Circuit Breaker Pattern**: Hystrix/Resilience4j for graceful degradation\n- **Consistency Verification**: Saga pattern for compensating transactions\n\n## Code Example\n```yaml\n# Litmus Chaos Experiment\napiVersion: litmuschaos.io/v1alpha1\nkind: ChaosEngine\nmetadata:\n  name: db-failover-engine\nspec:\n  appInfo:\n    appns: production\n    applabel: app=database\n  chaosServiceAccount: db-failover-sa\n  experiments:\n  - name: pod-delete\n    spec:\n      components:\n        env:\n        - name: TOTAL_CHAOS_DURATION\n          value: '60'\n        - name: PODS_AFFECTED_PERC\n          value: '100'\n```\n\n## Common Pitfalls\n- **Race Conditions**: Concurrent writes during failover window\n- **Split Brain**: Multiple nodes believing they're primary\n- **Connection Pool Exhaustion**: Sudden reconnection storms\n- **Data Drift**: Inconsistent state across replicas\n- **Timeout Misconfiguration**: Too short/long failover detection",
+      "tags": [
+        "chaos-monkey",
+        "litmus",
+        "gremlin"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Client Request] --> B[API Gateway]\n    B --> C[Service A]\n    B --> D[Service B]\n    C --> E[Primary DB]\n    D --> E\n    E --> F[Replica DB]\n    G[Chaos Engine] --> H[Pod Delete]\n    H --> E\n    I[Health Check] --> J[Circuit Breaker]\n    J --> K[Failover to Replica]\n    K --> F\n    L[Transaction Monitor] --> M[Consistency Check]\n    M --> N[Rollback if Needed]",
+      "lastUpdated": "2025-12-15T01:14:53.944Z"
+    },
+    "q-219": {
+      "id": "q-219",
+      "question": "How would you design a zero-downtime service migration strategy using Kubernetes Service selectors and Endpoints controller to avoid connection drops during rolling updates?",
+      "answer": "Use dual-service approach with overlapping selectors and gradual traffic shifting via EndpointsSlice API while maintaining connection affinity.",
+      "explanation": "## Concept Overview\nZero-downtime migration requires careful coordination of Service selectors and Endpoints to maintain existing connections while routing new traffic to updated pods.\n\n## Implementation Details\n- Deploy new version with different labels (e.g., version=v2)\n- Create temporary Service with overlapping selectors\n- Use EndpointsSlice controller for gradual traffic splitting\n- Implement connection draining with terminationGracePeriodSeconds\n- Leverage sessionAffinity for stateful applications\n\n## Code Example\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: app-migration\nspec:\n  selector:\n    app: myapp\n    version: v1  # Gradually change to v2\n  sessionAffinity: ClientIP\n  sessionAffinityConfig:\n    clientIP:\n      timeoutSeconds: 300\n```\n\n## Common Pitfalls\n- Not accounting for DNS caching delays\n- Ignoring connection timeout during pod termination\n- Forgetting to update Ingress rules after migration\n- Missing health check readiness probes causing traffic to terminating pods",
+      "tags": [
+        "clusterip",
+        "nodeport",
+        "loadbalancer",
+        "ingress"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Client] --> B[Ingress Controller]\n    B --> C[Service v1]\n    B --> D[Service v2]\n    C --> E[Pods v1]\n    D --> F[Pods v2]\n    G[Endpoints Controller] --> C\n    G --> D\n    H[EndpointsSlice API] --> G\n    I[Traffic Splitting] --> H\n    J[Connection Affinity] --> C\n    J --> D",
+      "lastUpdated": "2025-12-15T01:15:01.016Z"
+    },
+    "q-220": {
+      "id": "q-220",
+      "question": "How would you design a multi-AZ VPC architecture with Route53 latency-based routing to CloudFront, ALB, and private EC2 instances while ensuring failover within 30 seconds?",
+      "answer": "Use Route53 latency records with health checks, CloudFront with origin failover, ALB across AZs, and cross-AZ private subnets with NAT gateways.",
+      "explanation": "## Concept Overview\nDesigning a resilient AWS networking architecture requires understanding how different services interact for high availability and low latency.\n\n## Implementation Details\n\n### VPC Architecture\n- Create VPC with /16 CIDR block\n- 3 public subnets (one per AZ) for ALB and NAT\n- 3 private subnets for EC2 instances\n- Configure Internet Gateway and NAT gateways\n\n### Route53 Configuration\n```json\n{\n  \"RecordType\": \"A\",\n  \"SetIdentifier\": \"primary\",\n  \"HealthCheckId\": \"health-check-id\",\n  \"TTL\": 30\n}\n```\n\n### Load Balancer Setup\n- Application Load Balancer in public subnets\n- Cross-AZ deployment enabled\n- Health checks on /health endpoint\n- Target groups for EC2 instances\n\n### CloudFront Origin\n- Primary origin: ALB DNS name\n- Failover origin: S3 static backup\n- Origin Access Identity for security\n\n## Common Pitfalls\n- Health check intervals too long (>30s)\n- Missing cross-AZ ALB configuration\n- NAT gateway single point of failure\n- Inconsistent security group rules\n- Route53 TTL too high for quick failover",
+      "tags": [
+        "vpc",
+        "route53",
+        "cloudfront",
+        "alb"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "graph TD\n    A[User] --> B[Route53]\n    B --> C[CloudFront]\n    C --> D[ALB Primary]\n    C --> E[ALB Secondary]\n    D --> F[EC2 AZ1]\n    D --> G[EC2 AZ2]\n    D --> H[EC2 AZ3]\n    E --> I[EC2 AZ1 Backup]\n    E --> J[EC2 AZ2 Backup]\n    E --> K[EC2 AZ3 Backup]\n    F --> L[Private Subnet]\n    G --> L\n    H --> L\n    I --> L\n    J --> L\n    K --> L\n    L --> M[NAT Gateway]\n    M --> N[Internet Gateway]",
+      "lastUpdated": "2025-12-15T01:15:10.104Z"
+    },
+    "q-221": {
+      "id": "q-221",
+      "question": "How would you implement a zero-downtime blue-green deployment strategy using Terraform workspaces, remote state locking, and Atlantis for production-scale microservices?",
+      "answer": "Use separate workspaces for blue/green, state locking for consistency, Atlantis for automated PR-based deployments with health checks.",
+      "explanation": "## Concept Overview\nBlue-green deployment maintains two identical production environments, routing traffic between them while Terraform manages infrastructure state.\n\n## Implementation Details\n- **Workspaces**: Create `blue` and `green` workspaces with identical infrastructure\n- **State Management**: Use remote backend with state locking to prevent concurrent modifications\n- **Atlantis Integration**: Configure PR-based workflows that deploy to non-active workspace first\n- **Traffic Routing**: Use load balancer target groups to switch traffic after health checks\n\n## Code Example\n```hcl\n# workspace configuration\nterraform {\n  backend \"s3\" {\n    bucket = \"tf-state-prod\"\n    key    = \"${terraform.workspace}/terraform.tfstate\"\n    region = \"us-east-1\"\n    lock_table = \"tf-locks\"\n  }\n}\n\n# resource with workspace-specific naming\nresource \"aws_lb_target_group\" \"app\" {\n  name = \"app-${terraform.workspace}\"\n  # ... other config\n}\n```\n\n## Common Pitfalls\n- State drift between workspaces causing configuration divergence\n- Insufficient health check timeouts leading to premature traffic switching\n- Missing state locking causing race conditions during concurrent deployments\n- Forgetting to update DNS TTL values for smooth traffic transition",
+      "tags": [
+        "dry",
+        "terragrunt",
+        "atlantis"
+      ],
+      "difficulty": "advanced",
+      "diagram": "flowchart LR\n    A[Developer PR] --> B[Atlantis Plan]\n    B --> C[Non-active Workspace]\n    C --> D[Terraform Apply]\n    D --> E[Health Checks]\n    E --> F{Healthy?}\n    F -->|Yes| G[Traffic Switch]\n    F -->|No| H[Rollback]\n    G --> I[Active Workspace Update]\n    I --> J[Cleanup Old Resources]",
+      "lastUpdated": "2025-12-15T01:15:17.440Z"
+    },
+    "q-222": {
+      "id": "q-222",
+      "question": "How would you design a Kafka Streams application to handle exactly-once processing with stateful aggregations while maintaining sub-second latency during traffic spikes?",
+      "answer": "Use EOS with transactional producer, compacted topics for state, and adaptive processing with standby replicas.",
+      "explanation": "## Concept Overview\nExactly-once semantics (EOS) in Kafka Streams ensures no duplicate processing during failures. Stateful aggregations require careful state management and recovery mechanisms.\n\n## Implementation Details\n- Enable `processing.guarantee=exactly_once_v2`\n- Use `KTable` with log compaction for state stores\n- Configure standby replicas for fast failover\n- Implement custom partitioner for key distribution\n- Set appropriate `cache.max.bytes.buffering`\n\n## Code Example\n```java\nProperties props = new Properties();\nprops.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);\nprops.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 1);\nprops.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024);\n\nKStream<String, Event> stream = builder.stream(\"events\");\nKTable<String, Long> aggregated = stream.groupByKey()\n    .aggregate(\n        () -> 0L,\n        (key, event, agg) -> agg + event.getValue(),\n        Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(\"aggregated-store\")\n            .withKeySerde(Serdes.String())\n            .withValueSerde(Serdes.Long())\n            .withLoggingEnabled(Configs.EMPTY)\n    );\n```\n\n## Common Pitfalls\n- Large state stores causing slow recovery\n- Improper key distribution leading to hot partitions\n- Insufficient memory for state store caching\n- Network partitions causing duplicate processing\n- Consumer lag during traffic spikes",
+      "tags": [
+        "kafka",
+        "flink",
+        "kinesis"
+      ],
+      "difficulty": "advanced",
+      "diagram": "flowchart LR\n    A[Producer] --> B[Kafka Topic]\n    B --> C[Kafka Streams App]\n    C --> D[State Store]\n    C --> E[Standby Replica]\n    D --> F[Compact Topic]\n    E --> F\n    C --> G[Output Topic]\n    G --> H[Consumer]\n    I[Traffic Spike] --> C\n    C --> J[Adaptive Processing]\n    J --> K[Scale Out]",
+      "lastUpdated": "2025-12-15T01:15:24.826Z"
+    },
+    "q-223": {
+      "id": "q-223",
+      "question": "How would you design a production-scale evaluation pipeline that dynamically adjusts metrics based on class imbalance and business priorities while maintaining sub-second latency?",
+      "answer": "Implement a multi-metric streaming pipeline with adaptive weighting, using precomputed confusion matrices and metric caching for real-time evaluation.",
+      "explanation": "## Concept Overview\nA production evaluation pipeline must handle high-throughput data streams while adapting to changing class distributions and business requirements. The key is balancing computational efficiency with metric accuracy.\n\n## Implementation Details\n- **Streaming Architecture**: Use Apache Kafka/Flink for real-time data ingestion\n- **Adaptive Metrics**: Dynamic weighting based on class imbalance ratios\n- **Caching Strategy**: Precompute confusion matrices for common thresholds\n- **Latency Optimization**: Metric computation in parallel with model inference\n\n## Code Example\n```python\nclass AdaptiveEvaluator:\n    def __init__(self, window_size=1000):\n        self.window = deque(maxlen=window_size)\n        self.class_weights = {}\n    \n    def update_weights(self, y_true):\n        class_counts = np.bincount(y_true)\n        total = len(y_true)\n        self.class_weights = {\n            i: total/(len(class_counts) * count) \n            for i, count in enumerate(class_counts)\n        }\n    \n    def evaluate(self, y_true, y_pred):\n        weighted_precision = precision_score(\n            y_true, y_pred, average='weighted',\n            sample_weight=[self.class_weights.get(i, 1) for i in y_true]\n        )\n        return weighted_precision\n```\n\n## Common Pitfalls\n- **Metric Drift**: Not updating class weights frequently enough\n- **Memory Leaks**: Unbounded confusion matrix accumulation\n- **Threshold Sensitivity**: Fixed thresholds across varying class distributions\n- **Latency Spikes**: Synchronous metric computation blocking inference",
+      "tags": [
+        "precision",
+        "recall",
+        "auc-roc",
+        "f1"
+      ],
+      "difficulty": "advanced",
+      "diagram": "flowchart LR\n    A[Data Stream] --> B[Class Imbalance Detector]\n    B --> C[Weight Calculator]\n    C --> D[Metric Cache]\n    D --> E[Parallel Evaluator]\n    E --> F[Adaptive Metrics]\n    F --> G[Real-time Dashboard]\n    \n    H[Model Inference] --> E\n    I[Business Rules] --> C\n    J[Historical Data] --> D",
+      "lastUpdated": "2025-12-15T01:15:31.690Z"
+    },
+    "q-224": {
+      "id": "q-224",
+      "question": "How would you implement a thread-safe singleton with lazy initialization and proper type hints in Python, considering metaclass vs decorator approaches?",
+      "answer": "Use metaclass with __call__ override and double-checked locking, with TypeVar for generic typing.",
+      "explanation": "## Concept Overview\nThread-safe singleton ensures one instance across threads with lazy initialization. Python offers multiple approaches with different trade-offs.\n\n## Implementation Details\n### Metaclass Approach\n```python\nfrom typing import TypeVar, Generic, Optional, ClassVar\nimport threading\n\nT = TypeVar('T')\n\nclass SingletonMeta(type):\n    _instances: ClassVar[dict] = {}\n    _locks: ClassVar[dict] = {}\n    \n    def __call__(cls, *args, **kwargs):\n        if cls not in cls._instances:\n            with cls._locks.setdefault(cls, threading.Lock()):\n                if cls not in cls._instances:\n                    cls._instances[cls] = super().__call__(*args, **kwargs)\n        return cls._instances[cls]\n\nclass Database(Generic[T], metaclass=SingletonMeta):\n    def __init__(self):\n        self.connection: Optional[T] = None\n```\n\n### Decorator Approach\n```python\ndef singleton(cls):\n    instance = None\n    lock = threading.Lock()\n    \n    @functools.wraps(cls)\n    def wrapper(*args, **kwargs):\n        nonlocal instance\n        if instance is None:\n            with lock:\n                if instance is None:\n                    instance = cls(*args, **kwargs)\n        return instance\n    return wrapper\n```\n\n## Common Pitfalls\n- **Import-time initialization**: Avoid creating instances at module import\n- **Memory leaks**: Singletons persist for app lifetime\n- **Testing complexity**: Hard to reset state between tests\n- **Inheritance issues**: Metaclass doesn't automatically inherit\n\n## Performance Considerations\n- Double-checked locking minimizes lock contention\n- Metaclass has slight overhead vs decorator\n- Consider using `__slots__` for memory optimization",
+      "tags": [
+        "pep8",
+        "typing",
+        "testing"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Thread 1 Request] --> B{Instance Exists?}\n    C[Thread 2 Request] --> B\n    B -->|No| D[Acquire Lock]\n    B -->|Yes| K[Return Instance]\n    D --> E{Double Check}\n    E -->|No| F[Create Instance]\n    E -->|Yes| G[Release Lock]\n    F --> H[Initialize]\n    H --> I[Store in Class Dict]\n    I --> G\n    G --> K\n    J[Thread N Request] --> B",
+      "lastUpdated": "2025-12-15T01:15:39.683Z"
+    },
+    "q-225": {
+      "id": "q-225",
+      "question": "When implementing LoRA fine-tuning for a 7B parameter LLM, how do you determine the optimal rank (r) and alpha values to balance performance and memory efficiency?",
+      "answer": "Set rank based on target parameter reduction (typically 4-64), and alpha = 2*rank. Use validation loss to tune.",
+      "explanation": "## LoRA Parameter Selection\n\n### Rank (r) Selection\n- **Low rank (4-8)**: Minimal memory overhead, suitable for simple tasks\n- **Medium rank (16-32)**: Good balance for most fine-tuning scenarios\n- **High rank (64+)**: Maximum adaptability, higher memory cost\n\n### Alpha Configuration\n- Alpha controls the scaling of LoRA updates\n- Common practice: alpha = 2 * rank\n- Higher alpha = more aggressive weight updates\n\n### Implementation Pattern\n```python\nfrom peft import LoraConfig, get_peft_model\n\nlora_config = LoraConfig(\n    r=16,  # rank\n    lora_alpha=32,  # alpha = 2*r\n    target_modules=[\"q_proj\", \"v_proj\"],\n    lora_dropout=0.1\n)\nmodel = get_peft_model(base_model, lora_config)\n```\n\n### Common Pitfalls\n- **Too high rank**: Overfitting, excessive memory usage\n- **Too low rank**: Underfitting, poor task adaptation\n- **Imbalanced alpha/ratio**: Unstable training dynamics",
+      "tags": [
+        "lora",
+        "qlora",
+        "peft",
+        "adapter"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "graph TD\n    A[Base Model] --> B[LoRA Adapter A]\n    A --> C[LoRA Adapter B]\n    B --> D[Frozen Weights]\n    C --> D\n    D --> E[Rank r Matrix]\n    E --> F[Alpha Scaling]\n    F --> G[Updated Output]\n    H[Validation Loss] --> I[Adjust r/alpha]\n    I --> B\n    I --> C",
+      "lastUpdated": "2025-12-15T01:15:45.393Z"
+    },
+    "q-226": {
+      "id": "q-226",
+      "question": "How would you design a prompt-engineering system that dynamically selects between chain-of-thought, few-shot, and zero-shot prompting based on real-time performance metrics and task complexity?",
+      "answer": "Implement a meta-learning classifier that evaluates task complexity, latency requirements, and accuracy thresholds to route to optimal prompting strategy.",
+      "explanation": "## Concept Overview\nA dynamic prompt selection system uses meta-learning to choose the optimal prompting strategy based on real-time performance metrics and task characteristics.\n\n## Implementation Details\n- **Task Complexity Classifier**: Uses features like input length, domain specificity, and reasoning depth\n- **Performance Monitor**: Tracks latency, token usage, and accuracy for each strategy\n- **Strategy Router**: Implements weighted decision matrix balancing speed vs accuracy\n- **Feedback Loop**: Continuously updates strategy weights based on outcomes\n\n## Code Example\n```python\nclass PromptStrategySelector:\n    def __init__(self):\n        self.strategy_weights = {\n            'cot': 0.4, 'few_shot': 0.3, 'zero_shot': 0.3\n        }\n        self.performance_history = defaultdict(list)\n    \n    def select_strategy(self, task_features):\n        complexity = self.classify_complexity(task_features)\n        if complexity > 0.8:\n            return 'chain_of_thought'\n        elif task_features['has_examples']:\n            return 'few_shot'\n        else:\n            return 'zero_shot'\n```\n\n## Common Pitfalls\n- Overfitting to specific task types\n- Ignoring latency constraints in production\n- Failing to handle edge cases in strategy switching\n- Not accounting for model-specific optimizations",
+      "tags": [
+        "chain-of-thought",
+        "few-shot",
+        "zero-shot"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Input Task] --> B[Feature Extraction]\n    B --> C[Complexity Classifier]\n    C --> D{Strategy Selection}\n    D -->|High Complexity| E[Chain-of-Thought]\n    D -->|Has Examples| F[Few-Shot]\n    D -->|Simple Task| G[Zero-Shot]\n    E --> H[Performance Monitor]\n    F --> H\n    G --> H\n    H --> I[Feedback Loop]\n    I --> J[Update Weights]\n    J --> C",
+      "lastUpdated": "2025-12-15T01:15:52.406Z"
+    },
+    "q-227": {
+      "id": "q-227",
+      "question": "How would you implement dynamic quantization-aware training with mixed-precision to optimize inference latency while maintaining model accuracy across varying hardware constraints?",
+      "answer": "Use per-layer mixed-precision quantization with hardware-aware calibration and accuracy-aware layer selection to balance latency and accuracy.",
+      "explanation": "## Concept Overview\nDynamic quantization-aware training (QAT) with mixed-precision combines the benefits of quantization and precision optimization by selectively applying different bit-widths to different layers based on their sensitivity and hardware capabilities.\n\n## Implementation Details\n- **Per-layer sensitivity analysis**: Measure accuracy impact of quantizing each layer\n- **Hardware profiling**: Determine optimal precision for target hardware\n- **Dynamic precision selection**: Runtime adaptation based on device constraints\n- **Accuracy-aware optimization**: Maintain model performance within acceptable thresholds\n\n## Code Example\n```python\nclass MixedPrecisionQAT:\n    def __init__(self, model, hardware_profile):\n        self.sensitivity_scores = self.analyze_sensitivity(model)\n        self.precision_map = self.optimize_precision(\n            model, hardware_profile, self.sensitivity_scores\n        )\n    \n    def quantize_layer(self, layer, target_precision):\n        if target_precision == 'int8':\n            return torch.quantization.prepare_qat(layer)\n        elif target_precision == 'fp16':\n            return layer.half()\n        return layer\n```\n\n## Common Pitfalls\n- **Over-aggressive quantization**: Losing accuracy on sensitive layers\n- **Hardware mismatch**: Optimizing for wrong target hardware\n- **Calibration data bias**: Using unrepresentative calibration datasets\n- **Precision inconsistency**: Mixed precision causing numerical instability",
+      "tags": [
+        "quantization",
+        "pruning",
+        "distillation"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD\n    A[Input Model] --> B[Sensitivity Analysis]\n    B --> C[Hardware Profiling]\n    C --> D[Precision Optimization]\n    D --> E[Layer-wise Quantization]\n    E --> F[Accuracy Validation]\n    F --> G{Accuracy OK?}\n    G -->|Yes| H[Deploy Optimized Model]\n    G -->|No| I[Adjust Precision Map]\n    I --> D\n    H --> J[Runtime Adaptation]",
+      "lastUpdated": "2025-12-15T01:15:58.831Z"
+    },
+    "q-228": {
+      "id": "q-228",
+      "question": "How would you optimize a real-time medical image segmentation pipeline using SAM with 100ms latency constraint on edge devices?",
+      "answer": "Use SAM's lightweight encoder with quantized ViT-B, implement prompt caching, and apply tensorRT optimization for sub-100ms inference.",
+      "explanation": "## Concept Overview\nReal-time medical segmentation requires balancing accuracy with strict latency constraints. SAM (Segment Anything Model) provides zero-shot segmentation but needs optimization for edge deployment.\n\n## Implementation Details\n- **Model Optimization**: Use SAM-ViT-B (lightweight) with INT8 quantization\n- **Prompt Engineering**: Implement prompt caching for similar anatomical regions\n- **Hardware Acceleration**: Deploy with TensorRT on NVIDIA Jetson or CoreML on Apple Silicon\n- **Batch Processing**: Process multiple slices in parallel when available\n\n## Code Example\n```python\n# Optimized SAM inference pipeline\nimport torch\nfrom segment_anything import sam_model_registry\n\nclass OptimizedSAM:\n    def __init__(self):\n        self.sam = sam_model_registry['vit_b'](checkpoint='sam_vit_b.pth')\n        self.sam.eval()\n        self.sam.cuda()\n        # Enable TensorRT optimization\n        self.sam = torch.compile(self.sam, mode='max-autotune')\n    \n    def segment_with_cache(self, image, prompt):\n        # Check prompt cache first\n        cache_key = hash(prompt.tobytes())\n        if cache_key in self.prompt_cache:\n            return self.prompt_cache[cache_key]\n        \n        masks = self.sam.predict(image, prompt)\n        self.prompt_cache[cache_key] = masks\n        return masks\n```\n\n## Common Pitfalls\n- **Memory Overhead**: Prompt caching can consume significant memory on edge devices\n- **Quantization Loss**: INT8 quantization may reduce fine-grained segmentation accuracy\n- **Prompt Sensitivity**: Medical images require precise prompt placement for accurate results\n- **Hardware Variability**: Different edge devices have varying compute capabilities",
+      "tags": [
+        "unet",
+        "mask-rcnn",
+        "sam"
+      ],
+      "difficulty": "advanced",
+      "diagram": "graph TD[Input Medical Image] --> A[Preprocessing: Resize/Normalize]\nA --> B[Prompt Detection: Anatomical Region]\nB --> C{Prompt Cache Hit?}\nC -->|Yes| D[Return Cached Mask]\nC -->|No| E[SAM Encoder: ViT-B Lightweight]\nE --> F[Prompt-Guided Decoder]\nF --> G[Post-processing: Refine Boundaries]\nG --> H[Cache Result]\nH --> I[Output Segmentation Mask]\nD --> I\n\nsubgraph Edge Device Optimization\n    J[TensorRT Engine] --> K[INT8 Quantization]\n    K --> L[Memory Pool Management]\nend\n\nE -.-> J\nF -.-> J",
+      "lastUpdated": "2025-12-15T01:16:08.123Z"
+    },
+    "q-229": {
+      "id": "q-229",
+      "question": "What is the difference between tokenization and stemming in NLP text preprocessing?",
+      "answer": "Tokenization splits text into words/tokens, while stemming reduces words to their root form by removing suffixes.",
+      "explanation": "## Tokenization vs Stemming\n\n**Tokenization** breaks text into individual units (tokens) like words or subwords. It's the first step in text preprocessing.\n\n**Stemming** reduces words to their base or root form by removing prefixes/suffixes, often resulting in non-words.\n\n### Implementation Examples\n\n```python\n# Tokenization\nfrom nltk.tokenize import word_tokenize\ntext = \"running dogs\"\ntokens = word_tokenize(text)  # ['running', 'dogs']\n\n# Stemming\nfrom nltk.stem import PorterStemmer\nstemmer = PorterStemmer()\nstemmed = [stemmer.stem(token) for token in tokens]  # ['run', 'dog']\n```\n\n### Common Pitfalls\n- Tokenization struggles with contractions and hyphenated words\n- Stemming can over-aggressively reduce words (e.g., 'university' → 'univers')\n- Both are language-dependent\n\n### Use Cases\n- Tokenization: Feature extraction, vocabulary building\n- Stemming: Search indexing, text normalization for classification",
+      "tags": [
+        "tokenization",
+        "stemming",
+        "ner"
+      ],
+      "difficulty": "beginner",
+      "diagram": "graph TD\n    A[Raw Text] --> B[Tokenization]\n    B --> C[Tokens: 'running', 'dogs']\n    C --> D[Stemming]\n    D --> E[Stemmed: 'run', 'dog']\n    B --> F[Feature Extraction]\n    D --> G[Search Indexing]\n    F --> H[ML Model Input]\n    G --> I[Text Retrieval]",
+      "lastUpdated": "2025-12-15T01:16:14.413Z"
+    },
+    "q-230": {
+      "id": "q-230",
+      "question": "How would you implement a Content Security Policy (CSP) with nonce-based inline script protection to prevent XSS while maintaining compatibility with third-party analytics?",
+      "answer": "Use CSP header with 'script-src nonce-{random} https://analytics.com' and inject nonce into script tags via server-side templating.",
+      "explanation": "## Concept Overview\nContent Security Policy with nonce-based protection allows selective inline script execution while blocking XSS attacks. Nonces are cryptographically random values generated per request.\n\n## Implementation Details\n- Generate cryptographically secure nonce per request\n- Set CSP header: `script-src 'nonce-{nonce}' 'self' https://trusted-cdn.com`\n- Inject nonce into all inline script tags\n- Handle third-party scripts via allowlist or nonce proxy\n\n## Code Example\n```javascript\n// Express.js middleware\napp.use((req, res, next) => {\n  const nonce = crypto.randomBytes(16).toString('base64');\n  res.locals.nonce = nonce;\n  res.setHeader('Content-Security-Policy', \n    `script-src 'nonce-${nonce}' 'self' https://analytics.com`);\n  next();\n});\n\n// Template\n<script nonce=\"{{nonce}}\">\n  // Safe inline script\n</script>\n```\n\n## Common Pitfalls\n- Using predictable nonces (timestamps, counters)\n- Forgetting to inject nonce into all inline scripts\n- Overly permissive CSP defeating security purpose\n- Not handling CSP violation reports for monitoring",
+      "tags": [
+        "xss",
+        "csrf",
+        "sqli",
+        "ssrf"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "graph TD\n    A[Client Request] --> B[Generate Nonce]\n    B --> C[Set CSP Header]\n    C --> D[Render HTML with Nonce]\n    D --> E[Browser Validates Scripts]\n    E --> F{Script has Valid Nonce?}\n    F -->|Yes| G[Execute Script]\n    F -->|No| H[Block Script]\n    G --> I[Send CSP Violation Report]",
+      "lastUpdated": "2025-12-15T01:16:20.924Z"
+    },
+    "q-231": {
+      "id": "q-231",
+      "question": "How would you implement cache purging for a multi-region CDN when content updates need to propagate within 5 seconds?",
+      "answer": "Use invalidation API with distributed cache headers and edge compute for coordinated purging across regions.",
+      "explanation": "## Concept Overview\nCDN cache purging involves invalidating cached content across edge locations when source content changes. Multi-region coordination requires low-latency communication.\n\n## Implementation Details\n- **Invalidation Methods**: URL-based vs wildcard vs tag-based purging\n- **Propagation Strategy**: Push notifications via message queues (Kafka/SQS)\n- **Fallback Mechanism**: TTL-based expiration with short cache durations\n- **Edge Compute**: Cloudflare Workers/CloudFront@Edge for coordinated purging\n\n## Code Example\n```javascript\n// CDN invalidation with distributed coordination\nasync function purgeContent(contentId, regions) {\n  const purgePromises = regions.map(region => \n    cdnProvider.purgeByTag(region, contentId)\n  );\n  \n  // Notify edge workers via message queue\n  await messageQueue.publish('cdn-purge', {\n    contentId,\n    timestamp: Date.now(),\n    regions\n  });\n  \n  return Promise.all(purgePromises);\n}\n```\n\n## Common Pitfalls\n- **Race Conditions**: Cache re-population before purge completes\n- **Partial Purges**: Some regions not receiving purge commands\n- **Rate Limits**: CDN provider API throttling during bulk purges\n- **Stale Content**: Browser cache bypassing CDN purge",
+      "tags": [
+        "edge",
+        "caching",
+        "purging"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart LR\n    A[Content Update] --> B[Origin Server]\n    B --> C[Message Queue]\n    C --> D[Edge Worker 1]\n    C --> E[Edge Worker 2]\n    C --> F[Edge Worker N]\n    D --> G[CDN Region 1]\n    E --> H[CDN Region 2]\n    F --> I[CDN Region N]\n    G --> J[Cache Purge 1]\n    H --> K[Cache Purge 2]\n    I --> L[Cache Purge N]\n    J --> M[User Request 1]\n    K --> N[User Request 2]\n    L --> O[User Request N]",
+      "lastUpdated": "2025-12-15T01:16:28.689Z"
+    },
+    "q-232": {
+      "id": "q-232",
+      "question": "How does Auto Layout constraint resolution work when creating a UITableView with dynamic cell heights?",
+      "answer": "Auto Layout resolves constraints by calculating required cell heights based on content, then UITableView applies these heights during layout.",
+      "explanation": "## Concept Overview\nAuto Layout constraint resolution is the process where iOS calculates the size and position of views based on their constraints. For UITableView with dynamic cells, this happens in two phases.\n\n## Implementation Details\n1. **System Layout Size Fitting**: UITableView calls `systemLayoutSizeFitting` on each cell prototype\n2. **Constraint Resolution**: Auto Layout engine resolves all constraints to determine cell height\n3. **Height Caching**: UITableView caches calculated heights for performance\n4. **Layout Application**: Heights are applied during the table view's layout pass\n\n## Code Example\n```swift\n// In UITableViewCell subclass\noverride func awakeFromNib() {\n    super.awakeFromNib()\n    // Enable auto-sizing\n    contentView.translatesAutoresizingMaskIntoConstraints = false\n}\n\n// In UITableViewController\ntableView.rowHeight = UITableView.automaticDimension\ntableView.estimatedRowHeight = 100\n```\n\n## Common Pitfalls\n- Missing `translatesAutoresizingMaskIntoConstraints = false`\n- Incomplete constraint chains leading to ambiguous layouts\n- Performance issues with complex constraint hierarchies\n- Not setting `estimatedRowHeight` causing layout delays",
+      "tags": [
+        "autolayout",
+        "tableview",
+        "collectionview"
+      ],
+      "difficulty": "beginner",
+      "diagram": "graph TD\n    A[UITableView] --> B[Cell Prototype]\n    B --> C[Auto Layout Engine]\n    C --> D[Constraint Resolution]\n    D --> E[Height Calculation]\n    E --> F[Height Caching]\n    F --> G[Layout Application]\n    G --> H[Final Cell Display]",
+      "lastUpdated": "2025-12-15T01:16:34.591Z"
+    },
+    "q-233": {
+      "id": "q-233",
+      "question": "How does Hermes engine improve React Native app startup performance compared to JavaScriptCore?",
+      "answer": "Hermes uses ahead-of-time compilation and bytecode optimization for faster startup and lower memory usage.",
+      "explanation": "## Concept Overview\nHermes is an open-source JavaScript engine optimized for React Native mobile apps. It focuses on reducing app startup time and memory footprint through pre-compilation.\n\n## Implementation Details\n- **Ahead-of-Time Compilation**: JavaScript is compiled to bytecode during build time\n- **Smaller Bundle Size**: Optimized bytecode reduces APK/IPA size\n- **Memory Efficiency**: Lower RAM consumption during runtime\n- **Faster Startup**: Eliminates JIT compilation overhead\n\n## Code Example\n```javascript\n// Enable Hermes in android/app/build.gradle\nproject.ext.react = [\n    enableHermes: true  // For Android\n]\n\n// iOS automatically uses Hermes in RN 0.70+\n```\n\n## Common Pitfalls\n- Debugging limitations: Some dev tools may not work with Hermes\n- Third-party libraries compatibility issues\n- Slightly slower runtime performance for compute-heavy tasks\n- Requires Metro bundler configuration for optimal performance",
+      "tags": [
+        "hermes",
+        "reanimated",
+        "profiling"
+      ],
+      "difficulty": "beginner",
+      "diagram": "flowchart LR\n    A[JavaScript Source] --> B[Metro Bundler]\n    B --> C[Hermes AOT Compilation]\n    C --> D[Bytecode Bundle]\n    D --> E[App Installation]\n    E --> F[Faster Startup]\n    F --> G[Hermes Runtime]\n    G --> H[Native Bridge]",
+      "lastUpdated": "2025-12-15T01:16:46.577Z"
+    },
+    "q-234": {
+      "id": "q-234",
+      "question": "How would you design a Jest test suite to handle 10,000+ concurrent async tests while preventing test pollution and ensuring deterministic results?",
+      "answer": "Use test isolation with jest.isolateModulesAsync(), worker threads, and proper cleanup in beforeEach/afterEach hooks.",
+      "explanation": "## Concept Overview\nTesting at scale requires managing test isolation, resource cleanup, and execution order to prevent flaky tests and race conditions.\n\n## Implementation Details\n- **Test Isolation**: Use `jest.isolateModulesAsync()` to prevent module state pollution\n- **Worker Threads**: Configure `maxWorkers` in Jest config for parallel execution\n- **Resource Management**: Implement proper cleanup in `beforeEach/afterEach` hooks\n- **Mock Management**: Use `jest.clearAllMocks()` and `jest.resetAllMocks()` strategically\n\n## Code Example\n```javascript\n// jest.config.js\nmodule.exports = {\n  maxWorkers: 4,\n  testTimeout: 10000,\n  setupFilesAfterEnv: ['<rootDir>/test-setup.js']\n};\n\n// test-setup.js\nbeforeEach(async () => {\n  jest.clearAllMocks();\n  await cleanupDatabase();\n});\n\n// test file\ndescribe('Concurrent Tests', () => {\n  test('async operation', async () => {\n    const isolatedModule = await jest.isolateModulesAsync(() => {\n      return require('./module');\n    });\n    // test logic\n  });\n});\n```\n\n## Common Pitfalls\n- Shared state between tests causing race conditions\n- Inadequate cleanup leading to memory leaks\n- Improper async handling causing false positives\n- Over-reliance on global mocks",
+      "tags": [
+        "jest",
+        "mocha",
+        "pytest",
+        "junit"
+      ],
+      "difficulty": "advanced",
+      "diagram": "flowchart LR\n    A[Test Suite] --> B[Jest Worker Pool]\n    B --> C[Worker 1]\n    B --> D[Worker 2]\n    B --> E[Worker N]\n    C --> F[Isolate Modules]\n    D --> G[Isolate Modules]\n    E --> H[Isolate Modules]\n    F --> I[Setup/Cleanup]\n    G --> J[Setup/Cleanup]\n    H --> K[Setup/Cleanup]\n    I --> L[Execute Test]\n    J --> M[Execute Test]\n    K --> N[Execute Test]\n    L --> O[Report Results]\n    M --> O\n    N --> O",
+      "lastUpdated": "2025-12-15T01:16:55.498Z"
+    },
+    "q-235": {
+      "id": "q-235",
+      "question": "What is the purpose of Cypress fixtures and how do you load fixture data in a component test?",
+      "answer": "Fixtures provide static test data. Use cy.fixture('data.json').as('testData') to load JSON files for component testing.",
+      "explanation": "## Cypress Fixtures Overview\n\nFixtures are external data files that provide static test data for your Cypress tests. They help separate test data from test logic, making tests more maintainable and readable.\n\n## Implementation Details\n\n- Fixtures are stored in the `cypress/fixtures/` directory by default\n- Support JSON, JS, and other file formats\n- Can be loaded using `cy.fixture()` command\n- Data is cached during test runs for performance\n\n## Code Example\n\n```javascript\n// cypress/fixtures/user-data.json\n{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}\n\n// cypress/component/UserComponent.spec.js\ndescribe('UserComponent', () => {\n  beforeEach(() => {\n    cy.fixture('user-data').as('userData')\n  })\n  \n  it('displays user information', function() {\n    cy.mount(UserComponent, { props: { user: this.userData } })\n    cy.get('[data-cy=user-name]').should('contain', 'John Doe')\n  })\n})\n```\n\n## Common Pitfalls\n\n- Using `function() {}` instead of arrow functions to access fixture data via `this`\n- Not properly handling async fixture loading\n- Storing sensitive data in fixtures (use environment variables instead)",
+      "tags": [
+        "cypress",
+        "component-testing",
+        "fixtures"
+      ],
+      "difficulty": "beginner",
+      "diagram": "flowchart LR\n    A[Test File] --> B[cy.fixture()]\n    B --> C[Fixtures Directory]\n    C --> D[JSON/JS Files]\n    D --> E[Loaded Data]\n    E --> F[Component Test]\n    F --> G[Assertions]",
+      "lastUpdated": "2025-12-15T01:17:02.710Z"
+    },
+    "q-236": {
+      "id": "q-236",
+      "question": "How would you implement a contract testing strategy using MSW (Mock Service Worker) to ensure frontend API mocks stay synchronized with backend OpenAPI specifications?",
+      "answer": "Use MSW with OpenAPI schema validation, generating mocks from spec and running contract tests in CI to detect drift.",
+      "explanation": "## Contract Testing with MSW\n\n**Concept Overview**: MSW intercepts requests at the network level, allowing you to mock APIs while validating against OpenAPI contracts to prevent frontend-backend drift.\n\n**Implementation Details**:\n- Generate MSW handlers from OpenAPI spec using tools like `openapi-msw`\n- Validate request/response payloads against schema\n- Run contract tests in CI pipeline\n- Use response mocking with schema validation\n\n**Code Example**:\n```typescript\n// Generate handlers from OpenAPI\nimport { setupWorker, rest } from 'msw';\nimport { validateAgainstSchema } from './schema-validator';\n\nconst handlers = [\n  rest.get('/api/users/:id', async (req, res, ctx) => {\n    const userId = req.params.id;\n    const response = { id: userId, name: 'John' };\n    \n    // Validate against OpenAPI schema\n    if (!validateAgainstSchema(response, 'UserSchema')) {\n      return res(ctx.status(500), ctx.json({ error: 'Schema violation' }));\n    }\n    \n    return res(ctx.json(response));\n  })\n];\n\nsetupWorker(...handlers).start();\n```\n\n**Common Pitfalls**:\n- Schema validation only in test environment, not production mocks\n- Not updating mocks when API spec changes\n- Missing edge cases in contract tests\n- Over-mocking leading to false confidence",
+      "tags": [
+        "wiremock",
+        "mockserver",
+        "msw"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "flowchart LR\n    A[OpenAPI Spec] --> B[MSW Handler Generator]\n    B --> C[MSW Mock Handlers]\n    C --> D[Frontend App]\n    C --> E[Schema Validator]\n    E --> F[Contract Tests]\n    F --> G[CI Pipeline]\n    G --> H{Schema Valid?}\n    H -->|Yes| I[Tests Pass]\n    H -->|No| J[Fail Build]",
+      "lastUpdated": "2025-12-15T01:17:10.493Z"
+    },
+    "q-237": {
+      "id": "q-237",
+      "question": "How would you design a distributed load testing setup using k6 with multiple cloud regions to simulate 100k concurrent users while avoiding rate limiting and ensuring accurate metrics collection?",
+      "answer": "Use k6 cloud with distributed execution across regions, implement exponential ramp-up, and aggregate results via cloud backend with custom metrics.",
+      "explanation": "## Concept Overview\nDistributed load testing spreads traffic across multiple cloud regions to simulate realistic global user patterns while avoiding single-point bottlenecks and rate limiting.\n\n## Implementation Details\n- **Architecture**: Master controller orchestrates multiple k6 instances across AWS/GCP regions\n- **Traffic Distribution**: 30% US-East, 25% EU-West, 20% AP-Southeast, 15% US-West, 10% AP-Northeast\n- **Ramp Strategy**: Exponential ramp-up (1k→10k→50k→100k) over 15 minutes\n- **Metrics Pipeline**: Custom k6 extensions send metrics to InfluxDB via Telegraf\n\n## Code Example\n```javascript\nimport http from 'k6/http';\nimport { Rate } from 'k6/metrics';\n\nconst errorRate = new Rate('errors');\n\nexport let options = {\n  stages: [\n    { duration: '2m', target: 1000 },\n    { duration: '5m', target: 10000 },\n    { duration: '8m', target: 50000 },\n    { duration: '10m', target: 100000 },\n  ],\n  cloud: {\n    distribution: {\n      'amazon:us-east-1': { load: 0.3 },\n      'amazon:eu-west-1': { load: 0.25 },\n      'amazon:ap-southeast-1': { load: 0.2 },\n    },\n  },\n};\n\nexport default function() {\n  const response = http.get('https://api.example.com/users');\n  errorRate.add(response.status >= 400);\n}\n```\n\n## Common Pitfalls\n- **Rate Limiting**: Implement jitter between requests (50-200ms)\n- **IP Blocking**: Use rotating proxy pools or residential IPs\n- **Metrics Accuracy**: Synchronize NTP across all instances\n- **Resource Exhaustion**: Monitor CPU/memory on k6 instances, auto-scale as needed",
+      "tags": [
+        "jmeter",
+        "k6",
+        "gatling",
+        "locust"
+      ],
+      "difficulty": "intermediate",
+      "diagram": "graph TD\n    A[Master Controller] --> B[k6 Cloud Orchestrator]\n    B --> C[US-East Region]\n    B --> D[EU-West Region]\n    B --> E[AP-Southeast Region]\n    B --> F[US-West Region]\n    B --> G[AP-Northeast Region]\n    C --> H[Load Balancer]\n    D --> H\n    E --> H\n    F --> H\n    G --> H\n    H --> I[Target Application]\n    C --> J[InfluxDB]\n    D --> J\n    E --> J\n    F --> J\n    G --> J\n    J --> K[Grafana Dashboard]\n    A --> L[Results Aggregator]\n    L --> K",
+      "lastUpdated": "2025-12-15T01:17:21.977Z"
     }
   },
-  "lastUpdated": "2025-12-14T12:59:10.577Z"
+  "lastUpdated": "2025-12-15T01:17:21.980Z"
 }
