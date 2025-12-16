@@ -334,7 +334,12 @@
       "tags": [
         "basics"
       ],
-      "lastUpdated": "2025-12-12T09:10:12.989Z"
+      "lastUpdated": "2025-12-12T09:10:12.989Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=55afxfqeSCM",
+        "longVideo": "https://youtube.com/watch?v=fqMOX6JJhGo"
+      },
+      "lastVideoUpdate": "2025-12-16T15:16:15.054Z"
     },
     "gh-2": {
       "id": "gh-2",
@@ -4362,5 +4367,5 @@
       "lastUpdated": "2025-12-16T14:07:53.379Z"
     }
   },
-  "lastUpdated": "2025-12-16T15:11:34.710Z"
+  "lastUpdated": "2025-12-16T15:16:15.054Z"
 }
