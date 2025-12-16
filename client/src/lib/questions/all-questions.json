@@ -157,7 +157,12 @@
         "indexing",
         "perf"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.186Z"
+      "lastUpdated": "2025-12-12T09:07:04.186Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=BxAj3bl00-o",
+        "longVideo": "https://youtube.com/watch?v=ITcOiLSfVJQ"
+      },
+      "lastVideoUpdate": "2025-12-16T15:11:34.708Z"
     },
     "db-2": {
       "id": "db-2",
@@ -4357,5 +4362,5 @@
       "lastUpdated": "2025-12-16T14:07:53.379Z"
     }
   },
-  "lastUpdated": "2025-12-16T14:07:53.383Z"
+  "lastUpdated": "2025-12-16T15:11:34.710Z"
 }
