@@ -1,0 +1,12 @@
+{
+  "id": "gh-61",
+  "question": "What are Service Level Indicators (SLIs)?",
+  "answer": "Service Level Indicators (SLIs) are quantitative measures of service level aspects such as latency, throughput, availability, and error rate.",
+  "explanation": "Service Level Indicators (SLIs) are quantitative measures of service level aspects such as latency, throughput, availability, and error rate.\n\nCommon SLIs:\n1. **Request Latency:**\n- Time to handle a request\n- Distribution of response times\n\n2. **Error Rate:**\n- Failed requests/total requests\n- Error budget consumption\n\n3. **System Throughput:**\n- Requests per second\n- Transactions per second",
+  "difficulty": "intermediate",
+  "tags": [
+    "sre",
+    "reliability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

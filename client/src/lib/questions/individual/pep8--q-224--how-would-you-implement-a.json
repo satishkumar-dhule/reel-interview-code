@@ -1,0 +1,14 @@
+{
+  "id": "q-224",
+  "question": "How would you implement a thread-safe singleton with lazy initialization and proper type hints in Python, considering metaclass vs decorator approaches?",
+  "answer": "Use metaclass with __call__ override and double-checked locking, with TypeVar for generic typing.",
+  "explanation": "## Concept Overview\nThread-safe singleton ensures one instance across threads with lazy initialization. Python offers multiple approaches with different trade-offs.\n\n## Implementation Details\n### Metaclass Approach\n```python\nfrom typing import TypeVar, Generic, Optional, ClassVar\nimport threading\n\nT = TypeVar('T')\n\nclass SingletonMeta(type):\n    _instances: ClassVar[dict] = {}\n    _locks: ClassVar[dict] = {}\n    \n    def __call__(cls, *args, **kwargs):\n        if cls not in cls._instances:\n            with cls._locks.setdefault(cls, threading.Lock()):\n                if cls not in cls._instances:\n                    cls._instances[cls] = super().__call__(*args, **kwargs)\n        return cls._instances[cls]\n\nclass Database(Generic[T], metaclass=SingletonMeta):\n    def __init__(self):\n        self.connection: Optional[T] = None\n```\n\n### Decorator Approach\n```python\ndef singleton(cls):\n    instance = None\n    lock = threading.Lock()\n    \n    @functools.wraps(cls)\n    def wrapper(*args, **kwargs):\n        nonlocal instance\n        if instance is None:\n            with lock:\n                if instance is None:\n                    instance = cls(*args, **kwargs)\n        return instance\n    return wrapper\n```\n\n## Common Pitfalls\n- **Import-time initialization**: Avoid creating instances at module import\n- **Memory leaks**: Singletons persist for app lifetime\n- **Testing complexity**: Hard to reset state between tests\n- **Inheritance issues**: Metaclass doesn't automatically inherit\n\n## Performance Considerations\n- Double-checked locking minimizes lock contention\n- Metaclass has slight overhead vs decorator\n- Consider using `__slots__` for memory optimization",
+  "tags": [
+    "pep8",
+    "typing",
+    "testing"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Thread 1 Request] --> B{Instance Exists?}\n    C[Thread 2 Request] --> B\n    B -->|No| D[Acquire Lock]\n    B -->|Yes| K[Return Instance]\n    D --> E{Double Check}\n    E -->|No| F[Create Instance]\n    E -->|Yes| G[Release Lock]\n    F --> H[Initialize]\n    H --> I[Store in Class Dict]\n    I --> G\n    G --> K\n    J[Thread N Request] --> B",
+  "lastUpdated": "2025-12-15T01:15:39.683Z"
+}

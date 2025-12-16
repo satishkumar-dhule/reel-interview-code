@@ -1,0 +1,27 @@
+{
+  "id": "q-253",
+  "question": "How does YOLO divide an input image into a grid and predict bounding boxes for object detection?",
+  "answer": "YOLO splits image into S×S grid, each cell predicts B bounding boxes with confidence scores and class probabilities simultaneously.",
+  "explanation": "## YOLO Object Detection Architecture\n\n**Concept Overview**: YOLO (You Only Look Once) treats object detection as a single regression problem, dividing the input image into an S×S grid and predicting bounding boxes and class probabilities directly from the full image in one evaluation.\n\n**Implementation Details**:\n- Input image resized to 448×448 pixels\n- Grid cells (typically 13×13 for YOLOv2, 19×19 for YOLOv3)\n- Each grid cell predicts B bounding boxes (usually 2)\n- Each prediction includes: (x, y, w, h, confidence, class probabilities)\n- Non-max suppression removes duplicate detections\n\n**Key Formula**:\n- Confidence = Objectness × IoU(truth, predicted)\n- Final score = Confidence × Class probability\n\n**Common Pitfalls**:\n- Small objects often missed due to grid limitations\n- Struggles with closely spaced objects\n- Lower accuracy compared to two-stage detectors\n\n```python\n# Simplified YOLO prediction logic\ndef predict_bounding_boxes(image, grid_size=13):\n    features = backbone_network(image)\n    predictions = detection_head(features)  # Shape: (13, 13, 5*B + num_classes)\n    \n    for i in range(grid_size):\n        for j in range(grid_size):\n            cell_predictions = predictions[i, j]\n            boxes = decode_predictions(cell_predictions, i, j, grid_size)\n            filtered_boxes = non_max_suppression(boxes)\n    return filtered_boxes\n```",
+  "tags": [
+    "yolo",
+    "rcnn",
+    "detr"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Input Image 448×448] --> B[Backbone Network DarkNet-53]\n    B --> C[Feature Maps]\n    C --> D[Detection Head]\n    D --> E[Grid S×S]\n    E --> F[Each Cell Predicts]\n    F --> G[B Bounding Boxes]\n    F --> H[Confidence Scores]\n    F --> I[Class Probabilities]\n    G --> J[Non-Max Suppression]\n    H --> J\n    I --> J\n    J --> K[Final Detections]",
+  "sourceUrl": "https://pjreddie.com/darknet/yolo/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "NVIDIA",
+    "Tesla"
+  ],
+  "lastUpdated": "2025-12-15T10:40:31.189Z"
+}

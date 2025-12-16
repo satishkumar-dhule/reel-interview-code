@@ -1,0 +1,12 @@
+{
+  "id": "gh-84",
+  "question": "What is Application Modernization?",
+  "answer": "Application Modernization is the process of transforming existing applications to leverage cloud-native features and capabilities.",
+  "explanation": "Application Modernization is the process of transforming existing applications to leverage cloud-native features and capabilities.\n\nKey components:\n1. **Application Analysis:**\n- Current application state\n- Application architecture\n- Technology stack\n\n2. **Modernization Strategy:**\n- Cloud-native architecture\n- Microservices\n- Containerization\n- Serverless computing\n\n3. **Migration:**\n- Data migration\n- Application migration\n- Testing\n- Validation\n- Cutover",
+  "difficulty": "beginner",
+  "tags": [
+    "migration",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

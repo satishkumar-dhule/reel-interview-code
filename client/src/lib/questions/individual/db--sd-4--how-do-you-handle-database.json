@@ -1,0 +1,14 @@
+{
+  "id": "sd-4",
+  "question": "How do you handle Database Sharding? What are the downsides?",
+  "answer": "Sharding splits a large database into smaller, faster, easily managed parts called data shards.",
+  "explanation": "**Horizontal Partitioning**: Splitting rows based on a Shard Key (e.g., UserID).\n\n**Downsides/Challenges**:\n1. **Resharding**: Hard to move data when a shard fills up.\n2. **Hotspot Key**: If Justin Bieber is on Shard 1, Shard 1 melts down.\n3. **Joins**: Cross-shard joins are expensive/impossible.\n\n**Mitigation**: Consistent Hashing, Virtual Nodes.",
+  "diagram": "\ngraph TD\n    App --> Router\n    Router -->|ID < 100| S1[(Shard 1)]\n    Router -->|ID > 100| S2[(Shard 2)]\n",
+  "difficulty": "advanced",
+  "tags": [
+    "db",
+    "scale",
+    "architecture"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

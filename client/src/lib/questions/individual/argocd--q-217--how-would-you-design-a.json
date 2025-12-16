@@ -1,0 +1,14 @@
+{
+  "id": "q-217",
+  "question": "How would you design a GitOps multi-cluster deployment strategy using ArgoCD that handles blue-green deployments with zero-downtime rollback across 50+ clusters while maintaining state consistency?",
+  "answer": "Use ArgoCD ApplicationSets with cluster secrets, progressive sync strategies, and automated health checks for zero-downtime blue-green deployments.",
+  "explanation": "## Concept Overview\nGitOps multi-cluster management requires declarative configuration, automated synchronization, and robust rollback mechanisms. ArgoCD ApplicationSets enable scaling across multiple clusters while maintaining consistency.\n\n## Implementation Details\n- **ApplicationSets**: Use cluster generator with secret-based cluster discovery\n- **Progressive Sync**: Implement ArgoCD's sync waves for staged rollouts\n- **Health Checks**: Custom health check hooks for application readiness\n- **Rollback Strategy**: Git-based rollback with automated promotion/demotion\n\n## Code Example\n```yaml\napiVersion: argoproj.io/v1alpha1\nkind: ApplicationSet\nmetadata:\n  name: multi-cluster-app\nspec:\n  generators:\n  - clusters:\n      selector:\n        matchLabels:\n          env: production\n  template:\n    metadata:\n      name: '{{cluster.name}}-app'\n    spec:\n      project: default\n      source:\n        repoURL: https://github.com/org/app-config\n        targetRevision: main\n        path: manifests\n      destination:\n        server: '{{cluster.server}}'\n        namespace: production\n      syncPolicy:\n        automated:\n          prune: true\n          selfHeal: true\n        syncOptions:\n        - CreateNamespace=true\n        - PrunePropagationPolicy=foreground\n        retry:\n          limit: 3\n          backoff:\n            duration: 5s\n            factor: 2\n            maxDuration: 3m\n```\n\n## Common Pitfalls\n- **State Drift**: Inconsistent cluster states causing deployment failures\n- **Resource Limits**: ArgoCD controller hitting memory/CPU limits at scale\n- **Network Policies**: Blocking ArgoCD communication with clusters\n- **Secret Management**: Improper cluster credential rotation\n- **Sync Conflicts**: Manual changes overriding GitOps state",
+  "tags": [
+    "argocd",
+    "flux",
+    "declarative"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Git Repository] --> B[ArgoCD ApplicationSet Controller]\n    B --> C[Cluster Generator]\n    C --> D[Cluster 1 Secret]\n    C --> E[Cluster 2 Secret]\n    C --> F[Cluster N Secret]\n    B --> G[Application Template]\n    G --> H[Blue Deployment]\n    G --> I[Green Deployment]\n    H --> J[Health Check Service]\n    I --> K[Health Check Service]\n    J --> L[Traffic Router]\n    K --> L\n    L --> M[Production Traffic]\n    B --> N[Rollback Controller]\n    N --> O[Git Revert]\n    O --> P[Automated Sync]",
+  "lastUpdated": "2025-12-15T01:14:45.789Z"
+}

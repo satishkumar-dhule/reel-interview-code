@@ -1,0 +1,26 @@
+{
+  "id": "q-252",
+  "question": "What is post-training quantization and how does it reduce model size without retraining?",
+  "answer": "Converting model weights from 32-bit to lower precision (8-bit or 16-bit) after training, reducing memory by 4-75%.",
+  "explanation": "## Post-Training Quantization\n\nPost-training quantization optimizes models by reducing numerical precision of weights after training is complete.\n\n### Key Concepts\n- **Quantization**: Process of reducing precision of numbers (e.g., 32-bit → 8-bit)\n- **Static vs Dynamic**: Static quantizes all parameters upfront, dynamic quantizes during inference\n- **Trade-offs**: Smaller model size vs. potential accuracy loss\n\n### Implementation Details\n```python\n# PyTorch example of post-training quantization\nimport torch\nfrom torch import quantization\n\nmodel = load_trained_model()\n# Static quantization\nmodel_int8 = quantization.quantize_dynamic(\n    model, {torch.nn.Linear}, dtype=torch.qint8\n)\n```\n\n### Common Pitfalls\n- Accuracy degradation with extreme precision reduction (4-bit)\n- Hardware compatibility issues (not all devices support 8-bit ops)\n- Calibration data quality affects dynamic quantization performance",
+  "tags": [
+    "quantization",
+    "pruning",
+    "distillation"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Original Model<br/>32-bit Weights] --> B[Quantization Process]\n    B --> C[Quantized Model<br/>8-bit Weights]\n    B --> D[Scale Factors]\n    B --> E[Zero Points]\n    C --> F[Smaller Memory Footprint]\n    C --> G[Faster Inference]\n    D --> H[Dequantization Layer]\n    E --> H\n    H --> I[Original Precision Output]",
+  "sourceUrl": "https://pytorch.org/tutorials/advanced/static_quantization_tutorial.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "NVIDIA"
+  ],
+  "lastUpdated": "2025-12-15T10:40:03.497Z"
+}

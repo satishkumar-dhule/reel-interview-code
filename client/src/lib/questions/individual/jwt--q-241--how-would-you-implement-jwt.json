@@ -1,0 +1,30 @@
+{
+  "id": "q-241",
+  "question": "How would you implement JWT authentication with RS256 signing and refresh token rotation to prevent token replay attacks?",
+  "answer": "Use RS256 for asymmetric signing, 15-min access tokens, rotating refresh tokens stored in httpOnly cookies, and invalidate old tokens on each refresh.",
+  "explanation": "## Concept Overview\nJWT authentication with RS256 provides asymmetric cryptography for enhanced security. Refresh token rotation prevents replay attacks by generating new refresh tokens on each use.\n\n## Implementation Details\n- **RS256 Algorithm**: Uses private/public key pair instead of shared secret\n- **Access Token**: 15-minute expiration, contains user ID and role\n- **Refresh Token**: 7-day expiration, stored in httpOnly secure cookie\n- **Token Rotation**: New refresh token issued each time, old one invalidated\n\n## Code Example\n```javascript\n// Generate JWT with RS256\nconst token = jwt.sign(\n  { userId: user.id, role: user.role },\n  privateKey,\n  { algorithm: 'RS256', expiresIn: '15m' }\n);\n\n// Refresh token rotation\napp.post('/refresh', async (req, res) => {\n  const oldRefreshToken = req.cookies.refresh_token;\n  const newTokens = await generateNewTokens(oldRefreshToken);\n  await invalidateRefreshToken(oldRefreshToken);\n  res.cookie('refresh_token', newTokens.refreshToken, {\n    httpOnly: true, secure: true, sameSite: 'strict'\n  });\n});\n```\n\n## Common Pitfalls\n- Using HS256 instead of RS256 (shared secret vulnerability)\n- Storing refresh tokens in localStorage (XSS risk)\n- Not implementing proper token rotation\n- Missing secure cookie flags\n- Forgetting to invalidate old refresh tokens",
+  "tags": [
+    "jwt",
+    "oauth2",
+    "oidc",
+    "saml"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[User Login] --> B[Generate Access Token RS256]\n    A --> C[Generate Refresh Token]\n    B --> D[Access Token: 15min expiry]\n    C --> E[Store in httpOnly cookie]\n    D --> F[API Request with Bearer token]\n    E --> G[Refresh Token Rotation]\n    F --> H[Validate JWT Signature]\n    G --> I[Generate new refresh token]\n    H --> J[Invalidate old refresh token]\n    I --> K[Update cookie with new token]",
+  "sourceUrl": "https://auth0.com/docs/secure/tokens/refresh-tokens/refresh-token-rotation",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/shorts/ubg-FWllv70",
+    "longVideo": "https://www.youtube.com/watch?v=8-sQton2Lto"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:23:49.410Z"
+}

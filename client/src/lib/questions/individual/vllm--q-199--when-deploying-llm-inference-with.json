@@ -1,0 +1,15 @@
+{
+  "id": "q-199",
+  "question": "When deploying LLM inference with vLLM and Triton Inference Server, how do you handle request batching across multiple GPU nodes while maintaining sub-100ms latency for individual requests?",
+  "answer": "Use dynamic batching with Triton's ensemble scheduler, vLLM's PagedAttention, and request routing based on queue depth and model load.",
+  "explanation": "## Concept Overview\nDistributed LLM inference requires intelligent request batching to maximize GPU utilization while meeting latency SLAs. The challenge is balancing throughput with individual request response times.\n\n## Implementation Details\n- **Triton Ensemble Scheduler**: Coordinates multiple model instances with different batch sizes\n- **vLLM PagedAttention**: Manages memory efficiently across requests\n- **Dynamic Batching**: Groups requests based on arrival time and sequence length\n- **Load-aware Routing**: Distributes requests based on current GPU utilization\n\n## Code Example\n```python\n# Triton config for dynamic batching\nname: \"llm_vllm\"\nplatform: \"python_vllm\"\nmax_batch_size: 32\ndynamic_batching {\n  max_queue_delay_microseconds: 5000\n  preferred_batch_size: [4, 8, 16]\n}\n```\n\n## Common Pitfalls\n- Fixed batch sizes causing latency spikes\n- Memory fragmentation with static allocation\n- Poor request routing leading to GPU imbalance\n- Ignoring sequence length variance in batching logic",
+  "tags": [
+    "vllm",
+    "tgi",
+    "triton",
+    "onnx"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Client Request] --> B[Load Balancer]\n    B --> C{Queue Depth}\n    C -->|Low| D[Single GPU]\n    C -->|High| E[Multi-GPU Batch]\n    E --> F[Triton Ensemble]\n    F --> G[vLLM PagedAttention]\n    G --> H[GPU Cluster]\n    H --> I[Response Aggregation]\n    I --> J[Client Response]",
+  "lastUpdated": "2025-12-14T12:57:39.013Z"
+}

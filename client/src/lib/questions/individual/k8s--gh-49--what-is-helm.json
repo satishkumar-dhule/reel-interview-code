@@ -1,0 +1,13 @@
+{
+  "id": "gh-49",
+  "question": "What is Helm?",
+  "answer": "Helm is a package manager for Kubernetes that helps you manage Kubernetes applications through Helm Charts.",
+  "explanation": "Helm is a package manager for Kubernetes that helps you manage Kubernetes applications through Helm Charts.\n\nKey concepts:\n1. **Charts:**\n- Package format\n- Collection of files\n- Template mechanism\n\n2. **Repositories:**\n- Chart storage\n- Version control\n- Distribution\n\nExample of Helm Chart:\n```yaml\napiVersion: v2\nname: my-app\ndescription: A Helm chart for my application\nversion: 0.1.0\ndependencies:\n- name: mysql\nversion: 8.8.3\nrepository: https://charts.bitnami.com/bitnami\n```",
+  "diagram": "\ngraph LR\n    Chart[Helm Chart] --> Helm[Helm CLI]\n    Helm --> K8s[Kubernetes]\n    K8s --> App[Application]\n",
+  "difficulty": "advanced",
+  "tags": [
+    "k8s",
+    "advanced"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

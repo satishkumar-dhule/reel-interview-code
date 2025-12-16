@@ -1,0 +1,14 @@
+{
+  "id": "q-231",
+  "question": "How would you implement cache purging for a multi-region CDN when content updates need to propagate within 5 seconds?",
+  "answer": "Use invalidation API with distributed cache headers and edge compute for coordinated purging across regions.",
+  "explanation": "## Concept Overview\nCDN cache purging involves invalidating cached content across edge locations when source content changes. Multi-region coordination requires low-latency communication.\n\n## Implementation Details\n- **Invalidation Methods**: URL-based vs wildcard vs tag-based purging\n- **Propagation Strategy**: Push notifications via message queues (Kafka/SQS)\n- **Fallback Mechanism**: TTL-based expiration with short cache durations\n- **Edge Compute**: Cloudflare Workers/CloudFront@Edge for coordinated purging\n\n## Code Example\n```javascript\n// CDN invalidation with distributed coordination\nasync function purgeContent(contentId, regions) {\n  const purgePromises = regions.map(region => \n    cdnProvider.purgeByTag(region, contentId)\n  );\n  \n  // Notify edge workers via message queue\n  await messageQueue.publish('cdn-purge', {\n    contentId,\n    timestamp: Date.now(),\n    regions\n  });\n  \n  return Promise.all(purgePromises);\n}\n```\n\n## Common Pitfalls\n- **Race Conditions**: Cache re-population before purge completes\n- **Partial Purges**: Some regions not receiving purge commands\n- **Rate Limits**: CDN provider API throttling during bulk purges\n- **Stale Content**: Browser cache bypassing CDN purge",
+  "tags": [
+    "edge",
+    "caching",
+    "purging"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Content Update] --> B[Origin Server]\n    B --> C[Message Queue]\n    C --> D[Edge Worker 1]\n    C --> E[Edge Worker 2]\n    C --> F[Edge Worker N]\n    D --> G[CDN Region 1]\n    E --> H[CDN Region 2]\n    F --> I[CDN Region N]\n    G --> J[Cache Purge 1]\n    H --> K[Cache Purge 2]\n    I --> L[Cache Purge N]\n    J --> M[User Request 1]\n    K --> N[User Request 2]\n    L --> O[User Request N]",
+  "lastUpdated": "2025-12-15T01:16:28.689Z"
+}

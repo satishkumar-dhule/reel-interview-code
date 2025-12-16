@@ -1,0 +1,14 @@
+{
+  "id": "sd-2",
+  "question": "What is Consistent Hashing and why is it critical for distributed caches?",
+  "answer": "Consistent Hashing maps keys to a ring of nodes to minimize data movement when scaling.",
+  "explanation": "In standard `hash(key) % N`, adding a node changes `N`, causing nearly ALL keys to remap (cache stampede).\n\n**Consistent Hashing** maps both servers and keys to a circle (0-360°). Keys map to the next server clockwise.\n\n**Benefit**: Adding/removing a node only affects the immediate neighbors (k/N keys move), not the whole cluster.\n\nUsed in: DynamoDB, Cassandra, Discord Ringpop.",
+  "diagram": "\ngraph TD\n    subgraph Hash Ring\n    N1((Node 1)) --- N2((Node 2))\n    N2 --- N3((Node 3))\n    N3 --- N1\n    end\n    Key[Key K] -.->|Clockwise| N2\n    style N2 fill:#f00,stroke:#fff,color:#fff\n",
+  "difficulty": "advanced",
+  "tags": [
+    "hashing",
+    "dist-sys",
+    "caching"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

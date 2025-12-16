@@ -1,0 +1,14 @@
+{
+  "id": "gh-23",
+  "question": "Explain the key differences between monitoring and logging in DevOps, and when would you use each?",
+  "answer": "Monitoring tracks system health and performance metrics in real-time, while logging records discrete events for troubleshooting and analysis.",
+  "explanation": "## Key Differences\n\n### **Monitoring**\n- **Purpose**: Real-time system health tracking\n- **Data Type**: Metrics, performance indicators\n- **Usage**: Alerting, trend analysis, SLA compliance\n- **Examples**: CPU usage, response times, error rates\n- **Tools**: Prometheus, Grafana, Datadog\n\n### **Logging**\n- **Purpose**: Event recording and debugging\n- **Data Type**: Discrete events, messages\n- **Usage**: Root cause analysis, security auditing\n- **Examples**: Application errors, user actions, system events\n- **Tools**: ELK Stack, Splunk, Graylog\n\n### **When to Use Each**\n- **Monitoring**: System health dashboards, proactive alerts\n- **Logging**: Debugging specific issues, audit trails",
+  "diagram": "graph TD\n    subgraph \"Monitoring\"\n        M[Metrics Collection] --> A[Real-time Alerts]\n        M --> D[Performance Dashboards]\n        A --> T[Threshold Alerts]\n    end\n    \n    subgraph \"Logging\"\n        L[Event Recording] --> S[Log Aggregation]\n        S --> R[Root Cause Analysis]\n        S --> Audit[Audit Trail]\n    end\n    \n    I[Infrastructure] --> M\n    I --> L\n    A --> C[Corrective Action]\n    R --> C",
+  "difficulty": "intermediate",
+  "tags": [
+    "observability",
+    "monitoring",
+    "logging"
+  ],
+  "lastUpdated": "2025-12-12T10:04:23.386Z"
+}

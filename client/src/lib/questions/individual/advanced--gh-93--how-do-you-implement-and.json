@@ -1,0 +1,13 @@
+{
+  "id": "gh-93",
+  "question": "How do you implement and monitor Service Level Agreements (SLAs) in a distributed system?",
+  "answer": "SLAs are formal contracts defining service performance metrics, monitoring, and penalties for non-compliance.",
+  "explanation": "## Concept Overview\nSLAs define measurable service commitments between providers and customers, specifying performance targets, monitoring requirements, and remediation actions.\n\n## Implementation\n```typescript\n// SLA Monitoring Service\nclass SLAMonitor {\n  private metrics = new Map<string, number>();\n  \n  trackResponseTime(service: string, time: number) {\n    this.metrics.set(`${service}_response`, time);\n    this.checkSLAViolation(service, time);\n  }\n  \n  private checkSLAViolation(service: string, time: number) {\n    const slaThreshold = 200; // 200ms SLA\n    if (time > slaThreshold) {\n      this.logViolation(service, time);\n    }\n  }\n}\n```\n\n## Trade-offs\n**Pros:**\n- Clear performance expectations\n- Automated monitoring and alerting\n- Customer trust and accountability\n\n**Cons:**\n- Complex metric collection\n- Potential over-engineering\n- False positives in monitoring\n\n## Common Pitfalls\n- Setting unrealistic SLA targets\n- Ignoring latency in distributed calls\n- Not accounting for cascading failures\n- Poor alerting fatigue management",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-15T06:35:40.728Z",
+  "diagram": "graph TD\n    A[Client Request] --> B[API Gateway]\n    B --> C[SLA Monitor]\n    C --> D[Service A]\n    C --> E[Service B]\n    D --> F[Response Time Check]\n    E --> G[Response Time Check]\n    F --> H{SLA Met?}\n    G --> I{SLA Met?}\n    H -->|Yes| J[Log Success]\n    H -->|No| K[Trigger Alert]\n    I -->|Yes| L[Log Success]\n    I -->|No| M[Trigger Alert]\n    J --> N[Return Response]\n    K --> N\n    L --> N\n    M --> N"
+}

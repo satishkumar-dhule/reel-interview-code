@@ -1,0 +1,12 @@
+{
+  "id": "gh-103",
+  "question": "What is a Self-Healing System?",
+  "answer": "A Self-Healing System is an architecture that can automatically detect and recover from failures, often using automation, monitoring, and orchestratio...",
+  "explanation": "A Self-Healing System is an architecture that can automatically detect and recover from failures, often using automation, monitoring, and orchestration tools to maintain availability.",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

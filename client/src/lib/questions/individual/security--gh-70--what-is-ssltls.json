@@ -1,0 +1,12 @@
+{
+  "id": "gh-70",
+  "question": "What is SSL/TLS?",
+  "answer": "SSL/TLS is a cryptographic protocol used to secure communications between a client and a server.",
+  "explanation": "SSL/TLS is a cryptographic protocol used to secure communications between a client and a server.\n\nKey concepts:\n1. **Encryption:**\n- Data is encrypted before transmission\n- Data is decrypted after transmission\n\n2. **Authentication:**\n- Verifies the identity of the communicating parties\n\nExample of SSL/TLS configuration:\n```yaml\nsecurity:\nssl:\nenabled: true\nprotocol: TLSv1.2\nciphers:\n- ECDHE-RSA-AES256-GCM-SHA384\n- ECDHE-RSA-AES128-GCM-SHA256\n```",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "network"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

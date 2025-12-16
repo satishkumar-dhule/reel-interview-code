@@ -1,0 +1,15 @@
+{
+  "id": "sre-1",
+  "question": "What are SLIs, SLOs, and SLAs? How do they relate?",
+  "answer": "Metrics, Goals, and Consequences.",
+  "explanation": "1. **SLI (Indicator)**: The actual number. \"My latency is 200ms\".\n2. **SLO (Objective)**: The internal goal. \"Latency should be < 300ms for 99% of requests\".\n3. **SLA (Agreement)**: The legal contract with users. \"If latency > 500ms, we refund you 10%\".\n\n*SREs focus on SLOs. SLAs are for lawyers.*",
+  "diagram": "graph TD\n    SLI[\"Indicator<br/>Reality\"] -->|Measured Against| SLO[\"Objective<br/>Goal\"]\n    SLO -->|Buffer| SLA[\"Agreement<br/>Contract\"]",
+  "difficulty": "beginner",
+  "tags": [
+    "metrics",
+    "policy",
+    "definitions",
+    "observability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

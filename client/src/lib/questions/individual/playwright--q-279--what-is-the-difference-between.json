@@ -1,0 +1,25 @@
+{
+  "id": "q-279",
+  "question": "What is the difference between getByRole() and getByText() selectors in Playwright testing?",
+  "answer": "getByRole() finds elements by accessibility role/name, while getByText() matches by visible text content.",
+  "explanation": "## Concept\nPlaywright provides user-centric locators that make tests more resilient to UI changes. getByRole() targets elements by their semantic meaning (button, link, etc.) while getByText() locates by visible text content.\n\n## Implementation\n```javascript\n// getByRole - preferred for accessible testing\nawait page.getByRole('button', { name: 'Submit' }).click();\n\n// getByText - for text-based selection\nawait page.getByText('Welcome to dashboard').isVisible();\n\n// Combining selectors\nawait page.getByRole('alert').getByText('Error occurred').isVisible();\n```\n\n## Trade-offs\n**getByRole()**: More stable, accessibility-focused, but requires proper semantic HTML\n**getByText()**: Direct but brittle to text changes, good for static content\n\n## Pitfalls\n- Avoid CSS selectors like $('.btn-primary') that break on style changes\n- Use getByTestId() only when user-facing attributes aren't available\n- getByRole() requires accessible markup to work effectively",
+  "tags": [
+    "playwright",
+    "browser-automation",
+    "selectors"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart TD\n    A[Start Test] --> B{Need Element?}\n    B -->|User Action| C[Use getByRole]\n    B -->|Text Content| D[Use getByText]\n    B -->|Form Input| E[Use getByLabel]\n    B -->|Last Resort| F[Use getByTestId]\n    \n    C --> G[Auto-wait & Retry]\n    D --> G\n    E --> G\n    F --> G\n    \n    G --> H[Perform Action]\n    H --> I[Assert Results]",
+  "sourceUrl": "https://playwright.dev/docs/locators",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:38:30.047Z"
+}

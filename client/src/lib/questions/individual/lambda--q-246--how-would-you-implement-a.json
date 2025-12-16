@@ -1,0 +1,26 @@
+{
+  "id": "q-246",
+  "question": "How would you implement a serverless workflow using AWS Step Functions to coordinate Lambda functions for processing orders with retries and error handling?",
+  "answer": "Use Step Functions with Choice states for branching, Retry/ Catch policies for error handling, and Lambda integration for processing steps.",
+  "explanation": "## Step Functions Order Processing Workflow\n\n**Concept Overview**: AWS Step Functions provides serverless orchestration for complex workflows, perfect for order processing with multiple validation, payment, and fulfillment stages.\n\n**Implementation Details**:\n- Use Choice states to branch based on order validation results\n- Implement Retry policies with exponential backoff for transient failures\n- Add Catch states for handling different error types (validation vs. payment failures)\n- Use Parallel state for independent fulfillment processes (inventory + notification)\n\n**Code Example**:\n```javascript\n// Lambda function for order validation\nexports.handler = async (event) => {\n  const { orderId, items, customer } = event;\n  \n  // Validate inventory\n  const inventoryCheck = await checkInventory(items);\n  if (!inventoryCheck.available) {\n    throw new Error('INSUFFICIENT_INVENTORY');\n  }\n  \n  // Validate customer\n  const customerValid = await validateCustomer(customer);\n  if (!customerValid) {\n    throw new Error('INVALID_CUSTOMER');\n  }\n  \n  return { orderId, validated: true };\n};\n```\n\n**Common Pitfalls**:\n- Not setting appropriate timeout values in Lambda functions\n- Missing error handling for different failure scenarios\n- Not implementing proper state machine versioning\n- Overlooking cold start impacts on workflow performance",
+  "tags": [
+    "lambda",
+    "api-gateway",
+    "step-functions"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Order Received] --> B[Validate Order Lambda]\n    B -->|Success| C[Process Payment Lambda]\n    B -->|Invalid Order| D[Send Failure Notification]\n    C -->|Payment Success| E[Update Inventory Lambda]\n    C -->|Payment Failed| F[Retry Payment]\n    F -->|3 Attempts Failed| G[Cancel Order]\n    E --> H[Send Confirmation Lambda]\n    H --> I[Order Complete]\n    D --> J[End]\n    G --> J\n    I --> K[End]",
+  "sourceUrl": "https://aws.amazon.com/step-functions/getting-started/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "DoorDash",
+    "Microsoft",
+    "Stripe",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:31:05.765Z"
+}

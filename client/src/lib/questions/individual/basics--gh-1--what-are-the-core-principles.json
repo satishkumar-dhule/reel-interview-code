@@ -1,0 +1,17 @@
+{
+  "id": "gh-1",
+  "question": "What are the core principles and practices of DevOps, and how does it bridge the gap between development and operations teams?",
+  "answer": "DevOps combines development and operations through automation, continuous integration/delivery, and shared responsibility for the entire software lifecycle.",
+  "explanation": "DevOps is a cultural and technical movement that breaks down silos between development and operations teams. Key principles include:\n\n• **Automation**: Automating build, test, deployment, and infrastructure provisioning processes\n• **Continuous Integration/Continuous Delivery (CI/CD)**: Frequent code integration and automated deployment pipelines\n• **Infrastructure as Code (IaC)**: Managing infrastructure through version-controlled code\n• **Monitoring and Observability**: Real-time monitoring of applications and infrastructure\n• **Collaboration**: Shared ownership and responsibility across the entire software lifecycle\n• **Feedback Loops**: Quick feedback from production back to development teams\n\nDevOps practices enable faster delivery, improved quality, reduced deployment risks, and better alignment between business objectives and technical implementation.",
+  "diagram": "graph TD\n    A[Code Commit] --> B[Build & Test]\n    B --> C[Deploy to Staging]\n    C --> D[Automated Testing]\n    D --> E[Deploy to Production]\n    E --> F[Monitor & Log]\n    F --> G[Feedback]\n    G --> A\n    H[Infrastructure as Code] --> C\n    I[Security Scanning] --> D",
+  "difficulty": "beginner",
+  "tags": [
+    "basics"
+  ],
+  "lastUpdated": "2025-12-12T09:10:12.989Z",
+  "videos": {
+    "shortVideo": "https://youtube.com/watch?v=55afxfqeSCM",
+    "longVideo": "https://youtube.com/watch?v=fqMOX6JJhGo"
+  },
+  "lastVideoUpdate": "2025-12-16T15:16:15.054Z"
+}

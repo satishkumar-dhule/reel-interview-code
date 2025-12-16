@@ -1,0 +1,13 @@
+{
+  "id": "q-171",
+  "question": "You have a Docker container that keeps crashing and restarting. How would you debug this issue without modifying the container image?",
+  "answer": "Use docker logs, inspect, exec, and check resource limits to identify the root cause.",
+  "explanation": "To debug a crashing Docker container:\n\n1. **Check logs**: `docker logs <container_name>` - Look for error messages, stack traces, or exit codes\n\n2. **Inspect container**: `docker inspect <container_name>` - Check exit code, health status, and configuration\n\n3. **Resource monitoring**: `docker stats` - Monitor CPU, memory usage to identify resource constraints\n\n4. **Enter running container**: `docker exec -it <container_name> /bin/bash` - If container starts but crashes quickly, use this to investigate\n\n5. **Check events**: `docker events` - Monitor real-time container events\n\n6. **Restart policy**: Verify if restart policy is causing endless restart loops\n\nCommon causes include: out-of-memory errors, missing dependencies, port conflicts, incorrect environment variables, or application bugs.",
+  "tags": [
+    "docker",
+    "containers"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Container Crashes] --> B[docker logs]\n    A --> C[docker inspect]\n    A --> D[docker stats]\n    B --> E[Check Error Messages]\n    C --> F[Check Exit Code]\n    D --> G[Check Resource Usage]\n    E --> H[Identify Root Cause]\n    F --> H\n    G --> H\n    H --> I[Apply Fix]",
+  "lastUpdated": "2025-12-14T10:23:44.913Z"
+}

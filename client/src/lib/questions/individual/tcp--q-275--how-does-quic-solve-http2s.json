@@ -1,0 +1,26 @@
+{
+  "id": "q-275",
+  "question": "How does QUIC solve HTTP/2's head-of-line blocking issue over TCP, and what are the implementation trade-offs?",
+  "answer": "QUIC runs over UDP with independent streams, eliminating TCP-level blocking while implementing reliability at the application layer.",
+  "explanation": "## Concept\nHTTP/2 suffers from head-of-line blocking at TCP level - one lost packet blocks all streams. QUIC solves this by using UDP as transport and implementing reliability, congestion control, and stream multiplexing at the application layer.\n\n## Implementation\n```go\n// QUIC stream independence\nfor _, stream := range conn.Streams() {\n    go func(s quic.Stream) {\n        // Each stream processes independently\n        data, err := io.ReadAll(s)\n        // Lost packets only affect this stream\n        handleStreamData(s.ID(), data)\n    }(stream)\n}\n\n// Connection-level recovery\nconn.HandleLostPacket(packetID)\n// Other streams continue unaffected\n```\n\n## Trade-offs\n**Pros:**\n- No head-of-line blocking between streams\n- Faster connection establishment (0-RTT)\n- Better mobility support (connection migration)\n\n**Cons:**\n- Higher CPU usage (user-space reliability)\n- More complex implementation\n- Potential NAT/UDP blocking issues\n\n## Pitfalls\n- UDP may be blocked by corporate firewalls\n- Increased packet overhead vs TCP\n- Debugging complexity with custom reliability layer",
+  "tags": [
+    "tcp",
+    "udp",
+    "http2",
+    "quic"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[Client Request] --> B{Transport Layer}\n    B -->|HTTP/2| C[TCP]\n    B -->|QUIC| D[UDP]\n    C --> E[TCP Stream 1] --> F[TCP Stream 2] --> G[TCP Stream 3]\n    D --> H[QUIC Stream 1] --> I[QUIC Stream 2] --> J[QUIC Stream 3]\n    \n    K[Packet Loss] --> E\n    K --> F\n    K --> G\n    style E fill:#ffcccc\n    style F fill:#ffcccc\n    style G fill:#ffcccc\n    \n    L[Packet Loss] --> H\n    style H fill:#ffcccc\n    style I fill:#ccffcc\n    style J fill:#ccffcc\n    \n    M[TCP HOL Blocking] --> N[All Streams Blocked]\n    O[QUIC Independence] --> P[Only Affected Stream Blocked]",
+  "sourceUrl": "https://tools.ietf.org/html/rfc9000",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:33:22.256Z"
+}

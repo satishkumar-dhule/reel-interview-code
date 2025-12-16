@@ -1,0 +1,30 @@
+{
+  "id": "q-240",
+  "question": "What is a closure in JavaScript and how does it enable data encapsulation?",
+  "answer": "A closure is when a function remembers and accesses variables from its outer lexical scope, even after the outer function has finished executing.",
+  "explanation": "## Concept Overview\nA closure is a fundamental JavaScript concept where an inner function maintains access to variables in its outer (lexical) scope, even when the outer function has completed execution. This creates a private scope for data encapsulation.\n\n## Implementation Details\n- Closures are created automatically when functions are defined inside other functions\n- The inner function retains a reference to the outer function's variables\n- This enables private variables and methods, similar to object-oriented encapsulation\n- Memory is managed automatically - closures persist as long as references exist\n\n## Code Example\n```javascript\nfunction createCounter() {\n  let count = 0; // Private variable\n  \n  return {\n    increment: function() {\n      count++; // Accesses outer scope variable\n      return count;\n    },\n    decrement: function() {\n      count--;\n      return count;\n    },\n    getCount: function() {\n      return count;\n    }\n  };\n}\n\nconst counter = createCounter();\nconsole.log(counter.increment()); // 1\nconsole.log(counter.increment()); // 2\nconsole.log(counter.getCount());  // 2\n```\n\n## Common Pitfalls\n- **Memory leaks**: Closures can prevent garbage collection if references persist unnecessarily\n- **Loop confusion**: Variables in closures capture by reference, not value (use `let` or IIFE)\n- **Performance impact**: Creating many closures can affect memory usage\n- **`this` binding**: Arrow functions don't have their own `this`, which affects closure behavior",
+  "tags": [
+    "js",
+    "es6",
+    "closures",
+    "promises"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Outer Function Called] --> B[Outer Variables Created]\n    B --> C[Inner Function Defined]\n    C --> D[Inner Function Returned]\n    D --> E[Outer Function Completes]\n    E --> F[Inner Function Still Has Access]\n    F --> G[Closure Maintains Reference]\n    G --> H[Private Data Encapsulation]",
+  "sourceUrl": "https://dmitripavlutin.com/javascript-closures-interview-questions/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=vKJpN5FAeF4",
+    "longVideo": "https://www.youtube.com/watch?v=3a0I8ICR1Vg"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:23:11.088Z"
+}

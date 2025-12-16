@@ -1,0 +1,12 @@
+{
+  "id": "gh-79",
+  "question": "What is Application Performance Monitoring?",
+  "answer": "Application Performance Monitoring (APM) is the practice of collecting and analyzing data about the performance and stability of applications to impro...",
+  "explanation": "Application Performance Monitoring (APM) is the practice of collecting and analyzing data about the performance and stability of applications to improve their reliability and responsiveness.\n\nKey components:\n1. **Metrics Collection:**\n- Application metrics\n- Transaction tracing\n- Error tracking\n- Performance analytics\n\n2. **Analysis:**\n```yaml\nMonitoring Areas:\n- Application response times\n- Error rates\n- Resource utilization\n- Scalability\n- Reliability\n```",
+  "difficulty": "beginner",
+  "tags": [
+    "monitoring",
+    "infra"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

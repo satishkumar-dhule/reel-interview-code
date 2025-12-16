@@ -1,0 +1,14 @@
+{
+  "id": "gh-29",
+  "question": "What is Configuration Management?",
+  "answer": "Configuration Management is the process of maintaining systems, such as computer systems and servers, in a desired state. It's a way to make sure that...",
+  "explanation": "Configuration Management is the process of maintaining systems, such as computer systems and servers, in a desired state. It's a way to make sure that a system performs as it's supposed to as changes are made over time.\n\nKey aspects include:\n- System configuration\n- Application configuration\n- Dependencies management\n- Version control\n- Compliance and security",
+  "diagram": "\ngraph LR\n    Config[Config Code] --> Tool[CM Tool]\n    Tool --> S1[Server 1]\n    Tool --> S2[Server 2]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "config-mgmt",
+    "ansible",
+    "chef"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "q-272",
+  "question": "How would you implement a DRY Terraform configuration using Terragrunt and Atlantis for multi-environment deployments?",
+  "answer": "Use Terragrunt include blocks to inherit common configs, remote_state for backend, and Atlantis workflows for PR automation.",
+  "explanation": "## Concept\nTerragrunt eliminates code duplication by using hierarchical configurations with include blocks that inherit parent settings. Atlantis automates Terraform workflows through GitHub pull requests, providing plan/apply automation with policy enforcement.\n\n## Implementation\n```hcl\n# terragrunt.hcl (root)\nremote_state {\n  backend = \"s3\"\n  config = {\n    bucket         = \"company-terraform-state\"\n    key            = \"${path_relative_to_include()}/terraform.tfstate\"\n    region         = \"us-east-1\"\n    encrypt        = true\n    dynamodb_table = \"terraform-locks\"\n  }\n}\n\ngenerate \"provider\" {\n  path = \"provider.tf\"\n  if_exists = \"overwrite_terragrunt\"\n  contents = <<EOF\nprovider \"aws\" {\n  region = local.aws_region\n}\nEOF\n}\n\n# prod/app/terragrunt.hcl\ninclude {\n  path = find_in_parent_folders()\n}\n\nterraform {\n  source = \"../../../modules//app\"\n}\n\ninputs = {\n  environment = \"prod\"\n  instance_count = 3\n}\n```\n\n```yaml\n# atlantis.yaml\nworkflows:\n  terragrunt:\n    plan:\n      steps:\n        - env:\n            name: TERRAGRUNT_TFPATH\n            command: 'echo \"terraform${ATLANTIS_TERRAFORM_VERSION}\"'\n        - run: terragrunt run-all plan -input=false -out=$PLANFILE\n        - run: terragrunt run-all show -json $PLANFILE > $SHOWFILE\n    apply:\n      steps:\n        - run: terragrunt run-all apply -input=false $PLANFILE\n```\n\n## Trade-offs\n**Pros:** Eliminates code duplication, centralized state management, automated PR workflows, consistent configurations across environments.\n\n**Cons:** Added complexity with Terragrunt layer, learning curve for team members, additional dependency management.\n\n## Pitfalls\n- Circular dependencies in include chains\n- State locking conflicts without DynamoDB\n- Over-abstracting configurations making debugging difficult\n- Inconsistent Terragrunt versions across environments",
+  "tags": [
+    "dry",
+    "terragrunt",
+    "atlantis"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[GitHub PR] --> B[Atlantis Webhook]\n    B --> C[Generate Workflow]\n    C --> D[Terragrunt Init]\n    D --> E[Remote State S3 + DynamoDB]\n    E --> F[Include Parent Configs]\n    F --> G[Run Plan]\n    G --> H[Show JSON Output]\n    H --> I[Comment on PR]\n    I --> J{Merge?}\n    J -->|Yes| K[Run Apply]\n    J -->|No| L[Discard Plan]\n    K --> M[Update State]\n    M --> N[Deploy Resources]",
+  "sourceUrl": "https://www.gruntwork.io/blog/terragrunt-how-to-keep-your-terraform-code-dry-and-maintainable",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Netflix",
+    "Stripe"
+  ],
+  "lastUpdated": "2025-12-16T01:20:50.762Z"
+}

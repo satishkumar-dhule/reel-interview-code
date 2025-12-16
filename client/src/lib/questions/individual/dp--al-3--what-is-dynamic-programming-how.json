@@ -1,0 +1,14 @@
+{
+  "id": "al-3",
+  "question": "What is Dynamic Programming? How is it different from Recursion?",
+  "answer": "DP is Recursion + Optimization (Memoization/Tabulation).",
+  "explanation": "Recursion solves subproblems blindly (potentially repeating work).\n\n**DP** stores the result of subproblems so you never solve the same problem twice.\n\n**Example**: Fibonacci.\n- Recursion: `fib(n-1) + fib(n-2)` -> O(2^n)\n- DP: Store `fib` array -> O(n)\n\n**Two Approaches**:\n1. Top-Down (Memoization)\n2. Bottom-Up (Tabulation)",
+  "diagram": "\ngraph TD\n    P[Problem] --> S1[Subproblem 1]\n    P --> S2[Subproblem 2]\n    S1 --> C[(Cache)]\n    S2 --> C\n    C --> R[Result]\n",
+  "difficulty": "advanced",
+  "tags": [
+    "dp",
+    "optimization",
+    "theory"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.185Z"
+}

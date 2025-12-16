@@ -1,0 +1,14 @@
+{
+  "id": "sd-5",
+  "question": "Design a Rate Limiter. What algorithms would you consider?",
+  "answer": "Rate Limiting controls the amount of traffic sent or received by a network interface controller.",
+  "explanation": "Prevents DoS attacks and resource starvation.\n\n**Algorithms**:\n1. **Token Bucket**: Tokens added at rate `r`. Request consumes token. Allows bursts.\n2. **Leaky Bucket**: Requests enter queue, processed at constant rate. Smooths traffic.\n3. **Fixed Window**: Count requests in 1s window. Edge case: 2x traffic at window boundary.\n4. **Sliding Window Log**: Precise but expensive (stores timestamps).\n\n**Implementation**: Redis (Lua scripts for atomicity).",
+  "diagram": "\ngraph LR\n    Req[Request] --> Check{Buckets Full?}\n    Check -->|No| Process[Process]\n    Check -->|Yes| Drop[429 Too Many Requests]\n",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "api",
+    "algorithms"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

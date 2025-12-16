@@ -1,0 +1,14 @@
+{
+  "id": "q-189",
+  "question": "How does the Saga pattern handle distributed transactions across multiple microservices?",
+  "answer": "Saga breaks transactions into local operations with compensating actions to rollback if any step fails.",
+  "explanation": "## Saga Pattern Overview\n\nThe Saga pattern manages distributed transactions by splitting them into a sequence of local transactions. If any step fails, compensating transactions undo previous operations.\n\n## Implementation Types\n\n- **Choreography**: Services emit events and react to others\n- **Orchestration**: Central coordinator manages the saga flow\n\n## Code Example (Orchestration)\n\n```typescript\nclass OrderSaga {\n  async execute(order: Order) {\n    try {\n      await this.paymentService.process(order);\n      await this.inventoryService.reserve(order);\n      await this.shippingService.schedule(order);\n    } catch (error) {\n      await this.compensate(order);\n    }\n  }\n  \n  private async compensate(order: Order) {\n    await this.paymentService.refund(order);\n    await this.inventoryService.release(order);\n  }\n}\n```\n\n## Common Pitfalls\n\n- Compensating actions must be idempotent\n- Eventual consistency requires careful error handling\n- Complex to debug across service boundaries",
+  "tags": [
+    "saga",
+    "cqrs",
+    "event-sourcing"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Client Request] --> B[Order Service]\n    B --> C[Payment Service]\n    C --> D[Inventory Service]\n    D --> E[Shipping Service]\n    C -->|Payment Failed| F[Refund Compensation]\n    D -->|Inventory Failed| G[Release Compensation]\n    E -->|Shipping Failed| H[Cancel Compensation]",
+  "lastUpdated": "2025-12-14T12:56:12.283Z"
+}

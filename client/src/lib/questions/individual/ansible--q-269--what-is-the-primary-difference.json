@@ -1,0 +1,25 @@
+{
+  "id": "q-269",
+  "question": "What is the primary difference between Ansible, Puppet, and Chef in configuration management?",
+  "answer": "Ansible is agentless using SSH, while Puppet and Chef require agents on managed nodes.",
+  "explanation": "## Concept\nConfiguration management tools automate software deployment and server configuration. They ensure consistency across environments and enable infrastructure as code practices.\n\n## Implementation (code)\n**Ansible (agentless):**\n```yaml\n- hosts: webservers\n  tasks:\n    - name: Install nginx\n      apt: name=nginx state=present\n```\n\n**Puppet (agent-based):**\n```puppet\npackage { 'nginx':\n  ensure => installed,\n}\nservice { 'nginx':\n  ensure => running,\n  enable => true,\n}\n```\n\n**Chef (agent-based):**\n```ruby\npackage 'nginx' do\n  action :install\nend\n\nservice 'nginx' do\n  action [:start, :enable]\nend\n```\n\n## Trade-offs\n- **Ansible**: Simple setup, no agents, good for smaller environments\n- **Puppet**: Strong declarative language, better for large enterprises\n- **Chef**: Ruby-based, flexible, steeper learning curve\n\n## Pitfalls\n- Ansible: Can be slow for large-scale operations\n- Puppet: Requires certificate management between master and agents\n- Chef: Complex setup, Ruby dependencies can be challenging",
+  "tags": [
+    "ansible",
+    "puppet",
+    "chef"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart TD\n    A[Configuration Management Tool] --> B{Agent Required?}\n    \n    B -->|No| C[Ansible]\n    C --> D[SSH Connection]\n    C --> E[YAML Playbooks]\n    \n    B -->|Yes| F[Agent-Based Tools]\n    F --> G[Puppet]\n    F --> H[Chef]\n    \n    G --> I[Puppet DSL]\n    G --> J[Master-Agent Model]\n    \n    H --> K[Ruby Recipes]\n    H --> L[Chef Server]\n    \n    D --> M[Managed Nodes]\n    J --> M\n    L --> M",
+  "sourceUrl": "https://docs.ansible.com/ansible/latest/user_guide/getting_started.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:17:35.187Z"
+}

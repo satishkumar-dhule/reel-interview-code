@@ -1,0 +1,26 @@
+{
+  "id": "q-244",
+  "question": "What is the difference between metrics, logs, and traces in observability, and how do OpenTelemetry collectors correlate them?",
+  "answer": "Metrics show system behavior patterns, logs record discrete events, traces track request flows. OpenTelemetry collectors unify collection and correlation.",
+  "explanation": "## Overview\nObservability relies on three pillars: metrics (quantitative data), logs (event records), and traces (request journeys). Understanding their distinct roles and relationships is fundamental for SRE.\n\n## Metrics\n- Counters, gauges, histograms measuring system behavior\n- Time-series data optimized for aggregation\n- Example: CPU usage, request rates, error percentages\n\n## Logs\n- Timestamped event records with context\n- Structured vs unstructured formats\n- Essential for debugging specific incidents\n\n## Traces\n- Distributed request tracking across services\n- Spans representing operations with timing\n- Root spans and child spans showing call chains\n\n## OpenTelemetry Integration\n```yaml\nreceivers:\n  otlp:\n    protocols:\n      http:\n      grpc:\nprocessors:\n  batch:\n  memory_limiter:\nexporters:\n  prometheus:\n  logging:\n  jaeger:\nservice:\n  pipelines:\n    metrics:\n      receivers: [otlp]\n      processors: [batch]\n      exporters: [prometheus]\n    logs:\n      receivers: [otlp]\n      processors: [batch]\n      exporters: [logging]\n    traces:\n      receivers: [otlp]\n      processors: [batch]\n      exporters: [jaeger]\n```\n\n## Common Pitfalls\n- Over-collecting metrics causing storage bloat\n- Missing correlation between traces and logs\n- Sampling too aggressively losing important data\n- Not setting appropriate retention policies",
+  "tags": [
+    "prometheus",
+    "grafana",
+    "opentelemetry"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[Application] --> B[OpenTelemetry SDK]\n    B --> C[Metrics Data]\n    B --> D[Log Data]\n    B --> E[Trace Data]\n    C --> F[OTLP Collector]\n    D --> F\n    E --> F\n    F --> G[Prometheus]\n    F --> H[Log Storage]\n    F --> I[Jaeger]\n    G --> J[Grafana Dashboard]\n    H --> J\n    I --> J",
+  "sourceUrl": "https://opentelemetry.io/docs/concepts/signals/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:29:26.331Z"
+}

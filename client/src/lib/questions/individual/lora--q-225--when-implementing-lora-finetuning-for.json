@@ -1,0 +1,15 @@
+{
+  "id": "q-225",
+  "question": "When implementing LoRA fine-tuning for a 7B parameter LLM, how do you determine the optimal rank (r) and alpha values to balance performance and memory efficiency?",
+  "answer": "Set rank based on target parameter reduction (typically 4-64), and alpha = 2*rank. Use validation loss to tune.",
+  "explanation": "## LoRA Parameter Selection\n\n### Rank (r) Selection\n- **Low rank (4-8)**: Minimal memory overhead, suitable for simple tasks\n- **Medium rank (16-32)**: Good balance for most fine-tuning scenarios\n- **High rank (64+)**: Maximum adaptability, higher memory cost\n\n### Alpha Configuration\n- Alpha controls the scaling of LoRA updates\n- Common practice: alpha = 2 * rank\n- Higher alpha = more aggressive weight updates\n\n### Implementation Pattern\n```python\nfrom peft import LoraConfig, get_peft_model\n\nlora_config = LoraConfig(\n    r=16,  # rank\n    lora_alpha=32,  # alpha = 2*r\n    target_modules=[\"q_proj\", \"v_proj\"],\n    lora_dropout=0.1\n)\nmodel = get_peft_model(base_model, lora_config)\n```\n\n### Common Pitfalls\n- **Too high rank**: Overfitting, excessive memory usage\n- **Too low rank**: Underfitting, poor task adaptation\n- **Imbalanced alpha/ratio**: Unstable training dynamics",
+  "tags": [
+    "lora",
+    "qlora",
+    "peft",
+    "adapter"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Base Model] --> B[LoRA Adapter A]\n    A --> C[LoRA Adapter B]\n    B --> D[Frozen Weights]\n    C --> D\n    D --> E[Rank r Matrix]\n    E --> F[Alpha Scaling]\n    F --> G[Updated Output]\n    H[Validation Loss] --> I[Adjust r/alpha]\n    I --> B\n    I --> C",
+  "lastUpdated": "2025-12-15T01:15:45.393Z"
+}

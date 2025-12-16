@@ -1,0 +1,25 @@
+{
+  "id": "q-270",
+  "question": "Your microservice has a 99.9% availability SLO over 30 days with a 1-hour burn rate alert threshold. If you experience a 10-minute outage at 10% traffic impact followed by a 5-minute outage at 100% traffic impact, what's your remaining error budget and should you trigger the burn rate alert?",
+  "answer": "28.8 minutes remaining. Burn rate: 2.4x threshold - should alert immediately.",
+  "explanation": "## Error Budget Calculation\n\n**Monthly Error Budget (99.9% SLO)**:\n- 30 days = 43,200 minutes\n- Error budget = 43,200 × 0.001 = 43.2 minutes\n\n**Outage Impact Calculation**:\n- Outage 1: 10 minutes × 10% traffic = 1 minute budget consumed\n- Outage 2: 5 minutes × 100% traffic = 5 minutes budget consumed\n- **Total consumed**: 6 minutes\n\n**Remaining error budget**: 43.2 - 6 = 37.2 minutes\n\n## Burn Rate Analysis\n\n**1-hour burn rate**:\n- Consumed: 6 minutes in 15 minutes = 40% of budget consumed\n- Sustained rate: 6 × 4 = 24 minutes/hour\n- **Burn rate**: 24/43.2 = 5.56x sustainable rate\n\n**Alert threshold comparison**:\n- Threshold: 1x (sustainable rate)\n- Current: 5.56x\n- **Result**: Alert should trigger\n\n## Implementation Patterns\n\n### SLO Definition\n```yaml\nslo:\n  name: \"api_availability\"\n  target: 0.999\n  window: 30d\n  \nsli:\n  metric: \"http_requests_total\"\n  success_criteria: \"status_code < 500\"\n```\n\n### Error Budget Calculation\n```promql\n# Available error budget\n(1 - slo_target) * window_duration\n\n# Consumed budget\nsum(increase(http_requests_total{status=~\"5..\"}[1h])) /\nsum(increase(http_requests_total[1h]))\n```\n\n### Burn Rate Alerting\n```yaml\nalerts:\n  - name: \"fast_burn\"\n    window: \"1h\"\n    threshold: 14.4  # 1 day of budget in 1 hour\n  - name: \"slow_burn\"\n    window: \"6h\"\n    threshold: 6     # 1 day of budget in 6 hours\n```\n\n## Trade-offs\n\n1. **Alert Sensitivity**: Too sensitive → alert fatigue\n2. **Measurement Windows**: Short windows catch issues faster but may be noisy\n3. **Traffic Weighting**: Simple outage time vs. traffic-impacted time\n4. **Multiple Burn Rates**: Fast and slow burn thresholds for different response times\n\n## Pitfalls\n\n- **Ignoring Traffic Impact**: 100% outage for 1 minute ≠ 1% outage for 100 minutes\n- **Single Metric SLOs**: Combine availability with latency/error rate SLOs\n- **Alert Fatigue**: Multiple consecutive alerts without clear escalation paths\n- **Budget Reset Timing**: End-of-month budget depletion vs. rolling windows",
+  "tags": [
+    "slo",
+    "sli",
+    "error-budget"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[30 Days] --> B[43,200 minutes]\n    B --> C[SLO: 99.9%]\n    C --> D[Error Budget: 43.2 min]\n    \n    E[Outage 1: 10min × 10%] --> F[1 min consumed]\n    G[Outage 2: 5min × 100%] --> H[5 min consumed]\n    \n    F --> I[Total: 6 min]\n    H --> I\n    \n    D --> J[Remaining: 37.2 min]\n    I --> J\n    \n    K[Burn Rate Calculation] --> L[6 min in 15 min]\n    L --> M[40% budget consumed]\n    M --> N[5.56x sustainable rate]\n    \n    O[Alert Threshold: 1x] --> P{5.56x > 1x?}\n    N --> P\n    P -->|Yes| Q[🚨 ALERT TRIGGERED]\n    P -->|No| R[✅ Normal Operations]\n    \n    style Q fill:#ff6b6b\n    style R fill:#51cf66\n    style J fill:#ffd43b",
+  "sourceUrl": "https://cloud.google.com/architecture/implementing-slos",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:19:07.763Z"
+}

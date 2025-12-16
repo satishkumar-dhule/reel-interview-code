@@ -1,0 +1,15 @@
+{
+  "id": "q-187",
+  "question": "How would you implement a thread-safe LRU cache using a HashMap and DoublyLinkedList, considering eviction policy and O(1) operations?",
+  "answer": "Use HashMap for O(1) key lookup and DoublyLinkedList for O(1) insertion/removal. Synchronize access with ReentrantReadWriteLock for thread safety.",
+  "explanation": "## Concept Overview\nLRU (Least Recently Used) cache combines HashMap for fast key lookup and DoublyLinkedList for maintaining access order. When cache is full, least recently used items are evicted.\n\n## Implementation Details\n- **HashMap**: Maps keys to Node references for O(1) lookup\n- **DoublyLinkedList**: Maintains access order with head (most recent) and tail (least recent)\n- **Thread Safety**: Use ReentrantReadWriteLock - read lock for get(), write lock for put()\n- **Eviction**: Remove tail node when capacity exceeded\n\n## Code Example\n```java\npublic class LRUCache<K, V> {\n    private final Map<K, Node<K, V>> map;\n    private final DoublyLinkedList<K, V> list;\n    private final int capacity;\n    private final ReadWriteLock lock = new ReentrantReadWriteLock();\n    \n    public V get(K key) {\n        lock.readLock().lock();\n        try {\n            Node<K, V> node = map.get(key);\n            if (node != null) {\n                list.moveToHead(node);\n                return node.value;\n            }\n            return null;\n        } finally {\n            lock.readLock().unlock();\n        }\n    }\n}\n```\n\n## Common Pitfalls\n- **Race Conditions**: Forgetting proper synchronization can corrupt the linked list\n- **Memory Leaks**: Not removing references when evicting nodes\n- **Performance**: Using synchronized blocks instead of ReadWriteLock reduces concurrency\n- **Edge Cases**: Handling null keys/values and capacity of 0",
+  "tags": [
+    "arrays",
+    "linkedlist",
+    "hashtable",
+    "heap"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client Request] --> B{Operation?}\n    B -->|get| C[Read Lock]\n    B -->|put| D[Write Lock]\n    C --> E[HashMap Lookup]\n    E --> F{Key Exists?}\n    F -->|Yes| G[Move to Head]\n    F -->|No| H[Return Null]\n    G --> I[Return Value]\n    D --> J{Key Exists?}\n    J -->|Yes| K[Update Value]\n    J -->|No| L[Create New Node]\n    K --> M[Move to Head]\n    L --> M\n    M --> N{Capacity Full?}\n    N -->|Yes| O[Remove Tail]\n    N -->|No| P[Add to Head]\n    O --> P\n    P --> Q[Release Lock]",
+  "lastUpdated": "2025-12-14T12:55:58.501Z"
+}

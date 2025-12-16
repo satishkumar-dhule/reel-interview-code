@@ -1,0 +1,14 @@
+{
+  "id": "q-197",
+  "question": "How would you implement efficient KV caching in a transformer decoder to reduce redundant computation during autoregressive generation?",
+  "answer": "Store key-value pairs from previous tokens in cache, reuse for attention computation, reducing O(n²) to O(n) complexity.",
+  "explanation": "## Concept Overview\nKV caching stores computed key and value matrices from previous tokens to avoid recomputing attention during generation.\n\n## Implementation Details\n- Cache keys and values after each forward pass\n- Reuse cached KV for new token's attention computation\n- Manage cache size and memory efficiently\n- Handle position embeddings correctly\n\n## Code Example\n```python\nclass KVCache:\n    def __init__(self, max_seq_len):\n        self.key_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.value_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.seq_len = 0\n    \n    def update(self, key, value):\n        self.key_cache[self.seq_len] = key\n        self.value_cache[self.seq_len] = value\n        self.seq_len += 1\n        return self.key_cache[:self.seq_len], self.value_cache[:self.seq_len]\n```\n\n## Common Pitfalls\n- Incorrect position embedding handling\n- Memory leaks from unbounded cache growth\n- Cache invalidation during beam search\n- Batch dimension mismatches",
+  "tags": [
+    "transformer",
+    "attention",
+    "tokenization"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Input Token] --> B[Compute K,V]\n    B --> C[Store in KV Cache]\n    C --> D[Reuse Cached K,V]\n    D --> E[Attention Computation]\n    E --> F[Next Token]\n    F --> A",
+  "lastUpdated": "2025-12-14T12:57:27.458Z"
+}

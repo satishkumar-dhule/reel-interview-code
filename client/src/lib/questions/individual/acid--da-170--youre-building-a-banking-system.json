@@ -1,0 +1,13 @@
+{
+  "id": "da-170",
+  "question": "You're building a banking system where users can transfer money between accounts. How would you design the transaction handling to ensure no money is lost or created during transfers, especially when the system crashes mid-transfer?",
+  "answer": "Use ACID transactions with BEGIN, UPDATE accounts, COMMIT/ROLLBACK. Ensure atomicity by debiting source and crediting destination in single transaction.",
+  "explanation": "## Transaction Design for Money Transfers\n\n### Key Requirements\n- **Atomicity**: Both debit and credit must succeed or fail together\n- **Consistency**: Total money in system remains constant\n- **Isolation**: Concurrent transfers don't interfere\n- **Durability**: Completed transfers survive system crashes\n\n### Implementation Strategy\n\n```sql\nBEGIN TRANSACTION;\n\n-- Check sufficient funds\nSELECT balance FROM accounts WHERE id = :source_id FOR UPDATE;\n\n-- Debit source account\nUPDATE accounts \nSET balance = balance - :amount \nWHERE id = :source_id AND balance >= :amount;\n\n-- Credit destination account  \nUPDATE accounts \nSET balance = balance + :amount \nWHERE id = :dest_id;\n\n-- Verify both operations succeeded\nIF (rowcount_source = 1 AND rowcount_dest = 1) THEN\n    COMMIT;\nELSE\n    ROLLBACK;\nEND IF;\n```\n\n### Crash Recovery\n- **Before COMMIT**: Transaction is rolled back on restart\n- **After COMMIT**: Changes are durable due to write-ahead logging\n- **During COMMIT**: Database ensures atomic completion\n\n### Concurrency Control\n- Use row-level locks with `FOR UPDATE`\n- Implement deadlock detection and retry logic\n- Consider isolation levels (READ COMMITTED vs SERIALIZABLE)\n\n### Monitoring\n- Track transaction success/failure rates\n- Monitor lock contention and deadlock frequency\n- Audit trail for all financial transactions",
+  "diagram": "graph TD\n    A[Client Initiates Transfer] --> B[BEGIN TRANSACTION]\n    B --> C[LOCK Source Account]\n    C --> D[CHECK Balance >= Amount]\n    D --> E{Sufficient Funds?}\n    E -->|No| F[ROLLBACK - Return Error]\n    E -->|Yes| G[DEBIT Source Account]\n    G --> H[LOCK Destination Account]\n    H --> I[CREDIT Destination Account]\n    I --> J{Both Updates Successful?}\n    J -->|No| K[ROLLBACK - Return Error]\n    J -->|Yes| L[COMMIT Transaction]\n    L --> M[Release Locks]\n    M --> N[Return Success]\n    \n    O[System Crash] --> P{Crash Timing}\n    P -->|Before COMMIT| Q[Automatic ROLLBACK on Restart]\n    P -->|After COMMIT| R[Changes Preserved via WAL]\n    P -->|During COMMIT| S[Database Ensures Atomic Completion]",
+  "difficulty": "intermediate",
+  "tags": [
+    "acid",
+    "transactions"
+  ],
+  "lastUpdated": "2025-12-14T01:18:46.794Z"
+}

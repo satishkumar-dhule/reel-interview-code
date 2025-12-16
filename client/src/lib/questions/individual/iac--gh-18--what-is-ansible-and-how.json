@@ -1,0 +1,14 @@
+{
+  "id": "gh-18",
+  "question": "What is Ansible and how does it work for infrastructure automation?",
+  "answer": "Ansible is an agentless automation tool that uses SSH and YAML playbooks to manage infrastructure configuration and deployment.",
+  "explanation": "Ansible is a powerful open-source automation platform that simplifies IT infrastructure management through several key features:\n\n• **Agentless Architecture**: No need to install agents on target machines - uses SSH for Linux/Unix and WinRM for Windows\n• **YAML Playbooks**: Human-readable automation scripts that define desired system states\n• **Idempotent Operations**: Running the same playbook multiple times produces consistent results\n• **Inventory Management**: Organizes and groups target hosts for efficient automation\n• **Module System**: Extensive library of pre-built modules for common tasks\n\n**Key Use Cases:**\n• Configuration management and system setup\n• Application deployment and updates\n• Infrastructure provisioning\n• Security compliance and patching\n• Orchestration of complex multi-tier applications\n\n**Example Ansible Playbook:**\n```yaml\n---\n- name: Configure web servers\n  hosts: webservers\n  become: yes\n  tasks:\n    - name: Install nginx\n      apt:\n        name: nginx\n        state: present\n        update_cache: yes\n    \n    - name: Start and enable nginx\n      systemd:\n        name: nginx\n        state: started\n        enabled: yes\n    \n    - name: Deploy website content\n      copy:\n        src: /local/website/\n        dest: /var/www/html/\n        owner: www-data\n        group: www-data\n```\n\n**Advantages:**\n• Simple learning curve with YAML syntax\n• No additional infrastructure required\n• Strong community and enterprise support\n• Integration with cloud platforms and CI/CD pipelines",
+  "diagram": "graph TD\n    A[Control Node] --> B[Inventory File]\n    A --> C[Playbook YAML]\n    B --> D[Target Hosts]\n    C --> E[Tasks & Modules]\n    A --> F[SSH Connection]\n    F --> D\n    E --> G[Idempotent Execution]\n    G --> H[Desired State]\n    D --> H",
+  "difficulty": "beginner",
+  "tags": [
+    "iac",
+    "terraform",
+    "ansible"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

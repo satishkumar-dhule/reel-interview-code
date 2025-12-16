@@ -1,0 +1,14 @@
+{
+  "id": "gh-19",
+  "question": "What is monitoring in DevOps and how does it differ from observability?",
+  "answer": "Monitoring is the practice of collecting and analyzing system metrics to detect issues, while observability provides deeper insights into system behavior.",
+  "explanation": "**Monitoring in DevOps** involves systematically collecting, analyzing, and acting on telemetry data to ensure system reliability and performance.\n\n## Key Components:\n\n### 1. Infrastructure Monitoring\n- **Metrics**: CPU, memory, disk usage, network throughput\n- **Health**: Server uptime, service availability, resource capacity\n- **Tools**: Prometheus, DataDog, New Relic\n\n### 2. Application Monitoring\n- **Performance**: Response times, latency, throughput\n- **Errors**: Exception rates, failure patterns, error budgets\n- **Business**: User engagement, conversion rates, feature adoption\n\n### 3. Log Management\n- **Collection**: Centralized log aggregation from all services\n- **Analysis**: Pattern recognition, root cause analysis\n- **Retention**: Compliance and forensic investigation\n\n### 4. Alerting Systems\n- **Thresholds**: Predefined limits trigger notifications\n- **Anomaly Detection**: ML-based identification of unusual patterns\n- **Escalation**: Tiered response procedures\n\n## Monitoring vs Observability:\n- **Monitoring**: Answers 'what' is happening (known metrics)\n- **Observability**: Answers 'why' it's happening (deep insights)\n- **Complementary**: Monitoring detects issues, observability explains them",
+  "diagram": "graph TD\n    A[Applications] --> B[Metrics Collection]\n    C[Infrastructure] --> B\n    D[User Experience] --> B\n    \n    B --> E[Time Series Database]\n    B --> F[Log Aggregation]\n    \n    E --> G[Visualization Dashboards]\n    F --> H[Log Analysis Tools]\n    \n    G --> I[Alerting System]\n    H --> I\n    \n    I --> J[DevOps Team]\n    J --> K[Incident Response]\n    K --> L[System Improvement]\n    L --> A\n    \n    style A fill:#e1f5fe\n    style E fill:#fff3e0\n    style G fill:#c8e6c9\n    style I fill:#ffebee",
+  "difficulty": "beginner",
+  "tags": [
+    "observability",
+    "monitoring",
+    "logging"
+  ],
+  "lastUpdated": "2025-12-12T10:04:39.942Z"
+}

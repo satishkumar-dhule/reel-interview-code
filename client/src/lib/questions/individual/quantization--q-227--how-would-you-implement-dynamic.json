@@ -1,0 +1,14 @@
+{
+  "id": "q-227",
+  "question": "How would you implement dynamic quantization-aware training with mixed-precision to optimize inference latency while maintaining model accuracy across varying hardware constraints?",
+  "answer": "Use per-layer mixed-precision quantization with hardware-aware calibration and accuracy-aware layer selection to balance latency and accuracy.",
+  "explanation": "## Concept Overview\nDynamic quantization-aware training (QAT) with mixed-precision combines the benefits of quantization and precision optimization by selectively applying different bit-widths to different layers based on their sensitivity and hardware capabilities.\n\n## Implementation Details\n- **Per-layer sensitivity analysis**: Measure accuracy impact of quantizing each layer\n- **Hardware profiling**: Determine optimal precision for target hardware\n- **Dynamic precision selection**: Runtime adaptation based on device constraints\n- **Accuracy-aware optimization**: Maintain model performance within acceptable thresholds\n\n## Code Example\n```python\nclass MixedPrecisionQAT:\n    def __init__(self, model, hardware_profile):\n        self.sensitivity_scores = self.analyze_sensitivity(model)\n        self.precision_map = self.optimize_precision(\n            model, hardware_profile, self.sensitivity_scores\n        )\n    \n    def quantize_layer(self, layer, target_precision):\n        if target_precision == 'int8':\n            return torch.quantization.prepare_qat(layer)\n        elif target_precision == 'fp16':\n            return layer.half()\n        return layer\n```\n\n## Common Pitfalls\n- **Over-aggressive quantization**: Losing accuracy on sensitive layers\n- **Hardware mismatch**: Optimizing for wrong target hardware\n- **Calibration data bias**: Using unrepresentative calibration datasets\n- **Precision inconsistency**: Mixed precision causing numerical instability",
+  "tags": [
+    "quantization",
+    "pruning",
+    "distillation"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Input Model] --> B[Sensitivity Analysis]\n    B --> C[Hardware Profiling]\n    C --> D[Precision Optimization]\n    D --> E[Layer-wise Quantization]\n    E --> F[Accuracy Validation]\n    F --> G{Accuracy OK?}\n    G -->|Yes| H[Deploy Optimized Model]\n    G -->|No| I[Adjust Precision Map]\n    I --> D\n    H --> J[Runtime Adaptation]",
+  "lastUpdated": "2025-12-15T01:15:58.831Z"
+}

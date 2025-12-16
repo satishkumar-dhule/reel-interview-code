@@ -1,0 +1,12 @@
+{
+  "id": "gh-63",
+  "question": "What is Toil in SRE?",
+  "answer": "Toil is the kind of work tied to running a production service that tends to be manual, repetitive, automatable, tactical, devoid of enduring value, an...",
+  "explanation": "Toil is the kind of work tied to running a production service that tends to be manual, repetitive, automatable, tactical, devoid of enduring value, and that scales linearly as a service grows.\n\nCharacteristics of toil:\n1. **Manual work:**\n- No automation\n- Human intervention required\n- Repetitive tasks\n\n2. **Impact:**\n- Reduces time for project work\n- Increases operational overhead\n- Affects team morale\n\n3. **Solutions:**\n\nAutomation:\n- Script repetitive tasks\n- Implement self-service tools\n- Create automated workflows\n\nProcess Improvement:\n- Identify toil sources\n- Set toil budgets\n- Track toil metrics\n\nEngineering Solutions:\n- Design for automation\n- Build self-healing systems\n- Implement proper monitoring",
+  "difficulty": "beginner",
+  "tags": [
+    "sre",
+    "reliability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

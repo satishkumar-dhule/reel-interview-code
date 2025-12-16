@@ -1,0 +1,14 @@
+{
+  "id": "q-190",
+  "question": "What is the difference between READ COMMITTED and REPEATABLE READ isolation levels in database transactions?",
+  "answer": "READ COMMITTED sees only committed data, while REPEATABLE READ guarantees consistent reads within a transaction.",
+  "explanation": "## Isolation Levels Overview\n\nDatabase isolation levels control how concurrent transactions interact with each other, preventing phenomena like dirty reads, non-repeatable reads, and phantom reads.\n\n## READ COMMITTED\n- Prevents dirty reads by only showing committed data\n- Allows non-repeatable reads (same query may return different results)\n- Most common default isolation level\n- Better concurrency but less consistency\n\n## REPEATABLE READ\n- Prevents dirty reads and non-repeatable reads\n- Guarantees same query returns same results within transaction\n- Uses MVCC or locking to maintain snapshot\n- May still allow phantom reads\n\n## Implementation Example\n\n```sql\n-- Set READ COMMITTED (default in many databases)\nSET TRANSACTION ISOLATION LEVEL READ COMMITTED;\nBEGIN;\nSELECT balance FROM accounts WHERE id = 1; -- Sees committed data only\nCOMMIT;\n\n-- Set REPEATABLE READ\nSET TRANSACTION ISOLATION LEVEL REPEATABLE READ;\nBEGIN;\nSELECT balance FROM accounts WHERE id = 1; -- Gets consistent snapshot\n-- Even if other transactions commit changes, this sees original data\nCOMMIT;\n```\n\n## Common Pitfalls\n- **Performance impact**: Higher isolation levels reduce concurrency\n- **Deadlock risk**: More locking increases deadlock probability\n- **Memory usage**: MVCC snapshots consume additional memory\n- **Application complexity**: Need to handle serialization failures",
+  "tags": [
+    "acid",
+    "isolation-levels",
+    "mvcc"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart TD\n    A[Transaction Starts] --> B{Isolation Level}\n    B -->|READ COMMITTED| C[Query 1: Reads Committed Data]\n    B -->|REPEATABLE READ| D[Query 1: Takes Snapshot]\n    C --> E[Other Transaction Commits]\n    D --> E\n    E --> F{Query 2}\n    F -->|READ COMMITTED| G[Sees New Committed Data]\n    F -->|REPEATABLE READ| H[Sees Same Snapshot Data]\n    G --> I[Non-repeatable Read Possible]\n    H --> J[Consistent Read Guaranteed]",
+  "lastUpdated": "2025-12-14T12:56:19.417Z"
+}

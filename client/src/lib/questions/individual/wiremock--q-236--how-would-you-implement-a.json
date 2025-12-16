@@ -1,0 +1,14 @@
+{
+  "id": "q-236",
+  "question": "How would you implement a contract testing strategy using MSW (Mock Service Worker) to ensure frontend API mocks stay synchronized with backend OpenAPI specifications?",
+  "answer": "Use MSW with OpenAPI schema validation, generating mocks from spec and running contract tests in CI to detect drift.",
+  "explanation": "## Contract Testing with MSW\n\n**Concept Overview**: MSW intercepts requests at the network level, allowing you to mock APIs while validating against OpenAPI contracts to prevent frontend-backend drift.\n\n**Implementation Details**:\n- Generate MSW handlers from OpenAPI spec using tools like `openapi-msw`\n- Validate request/response payloads against schema\n- Run contract tests in CI pipeline\n- Use response mocking with schema validation\n\n**Code Example**:\n```typescript\n// Generate handlers from OpenAPI\nimport { setupWorker, rest } from 'msw';\nimport { validateAgainstSchema } from './schema-validator';\n\nconst handlers = [\n  rest.get('/api/users/:id', async (req, res, ctx) => {\n    const userId = req.params.id;\n    const response = { id: userId, name: 'John' };\n    \n    // Validate against OpenAPI schema\n    if (!validateAgainstSchema(response, 'UserSchema')) {\n      return res(ctx.status(500), ctx.json({ error: 'Schema violation' }));\n    }\n    \n    return res(ctx.json(response));\n  })\n];\n\nsetupWorker(...handlers).start();\n```\n\n**Common Pitfalls**:\n- Schema validation only in test environment, not production mocks\n- Not updating mocks when API spec changes\n- Missing edge cases in contract tests\n- Over-mocking leading to false confidence",
+  "tags": [
+    "wiremock",
+    "mockserver",
+    "msw"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[OpenAPI Spec] --> B[MSW Handler Generator]\n    B --> C[MSW Mock Handlers]\n    C --> D[Frontend App]\n    C --> E[Schema Validator]\n    E --> F[Contract Tests]\n    F --> G[CI Pipeline]\n    G --> H{Schema Valid?}\n    H -->|Yes| I[Tests Pass]\n    H -->|No| J[Fail Build]",
+  "lastUpdated": "2025-12-15T01:17:10.493Z"
+}

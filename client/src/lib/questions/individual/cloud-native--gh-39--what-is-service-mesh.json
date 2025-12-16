@@ -1,0 +1,13 @@
+{
+  "id": "gh-39",
+  "question": "What is Service Mesh?",
+  "answer": "A service mesh is a dedicated infrastructure layer for handling service-to-service communication in microservices architectures.",
+  "explanation": "A service mesh is a dedicated infrastructure layer for handling service-to-service communication in microservices architectures.\n\nKey components:\n1. **Data Plane:**\n- Service proxies (sidecars)\n- Traffic handling\n- Security enforcement\n\n2. **Control Plane:**\n- Configuration management\n- Policy enforcement\n- Service discovery\n\nExample of Istio configuration:\n```yaml\napiVersion: networking.istio.io/v1alpha3\nkind: VirtualService\nmetadata:\nname: reviews-route\nspec:\nhosts:\n- reviews\nhttp:\n- route:\n- destination:\nhost: reviews\nsubset: v1\nweight: 75\n- destination:\nhost: reviews\nsubset: v2\nweight: 25\n```",
+  "diagram": "\ngraph TD\n    CP[Control Plane] --> DP[Data Plane]\n    DP --> S1[Sidecar] --> Svc1[Service 1]\n    DP --> S2[Sidecar] --> Svc2[Service 2]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "cloud-native",
+    "microservices"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

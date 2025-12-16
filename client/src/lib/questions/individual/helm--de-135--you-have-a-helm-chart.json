@@ -1,0 +1,13 @@
+{
+  "id": "de-135",
+  "question": "You have a Helm chart that needs to deploy different configurations for staging and production environments. The staging environment should use 2 replicas with 512Mi memory limit, while production should use 5 replicas with 2Gi memory limit. How would you structure your values files and templates to handle this requirement?",
+  "answer": "Use values-staging.yaml and values-production.yaml files with environment-specific configs, then deploy with helm install -f values-{env}.yaml",
+  "explanation": "## Environment-Specific Helm Configurations\n\n### Solution Structure\n\n1. **Base values.yaml**:\n```yaml\napp:\n  name: myapp\n  image:\n    repository: myapp\n    tag: latest\n\ndeployment:\n  replicas: 3\n  resources:\n    limits:\n      memory: 1Gi\n    requests:\n      memory: 512Mi\n```\n\n2. **values-staging.yaml**:\n```yaml\ndeployment:\n  replicas: 2\n  resources:\n    limits:\n      memory: 512Mi\n    requests:\n      memory: 256Mi\n```\n\n3. **values-production.yaml**:\n```yaml\ndeployment:\n  replicas: 5\n  resources:\n    limits:\n      memory: 2Gi\n    requests:\n      memory: 1Gi\n```\n\n4. **Deployment template** (templates/deployment.yaml):\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: {{ .Values.app.name }}\nspec:\n  replicas: {{ .Values.deployment.replicas }}\n  template:\n    spec:\n      containers:\n      - name: {{ .Values.app.name }}\n        image: {{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}\n        resources:\n          {{- toYaml .Values.deployment.resources | nindent 10 }}\n```\n\n### Deployment Commands\n\n```bash\n# Staging deployment\nhelm install myapp-staging ./mychart -f values-staging.yaml\n\n# Production deployment\nhelm install myapp-prod ./mychart -f values-production.yaml\n```\n\n### Key Benefits\n\n- **Value Inheritance**: Environment files override base values\n- **DRY Principle**: Common configurations in base values.yaml\n- **Environment Isolation**: Clear separation of concerns\n- **Template Reusability**: Single template works for all environments",
+  "diagram": "graph TD\n    A[Base values.yaml] --> B[Common Config]\n    C[values-staging.yaml] --> D[Staging Overrides]\n    E[values-production.yaml] --> F[Production Overrides]\n    \n    B --> G[Helm Template Engine]\n    D --> G\n    F --> G\n    \n    G --> H[Staging Deployment]\n    G --> I[Production Deployment]\n    \n    H --> J[2 Replicas<br/>512Mi Memory]\n    I --> K[5 Replicas<br/>2Gi Memory]\n    \n    style A fill:#e1f5fe\n    style C fill:#fff3e0\n    style E fill:#ffebee\n    style H fill:#fff3e0\n    style I fill:#ffebee",
+  "difficulty": "intermediate",
+  "tags": [
+    "helm",
+    "k8s"
+  ],
+  "lastUpdated": "2025-12-12T09:15:12.319Z"
+}

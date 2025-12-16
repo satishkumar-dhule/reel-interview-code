@@ -6,46 +6,20 @@ import {
   getAllUnifiedQuestions,
   runWithRetries,
   parseJson,
-  validateQuestion,
   updateUnifiedIndexFile,
   writeGitHubOutput,
-  logQuestionsImproved,
-  validateYouTubeVideos,
-  normalizeCompanies
+  logQuestionsImproved
 } from './utils.js';
 
-// Available channels and their subchannels for remapping
-const CHANNEL_STRUCTURE = {
-  'system-design': ['infrastructure', 'distributed-systems', 'api-design', 'caching', 'load-balancing', 'message-queues'],
-  'algorithms': ['data-structures', 'sorting', 'dynamic-programming', 'graphs', 'trees'],
-  'frontend': ['react', 'javascript', 'css', 'performance', 'web-apis'],
-  'backend': ['apis', 'microservices', 'caching', 'authentication', 'server-architecture'],
-  'database': ['sql', 'nosql', 'indexing', 'transactions', 'query-optimization'],
-  'devops': ['cicd', 'docker', 'automation', 'gitops'],
-  'sre': ['observability', 'reliability', 'incident-management', 'chaos-engineering', 'capacity-planning'],
-  'kubernetes': ['pods', 'services', 'deployments', 'helm', 'operators'],
-  'aws': ['compute', 'storage', 'serverless', 'database', 'networking'],
-  'terraform': ['basics', 'modules', 'state-management', 'best-practices'],
-  'data-engineering': ['etl', 'data-pipelines', 'warehousing', 'streaming'],
-  'machine-learning': ['algorithms', 'model-training', 'deployment', 'deep-learning', 'evaluation'],
-  'generative-ai': ['llm-fundamentals', 'fine-tuning', 'rag', 'agents', 'evaluation'],
-  'prompt-engineering': ['techniques', 'optimization', 'safety', 'structured-output'],
-  'llm-ops': ['deployment', 'optimization', 'monitoring', 'infrastructure'],
-  'computer-vision': ['image-classification', 'object-detection', 'segmentation', 'multimodal'],
-  'nlp': ['text-processing', 'embeddings', 'sequence-models', 'transformers'],
-  'python': ['fundamentals', 'libraries', 'best-practices', 'async'],
-  'security': ['application-security', 'owasp', 'encryption', 'authentication'],
-  'networking': ['tcp-ip', 'dns', 'load-balancing', 'cdn'],
-  'ios': ['swift', 'uikit', 'swiftui', 'architecture'],
-  'android': ['kotlin', 'jetpack-compose', 'architecture', 'lifecycle'],
-  'react-native': ['components', 'native-modules', 'performance', 'architecture'],
-  'testing': ['unit-testing', 'integration-testing', 'tdd', 'test-strategies'],
-  'e2e-testing': ['playwright', 'cypress', 'selenium', 'visual-testing'],
-  'api-testing': ['rest-testing', 'contract-testing', 'graphql-testing', 'mocking'],
-  'performance-testing': ['load-testing', 'stress-testing', 'profiling', 'benchmarking'],
-  'engineering-management': ['team-leadership', 'one-on-ones', 'hiring', 'project-management'],
-  'behavioral': ['star-method', 'leadership-principles', 'soft-skills', 'conflict-resolution']
-};
+// Use centralized libs
+import { CHANNEL_CONFIGS, isValidChannel, isValidSubChannel, getSubChannels } from './lib/channel-config.js';
+import { validateQuestion, validateYouTubeVideos, normalizeCompanies, getQuestionIssues } from './lib/validators.js';
+
+// Build channel structure from centralized config
+const CHANNEL_STRUCTURE = {};
+Object.entries(CHANNEL_CONFIGS).forEach(([channel, configs]) => {
+  CHANNEL_STRUCTURE[channel] = configs.map(c => c.subChannel);
+});
 
 // Get all channels from mappings
 function getAllChannels() {
@@ -83,22 +57,11 @@ function getQuestionsForChannel(channel) {
     .filter(q => q.id != null);
 }
 
+// Use centralized getQuestionIssues from validators, with additional interview context check
 function needsImprovement(q) {
-  const issues = [];
-  if (!q.answer || q.answer.length < 20) issues.push('short_answer');
-  if (!q.answer || q.answer.length > 300) issues.push('long_answer');
-  if (!q.explanation || q.explanation.length < 50) issues.push('short_explanation');
-  if (!q.diagram || q.diagram.length < 10) issues.push('no_diagram');
-  if (q.explanation && q.explanation.includes('[truncated')) issues.push('truncated');
-  if (!q.question.endsWith('?')) issues.push('no_question_mark');
-  if (!q.sourceUrl) issues.push('no_source_url');
-  if (!q.videos?.shortVideo) issues.push('no_short_video');
-  if (!q.videos?.longVideo) issues.push('no_long_video');
+  const issues = getQuestionIssues(q);
   
-  // Stricter company requirements - need at least 2 companies
-  if (!q.companies || q.companies.length < 2) issues.push('no_companies');
-  
-  // Check for interview context in explanation
+  // Additional check for interview context in explanation
   const hasInterviewContext = q.explanation && (
     q.explanation.toLowerCase().includes('interview') ||
     q.explanation.toLowerCase().includes('commonly asked') ||
@@ -119,11 +82,6 @@ async function remapQuestionsWithAI(questionsToRemap, mappings) {
   const remappedQuestions = [];
   const failedRemaps = [];
   const checkedIds = []; // Track all questions we checked (for lastRemapped update)
-  
-  // Build channel structure string for prompt
-  const channelStructureStr = Object.entries(CHANNEL_STRUCTURE)
-    .map(([ch, subs]) => `${ch}: [${subs.join(', ')}]`)
-    .join('\n');
   
   for (let i = 0; i < questionsToRemap.length; i++) {
     const question = questionsToRemap[i];

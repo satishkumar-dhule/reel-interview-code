@@ -1,0 +1,13 @@
+{
+  "id": "da-129",
+  "question": "What is the main difference between SQL and NoSQL databases in terms of data structure?",
+  "answer": "SQL uses structured tables with fixed schemas, NoSQL uses flexible document/key-value/graph structures without fixed schemas.",
+  "explanation": "## SQL vs NoSQL Data Structure\n\n**SQL Databases:**\n- Store data in **tables** with rows and columns\n- Require a **predefined schema** (structure must be defined before inserting data)\n- Data must conform to the schema (same columns for all rows)\n- Examples: MySQL, PostgreSQL, Oracle\n\n**NoSQL Databases:**\n- Store data in flexible formats:\n  - **Document stores** (JSON-like documents) - MongoDB, CouchDB\n  - **Key-value pairs** - Redis, DynamoDB\n  - **Column-family** - Cassandra, HBase\n  - **Graph databases** - Neo4j, Amazon Neptune\n- **Schema-less** or **schema-flexible**\n- Can store different structures in the same collection/table\n- Better for rapidly changing requirements\n\n**When to use NoSQL:**\n- Rapidly evolving data structures\n- Large scale applications requiring horizontal scaling\n- Semi-structured or unstructured data\n- Real-time applications",
+  "diagram": "graph TD\n    A[Database Types] --> B[SQL Databases]\n    A --> C[NoSQL Databases]\n    \n    B --> D[Fixed Schema]\n    B --> E[Tables with Rows/Columns]\n    B --> F[ACID Compliance]\n    \n    C --> G[Flexible Schema]\n    C --> H[Multiple Data Models]\n    \n    H --> I[Document Store]\n    H --> J[Key-Value]\n    H --> K[Column-Family]\n    H --> L[Graph]\n    \n    I --> M[MongoDB]\n    J --> N[Redis]\n    K --> O[Cassandra]\n    L --> P[Neo4j]",
+  "difficulty": "beginner",
+  "tags": [
+    "nosql",
+    "mongodb"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.186Z"
+}

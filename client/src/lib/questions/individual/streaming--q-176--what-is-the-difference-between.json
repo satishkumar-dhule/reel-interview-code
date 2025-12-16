@@ -1,0 +1,13 @@
+{
+  "id": "q-176",
+  "question": "What is the difference between batch processing and stream processing in data engineering?",
+  "answer": "Batch processes data in fixed chunks at intervals; stream processes data continuously as it arrives.",
+  "explanation": "Batch processing collects data over a time period and processes it all at once, typically on a schedule (hourly/daily). It's good for large-scale analytics where latency isn't critical. Stream processing handles data in real-time as it arrives, enabling immediate insights and reactions. Stream processing is essential for use cases like fraud detection, real-time monitoring, and live dashboards where immediate action is required.",
+  "tags": [
+    "streaming",
+    "kafka"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Data Source] --> B[Batch Processor]\n    A --> C[Stream Processor]\n    B --> D[Periodic Output]\n    C --> E[Real-time Output]\n    B --> F[High Latency]\n    C --> G[Low Latency]",
+  "lastUpdated": "2025-12-14T10:24:30.213Z"
+}

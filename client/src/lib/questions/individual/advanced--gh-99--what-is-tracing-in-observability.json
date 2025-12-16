@@ -1,0 +1,12 @@
+{
+  "id": "gh-99",
+  "question": "What is Tracing in Observability?",
+  "answer": "Tracing is the process of tracking the flow of requests through a distributed system, helping to identify bottlenecks and performance issues. Tools li...",
+  "explanation": "Tracing is the process of tracking the flow of requests through a distributed system, helping to identify bottlenecks and performance issues. Tools like Jaeger and Zipkin are commonly used.",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

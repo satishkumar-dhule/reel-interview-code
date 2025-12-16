@@ -1,0 +1,13 @@
+{
+  "id": "gh-87",
+  "question": "How does FinOps implement cost allocation and chargeback models in multi-cloud environments?",
+  "answer": "FinOps uses tagging, showback, and chargeback mechanisms to allocate cloud costs across teams and business units.",
+  "explanation": "## Concept Overview\nFinOps provides financial governance for cloud spending through cost visibility, allocation, and accountability. It bridges engineering and finance by implementing chargeback models that reflect actual resource consumption.\n\n## Implementation\n### Tagging Strategy\n```yaml\n# Resource tagging convention\ntags:\n  cost-center: \"engineering\"\n  project: \"web-platform\"\n  environment: \"production\"\n  owner: \"team-alpha\"\n```\n\n### Cost Allocation Methods\n```python\n# Showback calculation example\ndef calculate_showback(resources, cost_center):\n    total_cost = 0\n    for resource in resources:\n        if resource.tags.get('cost-center') == cost_center:\n            total_cost += resource.monthly_cost\n    return {\n        'cost_center': cost_center,\n        'total_cost': total_cost,\n        'resource_count': len([r for r in resources \n                              if r.tags.get('cost-center') == cost_center])\n    }\n```\n\n### Chargeback Models\n- **Fixed Rate**: Flat fee per resource unit\n- **Usage-Based**: Pay-per-consumption pricing\n- **Tiered**: Volume-based discounting\n- **Hybrid**: Combination of multiple models\n\n## Trade-offs\n**Pros:**\n- Cost transparency and accountability\n- Optimized resource utilization\n- Data-driven budget decisions\n\n**Cons:**\n- Complex tagging maintenance\n- Overhead in cost tracking\n- Potential for cost optimization conflicts\n\n## Common Pitfalls\n- Inconsistent tagging across resources\n- Delayed cost reporting affecting decisions\n- Over-allocation leading to shadow IT\n- Ignoring shared costs (networking, security)\n- Focusing only on cost reduction vs. value optimization",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-15T06:37:11.384Z",
+  "diagram": "graph TD\n    A[Cloud Resources] --> B[Cost Tagging]\n    B --> C[Cost Collection Engine]\n    C --> D[Cost Allocation Rules]\n    D --> E[Showback Reports]\n    D --> F[Chargeback Invoices]\n    E --> G[Team Visibility]\n    F --> H[Finance Integration]\n    G --> I[Cost Optimization]\n    H --> J[Budget Planning]\n    I --> K[Resource Efficiency]\n    J --> L[Financial Governance]\n    K --> M[Reduced Waste]\n    L --> N[Business Alignment]"
+}

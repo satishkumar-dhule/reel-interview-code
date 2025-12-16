@@ -1,0 +1,13 @@
+{
+  "id": "gh-58",
+  "question": "What are AWS Reserved Instances and how do they compare to On-Demand pricing?",
+  "answer": "Reserved Instances provide up to 75% discount vs On-Demand pricing in exchange for 1-3 year commitment to specific instance configuration.",
+  "explanation": "Reserved Instances (RIs) provide significant cost savings compared to On-Demand pricing in exchange for a commitment to use a specific instance configuration for a one or three-year term.\n\n## Types of Reserved Instances:\n\n**Standard RIs:**\n- Highest discount (up to 75%)\n- Least flexibility - cannot change instance attributes\n- Best for steady-state workloads with predictable usage\n- Can be sold in RI Marketplace\n\n**Convertible RIs:**\n- Lower discount (up to 54%)\n- More flexibility - can exchange for different instance families, OS, tenancy\n- Good for workloads that may change over time\n- Cannot be sold in RI Marketplace\n\n**Scheduled RIs:**\n- For predictable recurring schedules (daily, weekly, monthly)\n- Match capacity reservation to specific usage patterns\n- Available in limited regions and instance types\n\n## Payment Options:\n- **All Upfront:** Highest discount, pay entire term upfront\n- **Partial Upfront:** Medium discount, pay portion upfront + monthly\n- **No Upfront:** Lowest discount, pay monthly only\n\n## Key Benefits:\n- Significant cost reduction for predictable workloads\n- Capacity reservation in specific AZ\n- Can be shared across accounts in organization",
+  "diagram": "graph TD\n    A[AWS EC2 Pricing] --> B[On-Demand]\n    A --> C[Reserved Instances]\n    A --> D[Spot Instances]\n    \n    C --> E[Standard RI<br/>Up to 75% discount]\n    C --> F[Convertible RI<br/>Up to 54% discount]\n    C --> G[Scheduled RI<br/>Recurring patterns]\n    \n    E --> H[All Upfront]\n    E --> I[Partial Upfront]\n    E --> J[No Upfront]\n    \n    F --> K[Can Exchange<br/>Instance Types]\n    G --> L[Time-based<br/>Reservations]",
+  "difficulty": "intermediate",
+  "tags": [
+    "finops",
+    "cost"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

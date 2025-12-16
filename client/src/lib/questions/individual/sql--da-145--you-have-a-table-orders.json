@@ -1,0 +1,13 @@
+{
+  "id": "da-145",
+  "question": "You have a table `orders` with columns (id, user_id, amount, created_at) and need to find users who made their first purchase in the last 30 days AND have made at least 3 purchases total, but their average order value is below the overall platform average. Write an optimized SQL query.",
+  "answer": "Use window functions with ROW_NUMBER() to find first purchases, COUNT() for total orders, and subqueries for average comparisons with proper indexing.",
+  "explanation": "## Solution\n\n```sql\nWITH user_stats AS (\n  SELECT \n    user_id,\n    COUNT(*) as total_orders,\n    AVG(amount) as user_avg_amount,\n    MIN(created_at) as first_order_date\n  FROM orders\n  GROUP BY user_id\n  HAVING COUNT(*) >= 3\n),\nplatform_avg AS (\n  SELECT AVG(amount) as overall_avg\n  FROM orders\n)\nSELECT DISTINCT us.user_id\nFROM user_stats us\nCROSS JOIN platform_avg pa\nWHERE us.first_order_date >= CURRENT_DATE - INTERVAL '30 days'\n  AND us.user_avg_amount < pa.overall_avg;\n```\n\n## Key Concepts\n\n- **CTEs (Common Table Expressions)**: Break complex logic into readable chunks\n- **Window Functions**: Efficient for ranking and aggregations\n- **Performance Optimization**: \n  - Index on `(user_id, created_at)` for grouping\n  - Index on `created_at` for date filtering\n  - HAVING clause filters before final result set\n- **Cross Join**: Efficiently compare user averages to platform average\n\n## Alternative Approach\n```sql\nSELECT user_id\nFROM orders o1\nWHERE (SELECT MIN(created_at) FROM orders o2 WHERE o2.user_id = o1.user_id) >= CURRENT_DATE - INTERVAL '30 days'\nGROUP BY user_id\nHAVING COUNT(*) >= 3\n  AND AVG(amount) < (SELECT AVG(amount) FROM orders);\n```\n\nThis tests understanding of aggregation functions, subqueries, date operations, and query optimization strategies.",
+  "diagram": "graph TD\n    A[orders table] --> B[Group by user_id]\n    B --> C[Calculate user stats]\n    C --> D[Filter: total_orders >= 3]\n    D --> E[Filter: first_order in last 30 days]\n    E --> F[Compare user_avg < platform_avg]\n    F --> G[Return qualifying user_ids]\n    \n    H[Platform Average] --> F\n    \n    style A fill:#e1f5fe\n    style G fill:#c8e6c9\n    style F fill:#fff3e0",
+  "difficulty": "advanced",
+  "tags": [
+    "sql",
+    "indexing"
+  ],
+  "lastUpdated": "2025-12-12T10:05:38.475Z"
+}

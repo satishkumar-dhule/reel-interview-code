@@ -1,0 +1,13 @@
+{
+  "id": "gh-83",
+  "question": "How do you perform cloud service assessment using the Cloud Adoption Framework?",
+  "answer": "Cloud assessment evaluates cloud services against business requirements using structured methodology and decision matrices.",
+  "explanation": "## Concept Overview\nCloud assessment systematically evaluates cloud services against technical and business requirements using frameworks like Microsoft's Cloud Adoption Framework (CAF) or AWS Well-Architected Tool.\n\n## Implementation\n```python\n# Cloud Service Assessment Matrix\nclass CloudAssessment:\n    def __init__(self):\n        self.criteria = {\n            'cost': 0.3,\n            'security': 0.25,\n            'performance': 0.2,\n            'scalability': 0.15,\n            'compliance': 0.1\n        }\n    \n    def evaluate_service(self, service, requirements):\n        score = 0\n        for criterion, weight in self.criteria.items():\n            score += service[criterion] * weight\n        return score\n```\n\n## Trade-offs\n**Pros:**\n- Objective decision-making\n- Risk mitigation\n- Cost optimization\n- Compliance assurance\n\n**Cons:**\n- Time-intensive process\n- Requires expertise\n- May miss emerging services\n- Over-reliance on scores\n\n**When to use:**\n- Enterprise migrations\n- Multi-cloud strategies\n- Regulatory compliance needs\n- High-stakes workloads\n\n## Common Pitfalls\n- **Analysis paralysis:** Over-evaluating minor decisions\n- **Static criteria:** Not updating assessment weights\n- **Vendor lock-in:** Ignoring portability factors\n- **Hidden costs:** Missing operational expenses\n- **Skill gaps:** Not assessing team capabilities",
+  "difficulty": "advanced",
+  "tags": [
+    "migration",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-15T06:35:59.764Z",
+  "diagram": "flowchart TD\n    A[Business Requirements] --> B[Define Assessment Criteria]\n    B --> C[Identify Cloud Services]\n    C --> D[Technical Evaluation]\n    D --> E[Cost Analysis]\n    E --> F[Security Review]\n    F --> G[Compliance Check]\n    G --> H[Scoring Matrix]\n    H --> I[Recommendation Report]\n    I --> J[Decision & Implementation]\n    \n    D --> D1[Performance Metrics]\n    D --> D2[Scalability Tests]\n    E --> E1[TCO Calculation]\n    E --> E2[ROI Analysis]\n    F --> F1[Security Controls]\n    F --> F2[Risk Assessment]"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "gh-17",
+  "question": "What is Terraform and how does it implement Infrastructure as Code (IaC) workflows?",
+  "answer": "Terraform is an open-source Infrastructure as Code (IaC) tool by HashiCorp that allows you to define, provision, and manage cloud infrastructure using declarative configuration files.",
+  "explanation": "Terraform enables infrastructure management through:\n\n- **Declarative Configuration**: Uses HCL (HashiCorp Configuration Language) to define desired infrastructure state\n- **Provider Architecture**: Supports multiple cloud providers (AWS, Azure, GCP, etc.) through plugins\n- **State Management**: Maintains a state file to track infrastructure resources and changes\n- **Workflow**: Follows plan-apply-destroy lifecycle for safe infrastructure changes\n- **Modularity**: Supports modules for reusable infrastructure components\n\n**Key Benefits**:\n- Version control infrastructure alongside application code\n- Automated provisioning and consistent deployments\n- Cost management through resource tracking\n- Multi-cloud and hybrid cloud support",
+  "diagram": "graph TD\n    A[Write HCL Configuration] --> B[terraform init]\n    B --> C[terraform plan]\n    C --> D{Review Changes}\n    D -->|Approved| E[terraform apply]\n    D -->|Reject| F[Modify Configuration]\n    E --> G[Provision Resources]\n    G --> H[Update State File]\n    F --> A\n    H --> I[terraform destroy]\n    I --> J[Clean up Resources]",
+  "difficulty": "beginner",
+  "tags": [
+    "iac",
+    "terraform",
+    "ansible"
+  ],
+  "lastUpdated": "2025-12-12T10:05:18.550Z"
+}

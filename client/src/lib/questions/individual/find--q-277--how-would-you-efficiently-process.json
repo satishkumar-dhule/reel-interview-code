@@ -1,0 +1,26 @@
+{
+  "id": "q-277",
+  "question": "How would you efficiently process a 50GB log file to extract the top 10 most frequent IP addresses from millions of entries while handling memory constraints and special characters?",
+  "answer": "Use find + cut + sort + uniq pipeline with xargs for parallel processing and LC_ALL=C optimization",
+  "explanation": "## Concept\nProcessing massive log files requires memory-efficient pipelines that avoid loading entire datasets into RAM. Unix text processing tools create streaming data flows that handle files larger than available memory.\n\n## Implementation\n```bash\n# Basic approach\nfind /var/log -name '*.log' -type f | \\\n  xargs -P 4 -I {} sh -c 'cut -d\" \" -f1 {} | sort -S 1G -T /tmp' | \\\n  sort -nr | uniq -c | sort -nr | head -10\n\n# Optimized for production\nLC_ALL=C find /var/log -name '*.log' -type f -print0 | \\\n  xargs -0 -P 8 -I {} cut -d' ' -f1 {} | \\\n  sort -S 2G -T /tmp/sort-temp --buffer-size=1G | \\\n  uniq -c | sort -k1,1nr | head -10\n```\n\n## Trade-offs\n- **Memory**: Uses external sort with temporary files instead of in-memory sorting\n- **Performance**: Parallel processing (-P flag) speeds up multiple file handling\n- **Accuracy**: LC_ALL=C ensures consistent sorting across different locales\n- **Safety**: -print0 and -0 handle filenames with spaces/special characters\n\n## Pitfalls\n- Forgetting LC_ALL=C causes locale-dependent sort order inconsistencies\n- Insufficient temp space causes sort failures with large files\n- Not using -print0/-0 breaks on filenames with spaces or special chars\n- Too many parallel processes can overwhelm I/O bandwidth",
+  "tags": [
+    "find",
+    "xargs",
+    "cut",
+    "sort"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart TD\n    A[50GB Log Files] --> B[find -print0]\n    B --> C[xargs -0 -P 8]\n    C --> D[cut -d' ' -f1]\n    D --> E[sort -S 2G -T /tmp]\n    E --> F[uniq -c]\n    F --> G[sort -k1,1nr]\n    G --> H[head -10]\n    H --> I[Top 10 IPs]",
+  "sourceUrl": "https://man7.org/linux/man-pages/man1/sort.1.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:35:22.661Z"
+}

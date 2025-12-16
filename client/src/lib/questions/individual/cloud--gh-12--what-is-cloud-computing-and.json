@@ -1,0 +1,15 @@
+{
+  "id": "gh-12",
+  "question": "What is cloud computing and what are its key service models?",
+  "answer": "Cloud computing delivers computing services over the internet, offering on-demand access to servers, storage, databases, and software.",
+  "explanation": "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software, analytics, and intelligence—over the Internet (\"the cloud\") to offer faster innovation, flexible resources, and economies of scale.\n\n**Key Benefits:**\n• **Cost Efficiency** - Pay only for what you use, no upfront infrastructure costs\n• **Scalability** - Easily scale resources up or down based on demand\n• **Accessibility** - Access services from anywhere with internet connection\n• **Reliability** - Built-in redundancy and disaster recovery\n\n**Service Models:**\n• **IaaS** (Infrastructure as a Service) - Virtual machines, storage, networks\n• **PaaS** (Platform as a Service) - Development platforms and tools\n• **SaaS** (Software as a Service) - Ready-to-use applications",
+  "diagram": "graph TD\n    Cloud[Cloud Computing] --> IaaS[Infrastructure as a Service]\n    Cloud --> PaaS[Platform as a Service]\n    Cloud --> SaaS[Software as a Service]\n    IaaS --> VM[Virtual Machines]\n    IaaS --> Storage[(Storage)]\n    IaaS --> Network[Networking]\n    PaaS --> DevTools[Development Tools]\n    PaaS --> Runtime[Runtime Environment]\n    SaaS --> Email[Email Services]\n    SaaS --> CRM[CRM Applications]",
+  "difficulty": "beginner",
+  "tags": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

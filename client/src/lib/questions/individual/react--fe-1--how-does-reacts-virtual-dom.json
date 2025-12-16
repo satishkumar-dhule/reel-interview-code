@@ -1,0 +1,14 @@
+{
+  "id": "fe-1",
+  "question": "How does React's Virtual DOM diffing algorithm work during reconciliation, and what role do keys play in optimizing list updates?",
+  "answer": "React compares新旧VDOM trees using a heuristic O(n) algorithm, calculating minimal DOM patches. Keys enable stable element identity for efficient list updates.",
+  "explanation": "## Concept Overview\nVirtual DOM is a JavaScript representation of the real DOM that enables efficient updates through diffing and reconciliation. React creates a new VDOM tree on each render, compares it with the previous tree, and calculates the minimal changes needed.\n\n## Implementation\n```jsx\n// Without keys - inefficient re-renders\nfunction BadList({ items }) {\n  return items.map(item => <li>{item.name}</li>);\n}\n\n// With keys - optimized updates\nfunction GoodList({ items }) {\n  return items.map(item => <li key={item.id}>{item.name}</li>);\n}\n```\n\n**Diffing Algorithm Rules:**\n- Different element types → replace entire subtree\n- Same element type → update attributes only\n- Lists → use keys to match elements\n\n## Trade-offs\n**Pros:**\n- Batched DOM updates improve performance\n- Declarative programming model\n- Cross-browser compatibility\n\n**Cons:**\n- Memory overhead for VDOM trees\n- Initial render slower than direct DOM manipulation\n- Not optimal for frequent small updates\n\n## Common Pitfalls\n- Using array indices as keys for mutable lists\n- Missing keys in dynamic lists causing unnecessary re-renders\n- Unstable keys causing component state loss\n- Over-relying on VDOM for performance-critical animations",
+  "diagram": "graph TD\n    A[State Change] --> B[Create New VDOM]\n    B --> C[Diff Algorithm]\n    C --> D{Element Type Same?}\n    D -->|No| E[Replace Entire Subtree]\n    D -->|Yes| F{Has Children?}\n    F -->|No| G[Update Attributes]\n    F -->|Yes| H{List with Keys?}\n    H -->|No| I[Reorder/Replace Children]\n    H -->|Yes| J[Match by Key Identity]\n    J --> K[Update Changed Elements]\n    K --> L[Batch DOM Updates]\n    E --> L\n    G --> L\n    I --> L",
+  "difficulty": "intermediate",
+  "tags": [
+    "react",
+    "perf",
+    "internals"
+  ],
+  "lastUpdated": "2025-12-15T06:35:02.691Z"
+}

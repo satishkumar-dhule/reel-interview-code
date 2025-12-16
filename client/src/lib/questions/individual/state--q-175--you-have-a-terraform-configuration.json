@@ -1,0 +1,13 @@
+{
+  "id": "q-175",
+  "question": "You have a Terraform configuration with multiple developers working on the same infrastructure. How would you implement remote state locking to prevent state corruption and enable team collaboration?",
+  "answer": "Configure remote backend with state locking (S3+DynamoDB, Terraform Cloud, or Azure Blob Storage) to prevent concurrent modifications.",
+  "explanation": "Remote state management is crucial for team collaboration in Terraform. When multiple developers work on the same infrastructure, local state files lead to conflicts and corruption. Remote backends solve this by:\n\n1. **Centralized Storage**: State is stored in a shared location (S3, Azure Blob, etc.)\n2. **State Locking**: Prevents multiple users from modifying state simultaneously\n3. **Version Control**: Maintains history of state changes\n4. **Security**: Controls access to sensitive state data\n\n**Implementation Options:**\n- **AWS**: S3 bucket + DynamoDB table for locking\n- **Azure**: Blob Storage with native locking\n- **Terraform Cloud**: Managed solution with built-in locking\n- **GitLab**: Uses GitLab's managed state backend\n\n**Best Practices:**\n- Enable state encryption for sensitive data\n- Configure proper IAM permissions\n- Use workspaces for environment separation\n- Implement state backup strategies",
+  "tags": [
+    "state",
+    "backend"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Developer 1] --> B[Terraform Apply]\n    C[Developer 2] --> D[Terraform Apply]\n    B --> E[Remote Backend]\n    D --> E\n    E --> F[State Lock Check]\n    F --> G{Lock Available?}\n    G -->|Yes| H[Acquire Lock]\n    G -->|No| I[Wait/Retry]\n    H --> J[Update State]\n    J --> K[Release Lock]\n    I --> F\n    E --> L[S3/Azure Blob Storage]\n    E --> M[DynamoDB/Locking Service]",
+  "lastUpdated": "2025-12-14T10:24:23.645Z"
+}

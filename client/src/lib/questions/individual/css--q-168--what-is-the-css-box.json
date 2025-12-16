@@ -1,0 +1,13 @@
+{
+  "id": "q-168",
+  "question": "What is the CSS 'box model' and what are its four main components?",
+  "answer": "The CSS box model consists of content, padding, border, and margin that surround every HTML element.",
+  "explanation": "The CSS box model is a fundamental concept that describes how every HTML element is rendered as a rectangular box. It consists of four layers:\n\n1. **Content**: The actual content of the element (text, images, etc.)\n2. **Padding**: The space between the content and the border\n3. **Border**: The border that surrounds the padding\n4. **Margin**: The space outside the border that separates the element from other elements\n\nThe total width of an element is calculated as: width + padding-left + padding-right + border-left + border-right + margin-left + margin-right. Understanding the box model is crucial for layout and spacing in CSS.",
+  "tags": [
+    "css",
+    "styling"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Margin] --> B[Border]\n    B --> C[Padding]\n    C --> D[Content]\n    style A fill:#f9f9f9,stroke:#333\n    style B fill:#e6f3ff,stroke:#333\n    style C fill:#ffe6e6,stroke:#333\n    style D fill:#e6ffe6,stroke:#333",
+  "lastUpdated": "2025-12-14T10:23:21.924Z"
+}

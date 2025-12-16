@@ -1,0 +1,13 @@
+{
+  "id": "gh-9",
+  "question": "What is a Pod in Kubernetes and why is it considered the smallest deployable unit?",
+  "answer": "A Pod is Kubernetes' smallest deployable unit that encapsulates one or more containers with shared storage, networking, and runtime specifications.",
+  "explanation": "A Pod is the fundamental building block of Kubernetes applications that represents a single running process in your cluster.\n\n## Key Components\n- **Containers**: One or more tightly coupled containers that work together\n- **Shared Network**: All containers share the same IP address and network namespace\n- **Shared Storage**: Access to shared volumes for data persistence and communication\n- **Runtime Context**: Configuration for how containers should run together\n\n## Why Smallest Deployable Unit?\n- **Atomic Operation**: Pods are scheduled, created, and destroyed as a single unit\n- **Resource Sharing**: Containers in a Pod can efficiently share resources via localhost\n- **Co-location**: Ensures related processes run on the same node for performance\n- **Lifecycle Management**: All containers in a Pod share the same fate (start/stop together)\n\n## Common Use Cases\n- **Single Container**: Most common scenario (web server, database)\n- **Multi-Container**: Main app + sidecar proxy for logging/monitoring\n- **Helper Processes**: Application + background worker processes\n\n## Example YAML\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: web-app\nspec:\n  containers:\n  - name: nginx\n    image: nginx:latest\n    ports:\n    - containerPort: 80\n  - name: log-agent\n    image: fluentd:latest\n    volumeMounts:\n    - name: shared-logs\n      mountPath: /var/log/nginx\n```",
+  "diagram": "graph TD\n    A[Pod: Smallest Unit] --> B[Shared Network Namespace]\n    A --> C[Shared Storage Volumes]\n    A --> D[Container 1: nginx]\n    A --> E[Container 2: log-agent]\n    B --> F[Single IP Address]\n    B --> G[Shared Port Space]\n    C --> H[Persistent Data]\n    I[Kubernetes Scheduler] --> A\n    J[Worker Node] --> A\n    K[Deployment Controller] --> A",
+  "difficulty": "beginner",
+  "tags": [
+    "k8s",
+    "orchestration"
+  ],
+  "lastUpdated": "2025-12-12T10:15:00.000Z"
+}

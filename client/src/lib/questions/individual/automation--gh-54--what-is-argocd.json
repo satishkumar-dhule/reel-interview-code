@@ -1,0 +1,13 @@
+{
+  "id": "gh-54",
+  "question": "What is ArgoCD?",
+  "answer": "ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. It allows you to declaratively manage your Kubernetes applications by using G...",
+  "explanation": "ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. It allows you to declaratively manage your Kubernetes applications by using Git repositories as the source of truth.\n\nKey features:\n1. **Declarative:**\n- Infrastructure as code\n- Application configuration as code\n\n2. **Version Controlled:**\n- Git as single source of truth\n- Audit trail for changes\n\n3. **Automated:**\n- Pull-based deployment\n- Continuous reconciliation",
+  "diagram": "\ngraph LR\n    Git[Git] --> Argo[ArgoCD]\n    Argo --> Sync[Sync]\n    Sync --> K8s[Kubernetes]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "automation",
+    "tools"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

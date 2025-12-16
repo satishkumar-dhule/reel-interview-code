@@ -1,0 +1,13 @@
+{
+  "id": "gh-75",
+  "question": "What are the core DevOps practices that enable continuous delivery and collaboration?",
+  "answer": "DevOps practices include CI/CD, Infrastructure as Code, automated testing, monitoring, and fostering collaboration between development and operations teams.",
+  "explanation": "DevOps practices enable faster, more reliable software delivery through automation and collaboration:\n\n## Technical Practices\n- **Continuous Integration/Continuous Deployment (CI/CD)** - Automated build, test, and deployment pipelines\n- **Infrastructure as Code (IaC)** - Managing infrastructure through version-controlled code\n- **Automated Testing** - Unit, integration, and end-to-end test automation\n- **Monitoring & Observability** - Real-time system health and performance tracking\n- **Configuration Management** - Consistent environment setup and management\n\n## Cultural Practices\n- **Collaboration** - Breaking down silos between Dev and Ops teams\n- **Shared Responsibility** - Joint ownership of application lifecycle\n- **Blameless Post-mortems** - Learning from failures without blame\n- **Continuous Learning** - Regular skill development and knowledge sharing\n\n## Process Practices\n- **Version Control** - Git-based code and configuration management\n- **Agile Methodology** - Iterative development with short feedback loops\n- **Release Management** - Controlled, predictable software releases\n- **Incident Response** - Structured approach to handling production issues",
+  "diagram": "graph TD\n    A[Development Team] --> B[Version Control]\n    B --> C[CI/CD Pipeline]\n    C --> D[Automated Testing]\n    D --> E[Staging Environment]\n    E --> F[Production Deployment]\n    F --> G[Monitoring & Alerts]\n    G --> H[Operations Team]\n    H --> I[Incident Response]\n    I --> A\n    J[Infrastructure as Code] --> E\n    J --> F\n    K[Configuration Management] --> E\n    K --> F",
+  "difficulty": "intermediate",
+  "tags": [
+    "culture",
+    "soft-skills"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

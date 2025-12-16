@@ -1,0 +1,25 @@
+{
+  "id": "q-271",
+  "question": "How would you design a multi-container pod with init containers and sidecars to implement a zero-downtime database migration pattern?",
+  "answer": "Use init container for schema validation, sidecar for migration execution, and shared volumes for coordination.",
+  "explanation": "## Concept\nMulti-container pods enable sophisticated deployment patterns by separating concerns: init containers prepare the environment before main app startup, while sidecars provide auxiliary services throughout the pod lifecycle.\n\n## Implementation\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: app-with-migration\nspec:\n  initContainers:\n  - name: validate-schema\n    image: postgres:15\n    command: ['sh', '-c', 'psql $DB_URL -c \"SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1\"']\n  - name: backup-current\n    image: postgres:15\n    command: ['sh', '-c', 'pg_dump $DB_URL > /backup/pre-migration.sql']\n    volumeMounts:\n    - name: backup-volume\n      mountPath: /backup\n  containers:\n  - name: main-app\n    image: myapp:latest\n    env:\n    - name: DB_URL\n      valueFrom:\n        secretKeyRef:\n          name: db-creds\n          key: url\n  - name: migration-sidecar\n    image: migrator:latest\n    command: ['sh', '-c', 'while true; do /app/check-and-migrate.sh; sleep 30; done']\n    env:\n    - name: DB_URL\n      valueFrom:\n        secretKeyRef:\n          name: db-creds\n          key: url\n    volumeMounts:\n    - name: backup-volume\n      mountPath: /backup\n  volumes:\n  - name: backup-volume\n    emptyDir: {}\n```\n\n## Trade-offs\n**Benefits:**\n- Separation of concerns (setup vs runtime)\n- Atomic operations through init containers\n- Continuous monitoring via sidecar\n- Shared filesystem for coordination\n\n**Considerations:**\n- Increased pod resource usage\n- Complex error handling patterns\n- Longer startup times\n- Debugging multi-container issues\n\n## Pitfalls\n- Init containers blocking pod startup indefinitely\n- Sidecar resource starvation\n- Race conditions between containers\n- Over-reliance on shared filesystem state",
+  "tags": [
+    "containers",
+    "init-containers",
+    "sidecars"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[Pod Starts] --> B[Init Container 1<br/>Validate Schema]\n    B --> C{Schema OK?}\n    C -->|No| D[Init Container Fails<br/>Pod Restarts]\n    C -->|Yes| E[Init Container 2<br/>Backup Database]\n    E --> F[Main App Container Starts]\n    E --> G[Migration Sidecar Starts]\n    \n    F --> H[Application Running]\n    G --> I[Check Migrations<br/>Every 30s]\n    I --> J{New Migration?}\n    J -->|Yes| K[Execute Migration]\n    J -->|No| I\n    K --> I\n    \n    D --> A",
+  "sourceUrl": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:19:41.548Z"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "da-125",
+  "question": "Explain database indexing and when should you use it?",
+  "answer": "Database indexes are data structures that improve query speed by maintaining sorted references to data locations, trading increased write overhead for faster read operations.",
+  "explanation": "**How Indexes Work**:\n- Create sorted data structures (B-tree, Hash) that point to actual data\n- Enable efficient data location without full table scans\n- Trade write performance for read speed improvements\n\n**When to Use**:\n- Frequently queried columns\n- WHERE clause conditions\n- JOIN operations\n- ORDER BY and GROUP BY columns\n\n**When NOT to Use**:\n- Small tables (< 100 rows)\n- Frequently updated columns\n- Low cardinality columns\n- Write-heavy workloads",
+  "diagram": "graph TD\n    Query[SQL Query] --> Index[(Database Index)]\n    Index --> DataPoint[Data Location Pointer]\n    DataPoint --> TableData[(Table Data)]\n    WriteOp[Write Operation] --> IndexUpdate[Update Index]\n    IndexUpdate --> TableUpdate[Update Table]\n    style Index fill:#4ade80\n    style TableData fill:#fbbf24",
+  "difficulty": "intermediate",
+  "tags": [
+    "sql",
+    "indexing"
+  ],
+  "lastUpdated": "2025-12-12T09:11:28.015Z"
+}

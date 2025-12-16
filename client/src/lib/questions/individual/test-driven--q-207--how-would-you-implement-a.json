@@ -1,0 +1,14 @@
+{
+  "id": "q-207",
+  "question": "How would you implement a test-driven development workflow for a REST API endpoint using Jest and Supertest, following the red-green-refactor cycle?",
+  "answer": "Write failing test first, implement minimal code to pass, then refactor while maintaining test coverage.",
+  "explanation": "## Concept Overview\nTest-driven development (TDD) follows the red-green-refactor cycle: write a failing test (red), implement minimal code to make it pass (green), then improve the code while keeping tests passing (refactor).\n\n## Implementation Details\n- Use Jest for unit testing framework\n- Use Supertest for HTTP assertion testing\n- Structure tests in `__tests__` directory alongside source files\n- Mock external dependencies to isolate the endpoint\n- Follow AAA pattern: Arrange, Act, Assert\n\n## Code Example\n```javascript\n// Red: Write failing test\ndescribe('POST /api/users', () => {\n  it('should create a new user', async () => {\n    const response = await request(app)\n      .post('/api/users')\n      .send({ name: 'John', email: 'john@example.com' })\n      .expect(201);\n    \n    expect(response.body).toHaveProperty('id');\n    expect(response.body.name).toBe('John');\n  });\n});\n\n// Green: Implement minimal code\napp.post('/api/users', (req, res) => {\n  const user = { id: Date.now(), ...req.body };\n  res.status(201).json(user);\n});\n\n// Refactor: Add validation, error handling\n```\n\n## Common Pitfalls\n- Writing too much implementation before tests\n- Testing implementation details instead of behavior\n- Not maintaining test coverage during refactoring\n- Over-mocking external dependencies",
+  "tags": [
+    "test-driven",
+    "red-green-refactor",
+    "test-first"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Write Failing Test] --> B[Run Tests - Red]\n    B --> C[Implement Minimal Code]\n    C --> D[Run Tests - Green]\n    D --> E[Refactor Code]\n    E --> F[Run Tests - Green]\n    F --> G[Next Feature]",
+  "lastUpdated": "2025-12-14T12:58:36.848Z"
+}

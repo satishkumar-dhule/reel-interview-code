@@ -1,0 +1,13 @@
+{
+  "id": "sr-126",
+  "question": "What makes a good blameless postmortem?",
+  "answer": "Focus on systems and processes, not individuals; identify root causes and actionable improvements.",
+  "explanation": "**Blameless Postmortem Elements**:\n- Timeline of events\n- Root cause analysis (5 Whys)\n- What went well\n- What could be improved\n- Action items with owners\n\n**Key Principles**:\n- No finger-pointing\n- Assume good intentions\n- Focus on learning\n- Share widely",
+  "diagram": "graph TD\n    Incident[Incident] --> Timeline[Timeline]\n    Timeline --> RCA[Root Cause]\n    RCA --> Actions[Action Items]\n    Actions --> Prevention[Prevention]",
+  "difficulty": "advanced",
+  "tags": [
+    "incident",
+    "postmortem"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

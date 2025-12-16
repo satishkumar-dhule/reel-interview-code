@@ -1,5 +1,6 @@
 // Static question loader - loads questions from unified storage
 // This works for GitHub Pages static hosting (no backend required)
+// This is the SYNC version for backwards compatibility
 
 import allQuestionsData from './questions/all-questions.json';
 import channelMappingsData from './questions/channel-mappings.json';
@@ -23,11 +24,11 @@ export interface Question {
 }
 
 // Questions by ID from unified storage
-const questionsById: Record<string, Question> = (allQuestionsData as any).questions || {};
+const questionsById: Record<string, Question> = (allQuestionsData as { questions: Record<string, Question> }).questions || {};
 
 // Channel mappings from unified storage
 const channelMappings: Record<string, { subChannels: Record<string, string[]> }> = 
-  (channelMappingsData as any).channels || {};
+  (channelMappingsData as { channels: Record<string, { subChannels: Record<string, string[]> }> }).channels || {};
 
 // Build questions by channel from mappings
 function buildQuestionsByChannel(): Record<string, Question[]> {
@@ -106,6 +107,7 @@ export function getQuestionById(questionId: string): Question | undefined {
   return undefined;
 }
 
+
 // Get question IDs for a channel with optional filters
 export function getQuestionIds(
   channelId: string,
@@ -151,7 +153,6 @@ export function channelHasQuestions(channelId: string): boolean {
 // Normalize company name for consistency
 function normalizeCompanyName(name: string): string {
   const normalized = name.trim();
-  // Common variations mapping
   const aliases: Record<string, string> = {
     'facebook': 'Meta',
     'fb': 'Meta',
@@ -195,7 +196,6 @@ export function getCompaniesWithCounts(
 ): { name: string; count: number }[] {
   let questions = questionsByChannel[channelId] || [];
   
-  // Apply current filters to get relevant questions
   if (subChannel && subChannel !== 'all') {
     questions = questions.filter(q => q.subChannel === subChannel);
   }
@@ -203,7 +203,6 @@ export function getCompaniesWithCounts(
     questions = questions.filter(q => q.difficulty === difficulty);
   }
   
-  // Count questions per company
   const companyCounts = new Map<string, number>();
   questions.forEach(q => {
     if (q.companies) {
@@ -214,7 +213,6 @@ export function getCompaniesWithCounts(
     }
   });
   
-  // Sort by count (descending), then alphabetically
   return Array.from(companyCounts.entries())
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));

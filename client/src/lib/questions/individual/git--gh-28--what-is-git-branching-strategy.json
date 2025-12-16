@@ -1,0 +1,13 @@
+{
+  "id": "gh-28",
+  "question": "What is Git Branching Strategy?",
+  "answer": "A Git branching strategy is a convention or set of rules that specify how and when branches should be created and merged. Common strategies include:",
+  "explanation": "A Git branching strategy is a convention or set of rules that specify how and when branches should be created and merged. Common strategies include:\n\n1. **Git Flow:**\n- Main branches: master, develop\n- Supporting branches: feature, release, hotfix\n\n2. **Trunk-Based Development:**\n- Single main branch (trunk)\n- Short-lived feature branches\n- Frequent integration\n\nExample of creating a feature branch:\n```bash\n# Create and switch to a new feature branch\ngit checkout -b feature/new-feature\n\n# Make changes and commit\ngit add .\ngit commit -m \"Add new feature\"\n\n# Push to remote\ngit push origin feature/new-feature\n```",
+  "diagram": "\ngraph LR\n    Main[main] --> Dev[develop]\n    Dev --> Feat[feature]\n    Feat --> Dev\n    Dev --> Main\n",
+  "difficulty": "beginner",
+  "tags": [
+    "git",
+    "vcs"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "q-228",
+  "question": "How would you optimize a real-time medical image segmentation pipeline using SAM with 100ms latency constraint on edge devices?",
+  "answer": "Use SAM's lightweight encoder with quantized ViT-B, implement prompt caching, and apply tensorRT optimization for sub-100ms inference.",
+  "explanation": "## Concept Overview\nReal-time medical segmentation requires balancing accuracy with strict latency constraints. SAM (Segment Anything Model) provides zero-shot segmentation but needs optimization for edge deployment.\n\n## Implementation Details\n- **Model Optimization**: Use SAM-ViT-B (lightweight) with INT8 quantization\n- **Prompt Engineering**: Implement prompt caching for similar anatomical regions\n- **Hardware Acceleration**: Deploy with TensorRT on NVIDIA Jetson or CoreML on Apple Silicon\n- **Batch Processing**: Process multiple slices in parallel when available\n\n## Code Example\n```python\n# Optimized SAM inference pipeline\nimport torch\nfrom segment_anything import sam_model_registry\n\nclass OptimizedSAM:\n    def __init__(self):\n        self.sam = sam_model_registry['vit_b'](checkpoint='sam_vit_b.pth')\n        self.sam.eval()\n        self.sam.cuda()\n        # Enable TensorRT optimization\n        self.sam = torch.compile(self.sam, mode='max-autotune')\n    \n    def segment_with_cache(self, image, prompt):\n        # Check prompt cache first\n        cache_key = hash(prompt.tobytes())\n        if cache_key in self.prompt_cache:\n            return self.prompt_cache[cache_key]\n        \n        masks = self.sam.predict(image, prompt)\n        self.prompt_cache[cache_key] = masks\n        return masks\n```\n\n## Common Pitfalls\n- **Memory Overhead**: Prompt caching can consume significant memory on edge devices\n- **Quantization Loss**: INT8 quantization may reduce fine-grained segmentation accuracy\n- **Prompt Sensitivity**: Medical images require precise prompt placement for accurate results\n- **Hardware Variability**: Different edge devices have varying compute capabilities",
+  "tags": [
+    "unet",
+    "mask-rcnn",
+    "sam"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD[Input Medical Image] --> A[Preprocessing: Resize/Normalize]\nA --> B[Prompt Detection: Anatomical Region]\nB --> C{Prompt Cache Hit?}\nC -->|Yes| D[Return Cached Mask]\nC -->|No| E[SAM Encoder: ViT-B Lightweight]\nE --> F[Prompt-Guided Decoder]\nF --> G[Post-processing: Refine Boundaries]\nG --> H[Cache Result]\nH --> I[Output Segmentation Mask]\nD --> I\n\nsubgraph Edge Device Optimization\n    J[TensorRT Engine] --> K[INT8 Quantization]\n    K --> L[Memory Pool Management]\nend\n\nE -.-> J\nF -.-> J",
+  "lastUpdated": "2025-12-15T01:16:08.123Z"
+}

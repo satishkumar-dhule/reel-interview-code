@@ -1,0 +1,25 @@
+{
+  "id": "q-268",
+  "question": "How would you optimize a time-series analytics query that scans 100M+ rows across multiple date partitions when the WHERE clause cannot be pruned effectively?",
+  "answer": "Use composite partitioning, materialized views, and columnar storage with query plan hints.",
+  "explanation": "## Concept\nThis scenario challenges the core assumption of partition pruning - when predicates don't align with partition keys, the optimizer must scan all partitions. The solution requires multiple optimization layers working together.\n\n## Implementation\n```sql\n-- Composite partitioning strategy\nCREATE TABLE events (\n  event_id BIGINT,\n  user_id INT,\n  event_time TIMESTAMP,\n  event_type VARCHAR(50),\n  metrics JSONB\n) PARTITION BY RANGE (event_time) SUBPARTITION BY HASH (user_id) SUBPARTITIONS 16;\n\n-- Materialized view for common aggregations\nCREATE MATERIALIZED VIEW daily_metrics AS\nSELECT \n  DATE(event_time) as date,\n  event_type,\n  COUNT(*) as count,\n  AVG(jsonb_extract_path_text(metrics, 'value')::numeric) as avg_value\nFROM events \nGROUP BY DATE(event_time), event_type;\n\n-- Query with optimizer hints\nSELECT /*+ PARALLEL(8) */ event_type, COUNT(*)\nFROM events \nWHERE event_time >= NOW() - INTERVAL '7 days'\n  AND user_id IN (SELECT user_id FROM active_users)\nGROUP BY event_type;\n```\n\n## Trade-offs\n- Storage overhead from materialized views (2-3x)\n- Complex ETL pipeline for view maintenance\n- Increased operational complexity\n- Columnar storage benefits OLAP but hurts OLTP\n\n## Pitfalls\n- Wrong partitioning key leads to hot partitions\n- Materialized view lag causes stale analytics\n- Parallel hints overwhelm small queries\n- Suboptimal join order in complex aggregations",
+  "tags": [
+    "explain",
+    "query-plan",
+    "partitioning"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart TD\n    A[Query Request] --> B{Partition Strategy}\n    B -->|Composite| C[Time + Hash Partitioning]\n    B -->|Single Key| D[Range Partitioning Only]\n    \n    C --> E{Query Pattern}\n    E -->|Analytical| F[Materialized Views]\n    E -->|Real-time| G[Direct Table Scan]\n    \n    D --> H[All Partitions Scanned]\n    H --> I[Performance Degradation]\n    \n    F --> J[Pre-computed Aggregations]\n    G --> K[Parallel Execution]\n    J --> L[Fast Analytics]\n    K --> L",
+  "sourceUrl": "https://dev.mysql.com/doc/mysql-partitioning-excerpt/5.7/en/partitioning-pruning.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:17:21.557Z"
+}

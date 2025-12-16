@@ -1,0 +1,26 @@
+{
+  "id": "q-263",
+  "question": "How does demand paging work in virtual memory systems?",
+  "answer": "Pages load on-demand when accessed, not upfront.",
+  "explanation": "## Concept\nDemand paging loads pages into memory only when accessed, reducing initial memory footprint.\n\n## Implementation\n```c\n// Page fault handler\nif (!page_in_memory(virtual_address)) {\n    load_page_from_disk(virtual_address);\n    restart_instruction();\n}\n```\n\n## Trade-offs\n- **Pros**: Lower memory usage, faster startup\n- **Cons**: Page fault latency, thrashing\n\n## Pitfalls\n- Thrashing under memory pressure\n- Working set estimation errors",
+  "tags": [
+    "virtual-memory",
+    "paging",
+    "segmentation",
+    "cache"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[Page Access] --> B{Page in RAM?}\n    B -->|No| C[Page Fault]\n    C --> D[Load from Disk]\n   D --> E[Update Page Table]\nE --> F[Restart Access]\nB -->|Yes| F",
+  "sourceUrl": null,
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Apple",
+    "Google",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T13:27:53.972Z"
+}

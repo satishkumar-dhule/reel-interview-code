@@ -1,0 +1,15 @@
+{
+  "id": "q-223",
+  "question": "How would you design a production-scale evaluation pipeline that dynamically adjusts metrics based on class imbalance and business priorities while maintaining sub-second latency?",
+  "answer": "Implement a multi-metric streaming pipeline with adaptive weighting, using precomputed confusion matrices and metric caching for real-time evaluation.",
+  "explanation": "## Concept Overview\nA production evaluation pipeline must handle high-throughput data streams while adapting to changing class distributions and business requirements. The key is balancing computational efficiency with metric accuracy.\n\n## Implementation Details\n- **Streaming Architecture**: Use Apache Kafka/Flink for real-time data ingestion\n- **Adaptive Metrics**: Dynamic weighting based on class imbalance ratios\n- **Caching Strategy**: Precompute confusion matrices for common thresholds\n- **Latency Optimization**: Metric computation in parallel with model inference\n\n## Code Example\n```python\nclass AdaptiveEvaluator:\n    def __init__(self, window_size=1000):\n        self.window = deque(maxlen=window_size)\n        self.class_weights = {}\n    \n    def update_weights(self, y_true):\n        class_counts = np.bincount(y_true)\n        total = len(y_true)\n        self.class_weights = {\n            i: total/(len(class_counts) * count) \n            for i, count in enumerate(class_counts)\n        }\n    \n    def evaluate(self, y_true, y_pred):\n        weighted_precision = precision_score(\n            y_true, y_pred, average='weighted',\n            sample_weight=[self.class_weights.get(i, 1) for i in y_true]\n        )\n        return weighted_precision\n```\n\n## Common Pitfalls\n- **Metric Drift**: Not updating class weights frequently enough\n- **Memory Leaks**: Unbounded confusion matrix accumulation\n- **Threshold Sensitivity**: Fixed thresholds across varying class distributions\n- **Latency Spikes**: Synchronous metric computation blocking inference",
+  "tags": [
+    "precision",
+    "recall",
+    "auc-roc",
+    "f1"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Data Stream] --> B[Class Imbalance Detector]\n    B --> C[Weight Calculator]\n    C --> D[Metric Cache]\n    D --> E[Parallel Evaluator]\n    E --> F[Adaptive Metrics]\n    F --> G[Real-time Dashboard]\n    \n    H[Model Inference] --> E\n    I[Business Rules] --> C\n    J[Historical Data] --> D",
+  "lastUpdated": "2025-12-15T01:15:31.690Z"
+}

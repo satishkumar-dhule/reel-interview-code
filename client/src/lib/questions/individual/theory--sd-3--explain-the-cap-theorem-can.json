@@ -1,0 +1,14 @@
+{
+  "id": "sd-3",
+  "question": "Explain the CAP Theorem. Can you really 'choose two'?",
+  "answer": "CAP states a distributed store can only provide 2 of 3: Consistency, Availability, Partition Tolerance.",
+  "explanation": "**Partition Tolerance (P)** is NOT optional in distributed systems (networks fail). \n\nSo the real choice is **CP vs AP** during a partition:\n\n- **CP (Consistency)**: Return error/timeout if data can't be synced. (e.g., Banking - better to fail than show wrong balance).\n- **AP (Availability)**: Return stale data but keep running. (e.g., Facebook Feed - better to show old posts than nothing).\n\n**PACELC Theorem** extends this: Else (when no partition), choose Latency (L) vs Consistency (C).",
+  "diagram": "graph TD\n    CAP[CAP Theorem]\n    CAP --> C[Consistency]\n    CAP --> A[Availability]\n    CAP --> P[Partition Tolerance]\n    Note[Pick 2 of 3]\n    style Note fill:#f59e0b,stroke:#fff,color:#000",
+  "difficulty": "advanced",
+  "tags": [
+    "theory",
+    "dist-sys",
+    "database"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

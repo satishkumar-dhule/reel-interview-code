@@ -1,0 +1,14 @@
+{
+  "id": "sr-154",
+  "question": "Your API serves 10M requests/day with a 99.9% availability SLO and 30-day error budget. After a 4-hour outage affecting 100% of traffic, how many minutes of downtime remain in your error budget?",
+  "answer": "39.6 minutes remaining (4 hours consumed from 43.2-minute monthly budget)",
+  "explanation": "## Error Budget Calculation\n\n**Given:**\n- SLO: 99.9% availability\n- Error budget: 0.1% (100% - 99.9%)\n- Time window: 30 days\n- Outage: 4 hours (240 minutes)\n\n**Step 1: Calculate total error budget**\n```\n30 days = 30 × 24 × 60 = 43,200 minutes\nError budget = 43,200 × 0.001 = 43.2 minutes\n```\n\n**Step 2: Calculate remaining budget**\n```\nConsumed = 240 minutes (4 hours)\nRemaining = 43.2 - 240 = -196.8 minutes\n```\n\n**Result:** The error budget is **exhausted**. You've exceeded it by 196.8 minutes (4.55×). This means:\n- No more incidents allowed this month\n- Feature releases should be frozen\n- Focus shifts to reliability improvements\n- Need executive approval for risky changes\n\n**Key SRE Principle:** Error budgets balance innovation velocity with reliability. When exhausted, teams prioritize stability over new features until the budget resets.",
+  "diagram": "graph TD\n    A[30-Day Period] --> B[Total Minutes: 43,200]\n    B --> C[SLO: 99.9%]\n    C --> D[Error Budget: 0.1%]\n    D --> E[43.2 minutes allowed downtime]\n    E --> F[Outage: 240 minutes]\n    F --> G{Budget Status}\n    G -->|Exceeded by 196.8 min| H[Freeze Features]\n    G -->|Within Budget| I[Continue Normal Ops]\n    H --> J[Focus on Reliability]",
+  "difficulty": "intermediate",
+  "tags": [
+    "slo",
+    "sli",
+    "error-budget"
+  ],
+  "lastUpdated": "2025-12-13T01:09:58.799Z"
+}

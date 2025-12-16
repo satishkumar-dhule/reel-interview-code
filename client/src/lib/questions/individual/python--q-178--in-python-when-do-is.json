@@ -1,0 +1,13 @@
+{
+  "id": "q-178",
+  "question": "In Python, when do `is` and `==` return different results, and why does this happen with object identity vs equality?",
+  "answer": "`is` checks memory identity (same object), `==` checks value equality. Different for distinct objects with same values: `[1,2] is [1,2]` is False but `[1,2] == [1,2]` is True.",
+  "explanation": "## Concept Overview\nPython distinguishes between object identity and value equality. `is` compares memory addresses using `id()`, while `==` compares values using `__eq__` method.\n\n## Implementation\n```python\n# Identity vs Equality\na = [1, 2, 3]\nb = [1, 2, 3]\nc = a\n\nprint(a == b)  # True - same values\nprint(a is b)  # False - different objects\nprint(a is c)  # True - same object\n\n# Integer optimization (small integers)\nx = 256\ny = 256\nprint(x is y)  # True - interned\n\nx = 257\ny = 257\nprint(x is y)  # False - different objects\n```\n\n## Trade-offs\n- `is`: Faster, checks if exactly same object\n- `==`: Slower, checks if values are equivalent\n- Use `is` for singletons (None, True, False)\n- Use `==` for value comparison\n\n## Common Pitfalls\n- Assuming `is` works for value comparison\n- Not understanding integer/string interning\n- Using `is` with mutable objects incorrectly\n- Forgetting that `==` can be overridden by custom classes",
+  "tags": [
+    "python",
+    "basics"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Object A] -->|id: 0x1234| C[Memory Location 0x1234]\n    B[Object B] -->|id: 0x5678| D[Memory Location 0x5678]\n    E[Object C] -->|id: 0x1234| C\n    \n    F[Value: [1,2,3]] --> G[Content Comparison]\n    H[Value: [1,2,3]] --> G\n    I[Value: [1,2,3]] --> G\n    \n    J[is operator] --> K[Compare memory addresses]\n    L[== operator] --> M[Compare values via __eq__]\n    \n    style C fill:#e1f5fe\n    style D fill:#e1f5fe\n    style G fill:#f3e5f5",
+  "lastUpdated": "2025-12-15T06:36:44.300Z"
+}

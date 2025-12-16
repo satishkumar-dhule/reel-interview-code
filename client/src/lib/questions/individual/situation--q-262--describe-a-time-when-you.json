@@ -1,0 +1,28 @@
+{
+  "id": "q-262",
+  "question": "Describe a time when you used the STAR method to handle a critical production outage during peak traffic hours?",
+  "answer": "Used STAR to coordinate team response, isolate root cause, implement hotfix, and prevent recurrence through post-mortem documentation.",
+  "explanation": "## STAR Method Overview\nThe STAR method (Situation, Task, Action, Result) provides a structured approach to behavioral interview questions, especially useful for technical incident response scenarios.\n\n## Implementation in Crisis Management\n**Situation**: Critical production outage during peak traffic with 99.9% SLA at risk\n**Task**: Restore service within 15-minute MTTR while maintaining customer communication\n**Action**: Implemented incident response playbook, coordinated cross-functional teams, performed rollback\n**Result**: Restored service in 12 minutes, documented RCA, implemented monitoring improvements\n\n## Code Example - Incident Tracking\n```typescript\ninterface IncidentResponse {\n  situation: {\n    timestamp: Date;\n    severity: 'critical' | 'high' | 'medium' | 'low';\n    affectedSystems: string[];\n    impactMetrics: { users: number; revenue: number };\n  };\n  task: {\n    objectives: string[];\n    stakeholders: string[];\n    communicationPlan: string[];\n  };\n  action: {\n    steps: Array<{ action: string; owner: string; completed: boolean }>;\n    resources: { team: string[]; tools: string[] };\n  };\n  result: {\n    resolutionTime: number;\n    rootCause: string;\n    preventiveMeasures: string[];\n    lessonsLearned: string[];\n  };\n}\n```\n\n## Common Pitfalls\n- **Vague Situations**: Lack specific metrics, timelines, or business impact\n- **Unclear Tasks**: Failing to define clear success criteria\n- **Generic Actions**: Using \"we\" instead of personal contributions\n- **Missing Results**: Not quantifying outcomes or learnings",
+  "tags": [
+    "situation",
+    "task",
+    "action",
+    "result"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Situation - Production Outage] --> B[Task - Restore Service]\n    B --> C[Action - Incident Response]\n    C --> D[Result - Resolution & Prevention]\n    \n    C --> C1[Isolate Issue]\n    C --> C2[Coordinate Teams]\n    C --> C3[Implement Fix]\n    C --> C4[Communicate Status]\n    \n    D --> D1[Service Restored]\n    D --> D2[RCA Documented]\n    D --> D3[Monitoring Improved]\n    D --> D4[Team Trained]",
+  "sourceUrl": "https://aws.amazon.com/blogs/devops/incident-response-best-practices-for-cloud-native-applications/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:58:14.325Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "q-232",
+  "question": "How does Auto Layout constraint resolution work when creating a UITableView with dynamic cell heights?",
+  "answer": "Auto Layout resolves constraints by calculating required cell heights based on content, then UITableView applies these heights during layout.",
+  "explanation": "## Concept Overview\nAuto Layout constraint resolution is the process where iOS calculates the size and position of views based on their constraints. For UITableView with dynamic cells, this happens in two phases.\n\n## Implementation Details\n1. **System Layout Size Fitting**: UITableView calls `systemLayoutSizeFitting` on each cell prototype\n2. **Constraint Resolution**: Auto Layout engine resolves all constraints to determine cell height\n3. **Height Caching**: UITableView caches calculated heights for performance\n4. **Layout Application**: Heights are applied during the table view's layout pass\n\n## Code Example\n```swift\n// In UITableViewCell subclass\noverride func awakeFromNib() {\n    super.awakeFromNib()\n    // Enable auto-sizing\n    contentView.translatesAutoresizingMaskIntoConstraints = false\n}\n\n// In UITableViewController\ntableView.rowHeight = UITableView.automaticDimension\ntableView.estimatedRowHeight = 100\n```\n\n## Common Pitfalls\n- Missing `translatesAutoresizingMaskIntoConstraints = false`\n- Incomplete constraint chains leading to ambiguous layouts\n- Performance issues with complex constraint hierarchies\n- Not setting `estimatedRowHeight` causing layout delays",
+  "tags": [
+    "autolayout",
+    "tableview",
+    "collectionview"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[UITableView] --> B[Cell Prototype]\n    B --> C[Auto Layout Engine]\n    C --> D[Constraint Resolution]\n    D --> E[Height Calculation]\n    E --> F[Height Caching]\n    F --> G[Layout Application]\n    G --> H[Final Cell Display]",
+  "lastUpdated": "2025-12-15T01:16:34.591Z"
+}

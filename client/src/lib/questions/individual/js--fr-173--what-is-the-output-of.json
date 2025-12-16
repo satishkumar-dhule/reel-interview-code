@@ -1,0 +1,13 @@
+{
+  "id": "fr-173",
+  "question": "What is the output of this code and explain the event loop behavior: console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(() => console.log('C')); Promise.resolve().then(() => console.log('D')); console.log('E');",
+  "answer": "A, E, C, D, B. Microtasks execute before next macrotask.",
+  "explanation": "# Event Loop Execution Order\n\n## Synchronous Code First\n- `console.log('A')` and `console.log('E')` execute synchronously\n\n## Microtask Queue Priority\n- `Promise.then()` callbacks enter microtask queue\n- Microtasks have higher priority than macrotasks\n- All microtasks execute before next macrotask\n- Microtasks execute in FIFO order: C then D\n\n## Macrotask Queue\n- `setTimeout` enters macrotask queue\n- Executes after all microtasks are complete\n\n## Key Concepts\n- **Call Stack**: Synchronous execution\n- **Microtask Queue**: Promises, async/await\n- **Macrotask Queue**: setTimeout, DOM events\n- **Event Loop**: Manages task scheduling\n\nThis demonstrates JavaScript's non-blocking nature and task prioritization.",
+  "diagram": "graph TD\n    A[Start] --> B[console.log'A']\n    B --> C[console.log'E']\n    C --> D[Microtask Queue Empty?]\n    D -->|Yes| E[Execute Promise.then C]\n    E --> F[Execute Promise.then D]\n    F --> G[Microtask Queue Empty?]\n    G -->|Yes| H[Execute setTimeout B]\n    H --> I[End]\n    D -->|No| J[Wait for Microtasks]\n    J --> D\n    G -->|No| K[Wait for Microtasks]\n    K --> G",
+  "difficulty": "advanced",
+  "tags": [
+    "js",
+    "core"
+  ],
+  "lastUpdated": "2025-12-14T01:19:30.686Z"
+}

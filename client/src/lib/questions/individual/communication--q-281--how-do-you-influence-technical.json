@@ -1,0 +1,25 @@
+{
+  "id": "q-281",
+  "question": "How do you influence technical decisions when you're not the technical lead?",
+  "answer": "Build credibility through data, collaborate on solutions, and focus on shared goals.",
+  "explanation": "## Concept\nInfluence without authority requires building trust and demonstrating expertise through data-driven arguments and collaborative problem-solving.\n\n## Implementation\n1. **Research & Data**: Gather metrics, benchmarks, and evidence\n2. **Collaborative Discussion**: Frame as problem-solving, not prescription\n3. **Prototype/Demo**: Show tangible proof of concept\n4. **Stakeholder Alignment**: Connect solution to business goals\n5. **Iterative Approach**: Start small, demonstrate wins\n\n```typescript\n// Example: Proposing a new testing framework\nconst proposal = {\n  problem: 'Current test suite takes 45 minutes',\n  impact: 'Slows down deployments, blocks releases',\n  solution: 'Vitest for 3x faster test execution',\n  evidence: {\n    benchmark: 'Ran POC - 15min vs 45min',\n    cost: 'Minimal migration effort',\n    risk: 'Low - same API as Jest'\n  },\n  nextSteps: 'Pilot in one microservice'\n}\n```\n\n## Trade-offs\n**Collaborative approach**: Slower initially but builds long-term trust\n**Data-driven**: More convincing but requires preparation time\n**Small wins**: Builds momentum but may feel incremental\n\n## Pitfalls\n- Don't challenge authority directly in public\n- Avoid making it personal vs. the person\n- Don't ignore legitimate concerns about change\n- Don't overpromise on outcomes",
+  "tags": [
+    "communication",
+    "collaboration",
+    "influence"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Identify Problem] --> B[Gather Data/Evidence]\n    B --> C[Build Solution]\n    C --> D[Find Champions]\n    D --> E[Pilot/Demo]\n    E --> F[Measure Results]\n    F --> G[Scale Solution]\n    G --> H[Document Learning]",
+  "sourceUrl": "https://hbr.org/2022/03/how-to-influence-people-without-formal-authority",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:41:21.501Z"
+}

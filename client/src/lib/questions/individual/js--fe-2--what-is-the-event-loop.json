@@ -1,0 +1,14 @@
+{
+  "id": "fe-2",
+  "question": "What is the Event Loop in JavaScript? How do Microtasks differ from Macrotasks?",
+  "answer": "The Event Loop coordinates the Call Stack, Web APIs, and Callback Queues.",
+  "explanation": "JS is single-threaded.\n\n1. **Call Stack**: Executes sync code.\n2. **Microtask Queue**: Promises, MutationObservers. (Higher Priority - processed immediately after stack clears).\n3. **Macrotask Queue**: setTimeout, setInterval, I/O. (Processed one per loop tick).\n\n**Order**: Sync -> All Microtasks -> Render UI -> One Macrotask -> Repeat.",
+  "diagram": "\ngraph TD\n    Stack[Call Stack] -->|Empty?| CheckMicro{Microtasks?}\n    CheckMicro -->|Yes| RunMicro[Run All Microtasks]\n    RunMicro --> CheckMicro\n    CheckMicro -->|No| Render[Render UI]\n    Render --> RunMacro[Run One Macrotask]\n    RunMacro --> Stack\n",
+  "difficulty": "beginner",
+  "tags": [
+    "js",
+    "async",
+    "core"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "gh-60",
+  "question": "What are Service Level Objectives (SLOs)?",
+  "answer": "Service Level Objectives (SLOs) are specific, measurable targets for service performance that you set and agree to meet.",
+  "explanation": "Service Level Objectives (SLOs) are specific, measurable targets for service performance that you set and agree to meet.\n\nExample SLO definition:\n```yaml\nService: User Authentication\nSLO:\nMetric: Availability\nTarget: 99.9%\nWindow: 30 days\nMeasurement:\n- Success rate of authentication requests\n- Latency under 300ms for 99% of requests\n```",
+  "difficulty": "intermediate",
+  "tags": [
+    "sre",
+    "reliability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

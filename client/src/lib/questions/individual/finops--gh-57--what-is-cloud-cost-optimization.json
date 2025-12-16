@@ -1,0 +1,13 @@
+{
+  "id": "gh-57",
+  "question": "What is Cloud Cost Optimization and what are the key strategies to reduce cloud spending?",
+  "answer": "Cloud Cost Optimization reduces overall cloud spend by identifying waste, right-sizing resources, and leveraging pricing models effectively.",
+  "explanation": "Cloud Cost Optimization is the process of reducing your overall cloud spend by identifying mismanaged resources, eliminating waste, reserving capacity for higher discounts, and right-sizing computing services to scale.\n\n## Key Strategies:\n\n### 1. Resource Optimization\n- **Right-sizing instances** - Match compute resources to actual workload requirements\n- **Shutting down unused resources** - Eliminate idle instances, storage, and services\n- **Using auto-scaling effectively** - Scale resources based on demand patterns\n- **Resource scheduling** - Stop non-production environments during off-hours\n\n### 2. Pricing Optimization\n- **Reserved Instances** - Commit to long-term usage for significant discounts (up to 75%)\n- **Spot Instances** - Use spare capacity at reduced rates for fault-tolerant workloads\n- **Savings Plans** - Flexible pricing model with commitment-based discounts\n- **Volume discounts** - Negotiate better rates for high usage\n\n### 3. Monitoring & Governance\n- **Cost monitoring dashboards** - Track spending patterns and trends\n- **Budget alerts** - Set spending thresholds and notifications\n- **Tagging strategies** - Organize resources for better cost allocation\n- **Regular cost reviews** - Periodic analysis and optimization cycles",
+  "diagram": "graph TD\n    A[Cloud Cost Optimization] --> B[Resource Optimization]\n    A --> C[Pricing Optimization]\n    A --> D[Monitoring & Governance]\n    \n    B --> E[Right-sizing]\n    B --> F[Eliminate Waste]\n    B --> G[Auto-scaling]\n    \n    C --> H[Reserved Instances]\n    C --> I[Spot Instances]\n    C --> J[Savings Plans]\n    \n    D --> K[Cost Monitoring]\n    D --> L[Budget Alerts]\n    D --> M[Regular Reviews]",
+  "difficulty": "beginner",
+  "tags": [
+    "finops",
+    "cost"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

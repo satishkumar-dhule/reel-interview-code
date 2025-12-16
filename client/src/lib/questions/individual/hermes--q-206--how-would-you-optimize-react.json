@@ -1,0 +1,14 @@
+{
+  "id": "q-206",
+  "question": "How would you optimize React Native list performance with Hermes and Reanimated when dealing with 10k+ items containing complex animations?",
+  "answer": "Use FlatList with getItemLayout, memoized items, Reanimated 2 shared values, Hermes bytecode optimization, and avoid inline functions.",
+  "explanation": "## Concept Overview\nOptimizing large lists in React Native requires addressing JavaScript execution, layout calculations, and animation performance simultaneously.\n\n## Implementation Details\n- **FlatList Optimization**: Use `getItemLayout`, `removeClippedSubviews`, and `maxToRenderPerBatch`\n- **Hermes Benefits**: Bytecode precompilation, reduced memory footprint, faster startup\n- **Reanimated 2**: Offload animations to UI thread using `useSharedValue` and `useAnimatedStyle`\n- **Memoization**: Prevent unnecessary re-renders with `React.memo` and `useCallback`\n\n## Code Example\n```javascript\nconst ListItem = React.memo(({ item, sharedValue }) => {\n  const animatedStyle = useAnimatedStyle(() => ({\n    transform: [{ scale: sharedValue.value }]\n  }));\n\n  return (\n    <Animated.View style={[styles.item, animatedStyle]}>\n      <Text>{item.title}</Text>\n    </Animated.View>\n  );\n});\n\nconst OptimizedList = ({ data }) => {\n  const scale = useSharedValue(1);\n  \n  return (\n    <FlatList\n      data={data}\n      renderItem={({ item }) => <ListItem item={item} sharedValue={scale} />}\n      getItemLayout={(data, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}\n      removeClippedSubviews={true}\n      maxToRenderPerBatch={10}\n      windowSize={10}\n    />\n  );\n};\n```\n\n## Common Pitfalls\n- Inline functions in renderItem causing re-renders\n- Not using getItemLayout leading to layout thrashing\n- Animations on JS thread instead of UI thread\n- Excessive prop drilling in list items\n- Ignoring Hermes bundle size optimization",
+  "tags": [
+    "hermes",
+    "reanimated",
+    "profiling"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[10k+ Data Items] --> B[FlatList with getItemLayout]\n    B --> C[Memoized ListItem Components]\n    C --> D[Reanimated Shared Values]\n    D --> E[UI Thread Animations]\n    E --> F[Hermes Bytecode Execution]\n    F --> G[Optimized Rendering Pipeline]\n    \n    H[removeClippedSubviews] --> I[Reduced Memory Usage]\n    J[maxToRenderPerBatch] --> K[Controlled Rendering]\n    L[React.memo] --> M[Prevented Re-renders]\n    \n    I --> G\n    K --> G\n    M --> G",
+  "lastUpdated": "2025-12-14T12:58:29.256Z"
+}

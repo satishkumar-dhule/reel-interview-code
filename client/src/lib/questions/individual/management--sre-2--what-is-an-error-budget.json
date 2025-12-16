@@ -1,0 +1,14 @@
+{
+  "id": "sre-2",
+  "question": "What is an Error Budget and how do you use it?",
+  "answer": "100% - SLO = Error Budget. It's the allowed amount of unreliability.",
+  "explanation": "If SLO is 99.9% uptime, you have 0.1% error budget (approx 43 mins/month).\n\n**Usage**:\n- **Budget Remaining?**: Ship features fast, take risks, do chaos engineering.\n- **Budget Exhausted?**: FREEZE deployments. Focus 100% on reliability until budget recovers.\n\n*It aligns Dev (speed) and Ops (stability) incentives.*",
+  "diagram": "\ngraph LR\n    SLO[99.9% SLO] --> EB[0.1% Error Budget]\n    EB -->|Remaining| Ship[Ship Features]\n    EB -->|Exhausted| Freeze[Freeze Deploys]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "management",
+    "concept",
+    "risk"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

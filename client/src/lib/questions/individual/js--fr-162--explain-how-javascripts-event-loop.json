@@ -1,0 +1,13 @@
+{
+  "id": "fr-162",
+  "question": "Explain how JavaScript's event loop handles microtasks vs macrotasks. What happens when a Promise resolves inside a setTimeout callback?",
+  "answer": "Microtasks (Promises) execute before macrotasks (setTimeout). Promise in setTimeout runs after that setTimeout completes, before next macrotask.",
+  "explanation": "## Event Loop: Microtasks vs Macrotasks\n\n### Task Queue Types\n\n**Macrotasks (Task Queue):**\n- `setTimeout`, `setInterval`\n- `setImmediate` (Node.js)\n- I/O operations\n- UI rendering\n\n**Microtasks (Job Queue):**\n- `Promise.then/catch/finally`\n- `queueMicrotask()`\n- `MutationObserver`\n- `process.nextTick` (Node.js - highest priority)\n\n### Execution Order\n\n1. Execute synchronous code\n2. Execute ALL microtasks in queue\n3. Execute ONE macrotask\n4. Execute ALL microtasks again\n5. Render (if needed)\n6. Repeat from step 3\n\n### Example Analysis\n\n```javascript\nconsole.log('1');\n\nsetTimeout(() => {\n  console.log('2');\n  Promise.resolve().then(() => console.log('3'));\n}, 0);\n\nPromise.resolve().then(() => {\n  console.log('4');\n  setTimeout(() => console.log('5'), 0);\n});\n\nconsole.log('6');\n```\n\n**Output:** 1, 6, 4, 2, 3, 5\n\n**Why:**\n- `1`, `6`: Synchronous code runs first\n- `4`: Microtask queue empties before any macrotask\n- `2`: First macrotask (setTimeout) executes\n- `3`: Microtasks from that macrotask run immediately\n- `5`: Next macrotask (setTimeout queued from Promise)\n\n### Key Insight\n\nWhen a Promise resolves inside setTimeout, it creates a microtask that executes **after** the current macrotask completes but **before** the next macrotask. This prevents macrotask starvation and ensures Promise handlers run promptly.",
+  "diagram": "graph TD\n    A[Call Stack] --> B{Stack Empty?}\n    B -->|Yes| C[Check Microtask Queue]\n    C -->|Has Microtasks| D[Execute ALL Microtasks]\n    D --> C\n    C -->|Empty| E[Check Macrotask Queue]\n    E -->|Has Macrotasks| F[Execute ONE Macrotask]\n    F --> B\n    E -->|Empty| G[Wait for Tasks]\n    G --> B\n    B -->|No| H[Execute Current Function]\n    H --> B\n    \n    style C fill:#90EE90\n    style D fill:#90EE90\n    style E fill:#FFB6C1\n    style F fill:#FFB6C1",
+  "difficulty": "advanced",
+  "tags": [
+    "js",
+    "core"
+  ],
+  "lastUpdated": "2025-12-13T03:03:14.094Z"
+}

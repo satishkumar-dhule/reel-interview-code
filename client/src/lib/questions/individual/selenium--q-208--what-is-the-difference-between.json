@@ -1,0 +1,14 @@
+{
+  "id": "q-208",
+  "question": "What is the difference between Selenium WebDriver and Selenium Grid, and when would you use each?",
+  "answer": "WebDriver controls single browsers locally; Grid manages multiple browsers across machines for parallel testing.",
+  "explanation": "## Selenium WebDriver\n- Controls individual browser instances programmatically\n- Runs locally on your machine\n- Direct browser automation through browser-specific drivers\n\n## Selenium Grid\n- Distributes tests across multiple machines/browsers\n- Central hub manages multiple nodes\n- Enables parallel execution and cross-browser testing\n\n## Implementation Example\n```java\n// WebDriver - single browser\nWebDriver driver = new ChromeDriver();\ndriver.get(\"https://example.com\");\n\n// Grid - remote execution\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    DesiredCapabilities.chrome()\n);\n```\n\n## Common Pitfalls\n- WebDriver: Browser driver version mismatches\n- Grid: Network connectivity issues between hub and nodes\n- Both: Improper wait strategies leading to flaky tests",
+  "tags": [
+    "selenium",
+    "webdriver",
+    "grid"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Test Script] --> B{Choose Approach}\n    B -->|Single Browser| C[WebDriver]\n    B -->|Multiple Browsers| D[Selenium Grid]\n    C --> E[Local Browser Driver]\n    E --> F[Chrome/Firefox/Safari]\n    D --> G[Grid Hub]\n    G --> H[Node 1 - Chrome]\n    G --> I[Node 2 - Firefox]\n    G --> J[Node 3 - Safari]",
+  "lastUpdated": "2025-12-14T12:58:42.567Z"
+}

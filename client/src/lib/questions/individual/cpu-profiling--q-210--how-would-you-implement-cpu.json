@@ -1,0 +1,14 @@
+{
+  "id": "q-210",
+  "question": "How would you implement CPU profiling with flame graphs to identify performance bottlenecks in a Node.js microservice handling concurrent requests?",
+  "answer": "Use Node.js built-in profiler with --prof flag, process with flamegraph tool, and analyze hot paths in request handlers.",
+  "explanation": "## Concept Overview\nCPU profiling with flame graphs visualizes call stack frequencies to identify performance bottlenecks. Flame graphs show hierarchical function calls with width representing execution time.\n\n## Implementation Details\n- Enable Node.js profiling: `node --prof app.js`\n- Process profiling data: `node --prof-process isolate-*.log > processed.txt`\n- Generate flame graph: `flamegraph.pl processed.txt > flamegraph.svg`\n- Use clinic.js for automated profiling: `clinic doctor -- node app.js`\n\n## Code Example\n```javascript\n// Enable profiling in production\nif (process.env.NODE_ENV === 'production') {\n  const profiler = require('v8-profiler-next');\n  \n  // Start profiling on request\n  app.use((req, res, next) => {\n    const title = `request-${Date.now()}`;\n    profiler.startProfiling(title, true);\n    \n    res.on('finish', () => {\n      const profile = profiler.stopProfiling(title);\n      profile.export((error, result) => {\n        if (!error) console.log(result);\n      });\n    });\n    \n    next();\n  });\n}\n```\n\n## Common Pitfalls\n- Overhead from profiling affects performance measurements\n- Sampling rate too low misses short-lived functions\n- Not filtering out noise from V8 internal functions\n- Ignoring async/await stack traces in analysis",
+  "tags": [
+    "cpu-profiling",
+    "memory-profiling",
+    "flame-graphs"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client Request] --> B[Express Router]\n    B --> C[Middleware Chain]\n    C --> D[Business Logic]\n    D --> E[Database Query]\n    E --> F[Response]\n    \n    G[CPU Profiler] --> H[Sampling Thread]\n    H --> I[Call Stack Capture]\n    I --> J[Flame Graph Generation]\n    J --> K[Bottleneck Analysis]\n    \n    L[Hot Path] --> M[Function A]\n    M --> N[Function B]\n    N --> O[Database Call]\n    \n    style G fill:#ff6b6b\n    style L fill:#ffd93d\n    style O fill:#6bcf7f",
+  "lastUpdated": "2025-12-14T12:58:56.785Z"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "db-1",
+  "question": "What is the difference between Clustered and Non-Clustered Indexes?",
+  "answer": "Clustered Index defines the physical order of data. Non-Clustered is a separate lookup structure.",
+  "explanation": "**Clustered Index**:\n- Only 1 per table (usually Primary Key).\n- Leaf nodes contain the ACTUAL data rows.\n- Faster for range queries.\n\n**Non-Clustered Index**:\n- Multiple allowed.\n- Leaf nodes contain pointers to the data (row ID or clustered key).\n- Requires 'Bookmark Lookup' (extra hop) to get full data.",
+  "diagram": "graph TD\n    subgraph Clustered\n    Root1 --> Data[\"Data Pages<br/>Sorted\"]\n    end\n    subgraph NonClustered\n    Root2 --> Ptr[Pointers]\n    Ptr -.-> Data\n    end",
+  "difficulty": "beginner",
+  "tags": [
+    "sql",
+    "indexing",
+    "perf"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.186Z",
+  "videos": {
+    "shortVideo": "https://youtube.com/watch?v=BxAj3bl00-o",
+    "longVideo": "https://youtube.com/watch?v=ITcOiLSfVJQ"
+  },
+  "lastVideoUpdate": "2025-12-16T15:11:34.708Z"
+}

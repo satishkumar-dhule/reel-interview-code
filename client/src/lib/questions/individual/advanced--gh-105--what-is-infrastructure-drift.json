@@ -1,0 +1,12 @@
+{
+  "id": "gh-105",
+  "question": "What is Infrastructure Drift?",
+  "answer": "Infrastructure Drift occurs when the actual state of infrastructure diverges from the desired state defined in code, often due to manual changes or co...",
+  "explanation": "Infrastructure Drift occurs when the actual state of infrastructure diverges from the desired state defined in code, often due to manual changes or configuration errors. Tools like Terraform and Ansible can help detect and correct drift.",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

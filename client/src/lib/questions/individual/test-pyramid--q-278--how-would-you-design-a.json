@@ -1,0 +1,25 @@
+{
+  "id": "q-278",
+  "question": "How would you design a comprehensive testing strategy for a microservices architecture that scales to handle millions of requests per second while ensuring 99.99% availability?",
+  "answer": "Implement a hybrid testing pyramid with mutation testing, chaos engineering, and observability-driven testing across all service boundaries.",
+  "explanation": "## Concept\nA production-scale testing strategy combines traditional test pyramid principles with modern resilience testing. The approach focuses on edge cases, fault tolerance, and real-world scenarios that impact massive distributed systems.\n\n## Implementation\n```javascript\n// Mutation Testing Configuration\nconst mutationConfig = {\n  coverage: 'branch',\n  thresholds: { high: 80, low: 60 },\n  mutate: ['src/**/*.js'],\n  testCommand: 'npm run test:mutation'\n};\n\n// Chaos Engineering Integration\nconst chaosExperiments = [\n  'network-latency-injection',\n  'pod-termination-simulation',\n  'database-connection-throttling',\n  'memory-pressure-testing'\n];\n\n// Test Pyramid Ratios\nconst testDistribution = {\n  unit: 70,        // Fast, isolated tests\n  integration: 20, // Service boundaries\n  e2e: 5,          // Critical user journeys\n  chaos: 5         // Resilience validation\n};\n```\n\n## Trade-offs\n- **Coverage vs Performance**: Higher mutation testing increases CI/CD duration\n- **Realism vs Speed**: Chaos engineering adds complexity but catches production issues\n- **Automation vs Manual**: Critical path testing requires human validation\n- **Cost vs Quality**: Comprehensive testing increases infrastructure costs but prevents outages\n\n## Pitfalls\n- **False Confidence**: 100% coverage doesn't guarantee bug-free code\n- **Test Flakiness**: Distributed systems introduce timing issues\n- **Environment Parity**: Test environments must mirror production configurations\n- **Edge Case Blind Spots**: Focus on happy paths misses critical failure scenarios",
+  "tags": [
+    "test-pyramid",
+    "coverage",
+    "mutation-testing"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart TD\n    A[Production Testing Strategy] --> B[Unit Tests - 70%]\n    A --> C[Integration Tests - 20%]\n    A --> D[E2E Tests - 5%]\n    A --> E[Chaos Engineering - 5%]\n    \n    B --> B1[Fast Execution]\n    B --> B2[Isolated Components]\n    B --> B3[Mutation Testing]\n    \n    C --> C1[API Contracts]\n    C --> C2[Service Boundaries]\n    C --> C3[Database Integration]\n    \n    D --> D1[Critical User Journeys]\n    D --> D2[Cross-Service Flows]\n    D --> D3[Performance Validation]\n    \n    E --> E1[Network Failure Injection]\n    E --> E2[Resource Exhaustion]\n    E --> E3[Dependency Failures]\n    \n    B3 --> F[Mutation Score: 85%+]\n    C2 --> G[SLA Validation]\n    D3 --> H[Load Testing: 1M+ RPS]\n    E3 --> I[Availability: 99.99%]",
+  "sourceUrl": "https://blog.trailofbits.com/2025/09/18/use-mutation-testing-to-find-the-bugs-your-tests-dont-catch/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:37:47.468Z"
+}

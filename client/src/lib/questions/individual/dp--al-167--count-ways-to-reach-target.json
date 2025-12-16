@@ -1,0 +1,13 @@
+{
+  "id": "al-167",
+  "question": "Count ways to reach target sum using dice rolls 1-6",
+  "answer": "DP where dp[i] = sum(dp[i-1] to i-6)",
+  "explanation": "Use DP where dp[i] = sum(dp[i-1] to i-6)",
+  "diagram": "graph TD; A[0]=1; for i=1 to target; dp[i]=sum(dp[i-1] to i-6)",
+  "difficulty": "intermediate",
+  "tags": [
+    "dp",
+    "optimization"
+  ],
+  "lastUpdated": "2025-12-13T17:00:15.427Z"
+}

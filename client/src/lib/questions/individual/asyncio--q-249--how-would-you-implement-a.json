@@ -1,0 +1,29 @@
+{
+  "id": "q-249",
+  "question": "How would you implement a connection pool manager for aiohttp that handles graceful degradation under high load and connection timeouts?",
+  "answer": "Use semaphore limiting, exponential backoff, and health checks with circuit breaker pattern for resilient connection pooling.",
+  "explanation": "## Connection Pool Manager with Graceful Degradation\n\n### Concept Overview\nA production-grade connection pool for aiohttp must handle concurrent requests, connection timeouts, and prevent cascade failures when downstream services are slow or unavailable.\n\n### Implementation Details\n- **Semaphore-based limiting**: Control maximum concurrent connections\n- **Exponential backoff**: Retry failed connections with increasing delays\n- **Health checks**: Monitor connection viability and prune dead connections\n- **Circuit breaker**: Stop requests to failing services temporarily\n- **Queue management**: Buffer requests when pool is saturated\n\n### Common Pitfalls\n- Not handling connection leaks properly\n- Ignoring SSL context validation\n- Inadequate timeout configurations\n- Missing connection cleanup on application shutdown\n- Improper error propagation through async stack\n\n### Code Example\n```python\nimport asyncio\nimport aiohttp\nfrom asyncio import Semaphore\nfrom typing import Optional\n\nclass ConnectionPoolManager:\n    def __init__(self, max_connections: int = 100):\n        self.semaphore = Semaphore(max_connections)\n        self.session: Optional[aiohttp.ClientSession] = None\n        self._connection_timeout = aiohttp.ClientTimeout(total=30)\n        self._circuit_breaker_state = {'failures': 0, 'last_failure': 0}\n        \n    async def make_request(self, url: str) -> aiohttp.ClientResponse:\n        async with self.semaphore:\n            if self._should_trip_circuit_breaker():\n                raise aiohttp.ClientError(\"Circuit breaker open\")\n            \n            try:\n                async with self.session.get(url, timeout=self._connection_timeout) as response:\n                    self._reset_circuit_breaker()\n                    return response\n            except (asyncio.TimeoutError, aiohttp.ClientError) as e:\n                self._record_failure()\n                raise\n    \n    def _should_trip_circuit_breaker(self) -> bool:\n        return (self._circuit_breaker_state['failures'] > 5 and \n                asyncio.get_event_loop().time() - self._circuit_breaker_state['last_failure'] < 60)\n```\n\n### Performance Optimization\n- Use connection keepalive to reduce TCP overhead\n- Implement request batching where possible\n- Monitor and adjust pool size based on metrics\n- Use connection warmup during startup",
+  "tags": [
+    "asyncio",
+    "aiohttp",
+    "concurrency"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Client Request] --> B{Semaphore Available?}\n    B -->|Yes| C{Circuit Breaker Open?}\n    B -->|No| D[Queue Request]\n    D --> E[Wait for Slot]\n    E --> C\n    C -->|No| F[Create/Reuse Connection]\n    F --> G[Make HTTP Request]\n    G --> H{Success?}\n    H -->|Yes| I[Return Response]\n    H -->|No| J[Record Failure]\n    J --> K{Circuit Breaker Threshold?}\n    K -->|Yes| L[Trip Circuit Breaker]\n    K -->|No| M[Exponential Backoff Retry]\n    M --> F\n    I --> N[Reset Circuit Breaker]\n    L --> O[Return Error]\n    M --> O",
+  "sourceUrl": "https://docs.aiohttp.org/en/stable/client_advanced.html#connector",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Stripe",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:37:51.772Z"
+}

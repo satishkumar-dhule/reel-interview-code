@@ -1,0 +1,14 @@
+{
+  "id": "q-200",
+  "question": "How does U-Net architecture achieve pixel-perfect segmentation using encoder-decoder skip connections?",
+  "answer": "U-Net uses contracting path to capture context and expanding path with skip connections for precise localization.",
+  "explanation": "## Concept Overview\nU-Net is a convolutional neural network designed for biomedical image segmentation. Its key innovation is the U-shaped architecture with skip connections that preserve spatial information.\n\n## Implementation Details\n- **Encoder (Contracting Path)**: Series of convolution + max pooling layers to extract features\n- **Decoder (Expanding Path)**: Upsampling layers that restore spatial resolution\n- **Skip Connections**: Concatenate encoder features with decoder features to preserve fine-grained details\n- **Final Layer**: 1x1 convolution maps features to pixel-wise segmentation mask\n\n## Code Example\n```python\nclass UNet(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.encoder = nn.ModuleList([...])  # Conv blocks\n        self.decoder = nn.ModuleList([...])  # Upsampling blocks\n        self.final = nn.Conv2d(64, num_classes, 1)\n    \n    def forward(self, x):\n        skips = []\n        for enc in self.encoder:\n            x = enc(x)\n            skips.append(x)\n            x = F.max_pool2d(x, 2)\n        \n        for dec, skip in zip(reversed(self.decoder), reversed(skips)):\n            x = dec(x)\n            x = torch.cat([x, skip], dim=1)\n        \n        return self.final(x)\n```\n\n## Common Pitfalls\n- **Vanishing gradients**: Use batch normalization and proper initialization\n- **Memory issues**: Skip connections double feature map sizes\n- **Border artifacts**: Apply padding to maintain spatial dimensions",
+  "tags": [
+    "unet",
+    "mask-rcnn",
+    "sam"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Input Image] --> B[Conv Block 1]\n    B --> C[Max Pool]\n    C --> D[Conv Block 2]\n    D --> E[Max Pool]\n    E --> F[Conv Block 3]\n    F --> G[Max Pool]\n    G --> H[Bottleneck]\n    \n    B --> I[Skip Connection 1]\n    D --> J[Skip Connection 2]\n    F --> K[Skip Connection 3]\n    \n    H --> L[Upconv 1]\n    K --> L\n    L --> M[Conv Block 4]\n    \n    M --> N[Upconv 2]\n    J --> N\n    N --> O[Conv Block 5]\n    \n    O --> P[Upconv 3]\n    I --> P\n    P --> Q[Conv Block 6]\n    \n    Q --> R[1x1 Conv]\n    R --> S[Segmentation Mask]",
+  "lastUpdated": "2025-12-14T12:57:48.368Z"
+}

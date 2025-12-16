@@ -1,0 +1,13 @@
+{
+  "id": "gh-7",
+  "question": "What is Kubernetes and how does it orchestrate containerized applications at scale?",
+  "answer": "Kubernetes is an open-source container orchestration platform that automates deployment, scaling, and management of containerized applications across clusters of hosts.",
+  "explanation": "**Kubernetes (K8s)** is a production-grade container orchestration platform that manages containerized applications at scale.\n\n## Core Capabilities:\n- **Automated Deployment**: Roll out new versions with zero downtime\n- **Self-Healing**: Restart failed containers and replace unhealthy nodes\n- **Horizontal Scaling**: Automatically adjust application instances based on load\n- **Service Discovery**: Enable containers to find and communicate with each other\n- **Load Balancing**: Distribute traffic across multiple container instances\n- **Storage Orchestration**: Manage persistent storage for stateful applications\n\n## Key Components:\n- **Master Node**: Control plane (API Server, Scheduler, Controller Manager)\n- **Worker Nodes**: Run containerized applications (Kubelet, Container Runtime)\n- **Pods**: Smallest deployable units containing one or more containers\n- **Services**: Network endpoints for accessing pods\n- **Deployments**: Manage pod replicas and rolling updates\n\n## Why Use Kubernetes:\n- **Portability**: Run anywhere (on-prem, cloud, hybrid)\n- **Scalability**: Handle thousands of containers and nodes\n- **Reliability**: Built-in fault tolerance and recovery mechanisms\n- **Ecosystem**: Extensive tooling and community support",
+  "diagram": "graph TD\n    Master[Master Node] --> API[API Server]\n    Master --> Scheduler[Scheduler]\n    Master --> Controller[Controller Manager]\n    \n    Worker1[Worker Node 1] --> Kubelet1[Kubelet]\n    Worker1 --> Runtime1[Container Runtime]\n    Worker1 --> Pod1[Pod 1]\n    Worker1 --> Pod2[Pod 2]\n    \n    Worker2[Worker Node 2] --> Kubelet2[Kubelet]\n    Worker2 --> Runtime2[Container Runtime]\n    Worker2 --> Pod3[Pod 3]\n    \n    API --> Kubelet1\n    API --> Kubelet2\n    Scheduler --> Kubelet1\n    Scheduler --> Kubelet2\n    \n    Service[Service] --> Pod1\n    Service --> Pod2\n    Service --> Pod3\n    \n    Client[Client] --> Service",
+  "difficulty": "beginner",
+  "tags": [
+    "k8s",
+    "orchestration"
+  ],
+  "lastUpdated": "2025-12-12T09:59:12.880Z"
+}

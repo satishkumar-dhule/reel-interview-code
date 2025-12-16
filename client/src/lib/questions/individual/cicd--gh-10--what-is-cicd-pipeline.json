@@ -1,0 +1,13 @@
+{
+  "id": "gh-10",
+  "question": "What is CI/CD Pipeline?",
+  "answer": "A CI/CD Pipeline is a series of steps that must be performed in order to deliver a new version of software. A pipeline typically includes stages for:",
+  "explanation": "A CI/CD Pipeline is a series of steps that must be performed in order to deliver a new version of software. A pipeline typically includes stages for:\n\n1. Building the code\n2. Running automated tests\n3. Deploying to staging/production environments\n\nExample of a basic Jenkins Pipeline:\n```groovy\npipeline {\nagent any\nstages {\nstage('Build') {\nsteps {\nsh 'npm install'\nsh 'npm run build'\n}\n}\nstage('Test') {\nsteps {\nsh 'npm run test'\n}\n}\nstage('Deploy') {\nsteps {\nsh './deploy.sh'\n}\n}\n}\n}\n```",
+  "diagram": "\ngraph LR\n    Build[Build] --> Test[Test]\n    Test --> Stage[Staging]\n    Stage --> Prod[Production]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "cicd",
+    "automation"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "q-193",
+  "question": "What is the role of a Custom Resource Definition (CRD) in a Kubernetes Operator and how does it enable custom functionality?",
+  "answer": "CRDs define custom API resources that operators manage, extending Kubernetes with domain-specific objects and their desired state.",
+  "explanation": "## Concept Overview\nCustom Resource Definitions (CRDs) are the foundation of Kubernetes Operators. They allow you to define custom API resources that extend Kubernetes' native capabilities, enabling operators to manage application-specific state and behavior.\n\n## Implementation Details\n- CRDs register new resource types with the Kubernetes API server\n- They define the schema and validation rules for custom resources\n- Operators watch for changes to these custom resources and reconcile the actual state\n\n## Code Example\n```yaml\napiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: databases.example.com\nspec:\n  group: example.com\n  versions:\n  - name: v1\n    served: true\n    storage: true\n    schema:\n      openAPIV3Schema:\n        type: object\n        properties:\n          spec:\n            type: object\n            properties:\n              replicas:\n                type: integer\n  scope: Namespaced\n  names:\n    plural: databases\n    singular: database\n    kind: Database\n```\n\n## Common Pitfalls\n- Missing required fields in CRD schema causing validation failures\n- Incorrect API version compatibility between CRD and operator\n- Poor error handling in reconciliation loops\n- Not implementing proper status updates",
+  "tags": [
+    "crds",
+    "controllers",
+    "reconciliation"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[User creates Custom Resource] --> B[Kubernetes API Server]\n    B --> C[CRD validates resource]\n    C --> D[Operator watches for changes]\n    D --> E[Reconciliation Loop]\n    E --> F[Creates/Updates Deployments]\n    F --> G[Updates Resource Status]\n    G --> H[Cluster reaches desired state]",
+  "lastUpdated": "2025-12-14T12:56:40.663Z"
+}

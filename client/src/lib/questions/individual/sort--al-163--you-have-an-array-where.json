@@ -1,0 +1,13 @@
+{
+  "id": "al-163",
+  "question": "You have an array where each element appears twice except one element that appears once. Sort the array in O(n) time without using extra space for sorting. How would you approach this?",
+  "answer": "Use XOR to find the unique element first, then partition array around it using modified counting sort with bit manipulation.",
+  "explanation": "## Approach\n\nThis problem combines bit manipulation with in-place partitioning:\n\n### Step 1: Find the Unique Element\nUse XOR operation on all elements. Since `a ^ a = 0` and `a ^ 0 = a`, all paired elements cancel out, leaving only the unique element.\n\n```javascript\nlet unique = 0;\nfor (let num of arr) {\n  unique ^= num;\n}\n```\n\n### Step 2: Partition Around Unique Element\nUse three-way partitioning (similar to Dutch National Flag):\n- Elements less than unique go left\n- Unique element in middle\n- Elements greater than unique go right\n\n```javascript\nlet low = 0, mid = 0, high = arr.length - 1;\nwhile (mid <= high) {\n  if (arr[mid] < unique) {\n    [arr[low], arr[mid]] = [arr[mid], arr[low]];\n    low++; mid++;\n  } else if (arr[mid] > unique) {\n    [arr[mid], arr[high]] = [arr[high], arr[mid]];\n    high--;\n  } else {\n    mid++;\n  }\n}\n```\n\n### Step 3: Sort Pairs\nWithin each partition, pairs are already together. Use counting sort or simply swap pairs into position.\n\n**Time Complexity:** O(n)\n**Space Complexity:** O(1)",
+  "diagram": "graph TD\n    A[Start: Unsorted Array] --> B[XOR all elements]\n    B --> C[Find unique element]\n    C --> D[Three-way partition]\n    D --> E[Elements < unique]\n    D --> F[Unique element]\n    D --> G[Elements > unique]\n    E --> H[Sort pairs in left partition]\n    G --> I[Sort pairs in right partition]\n    H --> J[Combine: Left + Unique + Right]\n    I --> J\n    J --> K[Sorted Array]\n    \n    style C fill:#90EE90\n    style D fill:#FFB6C1\n    style K fill:#87CEEB",
+  "difficulty": "intermediate",
+  "tags": [
+    "sort",
+    "complexity"
+  ],
+  "lastUpdated": "2025-12-13T16:57:00.393Z"
+}

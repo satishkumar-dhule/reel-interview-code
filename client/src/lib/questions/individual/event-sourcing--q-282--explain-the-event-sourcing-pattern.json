@@ -1,0 +1,27 @@
+{
+  "id": "q-282",
+  "question": "Explain the event sourcing pattern and its key benefits in distributed systems?",
+  "answer": "Event sourcing stores state changes as immutable events, enabling audit trails, replayability, and temporal queries.",
+  "explanation": "## Why Asked\nTests understanding of advanced architectural patterns for building scalable, fault-tolerant distributed systems.\n\n## Key Concepts\n- Immutable event log\n- Command vs Event separation\n- Snapshot optimization\n- Event replay\n- CQRS pattern\n- Eventual consistency\n\n## Code Example\n```typescript\n// Event structure\ninterface Event {\n  id: string;\n  type: string;\n  aggregateId: string;\n  timestamp: Date;\n  data: any;\n}\n\n// Event store\nclass EventStore {\n  private events: Event[] = [];\n  \n  save(event: Event) {\n    this.events.push(event);\n  }\n  \n  getEvents(aggregateId: string): Event[] {\n    return this.events.filter(e => e.aggregateId === aggregateId);\n  }\n}\n```\n\n## Follow-up Questions\n- How do you handle event versioning?\n- When would you use snapshots?\n- How does event sourcing relate to CQRS?\n- What are the challenges with event ordering?",
+  "tags": [
+    "event-sourcing",
+    "distributed-systems",
+    "architecture",
+    "cqrs",
+    "immutability"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n  A[Command] --> B[Validate Command]\n  B --> C[Generate Event]\n  C --> D[Store Event]\n  D --> E[Update Read Model]\n  E --> F[Response]",
+  "sourceUrl": "https://martinfowler.com/eaaDev/EventSourcing.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "LinkedIn",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-16T14:07:53.379Z"
+}

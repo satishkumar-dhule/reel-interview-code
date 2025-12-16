@@ -1,0 +1,26 @@
+{
+  "id": "q-257",
+  "question": "What is optional chaining in Swift and how does it prevent runtime crashes when accessing nested optional properties?",
+  "answer": "Optional chaining (?.) safely unwraps optionals, returning nil if any link fails instead of throwing runtime errors.",
+  "explanation": "## Optional Chaining Overview\n\nOptional chaining is a Swift feature that allows you to safely access properties, methods, and subscripts of optional values. If any optional in the chain is nil, the entire chain returns nil instead of crashing.\n\n### Implementation Details\n\n- Uses the `?.` operator to chain optional accesses\n- Returns an optional value of the expected type\n- Short-circuits when it encounters nil\n- Can be used with properties, methods, and subscripts\n\n### Code Example\n\n```swift\nclass Person {\n    var residence: Residence?\n}\n\nclass Residence {\n    var address: Address?\n}\n\nclass Address {\n    var street: String\n    \n    init(street: String) {\n        self.street = street\n    }\n}\n\nlet person = Person()\nlet street = person.residence?.address?.street // returns nil, not crash\n\n// Safe optional chaining\nif let street = person.residence?.address?.street {\n    print(\"Street: \\(street)\")\n} else {\n    print(\"Address not available\")\n}\n```\n\n### Common Pitfalls\n\n- Forgetting that optional chaining always returns an optional\n- Using forced unwrapping (!) instead of safe chaining\n- Not handling the nil case appropriately\n- Over-chaining when a simpler optional binding would be clearer",
+  "tags": [
+    "optionals",
+    "protocols",
+    "generics"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[person] --> B[residence?]\n    B --> C[address?]\n    C --> D[street: String]\n    \n    E[Optional Chaining ?. ] --> F{Check residence}\n    F -->|nil| G[Return nil]\n    F -->|exists| H{Check address}\n    H -->|nil| G\n    H -->|exists| I[Return street value]\n    \n    style G fill:#ffcccc\n    style I fill:#ccffcc",
+  "sourceUrl": "https://docs.swift.org/swift-book/LanguageGuide/OptionalChaining.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:45:41.220Z"
+}

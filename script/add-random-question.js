@@ -5,49 +5,20 @@ import {
   isDuplicateUnified,
   runWithRetries,
   parseJson,
-  validateQuestion,
   updateUnifiedIndexFile,
   writeGitHubOutput,
-  logQuestionsAdded,
-  validateYouTubeVideos,
-  normalizeCompanies
+  logQuestionsAdded
 } from './utils.js';
 
-// Complete channel configurations for mapping
-const CHANNEL_STRUCTURE = {
-  'system-design': ['infrastructure', 'distributed-systems', 'api-design', 'caching', 'load-balancing', 'message-queues'],
-  'algorithms': ['data-structures', 'sorting', 'dynamic-programming', 'graphs', 'trees'],
-  'frontend': ['react', 'javascript', 'css', 'performance', 'web-apis'],
-  'backend': ['apis', 'microservices', 'caching', 'authentication', 'server-architecture'],
-  'database': ['sql', 'nosql', 'indexing', 'transactions', 'query-optimization'],
-  'devops': ['cicd', 'docker', 'automation', 'gitops'],
-  'sre': ['observability', 'reliability', 'incident-management', 'chaos-engineering', 'capacity-planning'],
-  'kubernetes': ['pods', 'services', 'deployments', 'helm', 'operators'],
-  'aws': ['compute', 'storage', 'serverless', 'database', 'networking'],
-  'terraform': ['basics', 'modules', 'state-management', 'best-practices'],
-  'data-engineering': ['etl', 'data-pipelines', 'warehousing', 'streaming'],
-  'machine-learning': ['algorithms', 'model-training', 'deployment', 'deep-learning', 'evaluation'],
-  'generative-ai': ['llm-fundamentals', 'fine-tuning', 'rag', 'agents', 'evaluation'],
-  'prompt-engineering': ['techniques', 'optimization', 'safety', 'structured-output'],
-  'llm-ops': ['deployment', 'optimization', 'monitoring', 'infrastructure'],
-  'computer-vision': ['image-classification', 'object-detection', 'segmentation', 'multimodal'],
-  'nlp': ['text-processing', 'embeddings', 'sequence-models', 'transformers'],
-  'python': ['fundamentals', 'libraries', 'best-practices', 'async'],
-  'security': ['application-security', 'owasp', 'encryption', 'authentication'],
-  'networking': ['tcp-ip', 'dns', 'load-balancing', 'cdn'],
-  'operating-systems': ['processes', 'memory', 'file-systems', 'concurrency'],
-  'linux': ['administration', 'shell-scripting', 'system-tools', 'networking'],
-  'unix': ['fundamentals', 'commands', 'system-programming'],
-  'ios': ['swift', 'uikit', 'swiftui', 'architecture'],
-  'android': ['kotlin', 'jetpack-compose', 'architecture', 'lifecycle'],
-  'react-native': ['components', 'native-modules', 'performance', 'architecture'],
-  'testing': ['unit-testing', 'integration-testing', 'tdd', 'test-strategies'],
-  'e2e-testing': ['playwright', 'cypress', 'selenium', 'visual-testing'],
-  'api-testing': ['rest-testing', 'contract-testing', 'graphql-testing', 'mocking'],
-  'performance-testing': ['load-testing', 'stress-testing', 'profiling', 'benchmarking'],
-  'engineering-management': ['team-leadership', 'one-on-ones', 'hiring', 'project-management'],
-  'behavioral': ['star-method', 'leadership-principles', 'soft-skills', 'conflict-resolution']
-};
+// Use centralized libs
+import { CHANNEL_CONFIGS, isValidChannel, getSubChannels } from './lib/channel-config.js';
+import { validateQuestion, validateYouTubeVideos, normalizeCompanies } from './lib/validators.js';
+
+// Build channel structure from centralized config
+const CHANNEL_STRUCTURE = {};
+Object.entries(CHANNEL_CONFIGS).forEach(([channel, configs]) => {
+  CHANNEL_STRUCTURE[channel] = configs.map(c => c.subChannel);
+});
 
 const difficulties = ['beginner', 'intermediate', 'advanced'];
 

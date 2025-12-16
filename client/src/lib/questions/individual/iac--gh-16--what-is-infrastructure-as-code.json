@@ -1,0 +1,14 @@
+{
+  "id": "gh-16",
+  "question": "What is Infrastructure as Code and why has it become essential for modern DevOps practices?",
+  "answer": "Infrastructure as Code (IaC) manages and provisions infrastructure through version-controlled definition files instead of manual configuration or interactive tools.",
+  "explanation": "**Infrastructure as Code (IaC)** transforms infrastructure management by treating infrastructure like application code:\n\n• **Declarative Configuration**: Define desired infrastructure state using code (HCL, YAML, JSON)\n• **Version Control**: Track all infrastructure changes in Git with full audit history\n• **Automation**: Provision and manage resources programmatically without manual intervention\n• **Reproducibility**: Create identical environments consistently across development, staging, and production\n• **Collaboration**: Enable teams to review infrastructure changes through pull requests\n\n**Key Benefits:**\n- Eliminates configuration drift between environments\n- Reduces human errors from manual setup\n- Enables rapid environment provisioning\n- Provides audit trails for compliance\n- Supports disaster recovery through code recreation",
+  "diagram": "graph TD\n    A[Developer writes IaC] --> B[Git Repository]\n    B --> C[CI/CD Pipeline]\n    C --> D[terraform plan]\n    D --> E[Review Changes]\n    E --> F[terraform apply]\n    F --> G[Cloud Resources]\n    G --> H[Infrastructure Ready]\n    I[Monitor & Validate] --> J[Feedback Loop]\n    J --> A",
+  "difficulty": "beginner",
+  "tags": [
+    "iac",
+    "terraform",
+    "ansible"
+  ],
+  "lastUpdated": "2025-12-12T10:05:12.467Z"
+}

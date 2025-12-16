@@ -1,0 +1,25 @@
+{
+  "id": "q-273",
+  "question": "What's the difference between hyperparameters and parameters in machine learning, and why is cross-validation important for selecting optimal hyperparameters?",
+  "answer": "Parameters are learned during training, hyperparameters are set before training. Cross-validation prevents overfitting by testing hyperparameters on multiple data splits.",
+  "explanation": "## Concept\n**Parameters**: Model weights learned from training data (like coefficients in linear regression). **Hyperparameters**: Configuration settings set before training (learning rate, regularization strength).\n\n## Implementation\n```python\nfrom sklearn.model_selection import GridSearchCV\nfrom sklearn.linear_model import Ridge\n\n# Hyperparameter tuning with cross-validation\nparam_grid = {'alpha': [0.1, 1.0, 10.0]}  # Regularization strength\nridge = Ridge()\ngrid_search = GridSearchCV(ridge, param_grid, cv=5)\ngrid_search.fit(X_train, y_train)\n```\n\n## Trade-offs\n- **More cross-validation folds**: More reliable estimates but slower training\n- **Larger hyperparameter space**: Better chance finding optimal values but exponential search time\n- **Regularization**: Reduces overfitting but may underfit if too strong\n\n## Pitfalls\n- Data leakage: Scaling before CV split contaminates validation\n- Overfitting to validation set with extensive hyperparameter search\n- Not using nested CV when comparing many hyperparameter combinations",
+  "tags": [
+    "hyperparameter",
+    "cross-validation",
+    "regularization"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart TD\n    A[Training Data] --> B[Split into K Folds]\n    B --> C[For Each Hyperparameter]\n    C --> D[For Each Fold]\n    D --> E[Train on K-1 Folds]\n    E --> F[Validate on 1 Fold]\n    F --> G[Record Performance]\n    G --> H{More Folds?}\n    H -->|Yes| D\n    H -->|No| I[Average Performance]\n    I --> J{More Hyperparameters?}\n    J -->|Yes| C\n    J -->|No| K[Select Best Hyperparameter]",
+  "sourceUrl": "https://scikit-learn.org/stable/modules/cross_validation.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:21:50.022Z"
+}

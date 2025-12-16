@@ -1,0 +1,12 @@
+{
+  "id": "gh-72",
+  "question": "What is Network Segmentation?",
+  "answer": "Network Segmentation is the practice of dividing a network into smaller, more manageable segments to improve security and performance.",
+  "explanation": "Network Segmentation is the practice of dividing a network into smaller, more manageable segments to improve security and performance.\n\nKey concepts:\n1. **Segmentation:**\n- Divides the network into smaller segments\n- Each segment is isolated from other segments\n\n2. **Security:**\n- Prevents unauthorized access to sensitive data\n- Improves network performance\n\nExample of network segmentation configuration:\n```yaml\nsecurity:\nnetwork:\nsegmentation:\nenabled: true\nrules:\n- rule1\n- rule2\n```",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "network"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

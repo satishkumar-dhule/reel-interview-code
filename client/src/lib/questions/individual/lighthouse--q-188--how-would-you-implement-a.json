@@ -1,0 +1,14 @@
+{
+  "id": "q-188",
+  "question": "How would you implement a performance budget system that automatically detects bundle regressions and enforces lazy-loading boundaries in a large-scale React application?",
+  "answer": "Use webpack-bundle-analyzer with performance budgets, implement dynamic imports with React.lazy, and set up CI checks to enforce bundle size limits.",
+  "explanation": "## Performance Budget System\n\n### Concept Overview\nA performance budget system enforces quantitative limits on bundle sizes, loading times, and resource utilization to maintain optimal user experience.\n\n### Implementation Details\n\n**Bundle Analysis:**\n- Configure webpack-bundle-analyzer for visual bundle inspection\n- Set performance budgets in webpack config (maxAssetSize, maxEntrypointSize)\n- Implement bundle-size diff in CI pipeline\n\n**Lazy Loading Boundaries:**\n- Use React.lazy() with Suspense for component-level code splitting\n- Implement route-based splitting with dynamic imports\n- Set up intersection observer for below-fold content\n\n**Monitoring & Enforcement:**\n- Integrate Lighthouse CI for automated performance scoring\n- Create custom webpack plugins for boundary enforcement\n- Set up alerts for budget violations\n\n### Code Example\n```javascript\n// webpack.config.js\nperformance: {\n  budgets: [{\n    type: 'initial',\n    maxEntrypointSize: 244000,\n    maxAssetSize: 244000\n  }]\n}\n\n// React.lazy implementation\nconst HeavyComponent = React.lazy(() => \n  import('./HeavyComponent').then(module => ({\n    default: module.default\n  }))\n);\n```\n\n### Common Pitfalls\n- Over-splitting causing excessive network requests\n- Missing proper loading states for lazy components\n- Ignoring third-party bundle impact on budgets\n- Not accounting for browser caching strategies",
+  "tags": [
+    "lighthouse",
+    "bundle",
+    "lazy-loading"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Code Commit] --> B[Webpack Build]\n    B --> C[Bundle Analysis]\n    C --> D{Budget Check}\n    D -->|Pass| E[Deploy]\n    D -->|Fail| F[Alert Team]\n    C --> G[Lazy Loading Boundaries]\n    G --> H[Dynamic Imports]\n    H --> I[Route Splitting]\n    I --> J[Component Splitting]\n    J --> K[Intersection Observer]\n    K --> L[Below-fold Content]",
+  "lastUpdated": "2025-12-14T12:56:06.033Z"
+}

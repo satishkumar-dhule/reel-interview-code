@@ -1,0 +1,13 @@
+{
+  "id": "gh-45",
+  "question": "How do rate limiting algorithms like Token Bucket and Leaky Bucket control API request flow?",
+  "answer": "Rate limiting controls request processing speed using algorithms like Token Bucket (burst allowed) and Leaky Bucket (smooth flow).",
+  "explanation": "Rate limiting prevents system overload by controlling request processing rates using different algorithms:\n\n**Token Bucket Algorithm:**\n- Bucket holds fixed number of tokens\n- Tokens replenish at constant rate\n- Each request consumes one token\n- Allows burst traffic when tokens available\n\n**Leaky Bucket Algorithm:**\n- Requests enter bucket at variable rate\n- Processed at fixed rate (leak)\n- Smooths out traffic spikes\n- Drops requests when bucket full\n\n**Implementation Example (Nginx):**\n```nginx\nhttp {\n  limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;\n  \n  server {\n    location /api/ {\n      limit_req zone=api burst=20 nodelay;\n    }\n  }\n}\n```\n\n**Use Cases:**\n- API throttling\n- DDoS protection\n- Resource management\n- Fair usage enforcement",
+  "diagram": "graph TD\n    A[Incoming Requests] --> B{Rate Limiter}\n    B -->|Within Limit| C[Process Request]\n    B -->|Exceeds Limit| D[Reject/Queue Request]\n    C --> E[Response]\n    F[Token Bucket] --> B\n    G[Leaky Bucket] --> B\n    H[Configuration Rules] --> B",
+  "difficulty": "beginner",
+  "tags": [
+    "api",
+    "service-mesh"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

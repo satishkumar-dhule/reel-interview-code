@@ -1,0 +1,30 @@
+{
+  "id": "q-242",
+  "question": "How does MongoDB's document structure differ from SQL's table rows for storing user data?",
+  "answer": "MongoDB stores flexible JSON-like documents with varying schemas, while SQL uses fixed table rows with predefined columns.",
+  "explanation": "## Concept Overview\nMongoDB uses a document-oriented data model where each document can have a different structure, while SQL databases use rigid table schemas with fixed columns.\n\n## Implementation Details\n- **MongoDB**: Documents stored in BSON format, schema-less design\n- **SQL**: Fixed schema with predefined column types and constraints\n- **Flexibility**: MongoDB allows nested objects and arrays, SQL requires normalization\n\n## Code Example\n```javascript\n// MongoDB Document\ndb.users.insertOne({\n  _id: ObjectId(\"...\"),\n  name: \"John Doe\",\n  email: \"john@example.com\",\n  profile: {\n    age: 30,\n    interests: [\"coding\", \"music\"]\n  }\n});\n\n-- SQL Equivalent\nCREATE TABLE users (\n  id INT PRIMARY KEY,\n  name VARCHAR(100),\n  email VARCHAR(100),\n  age INT\n);\n-- Requires separate table for interests\n```\n\n## Common Pitfalls\n- **MongoDB**: Can lead to inconsistent data structures if not properly managed\n- **SQL**: Requires schema migrations for any structural changes\n- **Performance**: MongoDB may be slower for complex joins, SQL excels at relational queries",
+  "tags": [
+    "mongodb",
+    "dynamodb",
+    "cassandra",
+    "redis"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Application] --> B[MongoDB Collection]\n    A --> C[SQL Database]\n    \n    B --> D[Document 1<br/>name: 'John'<br/>email: 'john@ex.com'<br/>profile.age: 30]\n    B --> E[Document 2<br/>name: 'Jane'<br/>email: 'jane@ex.com'<br/>profile.age: 25<br/>profile.interests: ['coding']]\n    \n    C --> F[Users Table<br/>id | name | email | age]\n    C --> G[Interests Table<br/>user_id | interest]\n    \n    D --> H[Flexible Schema<br/>Nested Data]\n    E --> H\n    F --> I[Rigid Schema<br/>Normalized Data]\n    G --> I",
+  "sourceUrl": "https://www.mongodb.com/docs/manual/reference/sql-comparison/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=8sHCdz_tOjk",
+    "longVideo": "https://www.youtube.com/watch?v=6oYqDZN72aY"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:24:25.402Z"
+}

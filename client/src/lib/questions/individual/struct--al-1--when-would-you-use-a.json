@@ -1,0 +1,26 @@
+{
+  "id": "al-1",
+  "question": "When would you use a Linked List over an Array?",
+  "answer": "Linked Lists excel at insertions/deletions, Arrays excel at random access.",
+  "explanation": "**Array**:\n- Access: O(1) (Direct memory address)\n- Insert/Delete: O(n) (Shift elements)\n- Memory: Contiguous\n\n**Linked List**:\n- Access: O(n) (Traversal)\n- Insert/Delete: O(1) (Change pointer - if you have the node)\n- Memory: Scattered (Heap)\n\n**Use List when**: Implementing Queues, Stacks, or when memory is fragmented.",
+  "diagram": "\ngraph LR\n    subgraph Array\n    A1[0] --- A2[1] --- A3[2] --- A4[3]\n    end\n    subgraph LinkedList\n    L1[Node] --> L2[Node] --> L3[Node]\n    end\n",
+  "difficulty": "beginner",
+  "tags": [
+    "struct",
+    "comparison",
+    "basics"
+  ],
+  "sourceUrl": "https://leetcode.com/explore/learn/card/linked-list/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/shorts/WwfhLC16bis",
+    "longVideo": "https://www.youtube.com/watch?v=odW9FU8jPRQ"
+  },
+  "companies": [
+    "Google",
+    "Amazon",
+    "Meta",
+    "Microsoft",
+    "Apple"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.185Z"
+}

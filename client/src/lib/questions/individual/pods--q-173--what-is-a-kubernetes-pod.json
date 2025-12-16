@@ -1,0 +1,13 @@
+{
+  "id": "q-173",
+  "question": "What is a Kubernetes Pod and what is its primary purpose?",
+  "answer": "A Pod is the smallest deployable unit in Kubernetes that contains one or more containers with shared storage and network.",
+  "explanation": "# Kubernetes Pods\n\nA Pod is the fundamental building block in Kubernetes that represents a single instance of a running process in your cluster. It's the smallest and simplest Kubernetes object that you create or deploy.\n\n## Key Characteristics:\n\n- **Atomic Unit**: Pods contain one or more tightly coupled containers that share the same network namespace and storage volumes\n- **Shared Resources**: All containers in a Pod share the same IP address and port space, and can communicate with each other using `localhost`\n- **Ephemeral**: Pods are designed to be disposable and can be created, destroyed, and replicated as needed\n- **Single Purpose**: Each Pod typically runs a single primary application, though it may include sidecar containers for supporting tasks\n\n## Use Cases:\n\n- Running a single container application\n- Co-locating helper containers with main application (sidecar pattern)\n- Managing multi-container applications that need to share resources\n\nPods are managed by higher-level controllers like Deployments, ReplicaSets, and StatefulSets, which handle scaling, self-healing, and lifecycle management.",
+  "tags": [
+    "pods",
+    "containers"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Pod] --> B[Container 1: Main App]\n    A --> C[Container 2: Sidecar]\n    A --> D[Shared Network Namespace]\n    A --> E[Shared Storage Volumes]\n    D --> F[Single IP Address]\n    D --> G[Shared Port Space]\n    E --> H[Volume 1]\n    E --> I[Volume 2]",
+  "lastUpdated": "2025-12-14T10:24:05.546Z"
+}

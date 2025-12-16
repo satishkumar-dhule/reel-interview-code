@@ -1,0 +1,14 @@
+{
+  "id": "q-194",
+  "question": "How would you design a Terragrunt + Atlantis workflow that prevents state lock contention across 50+ microservice environments while maintaining DRY principles?",
+  "answer": "Use hierarchical Terragrunt config with remote state locking, Atlantis project-based queuing, and environment-specific workspaces.",
+  "explanation": "## Concept Overview\nDesigning a scalable Terraform workflow requires balancing DRY principles with performance optimization. The key is using Terragrunt's hierarchy to share configurations while isolating state management.\n\n## Implementation Details\n- **Terragrunt Structure**: Use `terragrunt.hcl` at root for shared providers, with environment-specific `env.hcl` files\n- **Atlantis Configuration**: Implement project-based queuing with `parallel` workflow for independent environments\n- **State Management**: Configure remote state with DynamoDB locking and workspace isolation\n- **Dependency Graph**: Map service dependencies to prevent concurrent conflicting deployments\n\n## Code Example\n```hcl\n# terragrunt.hcl (root)\nremote_state {\n  backend = \"s3\"\n  config = {\n    bucket         = \"tf-state-${get_env(\"ENV\")}\"\n    key            = \"${path_relative_to_include()}/terraform.tfstate\"\n    encrypt        = true\n    dynamodb_table = \"tf-locks-${get_env(\"ENV\")}\"\n    region         = \"us-east-1\"\n  }\n}\n\n# atlantis.yaml\nprojects:\n- name: microservices\n  dir: .\n  workflow: custom\n  autoplan:\n    when_modified: [\"**/*.tf\", \"**/*.hcl\"]\n  apply_requirements: [mergeable]\n```\n\n## Common Pitfalls\n- **State Contention**: Avoid shared state files across environments\n- **Circular Dependencies**: Map service dependencies before implementing parallel workflows\n- **Configuration Drift**: Regular state validation and automated remediation\n- **Secrets Management**: Never store credentials in Terragrunt configs",
+  "tags": [
+    "dry",
+    "terragrunt",
+    "atlantis"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Developer Push] --> B[Atlantis Webhook]\n    B --> C{Project Detection}\n    C --> D[Microservice A]\n    C --> E[Microservice B]\n    C --> F[Microservice C]\n    D --> G[Terragrunt Apply]\n    E --> H[Terragrunt Apply]\n    F --> I[Terragrunt Apply]\n    G --> J[S3 State Lock]\n    H --> K[S3 State Lock]\n    I --> L[S3 State Lock]\n    J --> M[DynamoDB Lock Table]\n    K --> M\n    L --> M\n    M --> N[Resource Deployment]",
+  "lastUpdated": "2025-12-14T12:56:59.238Z"
+}

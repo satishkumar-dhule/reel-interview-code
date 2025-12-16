@@ -1,0 +1,12 @@
+{
+  "id": "gh-59",
+  "question": "What is Site Reliability Engineering?",
+  "answer": "Site Reliability Engineering (SRE) is a discipline that incorporates aspects of software engineering and applies them to infrastructure and operations...",
+  "explanation": "Site Reliability Engineering (SRE) is a discipline that incorporates aspects of software engineering and applies them to infrastructure and operations problems to create scalable and highly reliable software systems.\n\nKey principles:\n1. **Embrace Risk:**\n- Define acceptable risk levels\n- Use error budgets\n- Balance reliability and innovation\n\n2. **Eliminate Toil:**\n- Automate manual tasks\n- Reduce operational overhead\n- Focus on engineering work",
+  "difficulty": "beginner",
+  "tags": [
+    "sre",
+    "reliability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

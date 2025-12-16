@@ -1,0 +1,13 @@
+{
+  "id": "gh-71",
+  "question": "How does a Web Application Firewall (WAF) protect against OWASP Top 10 attacks at the application layer?",
+  "answer": "A WAF inspects HTTP/S requests, applies security rules, and blocks malicious traffic before it reaches the web application.",
+  "explanation": "## Concept Overview\nA Web Application Firewall (WAF) operates at Layer 7 to filter HTTP/S traffic, protecting web applications from common vulnerabilities like SQL injection, XSS, and command injection attacks.\n\n## Implementation\nWAFs use rule-based inspection and pattern matching:\n\n```nginx\n# ModSecurity WAF rule example\nSecRule REQUEST_URI \"@rx (\\|\\')\" \"id:1001,phase:2,deny,msg:'SQL injection detected'\"\nSecRule ARGS \"@rx <script[^>]*>\" \"id:1002,phase:2,deny,msg:'XSS detected'\"\n```\n\n```yaml\n# Cloudflare WAF configuration\nwaf_rules:\n  - name: \"SQL Injection Protection\"\n    action: block\n    expression: \"http.request.body contains 'UNION'\"\n  - name: \"XSS Protection\"\n    action: block\n    expression: \"http.request.uri contains '<script>'\"\n```\n\n## Trade-offs\n**Pros:**\n- Immediate protection without code changes\n- Centralized security management\n- Real-time threat detection\n\n**Cons:**\n- Performance overhead (latency increase)\n- False positives blocking legitimate traffic\n- Requires regular rule updates\n- Cannot protect against all attack vectors\n\n## Common Pitfalls\n- **Over-reliance:** WAF complements but doesn't replace secure coding\n- **Rule fatigue:** Too many rules cause performance degradation\n- **False positives:** Aggressive rules block legitimate users\n- **Configuration drift:** Rules become outdated without maintenance",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "network"
+  ],
+  "lastUpdated": "2025-12-15T06:37:02.499Z",
+  "diagram": "flowchart LR\n    A[User Request] --> B[WAF Inspection]\n    B --> C{Security Rules}\n    C -->|Legitimate| D[Web Application]\n    C -->|Malicious| E[Block/Deny]\n    \n    subgraph \"WAF Analysis\"\n        F[Request Headers] --> G[Pattern Matching]\n        H[Request Body] --> G\n        I[URL Parameters] --> G\n        G --> J[OWASP Rules]\n        J --> K[Threat Intelligence]\n    end\n    \n    B --> F"
+}

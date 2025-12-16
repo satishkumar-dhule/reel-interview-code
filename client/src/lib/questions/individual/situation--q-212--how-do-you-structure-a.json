@@ -1,0 +1,15 @@
+{
+  "id": "q-212",
+  "question": "How do you structure a STAR method response when describing a time you resolved a technical conflict?",
+  "answer": "STAR: Situation (context), Task (goal), Action (steps taken), Result (outcome with metrics)",
+  "explanation": "## STAR Method Overview\n\nThe STAR method provides a structured framework for behavioral interview responses, ensuring comprehensive and concise storytelling.\n\n### Implementation Details\n\n**Situation**: Brief context (10-15 seconds)\n- Set the scene with relevant background\n- Include team size, project scope, timeline\n\n**Task**: Clear objective (5-10 seconds)\n- Specific goal or responsibility\n- Business impact or technical requirement\n\n**Action**: Detailed steps (30-45 seconds)\n- Your specific contributions\n- Technical approach and methodology\n- Collaboration and decision-making process\n\n**Result**: Measurable outcomes (10-15 seconds)\n- Quantifiable achievements (metrics, % improvement)\n- Lessons learned and business impact\n\n### Common Pitfalls\n- **Too much detail in Situation**: Keep it concise\n- **Vague Actions**: Use specific technical terms\n- **No metrics in Result**: Quantify when possible\n- **Blaming others**: Focus on your contributions\n\n### Code Example Structure\n```javascript\n// STAR Response Template\nconst starResponse = {\n  situation: \"Team of 5 engineers, 2-week sprint\",\n  task: \"Resolve API integration blocking production\",\n  action: \"Analyzed logs, coordinated with backend team, implemented fallback\",\n  result: \"Reduced errors by 90%, met deadline\"\n}\n```",
+  "tags": [
+    "situation",
+    "task",
+    "action",
+    "result"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[Situation<br/>Context] --> B[Task<br/>Objective]\n    B --> C[Action<br/>Your Steps]\n    C --> D[Result<br/>Outcome]\n    D --> E[Metrics<br/>Quantified Impact]\n    \n    style A fill:#e1f5fe\n    style B fill:#f3e5f5\n    style C fill:#e8f5e8\n    style D fill:#fff3e0\n    style E fill:#fce4ec",
+  "lastUpdated": "2025-12-14T12:59:10.575Z"
+}

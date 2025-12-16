@@ -1,0 +1,13 @@
+{
+  "id": "da-128",
+  "question": "You have a banking system where users can transfer money between accounts. Design a transaction to handle a transfer of $500 from Account A (balance: $1000) to Account B (balance: $200). What happens if the system crashes after debiting Account A but before crediting Account B? How would you ensure data consistency?",
+  "answer": "Use database transactions with ACID properties. Wrap both operations in a single transaction that either commits both or rolls back both.",
+  "explanation": "## Database Transaction for Money Transfer\n\nThis scenario illustrates the critical importance of **ACID properties** in database transactions:\n\n### The Problem\nWithout proper transaction handling:\n1. Debit $500 from Account A (balance becomes $500)\n2. **System crashes here**\n3. Credit to Account B never happens\n4. **Result: $500 disappears from the system**\n\n### The Solution: ACID Transaction\n\n```sql\nBEGIN TRANSACTION;\n\n-- Check sufficient funds\nSELECT balance FROM accounts WHERE id = 'A' FOR UPDATE;\n\n-- Perform both operations atomically\nUPDATE accounts SET balance = balance - 500 WHERE id = 'A';\nUPDATE accounts SET balance = balance + 500 WHERE id = 'B';\n\nCOMMIT;\n```\n\n### ACID Properties Explained\n\n- **Atomicity**: Both operations succeed together or fail together\n- **Consistency**: Total money in system remains constant\n- **Isolation**: Other transactions can't see intermediate states\n- **Durability**: Once committed, changes survive system crashes\n\n### Additional Safeguards\n\n1. **Deadlock Prevention**: Always acquire locks in consistent order (e.g., by account ID)\n2. **Timeout Handling**: Set transaction timeouts to prevent indefinite locks\n3. **Retry Logic**: Implement exponential backoff for transient failures\n4. **Audit Trail**: Log all transaction attempts for reconciliation",
+  "diagram": "graph TD\n    A[Start Transaction] --> B[Lock Account A]\n    B --> C[Check Balance >= $500]\n    C -->|Yes| D[Debit $500 from Account A]\n    C -->|No| E[Rollback - Insufficient Funds]\n    D --> F[Credit $500 to Account B]\n    F --> G[Commit Transaction]\n    G --> H[Release Locks]\n    \n    D -->|System Crash| I[Automatic Rollback]\n    F -->|System Crash| I\n    I --> J[Both Accounts Restored]\n    \n    E --> K[Transaction Failed]\n    \n    style A fill:#e1f5fe\n    style G fill:#c8e6c9\n    style I fill:#ffcdd2\n    style E fill:#ffcdd2",
+  "difficulty": "intermediate",
+  "tags": [
+    "acid",
+    "transactions"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.186Z"
+}

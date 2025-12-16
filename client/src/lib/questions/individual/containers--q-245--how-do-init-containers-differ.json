@@ -1,0 +1,28 @@
+{
+  "id": "q-245",
+  "question": "How do init containers differ from sidecar containers in a Kubernetes pod?",
+  "answer": "Init containers run sequentially before app starts and complete; sidecars run alongside the main app continuously.",
+  "explanation": "## Concept Overview\n\nInit containers and sidecars are specialized containers that extend pod functionality but serve different purposes in the container lifecycle.\n\n## Key Differences\n\n**Init Containers:**\n- Execute before main app containers start\n- Run sequentially in defined order\n- Must complete successfully for pod to start\n- Used for setup, validation, and dependency checks\n\n**Sidecar Containers:**\n- Run concurrently with main app containers\n- Provide auxiliary services (logging, monitoring, proxying)\n- Continue running throughout pod lifecycle\n- Enhance main container functionality\n\n## Implementation Example\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: multi-container-pod\nspec:\n  initContainers:\n  - name: check-db\n    image: busybox\n    command: ['sh', '-c', 'until nslookup database; do sleep 2; done']\n  containers:\n  - name: main-app\n    image: nginx\n    ports:\n    - containerPort: 80\n  - name: log-sidecar\n    image: fluentd\n    volumeMounts:\n    - name: varlog\n      mountPath: /var/log\n  volumes:\n  - name: varlog\n    emptyDir: {}\n```\n\n## Common Use Cases\n\n**Init Containers:**\n- Database connectivity validation\n- Configuration file generation\n- Secret/key retrieval from external sources\n- Directory permission setup\n\n**Sidecars:**\n- Log aggregation (Fluentd, Logstash)\n- Service mesh proxies (Envoy, Istio)\n- Monitoring agents (Prometheus exporters)\n- File synchronization\n\n## Common Pitfalls\n\n- Using init containers for long-running processes\n- Blocking pod startup with failing init containers\n- Resource contention between sidecars and main app\n- Improper volume sharing between containers\n- Missing restart policies for critical sidecars",
+  "tags": [
+    "containers",
+    "init-containers",
+    "sidecars"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Pod Starts] --> B[Init Container 1]\n    B --> C[Init Container 2]\n    C --> D[Init Container N]\n    D --> E[Main App Container]\n    D --> F[Sidecar Container 1]\n    D --> G[Sidecar Container 2]\n    E --> H[Running Application]\n    F --> I[Logging Service]\n    G --> J[Monitoring Service]\n    H -.-> I\n    H -.-> J\n    style A fill:#e1f5fe\n    style D fill:#c8e6c9\n    style E fill:#fff3e0\n    style F fill:#f3e5f5\n    style G fill:#f3e5f5",
+  "sourceUrl": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=GvnzxfOO6Q8",
+    "longVideo": "https://www.youtube.com/watch?v=Ezz03l2JDmE"
+  },
+  "companies": [
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:30:44.088Z"
+}

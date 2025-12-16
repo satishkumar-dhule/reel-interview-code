@@ -1,0 +1,13 @@
+{
+  "id": "gh-55",
+  "question": "How does Tekton provide a cloud-native framework for building CI/CD pipelines on Kubernetes?",
+  "answer": "Tekton is a Kubernetes-native CI/CD framework that uses custom resources to define pipeline components as container-based tasks.",
+  "explanation": "Tekton is a cloud-native, open-source CI/CD framework built specifically for Kubernetes. It provides a flexible, container-based approach to building pipelines through Kubernetes Custom Resources.\n\n**Key Components:**\n- **Tasks**: Individual steps that execute in containers\n- **Pipelines**: Sequences of tasks that form complete workflows\n- **TaskRuns**: Executed instances of tasks\n- **PipelineRuns**: Executed instances of pipelines\n\n**Core Benefits:**\n- **Container-native**: Each step runs in its own container\n- **Kubernetes integration**: Leverages K8s scheduling and scaling\n- **Declarative**: Pipeline definitions as YAML manifests\n- **Portable**: Works across any Kubernetes cluster\n- **Extensible**: Custom tasks and integrations via community",
+  "diagram": "graph TD\n    A[Pipeline YAML] --> B[Tekton Controller]\n    B --> C[Task 1 Container]\n    B --> D[Task 2 Container]\n    B --> E[Task 3 Container]\n    C --> F[Results/Artifacts]\n    D --> F\n    E --> F\n    G[Kubernetes API] --> B\n    B --> G",
+  "difficulty": "beginner",
+  "tags": [
+    "automation",
+    "tools"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

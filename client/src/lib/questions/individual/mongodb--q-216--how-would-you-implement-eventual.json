@@ -1,0 +1,15 @@
+{
+  "id": "q-216",
+  "question": "How would you implement eventual consistency in a multi-region DynamoDB application with write conflicts?",
+  "answer": "Use DynamoDB Global Tables with conditional writes and version numbers/timestamps for conflict resolution.",
+  "explanation": "## Concept Overview\nEventual consistency in DynamoDB Global Tables allows writes in any region while asynchronously replicating data. Conflict resolution requires custom logic.\n\n## Implementation Details\n- Enable Global Tables for multi-region replication\n- Add version attribute or timestamp to each item\n- Use conditional writes with PutItem operation\n- Implement last-write-wins or custom merge logic\n\n## Code Example\n```javascript\nconst params = {\n  TableName: 'Users',\n  Item: {\n    userId: '123',\n    name: 'John',\n    version: Date.now(),\n    lastUpdatedRegion: process.env.AWS_REGION\n  },\n  ConditionExpression: 'attribute_not_exists(version) OR version < :newVersion',\n  ExpressionAttributeValues: {\n    ':newVersion': Date.now()\n  }\n};\nawait dynamodb.putItem(params).promise();\n```\n\n## Common Pitfalls\n- High write contention causing frequent conflicts\n- Network latency affecting replication timing\n- Inconsistent read patterns during replication delays\n- Not handling stale data appropriately in application logic",
+  "tags": [
+    "mongodb",
+    "dynamodb",
+    "cassandra",
+    "redis"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Client Write US-East] --> B[DynamoDB US-East]\n    C[Client Write EU-West] --> D[DynamoDB EU-West]\n    B --> E[Async Replication]\n    D --> E\n    E --> F[Conflict Resolution]\n    F --> G[Final State]",
+  "lastUpdated": "2025-12-15T01:14:36.568Z"
+}

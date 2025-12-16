@@ -1,0 +1,12 @@
+{
+  "id": "gh-65",
+  "question": "What is Mean Time to Recovery (MTTR)?",
+  "answer": "MTTR is the average time it takes to recover from a system failure or incident.",
+  "explanation": "MTTR is the average time it takes to recover from a system failure or incident.\n\nCalculation:\n```\nMTTR = Total Recovery Time / Number of Incidents\n```\n\nComponents of MTTR:\n1. **Detection Time:**\n- Time to identify the issue\n- Monitoring alerts\n\n2. **Response Time:**\n- Time to begin addressing the issue\n- Team mobilization\n\n3. **Resolution Time:**\n- Time to fix the issue\n- System restoration",
+  "difficulty": "beginner",
+  "tags": [
+    "metrics",
+    "kpi"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

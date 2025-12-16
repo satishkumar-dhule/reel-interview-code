@@ -1,0 +1,13 @@
+{
+  "id": "gh-92",
+  "question": "How does a Service Catalog enable self-service infrastructure provisioning in an Internal Developer Platform?",
+  "answer": "A Service Catalog provides a standardized, discoverable interface for developers to provision infrastructure through automated workflows and templates.",
+  "explanation": "## Concept Overview\nA Service Catalog is a curated collection of infrastructure services and application templates that enables developers to provision resources through a self-service portal. It abstracts complexity while maintaining governance and consistency across the organization.\n\n## Implementation\n```yaml\n# Backstage Service Catalog Example\napiVersion: backstage.io/v1alpha1\nkind: Component\nmetadata:\n  name: web-app\n  description: Production web application\nspec:\n  type: website\n  lifecycle: production\n  owner: team-a\n  provides:\n    - api\n  dependsOn:\n    - resource:database\n```\n\n```typescript\n// Service Catalog API Integration\nconst provisionService = async (serviceId: string, params: any) => {\n  const service = await catalog.getService(serviceId);\n  const template = await templateEngine.render(service.template, params);\n  return await orchestrator.execute(template);\n};\n```\n\n## Trade-offs\n**Pros:**\n- Reduces cognitive load for developers\n- Ensures compliance and best practices\n- Accelerates delivery through standardization\n- Provides audit trail and governance\n\n**Cons:**\n- Initial setup complexity\n- Potential rigidity in customization\n- Requires ongoing maintenance\n- Learning curve for platform teams\n\n## Common Pitfalls\n- **Over-engineering:** Creating too many service variants\n- **Poor documentation:** Incomplete service descriptions\n- **Version conflicts:** Not managing template versions properly\n- **Access creep:** Excessive permissions in self-service",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-15T06:35:21.512Z",
+  "diagram": "graph TD\n    A[Developer] --> B[Service Catalog Portal]\n    B --> C{Service Selection}\n    C --> D[Database Service]\n    C --> E[Compute Service]\n    C --> F[Storage Service]\n    D --> G[Terraform Template]\n    E --> H[Helm Chart]\n    F --> I[CloudFormation Template]\n    G --> J[Provisioning Engine]\n    H --> J\n    I --> J\n    J --> K[Cloud Provider]\n    K --> L[Provisioned Resource]\n    L --> M[Metadata & Status]\n    M --> B"
+}

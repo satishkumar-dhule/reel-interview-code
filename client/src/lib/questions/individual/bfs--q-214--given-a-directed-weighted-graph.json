@@ -1,0 +1,15 @@
+{
+  "id": "q-214",
+  "question": "Given a directed weighted graph with up to 10^6 edges and frequent edge weight updates, design a data structure that supports dynamic shortest path queries with sub-millisecond response time?",
+  "answer": "Use a dynamic Dijkstra variant with incremental updates and hierarchical decomposition, maintaining O(log n) per update and query.",
+  "explanation": "## Concept Overview\nDynamic shortest path requires handling frequent edge weight updates while maintaining fast query responses. Traditional Dijkstra's O(E + V log V) is too slow for production scale.\n\n## Implementation Details\n- **Hierarchical Decomposition**: Partition graph into clusters using METIS or custom partitioning\n- **Multi-level Indexing**: Maintain precomputed distances between cluster boundaries\n- **Incremental Updates**: Use dynamic programming to update only affected paths\n- **Lazy Recomputation**: Defer full recomputation until query performance degrades\n\n## Code Structure\n```python\nclass DynamicShortestPath:\n    def __init__(self, graph):\n        self.clusters = self.partition_graph(graph)\n        self.cluster_distances = self.precompute_inter_cluster()\n        self.local_paths = {c: {} for c in self.clusters}\n    \n    def update_edge(self, u, v, new_weight):\n        cluster = self.get_cluster(u)\n        self.invalidate_local_paths(cluster, u, v)\n        self.update_inter_cluster_if_boundary(u, v, new_weight)\n    \n    def query(self, source, target):\n        return self.bidirectional_dijkstra(source, target)\n```\n\n## Common Pitfalls\n- **Memory Overhead**: Hierarchical structures can consume 3-5x memory\n- **Partition Quality**: Poor clustering leads to frequent cross-cluster queries\n- **Update Cascades**: Edge updates can trigger expensive recomputation cascades\n- **Concurrency**: Thread-safe updates require careful locking strategies",
+  "tags": [
+    "bfs",
+    "dfs",
+    "dijkstra",
+    "topological"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Client Query] --> B{Source/Target in Same Cluster?}\n    B -->|Yes| C[Local Dijkstra]\n    B -->|No| D[Multi-level Path Search]\n    D --> E[Cluster Boundary Search]\n    E --> F[Inter-cluster Distance Lookup]\n    F --> G[Local Path Assembly]\n    G --> H[Return Result]\n    I[Edge Update] --> J{Boundary Edge?}\n    J -->|Yes| K[Update Inter-cluster Index]\n    J -->|No| L[Invalidate Local Cache]\n    K --> M[Mark Affected Clusters]\n    L --> M",
+  "lastUpdated": "2025-12-15T01:14:16.817Z"
+}

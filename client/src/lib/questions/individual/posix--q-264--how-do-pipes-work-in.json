@@ -1,0 +1,26 @@
+{
+  "id": "q-264",
+  "question": "How do pipes work in Unix?",
+  "answer": "Pipes connect processes for data flow.",
+  "explanation": "## Concept\n\nPipes are unidirectional communication channels between processes.\n\n## Implementation\n\n```c\nint fd[2];\npipe(fd);\n```\n\n## Trade-offs\n\n- Pro: Simple IPC\n- Con: One-way only\n\n## Pitfalls\n\n- Buffer overflow risk\n- No bidirectional",
+  "tags": [
+    "posix",
+    "signals",
+    "pipes",
+    "sockets"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph LR\n    A[Process A] -->|writes| B[Process B]",
+  "sourceUrl": "https://man7.org/linux/man-pages/pipe.2",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T13:56:12.990Z"
+}

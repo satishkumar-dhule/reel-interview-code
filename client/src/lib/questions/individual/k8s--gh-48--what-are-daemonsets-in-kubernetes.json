@@ -1,0 +1,12 @@
+{
+  "id": "gh-48",
+  "question": "What are DaemonSets in Kubernetes?",
+  "answer": "DaemonSets ensure that all (or some) nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them.",
+  "explanation": "DaemonSets ensure that all (or some) nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them.\n\nUse cases:\n1. **Monitoring Agents**\n2. **Log Collectors**\n3. **Node-level Storage**\n4. **Network Plugins**\n\nExample of DaemonSet:\n```yaml\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\nname: fluentd-elasticsearch\nspec:\nselector:\nmatchLabels:\nname: fluentd-elasticsearch\ntemplate:\nmetadata:\nlabels:\nname: fluentd-elasticsearch\nspec:\ncontainers:\n- name: fluentd-elasticsearch\nimage: quay.io/fluentd_elasticsearch/fluentd:v2.5.2\n```",
+  "difficulty": "advanced",
+  "tags": [
+    "k8s",
+    "advanced"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

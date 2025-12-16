@@ -1,0 +1,15 @@
+{
+  "id": "q-237",
+  "question": "How would you design a distributed load testing setup using k6 with multiple cloud regions to simulate 100k concurrent users while avoiding rate limiting and ensuring accurate metrics collection?",
+  "answer": "Use k6 cloud with distributed execution across regions, implement exponential ramp-up, and aggregate results via cloud backend with custom metrics.",
+  "explanation": "## Concept Overview\nDistributed load testing spreads traffic across multiple cloud regions to simulate realistic global user patterns while avoiding single-point bottlenecks and rate limiting.\n\n## Implementation Details\n- **Architecture**: Master controller orchestrates multiple k6 instances across AWS/GCP regions\n- **Traffic Distribution**: 30% US-East, 25% EU-West, 20% AP-Southeast, 15% US-West, 10% AP-Northeast\n- **Ramp Strategy**: Exponential ramp-up (1k→10k→50k→100k) over 15 minutes\n- **Metrics Pipeline**: Custom k6 extensions send metrics to InfluxDB via Telegraf\n\n## Code Example\n```javascript\nimport http from 'k6/http';\nimport { Rate } from 'k6/metrics';\n\nconst errorRate = new Rate('errors');\n\nexport let options = {\n  stages: [\n    { duration: '2m', target: 1000 },\n    { duration: '5m', target: 10000 },\n    { duration: '8m', target: 50000 },\n    { duration: '10m', target: 100000 },\n  ],\n  cloud: {\n    distribution: {\n      'amazon:us-east-1': { load: 0.3 },\n      'amazon:eu-west-1': { load: 0.25 },\n      'amazon:ap-southeast-1': { load: 0.2 },\n    },\n  },\n};\n\nexport default function() {\n  const response = http.get('https://api.example.com/users');\n  errorRate.add(response.status >= 400);\n}\n```\n\n## Common Pitfalls\n- **Rate Limiting**: Implement jitter between requests (50-200ms)\n- **IP Blocking**: Use rotating proxy pools or residential IPs\n- **Metrics Accuracy**: Synchronize NTP across all instances\n- **Resource Exhaustion**: Monitor CPU/memory on k6 instances, auto-scale as needed",
+  "tags": [
+    "jmeter",
+    "k6",
+    "gatling",
+    "locust"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Master Controller] --> B[k6 Cloud Orchestrator]\n    B --> C[US-East Region]\n    B --> D[EU-West Region]\n    B --> E[AP-Southeast Region]\n    B --> F[US-West Region]\n    B --> G[AP-Northeast Region]\n    C --> H[Load Balancer]\n    D --> H\n    E --> H\n    F --> H\n    G --> H\n    H --> I[Target Application]\n    C --> J[InfluxDB]\n    D --> J\n    E --> J\n    F --> J\n    G --> J\n    J --> K[Grafana Dashboard]\n    A --> L[Results Aggregator]\n    L --> K",
+  "lastUpdated": "2025-12-15T01:17:21.977Z"
+}

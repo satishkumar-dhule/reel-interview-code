@@ -1,0 +1,14 @@
+{
+  "id": "q-191",
+  "question": "What is the purpose of a multi-stage Docker build and how does it reduce final image size?",
+  "answer": "Multi-stage builds separate build dependencies from runtime, using only necessary artifacts in the final image to minimize size.",
+  "explanation": "## Concept Overview\nMulti-stage Docker builds use multiple FROM statements in a single Dockerfile, allowing you to create intermediate build stages and copy only the needed artifacts to the final stage.\n\n## Implementation Details\n- Each FROM statement begins a new build stage\n- Use --from flag to copy artifacts between stages\n- Build tools (compilers, dev dependencies) exist only in build stage\n- Final stage contains only runtime dependencies\n\n## Code Example\n```dockerfile\n# Build stage\nFROM node:18-alpine AS builder\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --only=production\n\n# Final stage\nFROM node:18-alpine AS runtime\nWORKDIR /app\nCOPY --from=builder /app/node_modules ./node_modules\nCOPY . .\nCMD [\"node\", \"server.js\"]\n```\n\n## Common Pitfalls\n- Forgetting to specify --from when copying between stages\n- Including build tools in final stage\n- Not optimizing layer caching with proper COPY order",
+  "tags": [
+    "dockerfile",
+    "compose",
+    "multi-stage"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Base Image + Build Tools] --> B[Install Dependencies]\n    B --> C[Build Application]\n    C --> D[Copy Artifacts Only]\n    D --> E[Runtime Image]\n    E --> F[Final Container]",
+  "lastUpdated": "2025-12-14T12:56:25.477Z"
+}

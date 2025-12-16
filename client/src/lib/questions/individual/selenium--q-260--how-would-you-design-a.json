@@ -1,0 +1,28 @@
+{
+  "id": "q-260",
+  "question": "How would you design a Selenium Grid architecture to handle 10,000 parallel test sessions while preventing memory leaks and stale session accumulation?",
+  "answer": "Implement distributed hub-node topology with session pooling, health monitoring, and aggressive cleanup strategies.",
+  "explanation": "## Architecture Overview\nDesigning a production-scale Selenium Grid requires careful consideration of session management, resource allocation, and failure handling.\n\n## Implementation Details\n\n**Hub-Node Topology:**\n- Multiple regional hubs for load distribution\n- Auto-scaling node groups based on demand\n- Session affinity for long-running tests\n- Health checks every 30 seconds\n\n**Session Management:**\n- Session timeout: 300 seconds idle, 1800 max duration\n- Session pool with pre-warmed browser instances\n- Cleanup every 60 seconds for stale sessions\n- Memory monitoring with automatic node restart\n\n**Memory Optimization:**\n- Browser process isolation per session\n- RAM limits: 2GB per Chrome instance\n- Swap optimization for containerized environments\n- Garbage collection tuning for JVM heap\n\n## Code Example\n```java\n// Session cleanup configuration\nGridConfig config = new GridConfig();\nconfig.setSessionTimeout(Duration.ofSeconds(300));\nconfig.setCleanupCycle(Duration.ofSeconds(60));\nconfig.setMaxSessionDuration(Duration.ofMinutes(30));\nconfig.setMemoryThreshold(0.8); // 80% memory usage triggers cleanup\n\n// Auto-scaling node configuration\nNodeConfig nodeConfig = new NodeConfig();\nnodeConfig.setMaxSessions(4);\nnodeConfig.setMemoryLimit(2048); // MB per session\nnodeConfig.setHealthCheckInterval(Duration.ofSeconds(30));\n```\n\n## Common Pitfalls\n- Forgetting to call driver.quit() in test teardown\n- Not monitoring browser subprocess memory usage\n- Ignoring WebSocket connection leaks\n- Insufficient health check frequency\n- Over-provisioning nodes without resource limits",
+  "tags": [
+    "selenium",
+    "webdriver",
+    "grid"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Load Balancer] --> B[Regional Hub 1]\n    A --> C[Regional Hub 2]\n    A --> D[Regional Hub 3]\n    \n    B --> E[Node Group 1]\n    B --> F[Node Group 2]\n    C --> G[Node Group 3]\n    C --> H[Node Group 4]\n    D --> I[Node Group 5]\n    D --> J[Node Group 6]\n    \n    E --> K[Chrome Session Pool]\n    E --> L[Firefox Session Pool]\n    F --> M[Chrome Session Pool]\n    F --> N[Firefox Session Pool]\n    \n    O[Session Manager] --> P[Cleanup Service]\n    O --> Q[Health Monitor]\n    O --> R[Memory Watcher]\n    \n    P --> S[Kill Stale Sessions]\n    Q --> T[Node Health Check]\n    R --> U[Auto-scale Trigger]",
+  "sourceUrl": "https://selenium.dev/documentation/grid/configuration/cli_options/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=6IlTjqU_Tc0",
+    "longVideo": "https://www.youtube.com/watch?v=rg-DnRTsu9Y"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:50:53.399Z"
+}

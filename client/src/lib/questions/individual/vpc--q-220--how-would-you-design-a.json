@@ -1,0 +1,15 @@
+{
+  "id": "q-220",
+  "question": "How would you design a multi-AZ VPC architecture with Route53 latency-based routing to CloudFront, ALB, and private EC2 instances while ensuring failover within 30 seconds?",
+  "answer": "Use Route53 latency records with health checks, CloudFront with origin failover, ALB across AZs, and cross-AZ private subnets with NAT gateways.",
+  "explanation": "## Concept Overview\nDesigning a resilient AWS networking architecture requires understanding how different services interact for high availability and low latency.\n\n## Implementation Details\n\n### VPC Architecture\n- Create VPC with /16 CIDR block\n- 3 public subnets (one per AZ) for ALB and NAT\n- 3 private subnets for EC2 instances\n- Configure Internet Gateway and NAT gateways\n\n### Route53 Configuration\n```json\n{\n  \"RecordType\": \"A\",\n  \"SetIdentifier\": \"primary\",\n  \"HealthCheckId\": \"health-check-id\",\n  \"TTL\": 30\n}\n```\n\n### Load Balancer Setup\n- Application Load Balancer in public subnets\n- Cross-AZ deployment enabled\n- Health checks on /health endpoint\n- Target groups for EC2 instances\n\n### CloudFront Origin\n- Primary origin: ALB DNS name\n- Failover origin: S3 static backup\n- Origin Access Identity for security\n\n## Common Pitfalls\n- Health check intervals too long (>30s)\n- Missing cross-AZ ALB configuration\n- NAT gateway single point of failure\n- Inconsistent security group rules\n- Route53 TTL too high for quick failover",
+  "tags": [
+    "vpc",
+    "route53",
+    "cloudfront",
+    "alb"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[User] --> B[Route53]\n    B --> C[CloudFront]\n    C --> D[ALB Primary]\n    C --> E[ALB Secondary]\n    D --> F[EC2 AZ1]\n    D --> G[EC2 AZ2]\n    D --> H[EC2 AZ3]\n    E --> I[EC2 AZ1 Backup]\n    E --> J[EC2 AZ2 Backup]\n    E --> K[EC2 AZ3 Backup]\n    F --> L[Private Subnet]\n    G --> L\n    H --> L\n    I --> L\n    J --> L\n    K --> L\n    L --> M[NAT Gateway]\n    M --> N[Internet Gateway]",
+  "lastUpdated": "2025-12-15T01:15:10.104Z"
+}

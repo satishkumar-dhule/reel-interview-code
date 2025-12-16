@@ -1,0 +1,26 @@
+{
+  "id": "q-266",
+  "question": "How would you design a message queue system that guarantees exactly-once delivery while maintaining high throughput for real-time event processing?",
+  "answer": "Use idempotent consumers with deduplication IDs and distributed transactions",
+  "explanation": "## Concept\nExactly-once delivery requires preventing duplicates while ensuring message processing. This combines idempotent operations, deduplication mechanisms, and atomic commit patterns to handle network failures and retries.\n\n## Implementation\n```python\n# Producer with deduplication\nclass Producer:\n    def send(self, message, deduplication_id):\n        msg = {\n            'id': deduplication_id,\n            'data': message,\n            'timestamp': time.time()\n        }\n        return queue.send(msg)\n\n# Idempotent consumer\nclass Consumer:\n    def __init__(self):\n        self.processed_ids = Redis()\n    \n    def process(self, message):\n        if self.processed_ids.exists(message['id']):\n            return  # Already processed\n        \n        # Process message\n        result = self.handle_message(message['data'])\n        \n        # Mark as processed\n        self.processed_ids.set(message['id'], '1', ex=3600)\n        return result\n```\n\n## Trade-offs\n- **Throughput vs Consistency**: Strong consistency reduces throughput\n- **Storage Overhead**: Deduplication stores increase memory usage\n- **Complexity**: Exactly-once requires careful error handling\n- **Latency**: Additional checks add processing time\n\n## Pitfalls\n- Network partitions causing message duplication\n- Consumer crashes after processing but before acknowledgment\n- Clock synchronization issues for time-based deduplication\n- Memory exhaustion from unbounded deduplication stores",
+  "tags": [
+    "kafka",
+    "rabbitmq",
+    "sqs",
+    "pubsub"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[Producer] --> B[Message Broker]\n    B --> C[Deduplication Layer]\n    C --> D[Consumer 1]\n    C --> E[Consumer 2]\n    C --> F[Consumer N]\n    \n    G[Processed IDs Store] --> C\n    D --> G\n    E --> G\n    F --> G\n    \n    H[Dead Letter Queue] --> B\n    D --> H\n    E --> H\n    F --> H\n    \n    subgraph \"Processing Flow\"\n        I[Receive Message] --> J{Dedup Check}\n        J -->|Not Seen| K[Process Message]\n        J -->|Already Seen| L[Skip]\n        K --> M[Mark Processed]\n        M --> N[Acknowledge]\n        K --> O[Error Handler]\n        O --> P[Send to DLQ]\n    end",
+  "sourceUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-integrating-microservices/sqs.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-16T01:14:50.277Z"
+}

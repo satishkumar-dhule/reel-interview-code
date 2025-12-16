@@ -1,0 +1,13 @@
+{
+  "id": "gh-40",
+  "question": "What is Performance Testing and how does it differ from Load and Stress Testing?",
+  "answer": "Performance testing evaluates system responsiveness, stability, and scalability under various workloads to identify bottlenecks and validate requirements.",
+  "explanation": "Performance Testing is a comprehensive testing approach that evaluates how a system performs under different conditions. It encompasses several testing types:\n\n**Key Performance Testing Types:**\n1. **Load Testing:** Tests system performance under expected user loads\n2. **Stress Testing:** Pushes system beyond normal capacity to find breaking points\n3. **Endurance Testing:** Validates performance over extended periods\n4. **Spike Testing:** Tests response to sudden traffic increases\n\n**Essential Performance Metrics:**\n- **Response Time:** Time taken to process requests\n- **Throughput:** Number of transactions per time unit\n- **Resource Utilization:** CPU, memory, disk, network usage\n- **Concurrency:** Number of simultaneous users handled\n- **Error Rate:** Percentage of failed requests\n\n**Common Tools:**\n- Apache JMeter, Gatling, k6 for load generation\n- New Relic, Datadog for monitoring\n- Grafana for visualization\n\n**Real-world Example:**\nAn e-commerce site performs load testing before Black Friday to ensure it can handle 10,000 concurrent users with <2 second response times.",
+  "diagram": "graph TD\n    A[Performance Testing] --> B[Load Testing]\n    A --> C[Stress Testing]\n    A --> D[Endurance Testing]\n    A --> E[Spike Testing]\n    \n    B --> F[Expected Load]\n    C --> G[Beyond Capacity]\n    D --> H[Extended Duration]\n    E --> I[Sudden Traffic Spikes]\n    \n    F --> J[Response Time < 2s]\n    G --> K[Find Breaking Point]\n    H --> L[Memory Leaks]\n    I --> M[Auto-scaling]\n    \n    style A fill:#e1f5fe\n    style B fill:#f3e5f5\n    style C fill:#ffebee\n    style D fill:#e8f5e8\n    style E fill:#fff3e0",
+  "difficulty": "beginner",
+  "tags": [
+    "perf",
+    "testing"
+  ],
+  "lastUpdated": "2025-12-13T06:30:09.394Z"
+}

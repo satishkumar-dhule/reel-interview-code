@@ -1,0 +1,15 @@
+{
+  "id": "q-234",
+  "question": "How would you design a Jest test suite to handle 10,000+ concurrent async tests while preventing test pollution and ensuring deterministic results?",
+  "answer": "Use test isolation with jest.isolateModulesAsync(), worker threads, and proper cleanup in beforeEach/afterEach hooks.",
+  "explanation": "## Concept Overview\nTesting at scale requires managing test isolation, resource cleanup, and execution order to prevent flaky tests and race conditions.\n\n## Implementation Details\n- **Test Isolation**: Use `jest.isolateModulesAsync()` to prevent module state pollution\n- **Worker Threads**: Configure `maxWorkers` in Jest config for parallel execution\n- **Resource Management**: Implement proper cleanup in `beforeEach/afterEach` hooks\n- **Mock Management**: Use `jest.clearAllMocks()` and `jest.resetAllMocks()` strategically\n\n## Code Example\n```javascript\n// jest.config.js\nmodule.exports = {\n  maxWorkers: 4,\n  testTimeout: 10000,\n  setupFilesAfterEnv: ['<rootDir>/test-setup.js']\n};\n\n// test-setup.js\nbeforeEach(async () => {\n  jest.clearAllMocks();\n  await cleanupDatabase();\n});\n\n// test file\ndescribe('Concurrent Tests', () => {\n  test('async operation', async () => {\n    const isolatedModule = await jest.isolateModulesAsync(() => {\n      return require('./module');\n    });\n    // test logic\n  });\n});\n```\n\n## Common Pitfalls\n- Shared state between tests causing race conditions\n- Inadequate cleanup leading to memory leaks\n- Improper async handling causing false positives\n- Over-reliance on global mocks",
+  "tags": [
+    "jest",
+    "mocha",
+    "pytest",
+    "junit"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Test Suite] --> B[Jest Worker Pool]\n    B --> C[Worker 1]\n    B --> D[Worker 2]\n    B --> E[Worker N]\n    C --> F[Isolate Modules]\n    D --> G[Isolate Modules]\n    E --> H[Isolate Modules]\n    F --> I[Setup/Cleanup]\n    G --> J[Setup/Cleanup]\n    H --> K[Setup/Cleanup]\n    I --> L[Execute Test]\n    J --> M[Execute Test]\n    K --> N[Execute Test]\n    L --> O[Report Results]\n    M --> O\n    N --> O",
+  "lastUpdated": "2025-12-15T01:16:55.498Z"
+}

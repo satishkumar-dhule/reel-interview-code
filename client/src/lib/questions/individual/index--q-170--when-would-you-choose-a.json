@@ -1,0 +1,13 @@
+{
+  "id": "q-170",
+  "question": "When would you choose a composite index over multiple single-column indexes in a relational database?",
+  "answer": "For queries filtering on multiple columns together, composite indexes are more efficient than separate single-column indexes.",
+  "explanation": "Composite indexes are optimal when queries frequently filter or sort on multiple columns simultaneously. They store data in a specific column order, allowing the database to satisfy query conditions using a single index lookup rather than multiple index scans. For example, a composite index on (last_name, first_name) efficiently handles queries like `WHERE last_name = 'Smith' AND first_name = 'John'`. However, composite indexes have higher write overhead and should be used judiciously based on query patterns.",
+  "tags": [
+    "index",
+    "optimization"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Query: WHERE last_name='Smith' AND first_name='John'] --> B{Index Strategy}\n    B --> C[Single Column Indexes]\n    B --> D[Composite Index last_name,first_name]\n    C --> E[2 Index Scans + Merge]\n    D --> F[1 Index Lookup]\n    E --> G[Higher I/O Cost]\n    F --> H[Lower I/O Cost]",
+  "lastUpdated": "2025-12-14T10:23:36.574Z"
+}

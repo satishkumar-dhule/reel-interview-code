@@ -1,0 +1,13 @@
+{
+  "id": "q-167",
+  "question": "Write a function to find the maximum depth of a binary tree.",
+  "answer": "Use recursive DFS: return 1 + max(depth(left), depth(right)) for each node.",
+  "explanation": "The maximum depth of a binary tree is the length of the longest path from the root to a leaf node. We can solve this using depth-first search (DFS) recursion. For each node, we calculate the depth of its left and right subtrees, then return 1 (for the current node) plus the maximum of these two depths. The base case is when we reach a null node, which has depth 0.",
+  "tags": [
+    "tree",
+    "binary"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Root] --> B[Left Child]\n    A --> C[Right Child]\n    B --> D[Left Leaf]\n    B --> E[Right Leaf]\n    C --> F[Left Leaf]\n    C --> G[Right Leaf]\n    D --> H[null]\n    D --> I[null]\n    E --> J[null]\n    E --> K[null]\n    F --> L[null]\n    F --> M[null]\n    G --> N[null]\n    G --> O[null]",
+  "lastUpdated": "2025-12-14T10:23:15.663Z"
+}

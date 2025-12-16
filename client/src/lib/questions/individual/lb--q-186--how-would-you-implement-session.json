@@ -1,0 +1,15 @@
+{
+  "id": "q-186",
+  "question": "How would you implement session affinity (sticky sessions) in HAProxy while maintaining high availability, and what are the trade-offs compared to stateless load balancing?",
+  "answer": "Use 'balance source' or 'stick-table' with health checks. Trade-offs: better user experience vs reduced scalability and uneven load distribution.",
+  "explanation": "## Session Affinity in HAProxy\n\nSession affinity ensures users consistently reach the same backend server, crucial for applications storing session data locally.\n\n## Implementation Methods\n\n### Source IP Hashing\n```haproxy\nbackend web_servers\n    balance source\n    server web1 192.168.1.10:80 check\n    server web2 192.168.1.11:80 check\n    server web3 192.168.1.12:80 check\n```\n\n### Stick Tables (Cookie-based)\n```haproxy\nbackend web_servers\n    balance roundrobin\n    stick-table type string len 32 size 30k expire 30m\n    stick on cookie(JSESSIONID)\n    server web1 192.168.1.10:80 check cookie web1\n    server web2 192.168.1.11:80 check cookie web2\n    server web3 192.168.1.12:80 check cookie web3\n```\n\n## High Availability Considerations\n\n- **Health Checks**: Failed servers automatically removed from rotation\n- **Backup Servers**: Configure backup servers for failover\n- **Session Replication**: Implement session sharing between servers\n\n## Trade-offs\n\n### Sticky Sessions\n- ✅ Maintains user state\n- ✅ No session synchronization needed\n- ❌ Uneven load distribution\n- ❌ Server failure loses sessions\n- ❌ Harder horizontal scaling\n\n### Stateless Load Balancing\n- ✅ Perfect load distribution\n- ✅ Easy scaling\n- ✅ Server failure doesn't affect users\n- ❌ Requires external session storage (Redis, database)\n- ❌ Additional infrastructure complexity\n\n## Common Pitfalls\n\n- **Hot Spots**: Source IP hashing can create uneven distribution\n- **Session Loss**: Server failures break user sessions\n- **Cache Inefficiency**: Users may hit different servers, reducing cache effectiveness",
+  "tags": [
+    "lb",
+    "traffic",
+    "nginx",
+    "haproxy"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client Requests] --> B[HAProxy Load Balancer]\n    B --> C{Session Affinity Check}\n    C -->|Existing Session| D[Route to Same Server]\n    C -->|New Session| E[Apply Load Balancing Algorithm]\n    D --> F[Web Server 1]\n    E --> F[Web Server 1]\n    E --> G[Web Server 2]\n    E --> H[Web Server 3]\n    F --> I[Session Store/Local State]\n    G --> J[Session Store/Local State]\n    H --> K[Session Store/Local State]\n    L[Health Check] --> F\n    L --> G\n    L --> H\n    M[Stick Table] --> B\n    N[Cookie/Source IP] --> C",
+  "lastUpdated": "2025-12-14T12:55:48.802Z"
+}

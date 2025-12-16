@@ -1,0 +1,29 @@
+{
+  "id": "q-254",
+  "question": "When implementing a bidirectional GRU vs LSTM for sequence labeling, how do gradient clipping thresholds and batch size affect convergence and what are the memory trade-offs?",
+  "answer": "Bidirectional GRU needs lower clipping thresholds (1.0-5.0) than LSTM (5.0-10.0) due to fewer parameters, with optimal batch sizes 32-64 for GRU vs 16-32 for LSTM to balance convergence speed and memo",
+  "explanation": "## Concept Overview\n\nBidirectional sequence models process data in both forward and backward directions, concatenating hidden states for each timestep. GRU uses 2 gates (reset, update) while LSTM uses 3 gates (input, forget, output) plus a cell state, affecting parameter count and memory requirements.\n\n## Implementation Details\n\n### Gradient Clipping Differences\n- **GRU**: More sensitive to exploding gradients due to simpler gating, requires lower clipping threshold\n- **LSTM**: More stable with cell state, tolerates higher clipping values\n- **Bidirectional**: Doubles gradient flow, making clipping critical\n\n### Batch Size Trade-offs\n- **GRU**: Larger batches (32-64) work well due to faster computation\n- **LSTM**: Smaller batches (16-32) preferred to manage memory overhead\n- **Bidirectional**: Memory usage doubles with sequence length\n\n### Memory Considerations\n```python\n# GRU vs LSTM memory comparison per timestep\ndef model_memory(batch_size, seq_len, hidden_dim):\n    # GRU: (reset_gate + update_gate + candidate) * 3\n    gru_params = 3 * hidden_dim * hidden_dim * 3\n    \n    # LSTM: (input_gate + forget_gate + output_gate + candidate) * 4 + cell_state\n    lstm_params = 4 * hidden_dim * hidden_dim * 4 + hidden_dim\n    \n    # Bidirectional doubles memory requirements\n    bidirectional_factor = 2\n    \n    return {\n        'gru': gru_params * batch_size * seq_len * bidirectional_factor,\n        'lstm': lstm_params * batch_size * seq_len * bidirectional_factor\n    }\n```\n\n## Common Pitfalls\n\n1. **Over-clipping GRU**: Setting threshold too low (<1.0) causes underfitting\n2. **Batch size too large for LSTM**: Leads to OOM errors with bidirectional processing\n3. **Ignoring sequence padding**: Variable-length sequences waste memory\n4. **Not using gradient checkpointing**: Critical for long sequences with bidirectional models\n\n## Performance Trade-offs\n\n- **GRU**: 15-25% faster training, 20% less memory, slightly lower accuracy on complex tasks\n- **LSTM**: Better long-term dependency capture, higher memory usage, slower convergence\n- **Choice**: GRU for real-time applications, LSTM for tasks requiring deep memory",
+  "tags": [
+    "lstm",
+    "gru",
+    "seq2seq"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Input Sequence] --> B[Bidirectional Processing]\n    B --> C[Forward Pass]\n    B --> D[Backward Pass]\n    \n    C --> E[GRU: 2 Gates]\n    C --> F[LSTM: 3 Gates + Cell]\n    D --> G[GRU: 2 Gates]\n    D --> H[LSTM: 3 Gates + Cell]\n    \n    E --> I[Concatenate Hidden States]\n    F --> I\n    G --> I\n    H --> I\n    \n    I --> J[Gradient Computation]\n    J --> K[Clipping Check]\n    K --> L[Parameter Update]\n    \n    subgraph Memory Usage\n        M[GRU: 2x Hidden Dim]\n        N[LSTM: 4x Hidden Dim + Cell]\n    end\n    \n    subgraph Batch Optimization\n        O[GRU: Batch 32-64]\n        P[LSTM: Batch 16-32]\n    end",
+  "sourceUrl": "https://www.geeksforgeeks.org/rnn-vs-lstm-vs-gru-vs-transformers/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=UObKFk45muY",
+    "longVideo": "https://www.youtube.com/watch?v=btkXZNzsG0c"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:44:10.500Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "gh-14",
+  "question": "What are the core service categories in Microsoft Azure and how do they work together to support cloud applications?",
+  "answer": "Azure provides compute, storage, networking, and database services that integrate to build scalable cloud solutions.",
+  "explanation": "Microsoft Azure is a comprehensive cloud computing platform offering multiple service categories:\n\n**Compute Services:**\n- Virtual Machines - IaaS for custom OS environments\n- App Service - PaaS for web applications\n- Azure Functions - Serverless compute for event-driven workloads\n- Container Instances - Containerized application hosting\n\n**Storage Services:**\n- Blob Storage - Object storage for unstructured data\n- File Storage - Managed file shares\n- Queue Storage - Message queuing service\n- Table Storage - NoSQL key-value store\n\n**Networking Services:**\n- Virtual Network - Isolated network environments\n- Load Balancer - Traffic distribution\n- Application Gateway - Web traffic load balancer with SSL termination\n- VPN Gateway - Secure connections to on-premises\n\n**Database Services:**\n- SQL Database - Managed relational database\n- Cosmos DB - Multi-model NoSQL database\n- Redis Cache - In-memory data store\n\nThese services integrate seamlessly, allowing applications to scale horizontally across regions while maintaining security and performance.",
+  "diagram": "graph TD\n    Azure[Microsoft Azure]\n    Azure --> Compute[Compute Services]\n    Azure --> Storage[Storage Services]\n    Azure --> Network[Networking]\n    Azure --> Database[Database Services]\n    \n    Compute --> VM[Virtual Machines]\n    Compute --> AppSvc[App Service]\n    Compute --> Functions[Azure Functions]\n    \n    Storage --> Blob[Blob Storage]\n    Storage --> Files[File Storage]\n    Storage --> Queue[Queue Storage]\n    \n    Network --> VNet[Virtual Network]\n    Network --> LB[Load Balancer]\n    Network --> Gateway[App Gateway]\n    \n    Database --> SQL[SQL Database]\n    Database --> Cosmos[Cosmos DB]\n    Database --> Redis[Redis Cache]",
+  "difficulty": "beginner",
+  "tags": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

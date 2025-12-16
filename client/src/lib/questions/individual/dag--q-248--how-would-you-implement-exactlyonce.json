@@ -1,0 +1,28 @@
+{
+  "id": "q-248",
+  "question": "How would you implement exactly-once processing in a data pipeline when both source (Kafka) and sink (database) can fail, ensuring no duplicate data or data loss?",
+  "answer": "Use Kafka transactions with idempotent producers + database transaction IDs + offset commits in atomic transaction.",
+  "explanation": "## Concept Overview\nExactly-once processing guarantees that each record is processed precisely once, despite failures. This requires coordinating between the source system (Kafka), processing logic, and sink system (database) in a transactional manner.\n\n## Implementation Details\n\n**1. Kafka Producer Configuration**\n- Enable idempotence: `enable.idempotence=true`\n- Set transactional ID: `transactional.id=unique-app-id`\n- Initialize transactions before processing\n\n**2. Database Transaction Management**\n- Use application-level transaction IDs\n- Implement idempotent writes (UPSERT operations)\n- Store processing metadata alongside business data\n\n**3. Atomic Commit Pattern**\n- Process records in database transaction\n- Commit Kafka offsets within same transaction\n- Use `sendOffsetsToTransaction()` API\n\n## Code Example\n```java\n// Kafka producer with transactions\nProperties props = new Properties();\nprops.put(\"enable.idempotence\", \"true\");\nprops.put(\"transactional.id\", \"pipeline-001\");\nKafkaProducer<String, String> producer = new KafkaProducer<>(props);\nproducer.initTransactions();\n\n// Processing loop\nwhile (true) {\n    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));\n    if (!records.isEmpty()) {\n        producer.beginTransaction();\n        \n        try {\n            // Process and store to database with transaction ID\n            for (ConsumerRecord<String, String> record : records) {\n                String txId = UUID.randomUUID().toString();\n                database.upsertWithTxId(record.key(), record.value(), txId);\n            }\n            \n            // Commit offsets atomically\n            producer.sendOffsetsToTransaction(getConsumerOffsets());\n            producer.commitTransaction();\n        } catch (Exception e) {\n            producer.abortTransaction();\n        }\n    }\n}\n```\n\n## Common Pitfalls\n- **Consumer lag**: Transactions increase processing time, monitor consumer lag\n- **Deadlocks**: Ensure consistent ordering of operations\n- **Transaction timeout**: Configure appropriate timeout values\n- **Partial failures**: Handle database rollback when Kafka commit fails",
+  "tags": [
+    "dag",
+    "orchestration",
+    "scheduling"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Kafka Topic] --> B[Consumer Poll]\n    B --> C[Begin Transaction]\n    C --> D[Process Records]\n    D --> E[Database UPSERT with TxID]\n    E --> F{Success?}\n    F -->|Yes| G[Send Offsets to Transaction]\n    F -->|No| H[Abort Transaction]\n    G --> I[Commit Transaction]\n    H --> J[Retry Processing]\n    I --> K[Next Poll]\n    J --> B",
+  "sourceUrl": "https://confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Airbnb",
+    "LinkedIn",
+    "Netflix",
+    "Spotify",
+    "Stripe",
+    "Twitter",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:33:27.688Z"
+}

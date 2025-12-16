@@ -1,0 +1,12 @@
+{
+  "id": "gh-78",
+  "question": "What are Monitoring Best Practices?",
+  "answer": "Monitoring Best Practices are proven methods that enhance the effectiveness of monitoring tools and processes.",
+  "explanation": "Monitoring Best Practices are proven methods that enhance the effectiveness of monitoring tools and processes.\n\nKey practices:\n```yaml\nTechnical Practices:\n- Infrastructure as Code\n- Continuous Integration\n- Automated Testing\n- Continuous Deployment\n- Monitoring and Logging\n\nCultural Practices:\n- Shared Responsibility\n- Blameless Post-mortems\n- Knowledge Sharing\n- Continuous Learning\n- Cross-functional Teams\n\nProcess Practices:\n- Agile Methodology\n- Version Control\n- Configuration Management\n- Release Management\n- Incident Management\n```",
+  "difficulty": "intermediate",
+  "tags": [
+    "monitoring",
+    "infra"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "q-235",
+  "question": "What is the purpose of Cypress fixtures and how do you load fixture data in a component test?",
+  "answer": "Fixtures provide static test data. Use cy.fixture('data.json').as('testData') to load JSON files for component testing.",
+  "explanation": "## Cypress Fixtures Overview\n\nFixtures are external data files that provide static test data for your Cypress tests. They help separate test data from test logic, making tests more maintainable and readable.\n\n## Implementation Details\n\n- Fixtures are stored in the `cypress/fixtures/` directory by default\n- Support JSON, JS, and other file formats\n- Can be loaded using `cy.fixture()` command\n- Data is cached during test runs for performance\n\n## Code Example\n\n```javascript\n// cypress/fixtures/user-data.json\n{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}\n\n// cypress/component/UserComponent.spec.js\ndescribe('UserComponent', () => {\n  beforeEach(() => {\n    cy.fixture('user-data').as('userData')\n  })\n  \n  it('displays user information', function() {\n    cy.mount(UserComponent, { props: { user: this.userData } })\n    cy.get('[data-cy=user-name]').should('contain', 'John Doe')\n  })\n})\n```\n\n## Common Pitfalls\n\n- Using `function() {}` instead of arrow functions to access fixture data via `this`\n- Not properly handling async fixture loading\n- Storing sensitive data in fixtures (use environment variables instead)",
+  "tags": [
+    "cypress",
+    "component-testing",
+    "fixtures"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[Test File] --> B[cy.fixture()]\n    B --> C[Fixtures Directory]\n    C --> D[JSON/JS Files]\n    D --> E[Loaded Data]\n    E --> F[Component Test]\n    F --> G[Assertions]",
+  "lastUpdated": "2025-12-15T01:17:02.710Z"
+}

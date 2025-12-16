@@ -1,0 +1,13 @@
+{
+  "id": "gh-41",
+  "question": "What are the different types of performance testing and when would you use each?",
+  "answer": "Load, stress, spike, volume, endurance, and scalability testing - each validates different performance aspects under varying conditions.",
+  "explanation": "Performance testing encompasses several specialized types:\n\n• **Load Testing** - Validates system behavior under expected user load to ensure it meets performance requirements\n• **Stress Testing** - Pushes system beyond normal capacity to identify breaking points and failure modes\n• **Spike Testing** - Tests sudden load increases to verify system handles traffic spikes gracefully\n• **Volume Testing** - Validates performance with large amounts of data to identify database bottlenecks\n• **Endurance Testing** - Runs extended tests to detect memory leaks and resource degradation over time\n• **Scalability Testing** - Determines system's ability to scale up/down with varying loads\n\nExample JMeter configuration:\n```xml\n<ThreadGroup>\n  <stringProp name=\"ThreadGroup.num_threads\">100</stringProp>\n  <stringProp name=\"ThreadGroup.ramp_time\">60</stringProp>\n  <stringProp name=\"ThreadGroup.duration\">300</stringProp>\n</ThreadGroup>\n```",
+  "diagram": "graph TD\n    A[Performance Testing] --> B[Load Testing]\n    A --> C[Stress Testing]\n    A --> D[Spike Testing]\n    A --> E[Volume Testing]\n    A --> F[Endurance Testing]\n    A --> G[Scalability Testing]\n    B --> H[Expected Load]\n    C --> I[Peak Load]\n    D --> J[Sudden Spikes]\n    E --> K[Large Data Sets]\n    F --> L[Extended Duration]\n    G --> M[Variable Capacity]",
+  "difficulty": "intermediate",
+  "tags": [
+    "perf",
+    "testing"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

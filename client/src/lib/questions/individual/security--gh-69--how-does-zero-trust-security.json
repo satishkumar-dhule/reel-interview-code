@@ -1,0 +1,13 @@
+{
+  "id": "gh-69",
+  "question": "How does Zero Trust Security implement identity-based access control with micro-segmentation?",
+  "answer": "Zero Trust enforces continuous identity verification and least-privilege access through micro-segmented network zones.",
+  "explanation": "## Concept Overview\nZero Trust is a security model that assumes no implicit trust, requiring continuous verification of every access request regardless of network location.\n\n## Implementation\n```yaml\n# Zero Trust Policy Example\naccess_policy:\n  verification:\n    - multi_factor_auth\n    - device_health_check\n    - behavioral_analysis\n  \n  micro_segmentation:\n    - database_zone: [app_servers_only]\n    - api_zone: [authenticated_users]\n    - admin_zone: [privileged_accounts]\n```\n\n```typescript\n// Identity-based access control\nconst accessControl = {\n  verifyIdentity: (user, device, context) => {\n    return mfa.validate(user) && \n           device.isCompliant() && \n           context.riskScore < threshold;\n  },\n  \n  enforceLeastPrivilege: (identity, resource) => {\n    return policies.check(identity.roles, resource.requiredPermissions);\n  }\n};\n```\n\n## Trade-offs\n**Pros:**\n- Reduced attack surface through micro-segmentation\n- Granular access control and audit trails\n- Better compliance and visibility\n\n**Cons:**\n- Increased complexity in policy management\n- Performance overhead from continuous verification\n- Higher infrastructure costs\n\n## Common Pitfalls\n- Over-segmenting leading to management complexity\n- Inconsistent policy enforcement across zones\n- Ignoring device posture in access decisions\n- Poor monitoring of segmentation effectiveness",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "network"
+  ],
+  "lastUpdated": "2025-12-15T06:36:25.331Z",
+  "diagram": "graph TD\n    A[User Request] --> B{Identity Verification}\n    B -->|Valid| C{Device Health Check}\n    B -->|Invalid| D[Blocked]\n    C -->|Healthy| E{Context Analysis}\n    C -->|Unhealthy| D\n    E -->|Low Risk| F{Policy Engine}\n    E -->|High Risk| D\n    F -->|Authorized| G[Micro-Segmented Access]\n    F -->|Unauthorized| D\n    G --> H[Database Zone]\n    G --> I[API Zone]\n    G --> J[Admin Zone]\n    H --> K[Continuous Monitoring]\n    I --> K\n    J --> K\n    K --> L[Adaptive Response]"
+}

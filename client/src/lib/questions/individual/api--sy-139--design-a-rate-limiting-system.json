@@ -1,0 +1,13 @@
+{
+  "id": "sy-139",
+  "question": "Design a rate limiting system for a multi-tenant API that supports burst capacity with token bucket algorithm, distributed coordination, and dynamic tenant-specific policies",
+  "answer": "Distributed token bucket with Redis-backed state, tenant-specific rate configs, and local caches for performance",
+  "explanation": "This system needs to handle multiple tenants with different rate limits, support burst capacity through token buckets, ensure coordination across multiple API instances, and provide dynamic policy updates.\n\nKey components:\n- **Token Bucket Algorithm**: Each tenant has a bucket with capacity (burst) and refill rate. Tokens are added at configured rate, requests consume tokens.\n- **Distributed State**: Redis stores current token counts and last refill timestamps for each tenant, ensuring consistency across instances.\n- **Local Caching**: Each API instance maintains a local cache of token counts with TTL to reduce Redis calls, using optimistic updates.\n- **Policy Management**: Dynamic rate limit configuration stored in database, propagated through Redis pub/sub.\n- **Fallback**: When Redis unavailable, fall back to local bucket with reduced capacity to prevent service interruption.\n\nPerformance considerations:\n- Pipeline Redis operations for batch updates\n- Use Lua scripts for atomic token operations\n- Implement write-back caching for burst scenarios\n- Separate hot path (rate check) from policy updates\n\nChallenges addressed:\n- Race conditions in distributed environment\n- Clock synchronization issues\n- Graceful degradation during failures\n- Tenant isolation and fairness",
+  "diagram": "graph TD\n    A[Client Request] --> B{Rate Limiter Service}\n    B --> C[Local Cache Check]\n    C -->|Hit| D[Consume Local Tokens]\n    C -->|Miss| E[Redis Token Check]\n    E -->|Available| F[Consume Redis Tokens]\n    E -->|Limited| G[Reject - 429]\n    D --> H[Update Local Cache Async]\n    F --> I[Update Local Cache]\n    H --> J[Forward to API]\n    I --> J\n    G --> K[Return Rate Limit Headers]\n    J --> L[Response]\n    M[Policy Manager] --> N[Redis Pub/Sub]\n    N --> O[Update Local Config]\n    O --> B",
+  "difficulty": "advanced",
+  "tags": [
+    "api",
+    "rest"
+  ],
+  "lastUpdated": "2025-12-12T09:36:49.367Z"
+}

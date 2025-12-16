@@ -1,0 +1,26 @@
+{
+  "id": "q-261",
+  "question": "How would you implement a task delegation matrix to optimize team member growth while ensuring project delivery?",
+  "answer": "Create a skill-interest matrix mapping tasks to team members' development goals and current competencies.",
+  "explanation": "## Task Delegation Matrix Overview\nA delegation matrix helps engineering managers balance project needs with team development by matching tasks to team members based on skill level and growth potential.\n\n## Implementation Details\n\n### Matrix Structure\n- **X-axis**: Task complexity/impact level (low, medium, high)\n- **Y-axis**: Team member skill level (novice, developing, proficient, expert)\n- **Color coding**: Match quality (red=stretch, yellow=optimal, green=comfortable)\n\n### Key Components\n1. **Skill Assessment**: Regular 1:1s to document current competencies\n2. **Growth Goals**: Individual development plans with specific skill targets\n3. **Task Inventory**: Project backlog categorized by complexity and learning value\n4. **Matching Algorithm**: Score tasks based on development potential and delivery risk\n\n```javascript\n// Simplified delegation scoring\nclass DelegationMatrix {\n  calculateTaskScore(task, teamMember) {\n    const skillMatch = task.requiredSkill - teamMember.skillLevel;\n    const growthPotential = task.learningValue * (1 - teamMember.skillLevel);\n    const deliveryRisk = Math.max(0, skillMatch) * task.criticality;\n    \n    return growthPotential - deliveryRisk;\n  }\n}\n```\n\n## Common Pitfalls\n- **Over-delegating critical tasks** to junior members\n- **Ignoring personal interests** in favor of pure skill matching\n- **Failing to provide adequate support** for stretch assignments\n- **Not adjusting for team dynamics** and workload balance",
+  "tags": [
+    "delegation",
+    "mentoring",
+    "growth"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[Project Tasks] --> B{Assess Complexity}\n    B -->|Low| C[New team member]\n    B -->|Medium| G[Growing team member]\n    B -->|High| H[Senior team member]\n    \n    C --> D[Learning opportunity\n    Guided execution]\n    G --> E[Skill development\n    Independent work]\n    H --> F[Mentoring others\n    Complex problem solving]\n    \n    D --> I[Review & Feedback]\n    E --> I\n    F --> I\n    \n    I --> J[Skill matrix update]",
+  "sourceUrl": "https://hbr.org/2022/09/a-framework-for-delegating-more-effectively",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T10:58:01.652Z"
+}

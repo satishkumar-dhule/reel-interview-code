@@ -1,0 +1,13 @@
+{
+  "id": "gh-36",
+  "question": "How do different backup strategies balance storage efficiency, backup speed, and recovery time?",
+  "answer": "Full backups copy everything, incremental saves only changes since last backup, differential saves changes since last full backup.",
+  "explanation": "Backup strategies balance three key factors: storage space, backup duration, and recovery speed.\n\n## **Full Backup**\n- **What**: Complete copy of all data\n- **Storage**: Highest usage (100% of data size)\n- **Speed**: Slowest backup process\n- **Recovery**: Fastest - single restore operation\n- **Use case**: Weekly/monthly baseline, critical systems\n\n## **Incremental Backup**\n- **What**: Only changes since last backup (any type)\n- **Storage**: Lowest usage (only changed data)\n- **Speed**: Fastest backup process\n- **Recovery**: Slowest - need full + all incremental backups\n- **Use case**: Daily backups, large datasets with limited change\n\n## **Differential Backup**\n- **What**: Changes since last full backup\n- **Storage**: Medium usage (grows until next full)\n- **Speed**: Medium backup process\n- **Recovery**: Medium - need full + latest differential\n- **Use case**: When faster recovery needed than incremental\n\n## **Strategy Examples**\n- **Grandfather-Father-Son**: Monthly full + weekly differential + daily incremental\n- **Tower of Hanoi**: Rotating backup schedule with different retention periods\n- **3-2-1 Rule**: 3 copies, 2 different media, 1 offsite location",
+  "diagram": "graph TD\n    subgraph \"Backup Strategy Comparison\"\n        A[Full Backup] --> A1[100% Storage]\n        A --> A2[Slow Backup]\n        A --> A3[Fast Recovery]\n        \n        B[Incremental] --> B1[Minimal Storage]\n        B --> B2[Fast Backup]\n        B --> B3[Slow Recovery]\n        \n        C[Differential] --> C1[Medium Storage]\n        C --> C2[Medium Backup]\n        C --> C3[Medium Recovery]\n    end\n    \n    subgraph \"Recovery Process\"\n        D[Full Recovery] --> E[Single File]\n        F[Incremental Recovery] --> G[Full + All Incrementals]\n        H[Differential Recovery] --> I[Full + Latest Differential]\n    end\n    \n    style A fill:#e1f5fe\n    style B fill:#fff3e0\n    style C fill:#f3e5f5",
+  "difficulty": "intermediate",
+  "tags": [
+    "backup",
+    "dr"
+  ],
+  "lastUpdated": "2025-12-13T06:30:02.658Z"
+}

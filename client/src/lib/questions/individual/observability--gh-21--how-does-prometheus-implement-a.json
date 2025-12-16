@@ -1,0 +1,14 @@
+{
+  "id": "gh-21",
+  "question": "How does Prometheus implement a pull-based monitoring system, and what are the key components in its architecture?",
+  "answer": "Prometheus uses pull-based metric collection with a time-series database, query language (PromQL), and alerting system for monitoring cloud-native applications.",
+  "explanation": "Prometheus is a cloud-native monitoring system that scrapes metrics from HTTP endpoints:\n\n## Core Components\n- **Prometheus Server**: Collects and stores time-series data\n- **Exporters**: Expose metrics in Prometheus format\n- **Service Discovery**: Automatically finds monitoring targets\n- **Alertmanager**: Manages alert routing and notification\n- **PromQL**: Query language for time-series analysis\n\n## Key Features\n- Pull-based metric collection (configurable scrape intervals)\n- Multi-dimensional data model with labels\n- Powerful query capabilities for aggregation and filtering\n- Built-in alerting with notification integration\n- Time-series data compression and retention policies",
+  "diagram": "graph TD\n    Apps[Applications] --> Exporters[Exporters]\n    Exporters --> Metrics[Metrics Endpoints]\n    Prometheus[Prometheus Server] --> Metrics\n    Prometheus --> TSDB[(Time Series DB)]\n    Prometheus --> PromQL[PromQL Queries]\n    Prometheus --> AlertManager[Alertmanager]\n    AlertManager --> Slack[Slack/Email/PagerDuty]\n    Grafana[Grafana] --> Prometheus\n    ServiceDiscovery[Service Discovery] --> Prometheus",
+  "difficulty": "beginner",
+  "tags": [
+    "observability",
+    "monitoring",
+    "logging"
+  ],
+  "lastUpdated": "2025-12-12T10:03:55.884Z"
+}

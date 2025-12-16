@@ -1,0 +1,12 @@
+{
+  "id": "gh-68",
+  "question": "What is Network Security in DevOps?",
+  "answer": "Network Security in DevOps involves implementing security measures throughout the development and deployment pipeline to protect applications and infr...",
+  "explanation": "Network Security in DevOps involves implementing security measures throughout the development and deployment pipeline to protect applications and infrastructure.\n\nKey components:\n1. **Infrastructure Security:**\n- Firewalls\n- VPNs\n- Network segmentation\n\n2. **Application Security:**\n- TLS encryption\n- API security\n- Authentication/Authorization\n\nExample of security group configuration:\n```yaml\nSecurityGroup:\nType: AWS::EC2::SecurityGroup\nProperties:\nGroupDescription: Web tier security group\nSecurityGroupIngress:\n- IpProtocol: tcp\nFromPort: 443\nToPort: 443\nCidrIp: 0.0.0.0/0\n- IpProtocol: tcp\nFromPort: 80\nToPort: 80\nCidrIp: 0.0.0.0/0\n```",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "network"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

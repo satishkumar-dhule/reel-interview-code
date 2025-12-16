@@ -1,0 +1,14 @@
+{
+  "id": "gh-22",
+  "question": "What is Grafana and how does it integrate with different data sources for monitoring and visualization?",
+  "answer": "Grafana is an open-source analytics and monitoring platform that queries, visualizes, and alerts on metrics from multiple data sources.",
+  "explanation": "Grafana is a comprehensive open-source analytics and monitoring solution that provides powerful visualization and alerting capabilities for metrics and logs from various data sources.\n\n**Key Features:**\n• **Multi-source integration** - Connects to 60+ data sources including Prometheus, InfluxDB, Elasticsearch, MySQL, and cloud services\n• **Rich visualizations** - Offers graphs, heatmaps, histograms, geomaps, and custom panels for data representation\n• **Interactive dashboards** - Create dynamic, shareable dashboards with drill-down capabilities and variables\n• **Alerting system** - Set up notifications via email, Slack, PagerDuty when metrics exceed thresholds\n• **User management** - Role-based access control, teams, and organization management\n• **Templating** - Dynamic dashboards using variables for different environments or services\n• **Plugins ecosystem** - Extend functionality with community and enterprise plugins\n\n**Common Use Cases:**\n• Infrastructure monitoring and observability\n• Application performance monitoring (APM)\n• Business intelligence and analytics\n• IoT data visualization\n• Log analysis and correlation",
+  "diagram": "graph TD\n    A[Data Sources] --> B[Grafana Server]\n    C[Prometheus] --> B\n    D[InfluxDB] --> B\n    E[Elasticsearch] --> B\n    F[MySQL] --> B\n    B --> G[Query Engine]\n    G --> H[Visualization Engine]\n    H --> I[Dashboards]\n    H --> J[Panels]\n    B --> K[Alert Manager]\n    K --> L[Notifications]\n    M[Users] --> N[Web Interface]\n    N --> I\n    I --> O[Graphs]\n    I --> P[Tables]\n    I --> Q[Heatmaps]",
+  "difficulty": "beginner",
+  "tags": [
+    "observability",
+    "monitoring",
+    "logging"
+  ],
+  "lastUpdated": "2025-12-12T10:04:15.574Z"
+}

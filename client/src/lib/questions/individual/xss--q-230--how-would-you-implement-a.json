@@ -1,0 +1,15 @@
+{
+  "id": "q-230",
+  "question": "How would you implement a Content Security Policy (CSP) with nonce-based inline script protection to prevent XSS while maintaining compatibility with third-party analytics?",
+  "answer": "Use CSP header with 'script-src nonce-{random} https://analytics.com' and inject nonce into script tags via server-side templating.",
+  "explanation": "## Concept Overview\nContent Security Policy with nonce-based protection allows selective inline script execution while blocking XSS attacks. Nonces are cryptographically random values generated per request.\n\n## Implementation Details\n- Generate cryptographically secure nonce per request\n- Set CSP header: `script-src 'nonce-{nonce}' 'self' https://trusted-cdn.com`\n- Inject nonce into all inline script tags\n- Handle third-party scripts via allowlist or nonce proxy\n\n## Code Example\n```javascript\n// Express.js middleware\napp.use((req, res, next) => {\n  const nonce = crypto.randomBytes(16).toString('base64');\n  res.locals.nonce = nonce;\n  res.setHeader('Content-Security-Policy', \n    `script-src 'nonce-${nonce}' 'self' https://analytics.com`);\n  next();\n});\n\n// Template\n<script nonce=\"{{nonce}}\">\n  // Safe inline script\n</script>\n```\n\n## Common Pitfalls\n- Using predictable nonces (timestamps, counters)\n- Forgetting to inject nonce into all inline scripts\n- Overly permissive CSP defeating security purpose\n- Not handling CSP violation reports for monitoring",
+  "tags": [
+    "xss",
+    "csrf",
+    "sqli",
+    "ssrf"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client Request] --> B[Generate Nonce]\n    B --> C[Set CSP Header]\n    C --> D[Render HTML with Nonce]\n    D --> E[Browser Validates Scripts]\n    E --> F{Script has Valid Nonce?}\n    F -->|Yes| G[Execute Script]\n    F -->|No| H[Block Script]\n    G --> I[Send CSP Violation Report]",
+  "lastUpdated": "2025-12-15T01:16:20.924Z"
+}

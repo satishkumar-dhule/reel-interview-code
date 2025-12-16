@@ -1,0 +1,13 @@
+{
+  "id": "gh-6",
+  "question": "What is a Dockerfile and how does it enable containerized application deployment?",
+  "answer": "A Dockerfile is a text file containing instructions to build Docker images, defining the environment, dependencies, and commands needed to run an application in a container.",
+  "explanation": "A Dockerfile is a declarative text document that automates Docker image creation through a series of instructions:\n\n• **Base Image**: Starts with a foundation OS or runtime using `FROM`\n• **Environment Setup**: Configures working directories, environment variables, and system dependencies\n• **Application Code**: Copies source files and installs application-specific dependencies\n• **Runtime Configuration**: Exposes ports and defines the default command to execute\n• **Layer Caching**: Each instruction creates a new layer, enabling efficient builds and updates\n• **Reproducibility**: Ensures consistent environments across development, testing, and production\n\n**Common Dockerfile Instructions:**\n```dockerfile\nFROM node:18-alpine          # Base image\nWORKDIR /usr/src/app         # Set working directory\nCOPY package*.json ./        # Copy dependency files\nRUN npm ci --only=production # Install dependencies\nCOPY . .                     # Copy application code\nEXPOSE 3000                  # Document port usage\nUSER node                    # Run as non-root user\nCMD [\"npm\", \"start\"]         # Default command\n```\n\n**Best Practices:**\n• Use multi-stage builds to reduce image size\n• Leverage .dockerignore to exclude unnecessary files\n• Run containers as non-root users for security\n• Minimize layers by combining RUN commands\n• Use specific base image tags for consistency",
+  "diagram": "graph TD\n    A[FROM base:tag] --> B[WORKDIR /app]\n    B --> C[COPY package.json]\n    C --> D[RUN install deps]\n    D --> E[COPY source code]\n    E --> F[EXPOSE ports]\n    F --> G[USER non-root]\n    G --> H[CMD start app]\n    \n    I[Build Context] --> C\n    I --> E\n    \n    H --> J[Container Runtime]\n    \n    style A fill:#e1f5fe\n    style H fill:#c8e6c9\n    style J fill:#fff3e0",
+  "difficulty": "beginner",
+  "tags": [
+    "docker",
+    "containers"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

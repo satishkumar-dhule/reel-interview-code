@@ -1,0 +1,14 @@
+{
+  "id": "fe-3",
+  "question": "Explain 'Closure' in JavaScript with a practical use case.",
+  "answer": "A Closure is a function remembering its lexical scope even when executed outside that scope.",
+  "explanation": "**Concept**: When a function returns another function, the inner function retains access to the outer function's variables.\n\n**Use Case: Data Privacy / Currying**\n```javascript\nfunction createCounter() {\n  let count = 0; // Private variable\n  return {\n    increment: () => count++,\n    get: () => count\n  };\n}\nconst c = createCounter();\nc.increment(); // 1\n// count is not accessible directly\n```",
+  "diagram": "\ngraph TD\n    Outer[Outer Function] --> Var[count = 0]\n    Outer --> Inner[Inner Function]\n    Inner -.->|Remembers| Var\n",
+  "difficulty": "intermediate",
+  "tags": [
+    "js",
+    "scope",
+    "patterns"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

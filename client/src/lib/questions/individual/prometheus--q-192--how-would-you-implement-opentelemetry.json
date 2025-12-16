@@ -1,0 +1,14 @@
+{
+  "id": "q-192",
+  "question": "How would you implement OpenTelemetry instrumentation to capture RED metrics (Rate, Errors, Duration) for a microservice using Prometheus as the backend?",
+  "answer": "Configure OpenTelemetry SDK with Prometheus exporter, instrument endpoints with @opentelemetry/api, and create custom metrics for request count, error rate, and latency histograms.",
+  "explanation": "## Concept Overview\nOpenTelemetry provides a unified approach to observability by collecting metrics, traces, and logs. For SRE, RED metrics (Rate, Errors, Duration) are essential for monitoring service health.\n\n## Implementation Details\n- Use OpenTelemetry SDK with Prometheus exporter\n- Instrument HTTP endpoints using middleware\n- Create custom metrics for request counting and error tracking\n- Configure latency histograms with appropriate buckets\n\n## Code Example\n```javascript\nconst { NodeSDK } = require('@opentelemetry/sdk-node');\nconst { PrometheusExporter } = require('@opentelemetry/exporter-prometheus');\nconst { metrics } = require('@opentelemetry/api');\n\nconst exporter = new PrometheusExporter({ port: 9464 });\nconst sdk = new NodeSDK({ metricExporter: exporter });\n\n// Create RED metrics\nconst meter = metrics.getMeter('service-metrics');\nconst requestCounter = meter.createCounter('http_requests_total');\nconst errorCounter = meter.createCounter('http_errors_total');\nconst durationHistogram = meter.createHistogram('http_request_duration_ms');\n```\n\n## Common Pitfalls\n- Incorrect bucket configuration leading to poor latency visibility\n- Missing error classification for different HTTP status codes\n- High cardinality metrics from excessive label usage\n- Not sampling traces appropriately in high-traffic scenarios",
+  "tags": [
+    "prometheus",
+    "grafana",
+    "opentelemetry"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client Request] --> B[OpenTelemetry Middleware]\n    B --> C[Request Counter]\n    B --> D[Duration Timer Start]\n    B --> E[Service Handler]\n    E --> F{Success?}\n    F -->|Yes| G[Duration Timer End]\n    F -->|No| H[Error Counter]\n    H --> G\n    G --> I[Prometheus Exporter]\n    I --> J[Prometheus Server]\n    J --> K[Grafana Dashboard]\n    C --> I\n    D --> G",
+  "lastUpdated": "2025-12-14T12:56:32.904Z"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "q-243",
+  "question": "How would you implement an Ansible role for zero-downtime deployment of a web application using blue-green deployment pattern?",
+  "answer": "Use rolling updates with health checks, traffic switching via load balancer, and rollback capabilities using Ansible handlers and conditionals.",
+  "explanation": "## Concept Overview\nBlue-green deployment maintains two identical production environments. Blue serves live traffic while green is updated, then traffic switches.\n\n## Implementation Details\n- Use Ansible inventory groups for blue/green environments\n- Implement health checks with `uri` module\n- Use `when` conditionals and `handlers` for orchestration\n- Leverage `include_role` for modular deployment\n\n## Code Example\n```yaml\n# roles/deploy/tasks/main.yml\n- name: Deploy to green environment\n  include_role:\n    name: app_deploy\n  vars:\n    target_env: green\n  when: inventory_hostname in groups['green']\n\n- name: Health check green environment\n  uri:\n    url: \"http://{{ ansible_host }}/health\"\n    method: GET\n  register: health_check\n  retries: 5\n  delay: 10\n\n- name: Switch traffic to green\n  include_tasks: switch_traffic.yml\n  when: health_check.status == 200\n```\n\n## Common Pitfalls\n- Missing proper health check timeouts\n- Not handling database migrations correctly\n- Insufficient rollback mechanisms\n- Environment configuration drift",
+  "tags": [
+    "ansible",
+    "puppet",
+    "chef"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Load Balancer] --> B[Blue Environment]\n    A --> C[Green Environment]\n    D[Ansible Control Node] --> E[Deploy to Green]\n    E --> F[Health Check]\n    F --> G{Healthy?}\n    G -->|Yes| H[Switch Traffic]\n    G -->|No| I[Rollback]\n    H --> J[Traffic to Green]\n    I --> K[Traffic to Blue]",
+  "sourceUrl": "https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:27:02.340Z"
+}

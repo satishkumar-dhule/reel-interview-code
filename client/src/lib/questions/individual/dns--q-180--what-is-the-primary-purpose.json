@@ -1,0 +1,13 @@
+{
+  "id": "q-180",
+  "question": "What is the primary purpose of DNS in computer networking?",
+  "answer": "Translates human-readable domain names into IP addresses",
+  "explanation": "DNS (Domain Name System) acts as the internet's phonebook. When you type a website address like www.google.com, DNS servers translate this human-readable domain name into a numerical IP address (like 172.217.14.238) that computers use to identify each other on the network. This translation is essential because while humans find names easy to remember, computers communicate using IP addresses. DNS operates in a hierarchical distributed database system across multiple servers worldwide.",
+  "tags": [
+    "dns",
+    "resolution"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[User types www.example.com] --> B[Local DNS Cache]\n    B --> C{Cache hit?}\n    C -->|No| D[Recursive DNS Server]\n    C -->|Yes| E[Return IP Address]\n    D --> F[Root DNS Server]\n    F --> G[TLD Server .com]\n    G --> H[Authoritative DNS Server]\n    H --> I[Return IP Address]\n    I --> B\n    B --> E",
+  "lastUpdated": "2025-12-14T10:25:03.157Z"
+}

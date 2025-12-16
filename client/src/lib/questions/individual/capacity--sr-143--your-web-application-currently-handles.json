@@ -1,0 +1,13 @@
+{
+  "id": "sr-143",
+  "question": "Your web application currently handles 1000 requests per minute during peak hours. Each request takes an average of 200ms to process. If you expect traffic to double in the next 6 months, how many additional server instances do you need if each server can handle 50 concurrent requests?",
+  "answer": "Need 2 more instances. Current: 1000 req/min ÷ 60s = 16.67 req/s × 0.2s = 3.33 concurrent. Double = 6.67. Need 1 more instance minimum.",
+  "explanation": "## Capacity Planning Calculation\n\n**Step 1: Calculate current concurrent requests**\n- Current load: 1000 requests/minute = 16.67 requests/second\n- Processing time: 200ms = 0.2 seconds\n- Concurrent requests = 16.67 × 0.2 = 3.33 concurrent requests\n\n**Step 2: Calculate future requirements**\n- Expected traffic: 2000 requests/minute = 33.33 requests/second\n- Future concurrent requests = 33.33 × 0.2 = 6.67 concurrent requests\n\n**Step 3: Determine server capacity**\n- Each server handles 50 concurrent requests\n- Current servers needed: 3.33 ÷ 50 = 0.067 servers (1 server sufficient)\n- Future servers needed: 6.67 ÷ 50 = 0.133 servers (1 server sufficient)\n\n**However**, for safety margin and avoiding saturation:\n- Add buffer capacity (typically 20-30%)\n- Consider peak spikes beyond average\n- Plan for gradual scaling\n\n**Recommendation**: Add 1-2 additional instances to handle growth safely.",
+  "diagram": "graph TD\n    A[Current Load<br/>1000 req/min] --> B[16.67 req/sec]\n    B --> C[3.33 concurrent<br/>requests]\n    D[Future Load<br/>2000 req/min] --> E[33.33 req/sec]\n    E --> F[6.67 concurrent<br/>requests]\n    G[Server Capacity<br/>50 concurrent] --> H{Scaling Decision}\n    C --> H\n    F --> H\n    H --> I[Add 1-2 Instances<br/>for safety margin]",
+  "difficulty": "beginner",
+  "tags": [
+    "capacity",
+    "scaling"
+  ],
+  "lastUpdated": "2025-12-12T10:05:04.369Z"
+}

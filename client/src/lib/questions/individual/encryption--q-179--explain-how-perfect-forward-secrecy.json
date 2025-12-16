@@ -1,0 +1,13 @@
+{
+  "id": "q-179",
+  "question": "Explain how Perfect Forward Secrecy (PFS) works in TLS and why it's important for secure communications.",
+  "answer": "PFS ensures session keys can't be compromised even if long-term private keys are later exposed.",
+  "explanation": "Perfect Forward Secrecy is a cryptographic property that ensures the compromise of long-term private keys doesn't compromise past session keys. In TLS, PFS is achieved using Diffie-Hellman key exchange (ECDHE) where:\n\n1. Client and server generate ephemeral key pairs for each session\n2. They exchange public values and compute shared secret independently\n3. The shared secret is used to derive session keys\n4. Ephemeral private keys are discarded after the session\n\nEven if an attacker obtains the server's long-term private key later, they cannot decrypt past communications because the ephemeral keys used in those sessions are gone forever. Common PFS cipher suites include ECDHE-RSA-AES128-GCM-SHA256 and DHE-RSA-AES256-GCM-SHA384.",
+  "tags": [
+    "encryption",
+    "crypto"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Client] -->|Generate Ephemeral Key Pair| B[Client Public Key]\n    C[Server] -->|Generate Ephemeral Key Pair| D[Server Public Key]\n    A -->|Send Client Public Key| C\n    C -->|Send Server Public Key| A\n    A -->|Compute Shared Secret| E[Session Key]\n    C -->|Compute Shared Secret| E\n    E -->|Encrypt/Decrypt| F[Secure Communication]\n    G[Long-term Private Key] -.->|Cannot decrypt past sessions| F",
+  "lastUpdated": "2025-12-14T10:24:56.470Z"
+}

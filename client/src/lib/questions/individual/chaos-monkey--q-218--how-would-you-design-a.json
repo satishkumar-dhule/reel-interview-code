@@ -1,0 +1,14 @@
+{
+  "id": "q-218",
+  "question": "How would you design a chaos engineering experiment to test database failover while maintaining transaction consistency across a microservices architecture?",
+  "answer": "Use controlled pod termination with circuit breakers, distributed transactions, and health checks to verify ACID compliance during failover.",
+  "explanation": "## Concept Overview\nChaos engineering for database failover involves systematically testing system resilience by simulating database failures while ensuring transaction consistency across microservices.\n\n## Implementation Details\n- **Chaos Monkey Integration**: Deploy Litmus Chaos experiments targeting database pods\n- **Transaction Monitoring**: Implement distributed tracing with OpenTelemetry\n- **Health Check Endpoints**: Custom readiness probes checking database connectivity\n- **Circuit Breaker Pattern**: Hystrix/Resilience4j for graceful degradation\n- **Consistency Verification**: Saga pattern for compensating transactions\n\n## Code Example\n```yaml\n# Litmus Chaos Experiment\napiVersion: litmuschaos.io/v1alpha1\nkind: ChaosEngine\nmetadata:\n  name: db-failover-engine\nspec:\n  appInfo:\n    appns: production\n    applabel: app=database\n  chaosServiceAccount: db-failover-sa\n  experiments:\n  - name: pod-delete\n    spec:\n      components:\n        env:\n        - name: TOTAL_CHAOS_DURATION\n          value: '60'\n        - name: PODS_AFFECTED_PERC\n          value: '100'\n```\n\n## Common Pitfalls\n- **Race Conditions**: Concurrent writes during failover window\n- **Split Brain**: Multiple nodes believing they're primary\n- **Connection Pool Exhaustion**: Sudden reconnection storms\n- **Data Drift**: Inconsistent state across replicas\n- **Timeout Misconfiguration**: Too short/long failover detection",
+  "tags": [
+    "chaos-monkey",
+    "litmus",
+    "gremlin"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Client Request] --> B[API Gateway]\n    B --> C[Service A]\n    B --> D[Service B]\n    C --> E[Primary DB]\n    D --> E\n    E --> F[Replica DB]\n    G[Chaos Engine] --> H[Pod Delete]\n    H --> E\n    I[Health Check] --> J[Circuit Breaker]\n    J --> K[Failover to Replica]\n    K --> F\n    L[Transaction Monitor] --> M[Consistency Check]\n    M --> N[Rollback if Needed]",
+  "lastUpdated": "2025-12-15T01:14:53.944Z"
+}

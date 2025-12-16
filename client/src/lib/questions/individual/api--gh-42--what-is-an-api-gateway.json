@@ -1,0 +1,13 @@
+{
+  "id": "gh-42",
+  "question": "What is an API Gateway?",
+  "answer": "An API Gateway acts as a reverse proxy to accept all API calls, aggregate various services, and return the appropriate result.",
+  "explanation": "An API Gateway acts as a reverse proxy to accept all API calls, aggregate various services, and return the appropriate result.\n\nKey features:\n1. **Request Handling:**\n- Authentication\n- SSL termination\n- Rate limiting\n\n2. **Integration:**\n- Service discovery\n- Request routing\n- Response transformation\n\nExample of Kong API Gateway configuration:\n```yaml\nservices:\n- name: user-service\nurl: http://user-service:8000\nroutes:\n- name: user-route\npaths:\n- /users\nplugins:\n- name: rate-limiting\nconfig:\nminute: 5\npolicy: local\n```",
+  "diagram": "\ngraph LR\n    Client --> GW[API Gateway]\n    GW --> Auth[Auth Service]\n    GW --> User[User Service]\n    GW --> Data[Data Service]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "api",
+    "service-mesh"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "gh-30",
+  "question": "What is Puppet and how does it manage infrastructure configuration?",
+  "answer": "Puppet is a configuration management tool that automates infrastructure provisioning using a declarative language to define desired system states.",
+  "explanation": "Puppet is a configuration management tool that helps you automate the provisioning and management of your infrastructure. It uses a declarative language to describe system configurations, where you specify the desired state rather than the steps to achieve it.\n\n## Key Concepts\n\n- **Declarative Language**: Define what the system should look like, not how to configure it\n- **Idempotent**: Running the same configuration multiple times produces the same result\n- **Agent-Server Architecture**: Puppet agents periodically check in with the Puppet server for configuration updates\n- **Resources**: Basic units of configuration (packages, files, services, users, etc.)\n\n## Example Puppet Manifest\n\n```puppet\nclass apache {\n  package { 'apache2':\n    ensure => installed,\n  }\n\n  service { 'apache2':\n    ensure  => running,\n    enable  => true,\n    require => Package['apache2'],\n  }\n\n  file { '/var/www/html/index.html':\n    ensure  => file,\n    content => 'Hello, World!',\n    require => Package['apache2'],\n  }\n}\n```\n\nThis manifest ensures Apache is installed, running, and serving a simple HTML page. The `require` parameter creates dependencies between resources.\n\n## Common Use Cases\n\n- Standardizing server configurations across environments\n- Enforcing security policies and compliance\n- Managing configuration drift\n- Automating software deployments",
+  "diagram": "graph TB\n    A[Puppet Server] -->|Catalog| B[Agent: Web Server]\n    A -->|Catalog| C[Agent: DB Server]\n    A -->|Catalog| D[Agent: App Server]\n    B -->|Facts| A\n    C -->|Facts| A\n    D -->|Facts| A\n    E[Puppet Code/Manifests] --> A\n    B --> F[Apply Configuration]\n    C --> G[Apply Configuration]\n    D --> H[Apply Configuration]\n    F --> I[Desired State]\n    G --> J[Desired State]\n    H --> K[Desired State]",
+  "difficulty": "beginner",
+  "tags": [
+    "config-mgmt",
+    "ansible",
+    "chef"
+  ],
+  "lastUpdated": "2025-12-13T06:29:18.865Z"
+}

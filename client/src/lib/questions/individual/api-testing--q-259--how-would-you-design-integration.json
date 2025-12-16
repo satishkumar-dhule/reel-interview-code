@@ -1,0 +1,28 @@
+{
+  "id": "q-259",
+  "question": "How would you design integration tests for a Saga pattern implementation across 5 microservices to ensure exactly-once transaction processing and proper compensation handling during partial failures?",
+  "answer": "Use contract testing with Testcontainers for each service, event-driven test orchestrator, and verify compensation transactions through idempotent test scenarios with deterministic state validation.",
+  "explanation": "## Concept Overview\nThe Saga pattern manages distributed transactions across microservices using compensating transactions instead of two-phase commits. Testing this requires verifying both forward operations and rollback scenarios.\n\n## Implementation Details\n\n### Test Architecture\n- **Contract Testing**: Use Pact for API contracts between services\n- **Testcontainers**: Spin up real databases and message brokers\n- **Event Orchestration**: Simulate message flows with embedded Kafka\n- **State Verification**: Check consistency across all service databases\n\n### Key Test Scenarios\n1. **Happy Path**: All services complete successfully\n2. **Single Service Failure**: Verify compensation triggers\n3. **Network Partition**: Test timeout and retry mechanisms\n4. **Concurrent Sagas**: Ensure isolation between transactions\n5. **Compensation Failure**: Handle cascading rollback issues\n\n### Code Example\n```java\n@Test\nvoid testSagaWithCompensation() {\n    // Given: Order service receives order\n    orderId = orderService.createOrder(orderRequest);\n    \n    // When: Payment service fails\n    paymentService.simulateFailure(orderId);\n    \n    // Then: Verify compensation executed\n    await().atMost(5, SECONDS)\n        .untilAsserted(() -> {\n            assertOrderStatus(orderId, CANCELLED);\n            assertInventoryRestored(orderId);\n            assertPaymentReversed(orderId);\n        });\n}\n```\n\n### Common Pitfalls\n- **Race Conditions**: Test timing issues in async workflows\n- **Test Data Cleanup**: Ensure proper isolation between test runs\n- **Mock Overuse**: Use real infrastructure for true integration testing\n- **Idempotency Testing**: Verify services handle duplicate events correctly",
+  "tags": [
+    "api-testing",
+    "database-testing",
+    "mocking"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Test Orchestrator] --> B[Order Service]\n    B --> C[Inventory Service]\n    C --> D[Payment Service]\n    D --> E[Shipping Service]\n    E --> F[Notification Service]\n    \n    D -.->|Failure| G[Payment Compensation]\n    C -.->|Rollback| H[Inventory Compensation]\n    B -.->|Cancel| I[Order Compensation]\n    \n    G --> J[Test State Validator]\n    H --> J\n    I --> J\n    \n    style A fill:#e1f5fe\n    style J fill:#f3e5f5\n    style G fill:#ffebee\n    style H fill:#ffebee\n    style I fill:#ffebee",
+  "sourceUrl": "https://microservices.io/patterns/data/saga.html",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=d2z78guUR4g",
+    "longVideo": "https://www.youtube.com/watch?v=Y1PqfGGIuRQ"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "LinkedIn",
+    "Netflix",
+    "Spotify",
+    "Twitter",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:49:22.446Z"
+}

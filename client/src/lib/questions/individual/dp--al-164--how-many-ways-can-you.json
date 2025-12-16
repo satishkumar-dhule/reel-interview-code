@@ -1,0 +1,13 @@
+{
+  "id": "al-164",
+  "question": "How many ways can you reach a target sum using array elements where each element can be used multiple times?",
+  "answer": "Use DP with unbounded knapsack: dp[i] = sum(dp[i - nums[j]]) for all valid j",
+  "explanation": "## Concept Overview\nThis is an unbounded knapsack problem where we count combinations to reach target sum using unlimited repetitions of array elements.\n\n## Implementation\n```python\ndef countWays(nums, target):\n    dp = [0] * (target + 1)\n    dp[0] = 1\n    for i in range(1, target + 1):\n        for num in nums:\n            if i >= num:\n                dp[i] += dp[i - num]\n    return dp[target]\n```\n\n## Trade-offs\n- **Pros**: O(n×target) time, O(target) space\n- **Cons**: Can overflow for large counts, needs modulo for constraints\n- **When to use**: Small target values, counting combinations required\n\n## Common Pitfalls\n- Order matters vs combinations: adjust loop order accordingly\n- Integer overflow: use long integers or modulo arithmetic\n- Edge cases: target = 0 returns 1 (empty subset)",
+  "diagram": "flowchart TD\n    A[Start] --> B[Initialize dp[0] = 1]\n    B --> C[For each sum i from 1 to target]\n    C --> D[For each num in array]\n    D --> E{i >= num?}\n    E -->|Yes| F[dp[i] += dp[i - num]]\n    E -->|No| G[Skip]\n    F --> H[Next num]\n    G --> H\n    H --> I{More nums?}\n    I -->|Yes| D\n    I -->|No| J{More sums?}\n    J -->|Yes| C\n    J -->|No| K[Return dp[target]]",
+  "difficulty": "intermediate",
+  "tags": [
+    "dp",
+    "optimization"
+  ],
+  "lastUpdated": "2025-12-15T06:36:33.514Z"
+}

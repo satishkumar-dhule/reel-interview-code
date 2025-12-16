@@ -1,0 +1,13 @@
+{
+  "id": "q-169",
+  "question": "What is the primary difference between cache-aside and read-through caching patterns?",
+  "answer": "Cache-aside requires app to manage cache, while read-through handles cache automatically.",
+  "explanation": "In cache-aside pattern, the application is responsible for checking cache first and loading data into cache when cache misses occur. The application code explicitly manages cache operations. In read-through pattern, the cache library handles this logic automatically - when cache misses occur, the cache itself loads data from the database and populates the cache. Read-through simplifies application code but may have less flexibility.",
+  "tags": [
+    "cache",
+    "redis"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Application] --> B{Cache-Aside}\n    B --> C[Check Cache]\n    C -->|Hit| D[Return Data]\n    C -->|Miss| E[Load from DB]\n    E --> F[Update Cache]\n    F --> D\n    \n    A --> G{Read-Through}\n    G --> H[Cache Library]\n    H -->|Hit| I[Return Data]\n    H -->|Miss| J[Auto Load from DB]\n    J --> K[Auto Update Cache]\n    K --> I",
+  "lastUpdated": "2025-12-14T10:23:29.514Z"
+}

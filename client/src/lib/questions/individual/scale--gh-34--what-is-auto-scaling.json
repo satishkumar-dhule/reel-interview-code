@@ -1,0 +1,13 @@
+{
+  "id": "gh-34",
+  "question": "What is Auto Scaling?",
+  "answer": "Auto Scaling is a feature that automatically adjusts the number of compute resources based on the current demand.",
+  "explanation": "Auto Scaling is a feature that automatically adjusts the number of compute resources based on the current demand.\n\nKey concepts:\n1. **Scaling Policies:**\n- Target tracking\n- Step scaling\n- Simple scaling\n\n2. **Metrics:**\n- CPU utilization\n- Memory usage\n- Request count\n- Custom metrics\n\nExample of AWS Auto Scaling configuration:\n```yaml\nAutoScalingGroup:\nMinSize: 1\nMaxSize: 10\nDesiredCapacity: 2\nHealthCheckType: ELB\nHealthCheckGracePeriod: 300\nLaunchTemplate:\nLaunchTemplateId: !Ref LaunchTemplate\nVersion: !GetAtt LaunchTemplate.LatestVersionNumber\n```",
+  "diagram": "\ngraph LR\n    Metrics[Metrics] --> ASG[Auto Scaling]\n    ASG -->|Scale Out| Add[Add Instances]\n    ASG -->|Scale In| Remove[Remove Instances]\n",
+  "difficulty": "advanced",
+  "tags": [
+    "scale",
+    "ha"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

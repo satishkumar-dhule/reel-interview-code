@@ -1,0 +1,26 @@
+{
+  "id": "q-251",
+  "question": "How would you implement a DSPy optimizer to automatically improve few-shot prompts for a classification task using BootstrapFewShot with evaluation metrics?",
+  "answer": "Use DSPy's BootstrapFewShot optimizer to generate training examples, then optimize prompts using metrics like F1 score on validation set.",
+  "explanation": "## Concept Overview\nDSPy's BootstrapFewShot optimizer automatically generates and selects few-shot examples by treating prompt optimization as a machine learning problem. It creates demonstrations from training data and optimizes prompts using defined evaluation metrics.\n\n## Implementation Details\nThe process involves:\n1. Defining a signature for input/output structure\n2. Creating a DSPy module with ChainOfThought or ReAct\n3. Setting up evaluation metrics (accuracy, F1, etc.)\n4. Running BootstrapFewShot to generate optimal few-shot examples\n5. Validating optimized prompts on test set\n\n## Code Example\n```python\nimport dspy\n\nclass ClassificationSignature(dspy.Signature):\n    \"\"\"Classify text into categories.\"\"\"\n    text = dspy.InputField()\n    category = dspy.OutputField()\n\nclass TextClassifier(dspy.Module):\n    def __init__(self):\n        super().__init__()\n        self.generate_answer = dspy.ChainOfThought(ClassificationSignature)\n    \n    def forward(self, text):\n        return self.generate_answer(text=text)\n\n# Optimizer setup\noptimizer = dspy.BootstrapFewShot(\n    metric=dspy.evaluate.answer_exact_match,\n    max_bootstrapped_demos=5,\n    max_labeled_demos=3\n)\n\noptimized_classifier = optimizer.compile(\n    TextClassifier(), \n    trainset=train_data\n)\n```\n\n## Common Pitfalls\n- Using insufficient training data for bootstrapping\n- Choosing inappropriate evaluation metrics for the task\n- Overfitting to training examples without proper validation\n- Ignoring prompt length constraints affecting model performance",
+  "tags": [
+    "prompt-tuning",
+    "dspy",
+    "automatic-prompting"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Training Data] --> B[BootstrapFewShot Optimizer]\n    B --> C[Generate Few-shot Examples]\n    C --> D[DSPy Module Classification]\n    D --> E[Evaluation Metrics F1/Accuracy]\n    E --> F{Performance Good?}\n    F -->|No| G[Refine Examples]\n    G --> D\n    F -->|Yes| H[Optimized Prompt]\n    H --> I[Test Set Validation]\n    I --> J[Final Model]",
+  "sourceUrl": "https://dspy.ai/learn/programming/optimizers/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=ENUbSFtHweo",
+    "longVideo": "https://www.youtube.com/watch?v=fNRLeu-dd9M"
+  },
+  "companies": [
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T10:39:51.364Z"
+}

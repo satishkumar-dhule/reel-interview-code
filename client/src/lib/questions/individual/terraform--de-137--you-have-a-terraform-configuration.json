@@ -1,0 +1,13 @@
+{
+  "id": "de-137",
+  "question": "You have a Terraform configuration that creates an AWS S3 bucket. After running 'terraform apply', you realize you need to add versioning to the bucket. What's the safest way to modify your existing infrastructure?",
+  "answer": "Add versioning block to existing resource, run terraform plan to review changes, then terraform apply to update the bucket in-place.",
+  "explanation": "## Safe Infrastructure Updates with Terraform\n\nWhen modifying existing Terraform resources, follow these steps:\n\n1. **Modify the configuration**: Add the versioning block to your existing `aws_s3_bucket` resource\n2. **Plan first**: Run `terraform plan` to see what changes will be made\n3. **Review carefully**: Ensure Terraform shows an \"update in-place\" operation, not destroy/recreate\n4. **Apply changes**: Run `terraform apply` to update the existing bucket\n\n### Example Configuration:\n```hcl\nresource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-example-bucket\"\n}\n\nresource \"aws_s3_bucket_versioning\" \"example\" {\n  bucket = aws_s3_bucket.example.id\n  versioning_configuration {\n    status = \"Enabled\"\n  }\n}\n```\n\n### Why This Approach is Safe:\n- **No data loss**: Updates bucket settings without destroying it\n- **Predictable**: `terraform plan` shows exactly what will change\n- **Reversible**: Can disable versioning later if needed\n- **Best practice**: Always plan before applying changes",
+  "diagram": "graph TD\n    A[Existing S3 Bucket] --> B[Modify Terraform Config]\n    B --> C[Add Versioning Block]\n    C --> D[terraform plan]\n    D --> E{Review Changes}\n    E -->|Safe Update| F[terraform apply]\n    E -->|Destructive Change| G[Revise Configuration]\n    G --> D\n    F --> H[Updated S3 Bucket with Versioning]\n    \n    style A fill:#e1f5fe\n    style H fill:#c8e6c9\n    style D fill:#fff3e0\n    style F fill:#f3e5f5",
+  "difficulty": "beginner",
+  "tags": [
+    "terraform",
+    "iac"
+  ],
+  "lastUpdated": "2025-12-12T09:15:44.757Z"
+}

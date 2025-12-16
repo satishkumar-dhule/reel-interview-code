@@ -1,0 +1,12 @@
+{
+  "id": "gh-3",
+  "question": "What is Continuous Integration and how does it improve software development quality?",
+  "answer": "Continuous Integration (CI) automates building and testing code changes frequently to catch bugs early and maintain code quality in collaborative development.",
+  "explanation": "Continuous Integration (CI) is a development practice where developers integrate code into a shared repository frequently, with each integration verified by automated builds and tests.\n\n## Key Benefits:\n- **Early bug detection** - Issues caught immediately after commit\n- **Reduced integration conflicts** - Small, frequent changes prevent merge hell\n- **Improved code quality** - Automated tests enforce standards\n- **Faster feedback loops** - Developers know quickly if changes work\n- **Consistent builds** - Automated process eliminates environment differences\n\n## Core Practices:\n- Maintain single source repository\n- Automate build and test processes\n- Commit to mainline daily\n- Keep builds fast and reliable\n- Test in production-like environment\n- Make results visible to entire team",
+  "diagram": "graph TD\n    Dev[Developer] --> Commit[Commit Code]\n    Commit --> Repo[Central Repository]\n    Repo --> CI[CI Pipeline]\n    CI --> Build[Automated Build]\n    Build --> Test[Automated Tests]\n    Test --> Quality[Code Quality Check]\n    Quality --> Success{Tests Pass?}\n    Success -->|Yes| Deploy[Ready for Deployment]\n    Success -->|No| Feedback[Immediate Feedback]",
+  "difficulty": "beginner",
+  "tags": [
+    "basics"
+  ],
+  "lastUpdated": "2025-12-12T09:11:40.451Z"
+}

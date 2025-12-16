@@ -1,0 +1,13 @@
+{
+  "id": "sy-169",
+  "question": "Design a simple URL shortening service like bit.ly. What components would you need and how would they work together?",
+  "answer": "Database for mappings, API server for redirects, web interface for users, cache for performance.",
+  "explanation": "# URL Shortening Service Design\n\n## Core Components\n\n1. **API Server**: Handles HTTP requests for creating short URLs and redirects\n2. **Database**: Stores mapping between short codes and original URLs\n3. **Cache Layer**: Redis for frequently accessed URLs to reduce database load\n4. **Web Interface**: Frontend for users to create and manage short URLs\n\n## Data Flow\n\n1. User submits long URL via web interface\n2. API generates unique short code (base62 encoding)\n3. Store mapping in database\n4. Return short URL to user\n5. When short URL accessed, check cache first, then database\n6. Redirect to original URL\n\n## Key Considerations\n\n- Use base62 encoding for compact, readable short codes\n- Implement rate limiting to prevent abuse\n- Add analytics tracking for click counts\n- Consider CDN for global performance",
+  "diagram": "graph TD\n    A[User] --> B[Web Interface]\n    B --> C[API Server]\n    C --> D[Database]\n    C --> E[Cache Layer]\n    F[Short URL] --> C\n    C --> G[Redirect to Original URL]\n    E --> C",
+  "difficulty": "beginner",
+  "tags": [
+    "infra",
+    "scale"
+  ],
+  "lastUpdated": "2025-12-14T01:17:10.517Z"
+}

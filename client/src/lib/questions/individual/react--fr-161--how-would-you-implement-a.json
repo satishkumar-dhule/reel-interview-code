@@ -1,0 +1,13 @@
+{
+  "id": "fr-161",
+  "question": "How would you implement a React hook that tracks component render count and warns when it exceeds a threshold, while avoiding infinite render loops?",
+  "answer": "Use useRef to persist count across renders and useEffect with no deps to increment. Check threshold and warn without triggering re-render.",
+  "explanation": "## Implementation Strategy\n\n```javascript\nfunction useRenderCount(threshold = 50) {\n  const renderCount = useRef(0);\n  const hasWarned = useRef(false);\n  \n  renderCount.current += 1;\n  \n  if (renderCount.current > threshold && !hasWarned.current) {\n    console.warn(`Component rendered ${renderCount.current} times`);\n    hasWarned.current = true;\n  }\n  \n  return renderCount.current;\n}\n```\n\n## Key Concepts\n\n**Why useRef instead of useState?**\n- `useRef` doesn't trigger re-renders when updated\n- `useState` would cause infinite loop since updating state triggers render\n- Perfect for tracking values across renders without side effects\n\n**Avoiding Infinite Loops**\n- Never call `setState` directly in render body\n- Use `useRef` for mutable values that don't affect UI\n- `hasWarned` ref prevents repeated console warnings\n\n**When to Use**\n- Performance debugging in development\n- Detecting unnecessary re-renders\n- Monitoring component optimization effectiveness\n\n**Advanced Considerations**\n- Reset count on unmount with cleanup function\n- Add dev-only checks with `process.env.NODE_ENV`\n- Track render reasons with additional metadata",
+  "diagram": "graph TD\n    A[Component Renders] --> B[useRenderCount Hook Called]\n    B --> C[Increment renderCount.current]\n    C --> D{Count > Threshold?}\n    D -->|No| E[Return Count]\n    D -->|Yes| F{Already Warned?}\n    F -->|No| G[Log Warning]\n    F -->|Yes| E\n    G --> H[Set hasWarned = true]\n    H --> E\n    E --> I[Component Continues Rendering]\n    I -.->|Next Render| A\n    \n    style B fill:#61dafb\n    style C fill:#ffd700\n    style G fill:#ff6b6b",
+  "difficulty": "advanced",
+  "tags": [
+    "react",
+    "perf"
+  ],
+  "lastUpdated": "2025-12-13T03:02:58.720Z"
+}

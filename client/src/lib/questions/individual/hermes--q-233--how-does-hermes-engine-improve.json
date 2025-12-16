@@ -1,0 +1,14 @@
+{
+  "id": "q-233",
+  "question": "How does Hermes engine improve React Native app startup performance compared to JavaScriptCore?",
+  "answer": "Hermes uses ahead-of-time compilation and bytecode optimization for faster startup and lower memory usage.",
+  "explanation": "## Concept Overview\nHermes is an open-source JavaScript engine optimized for React Native mobile apps. It focuses on reducing app startup time and memory footprint through pre-compilation.\n\n## Implementation Details\n- **Ahead-of-Time Compilation**: JavaScript is compiled to bytecode during build time\n- **Smaller Bundle Size**: Optimized bytecode reduces APK/IPA size\n- **Memory Efficiency**: Lower RAM consumption during runtime\n- **Faster Startup**: Eliminates JIT compilation overhead\n\n## Code Example\n```javascript\n// Enable Hermes in android/app/build.gradle\nproject.ext.react = [\n    enableHermes: true  // For Android\n]\n\n// iOS automatically uses Hermes in RN 0.70+\n```\n\n## Common Pitfalls\n- Debugging limitations: Some dev tools may not work with Hermes\n- Third-party libraries compatibility issues\n- Slightly slower runtime performance for compute-heavy tasks\n- Requires Metro bundler configuration for optimal performance",
+  "tags": [
+    "hermes",
+    "reanimated",
+    "profiling"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[JavaScript Source] --> B[Metro Bundler]\n    B --> C[Hermes AOT Compilation]\n    C --> D[Bytecode Bundle]\n    D --> E[App Installation]\n    E --> F[Faster Startup]\n    F --> G[Hermes Runtime]\n    G --> H[Native Bridge]",
+  "lastUpdated": "2025-12-15T01:16:46.577Z"
+}

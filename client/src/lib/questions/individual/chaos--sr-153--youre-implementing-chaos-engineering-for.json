@@ -1,0 +1,13 @@
+{
+  "id": "sr-153",
+  "question": "You're implementing chaos engineering for a microservices architecture. Your payment service has a 99.9% SLA. During a chaos experiment, you inject 500ms latency into 20% of requests to the database. The service starts timing out after 1 second. What's the most critical metric to monitor first, and what would indicate the experiment should be stopped immediately?",
+  "answer": "Monitor error rate/SLA compliance. Stop if error rate exceeds error budget (0.1%) or cascading failures detected in dependent services.",
+  "explanation": "## Critical Metrics Priority\n\n### Primary Metric: Error Rate & SLA Compliance\nWith a 99.9% SLA, you have an **error budget of 0.1%**. This is your guardrail.\n\n### Why This Matters\n- 20% of requests getting 500ms latency + network overhead = likely >1s total\n- These requests will timeout, directly impacting SLA\n- Expected impact: ~20% of traffic affected initially\n\n### Stop Conditions\n1. **Error rate exceeds error budget** (>0.1% over measurement window)\n2. **Cascading failures detected** - dependent services showing increased errors\n3. **Queue buildup** - thread pool exhaustion or connection pool saturation\n4. **Circuit breakers tripping** in upstream services\n\n### Secondary Metrics to Watch\n- P99 latency (should spike but not affect all requests)\n- Active connections/thread pool utilization\n- Retry storm indicators\n- Customer-facing transaction success rate\n\n### Chaos Engineering Best Practices\n- Start with smaller blast radius (5-10% of traffic)\n- Use automated stop conditions\n- Monitor blast radius expansion\n- Have rollback ready within seconds\n\n## Calculation Example\nIf you serve 1000 req/s:\n- 200 req/s affected by latency injection\n- If all timeout: 20% error rate\n- This **exceeds** your 0.1% error budget by 200x\n- **Immediate stop required**\n\nThe experiment design itself may be too aggressive for the given SLA.",
+  "diagram": "graph TD\n    A[Chaos Experiment Start] --> B[Inject 500ms Latency<br/>20% of DB Requests]\n    B --> C{Monitor Error Rate}\n    C -->|< 0.1%| D[Continue Experiment]\n    C -->|> 0.1%| E[STOP: SLA Breach]\n    B --> F{Check Cascading Effects}\n    F -->|Isolated| D\n    F -->|Spreading| G[STOP: Blast Radius Growing]\n    D --> H{Monitor Secondary Metrics}\n    H --> I[Thread Pool Usage]\n    H --> J[Circuit Breaker Status]\n    H --> K[Queue Depth]\n    I -->|Saturated| G\n    J -->|Tripped| G\n    K -->|Growing| G\n    E --> L[Rollback Immediately]\n    G --> L\n    D --> M[Complete Experiment<br/>Analyze Results]",
+  "difficulty": "intermediate",
+  "tags": [
+    "chaos",
+    "resilience"
+  ],
+  "lastUpdated": "2025-12-13T01:08:12.121Z"
+}

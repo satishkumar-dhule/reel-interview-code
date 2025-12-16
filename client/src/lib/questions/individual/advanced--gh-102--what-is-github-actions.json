@@ -1,0 +1,12 @@
+{
+  "id": "gh-102",
+  "question": "What is GitHub Actions?",
+  "answer": "GitHub Actions is a CI/CD and automation platform built into GitHub that allows you to automate workflows for building, testing, and deploying code di...",
+  "explanation": "GitHub Actions is a CI/CD and automation platform built into GitHub that allows you to automate workflows for building, testing, and deploying code directly from your repository.",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

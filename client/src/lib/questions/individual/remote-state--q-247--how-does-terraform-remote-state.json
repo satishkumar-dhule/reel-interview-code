@@ -1,0 +1,26 @@
+{
+  "id": "q-247",
+  "question": "How does Terraform remote state prevent conflicts when multiple team members work on the same infrastructure?",
+  "answer": "Remote state stores state file in shared location with locking to prevent simultaneous writes and state corruption.",
+  "explanation": "## Concept Overview\nRemote state storage centralizes Terraform state files in a shared backend (like S3, Azure Blob Storage) with state locking mechanisms to prevent concurrent modifications.\n\n## Implementation Details\n- State backends store the .tfstate file remotely\n- Locking services (DynamoDB, Azure Blob Storage lease) prevent simultaneous writes\n- Teams can collaborate safely on the same infrastructure\n\n## Code Example\n```terraform\nterraform {\n  backend \"s3\" {\n    bucket         = \"my-terraform-state\"\n    key            = \"prod/terraform.tfstate\"\n    region         = \"us-east-1\"\n    dynamodb_table = \"terraform-locks\"\n    encrypt        = true\n  }\n}\n```\n\n## Common Pitfalls\n- Forgetting to configure DynamoDB table for locking\n- Using local state in team environments\n- Not encrypting remote state files",
+  "tags": [
+    "remote-state",
+    "locking",
+    "workspaces"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Developer A] --> B[Remote State Backend]\n    C[Developer B] --> B\n    D[State Lock Service] --> B\n    B --> E[S3 Bucket]\n    D --> F[DynamoDB Table]\n    G[apply command] --> H{Lock Acquired?}\n    H -->|Yes| I[Apply Changes]\n    H -->|No| J[Wait/Retry]\n    I --> K[Update State]\n    K --> L[Release Lock]",
+  "sourceUrl": "https://developer.hashicorp.com/terraform/language/settings/backends/configuration",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-15T10:31:37.796Z"
+}

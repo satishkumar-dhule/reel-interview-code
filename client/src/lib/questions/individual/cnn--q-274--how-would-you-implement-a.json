@@ -1,0 +1,25 @@
+{
+  "id": "q-274",
+  "question": "How would you implement a hybrid CNN architecture combining ResNet residual connections with EfficientNet compound scaling for production image classification?",
+  "answer": "Use ResNet blocks with channel attention, apply EfficientNet's compound scaling formula φ = α^β · γ^φ, and optimize with mixed precision.",
+  "explanation": "## Concept\nHybrid CNN combines ResNet's residual connections (identity shortcuts) with EfficientNet's compound scaling that balances network depth, width, and resolution using a fixed compound coefficient φ.\n\n## Implementation\n```python\n# Hybrid block with residual + efficient scaling\nclass HybridBlock(nn.Module):\n    def __init__(self, in_ch, out_ch, stride=1):\n        super().__init__()\n        # EfficientNet MBConv with residual\n        self.mbconv = MBConv(in_ch, out_ch, stride)\n        self.shortcut = nn.Identity() if stride == 1 else nn.Conv2d(in_ch, out_ch, 1)\n        \n    def forward(self, x):\n        return self.mbconv(x) + self.shortcut(x)\n\n# Compound scaling: depth=φ^1.2, width=φ^0.8, resolution=φ^0.2\n```\n\n## Trade-offs\n**Pros**: Better accuracy-efficiency balance, stable gradients from residuals, optimized FLOPs\n**Cons**: Complex implementation, higher memory than pure EfficientNet, tuning complexity\n\n## Pitfalls\n- Mismatched channel dimensions in residual connections\n- Over-scaling leads to overfitting on small datasets\n- Ignoring hardware-specific optimizations (TensorRT, ONNX)",
+  "tags": [
+    "cnn",
+    "resnet",
+    "efficientnet"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart TD\n    A[Input Image] --> B[Stem Conv 3x3]\n    B --> C[Hybrid Block 1: MBConv + Residual]\n    C --> D[Hybrid Block 2: MBConv + Residual]\n    D --> E[SE Block: Channel Attention]\n    E --> F[Hybrid Block 3: Downsample]\n    F --> G[Global Average Pool]\n    G --> H[Fully Connected]\n    H --> I[Softmax]\n    \n    C --> C1[Identity Shortcut]\n    C1 --> C2[Add]\n    D --> C2\n    E --> C2",
+  "sourceUrl": "https://arxiv.org/abs/1905.11946",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:29:37.362Z"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "gh-26",
+  "question": "What are the basic Linux commands every DevOps engineer should know?",
+  "answer": "Essential Linux commands include:",
+  "explanation": "Essential Linux commands include:\n\n1. **File Operations:**\n```bash\nls      # List files and directories\ncd      # Change directory\npwd     # Print working directory\ncp      # Copy files\nmv      # Move/rename files\nrm      # Remove files\nmkdir   # Create directory\n```\n\n2. **System Information:**\n```bash\ntop     # Show processes\ndf      # Show disk usage\nfree    # Show memory usage\nps      # Show process status\n```\n\n3. **Text Processing:**\n```bash\ngrep    # Search text\nsed     # Stream editor\nawk     # Text processing\ncat     # View file contents\n```",
+  "diagram": "\ngraph TD\n    Linux --> Files[File Ops: ls, cp, mv]\n    Linux --> Sys[System: top, df, ps]\n    Linux --> Text[Text: grep, awk, sed]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "linux",
+    "shell"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "q-280",
+  "question": "What is the difference between CPU profiling and memory profiling, and when would you use a flame graph?",
+  "answer": "CPU profiling measures time spent in functions, memory profiling tracks memory usage patterns, flame graphs visualize CPU bottlenecks.",
+  "explanation": "## Concept\nPerformance profiling analyzes runtime behavior to identify bottlenecks. CPU profiling shows where your application spends execution time, while memory profiling reveals memory allocation patterns, leaks, and usage patterns.\n\n## Implementation\n**CPU Profiling**: Tools collect stack traces periodically to build a profile\n```bash\n# Node.js example\nnode --prof app.js\nnode --prof-process isolate-*.log > processed.txt\n```\n\n**Memory Profiling**: Track heap allocations and garbage collection\n```javascript\n// Chrome DevTools\nconsole.profile('CPU-analysis');\nconsole.memory;\n```\n\n## Trade-offs\n- **CPU profiling**: Lower overhead but may miss short functions\n- **Memory profiling**: Higher overhead but essential for leak detection\n- **Flame graphs**: Excellent visualization but require sampling data\n\n## Pitfalls\n- Production profiling adds overhead\n- Sampling may miss rare events\n- Memory profilers can affect GC behavior",
+  "tags": [
+    "cpu-profiling",
+    "memory-profiling",
+    "flame-graphs"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Performance Issue] --> B{Type?}\n    B -->|Slow execution| C[CPU Profiling]\n    B -->|High memory usage| D[Memory Profiling]\n    C --> E[Collect Stack Traces]\n    D --> F[Heap Analysis]\n    E --> G[Flame Graph Visualization]\n    F --> H[Memory Maps]\n    G --> I[Identify Hot Functions]\n    H --> J[Find Leaks]",
+  "sourceUrl": "https://nodejs.dev/en/learn/diagnostics/flame-graphs",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:39:46.335Z"
+}

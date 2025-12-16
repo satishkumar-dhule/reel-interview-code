@@ -1,0 +1,15 @@
+{
+  "id": "gh-13",
+  "question": "What is AWS (Amazon Web Services)?",
+  "answer": "AWS is a comprehensive and widely adopted cloud platform, offering over 200 fully featured services from data centers globally. Key services include:",
+  "explanation": "AWS is a comprehensive and widely adopted cloud platform, offering over 200 fully featured services from data centers globally. Key services include:\n\n1. **Compute:**\n- EC2 (Elastic Compute Cloud)\n- Lambda (Serverless Computing)\n- ECS (Elastic Container Service)\n\n2. **Storage:**\n- S3 (Simple Storage Service)\n- EBS (Elastic Block Store)\n- EFS (Elastic File System)\n\n3. **Database:**\n- RDS (Relational Database Service)\n- DynamoDB (NoSQL Database)\n- Redshift (Data Warehouse)",
+  "diagram": "\ngraph TD\n    AWS --> EC2[EC2 Compute]\n    AWS --> S3[(S3 Storage)]\n    AWS --> RDS[(RDS Database)]\n    AWS --> Lambda[Lambda]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

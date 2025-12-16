@@ -1,0 +1,13 @@
+{
+  "id": "gh-8",
+  "question": "What are the main components of Kubernetes architecture?",
+  "answer": "Kubernetes architecture consists of the following main components:",
+  "explanation": "Kubernetes architecture consists of the following main components:\n\n1. **Master Node Components:**\n- API Server\n- etcd\n- Controller Manager\n- Scheduler\n\n2. **Worker Node Components:**\n- Kubelet\n- Container Runtime\n- Kube Proxy",
+  "diagram": "\ngraph TD\n    Master[Master Node] --> API[API Server]\n    Master --> etcd[(etcd)]\n    Worker[Worker Node] --> Kubelet\n    Worker --> Runtime[Container Runtime]\n",
+  "difficulty": "intermediate",
+  "tags": [
+    "k8s",
+    "orchestration"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

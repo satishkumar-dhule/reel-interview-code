@@ -1,0 +1,31 @@
+{
+  "id": "q-238",
+  "question": "How does Raft consensus algorithm ensure leader election and log replication in distributed systems?",
+  "answer": "Raft uses majority voting for leader election and log replication, ensuring consistency through a single leader that replicates entries to followers.",
+  "explanation": "## Raft Consensus Algorithm Overview\n\nRaft is a consensus algorithm designed for understandability, providing strong consistency guarantees in distributed systems. It divides the consensus problem into three main components: leader election, log replication, and safety.\n\n### Key Components\n\n- **Node States**: Each node can be Leader, Follower, or Candidate\n- **Terms**: Logical time periods with at most one leader per term\n- **Logs**: Ordered sequence of operations that must be replicated\n\n### Leader Election Process\n\n1. Followers start election timers with random timeouts\n2. If no heartbeat received, follower becomes candidate\n3. Candidate increments term and requests votes from peers\n4. Candidate wins election with majority votes\n5. New leader sends periodic heartbeats to maintain authority\n\n```python\n# Simplified Raft leader election\ndef start_election(self):\n    self.current_term += 1\n    self.state = 'Candidate'\n    self.voted_for = self.node_id\n    votes = 1  # Vote for self\n    \n    for peer in self.peers:\n        if peer.request_vote(self.current_term, self.node_id):\n            votes += 1\n    \n    if votes > len(self.peers) / 2:\n        self.become_leader()\n```\n\n### Log Replication\n\n1. Leader receives client request and appends to local log\n2. Leader replicates entry to all followers via AppendEntries RPC\n3. Entry is committed when majority of followers acknowledge\n4. Leader applies committed entries to state machine\n5. Followers apply entries once committed\n\n### Common Pitfalls\n\n- **Split brain**: Multiple leaders elected simultaneously (prevented by term numbers)\n- **Log inconsistency**: Followers with missing or conflicting entries (handled by log matching)\n- **Network partitions**: System unavailable during partitions (CAP theorem trade-off)\n\n### Implementation Details\n\n- **Safety**: Raft ensures only committed entries are applied to state machines\n- **Liveness**: System makes progress as long as majority of nodes are reachable\n- **Recovery**: Nodes can recover from crashes by persisting state to disk",
+  "tags": [
+    "dist-sys",
+    "cap-theorem",
+    "consensus"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Client Request] --> B[Leader]\n    B --> C[Append to Log]\n    C --> D[Replicate to Followers]\n    D --> E[Follower 1]\n    D --> F[Follower 2]\n    D --> G[Follower 3]\n    E --> H[Acknowledge]\n    F --> I[Acknowledge]\n    G --> J[Acknowledge]\n    H --> K{Majority Ack?}\n    I --> K\n    J --> K\n    K -->|Yes| L[Commit Entry]\n    L --> M[Apply to State Machine]\n    M --> N[Send Response to Client]",
+  "sourceUrl": "https://raft.github.io/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=QFGHcjPCtMg",
+    "longVideo": "https://www.youtube.com/watch?v=IujMVjKvWP4"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Cockroach Labs",
+    "Etcd",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:21:55.021Z"
+}

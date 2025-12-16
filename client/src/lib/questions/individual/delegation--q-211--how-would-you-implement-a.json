@@ -1,0 +1,14 @@
+{
+  "id": "q-211",
+  "question": "How would you implement a technical debt repayment framework using the 20% time allocation model while balancing feature delivery deadlines?",
+  "answer": "Create a structured 20% time allocation system with debt scoring, prioritization matrices, and automated tracking to balance innovation with delivery commitments.",
+  "explanation": "## Concept Overview\nTechnical debt repayment framework allocates 20% of team capacity to address accumulated debt while maintaining feature velocity. This systematic approach prevents debt accumulation and improves code quality.\n\n## Implementation Details\n- **Debt Scoring System**: Rate issues by impact (1-5) and effort (1-5)\n- **Prioritization Matrix**: Use Eisenhower quadrants for debt categorization\n- **Time Tracking**: Implement automated sprint capacity allocation\n- **Progress Metrics**: Track debt reduction velocity and ROI\n\n## Code Example\n```typescript\ninterface TechnicalDebt {\n  id: string;\n  impact: number; // 1-5\n  effort: number; // 1-5\n  priority: 'urgent' | 'high' | 'medium' | 'low';\n  estimatedHours: number;\n}\n\nclass DebtRepaymentFramework {\n  calculateDebtScore(debt: TechnicalDebt): number {\n    return (debt.impact * debt.impact) / debt.effort;\n  }\n  \n  allocateTimeCapacity(totalHours: number): {\n    featureHours: number;\n    debtHours: number;\n  } {\n    return {\n      featureHours: totalHours * 0.8,\n      debtHours: totalHours * 0.2\n    };\n  }\n}\n```\n\n## Common Pitfalls\n- Treating 20% time as optional rather than mandatory\n- Failing to track debt repayment ROI\n- Not involving team in debt prioritization\n- Ignoring debt accumulation during crunch periods",
+  "tags": [
+    "delegation",
+    "mentoring",
+    "growth"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Technical Debt Identification] --> B[Impact/Effort Scoring]\n    B --> C[Priority Matrix Classification]\n    C --> D[20% Time Allocation]\n    D --> E[Debt Repayment Execution]\n    E --> F[Progress Tracking]\n    F --> G[ROI Measurement]\n    G --> H[Continuous Improvement]\n    H --> A",
+  "lastUpdated": "2025-12-14T12:59:03.940Z"
+}

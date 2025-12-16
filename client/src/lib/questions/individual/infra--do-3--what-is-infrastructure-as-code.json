@@ -1,0 +1,14 @@
+{
+  "id": "do-3",
+  "question": "What is Infrastructure as Code (IaC)? Why use Terraform?",
+  "answer": "Managing infrastructure through code (git) rather than manual console clicks.",
+  "explanation": "**Benefits**:\n- **Reproducibility**: Same env every time.\n- **Version Control**: Git history of infra changes.\n- **Automation**: One click deploy.\n\n**Terraform vs Ansible**:\n- Terraform: Provisioning (Building the server/VPC).\n- Ansible: Configuration (Installing software on the server).",
+  "diagram": "\ngraph LR\n    Code[IaC Code] --> Git[Git Repo]\n    Git --> TF[Terraform]\n    TF --> Cloud[Cloud Infra]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "infra",
+    "automation",
+    "terraform"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

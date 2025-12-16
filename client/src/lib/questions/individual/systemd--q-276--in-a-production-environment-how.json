@@ -1,0 +1,26 @@
+{
+  "id": "q-276",
+  "question": "In a production environment, how would you ensure systemd timers and cron jobs execute with proper isolation, prevent privilege escalation, and maintain auditability across 1000+ servers?",
+  "answer": "Use systemd timers with sandboxing, per-user service files, centralized logging, and regular permission audits.",
+  "explanation": "## Concept\nSystemd timers provide superior isolation and logging compared to traditional cron. Production environments need defense-in-depth scheduling with sandboxing, resource limits, and audit trails.\n\n## Implementation\n```bash\n# Create isolated systemd timer\n[Unit]\nDescription=Isolated backup service\nAfter=network.target\n\n[Service]\nType=oneshot\nUser=backup\nGroup=backup\nDynamicUser=yes\nProtectSystem=strict\nProtectHome=yes\nNoNewPrivileges=yes\nPrivateTmp=yes\nReadWritePaths=/var/backups\nExecStart=/usr/local/bin/backup.sh\n\n[Timer]\nOnCalendar=daily\nPersistent=true\n\n[Install]\nWantedBy=timers.target\n```\n\n```bash\n# Centralized monitoring\njournalctl -u backup.service --since \"1 day ago\"\nsystemctl list-timers --all\n\n# Permission audit\nfind /etc/systemd/system/ -type f -exec ls -la {} \\;\ngetent group backup\n```\n\n## Trade-offs\n- **Systemd timers**: Better isolation, logging, dependency management, but complex syntax\n- **Cron**: Simpler syntax, universal availability, but limited isolation and poor error handling\n- **Hybrid approach**: Use systemd for critical tasks, cron for simple user jobs\n\n## Pitfalls\n- Missing `Persistent=true` causes missed executions during downtime\n- Improper `ReadWritePaths` breaks sandboxed services\n- Forgetting `DynamicUser=yes` creates unnecessary privilege escalation vectors\n- Inconsistent logging across 1000+ servers makes debugging impossible\n- Cron job path injection vulnerabilities with unquoted variables",
+  "tags": [
+    "systemd",
+    "cron",
+    "users",
+    "permissions"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart TD\n    A[Schedule Trigger] --> B{Timer Type}\n    B -->|Systemd Timer| C[systemd Service Unit]\n    B -->|Cron Job| D[crond Daemon]\n    \n    C --> E[Security Sandbox]\n    E --> F[DynamicUser=yes]\n    E --> G[ProtectSystem=strict]\n    E --> H[NoNewPrivileges=yes]\n    \n    D --> I[Traditional Permissions]\n    I --> J[User Context]\n    I --> K[Environment Variables]\n    \n    F --> L[Audit Logging]\n    G --> L\n    H --> L\n    J --> M[Basic Logging]\n    K --> M\n    \n    L --> N[journald + syslog]\n    M --> N\n    \n    N --> O[Central Monitoring]\n    O --> P{Success?}\n    P -->|Yes| Q[Job Complete]\n    P -->|No| R[Alert & Retry]",
+  "sourceUrl": "https://man7.org/linux/man-pages/man5/systemd.timer.5.html",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-16T01:34:18.251Z"
+}

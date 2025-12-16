@@ -1,0 +1,13 @@
+{
+  "id": "gh-35",
+  "question": "How do Backup and Disaster Recovery strategies ensure business continuity after system failures?",
+  "answer": "BDR combines automated data backups with failover systems to restore operations quickly after disasters.",
+  "explanation": "Backup and Disaster Recovery (BDR) is a comprehensive strategy that protects organizations from data loss and system downtime through coordinated backup and recovery processes.\n\n## Key Components\n\n### 1. **Data Backup**\n- **Regular backups**: Automated daily/weekly/monthly schedules\n- **Multiple locations**: On-site, off-site, and cloud storage\n- **Backup types**: Full, incremental, and differential backups\n- **Retention policies**: Short-term and long-term data preservation\n\n### 2. **Disaster Recovery**\n- **Recovery Time Objective (RTO)**: Maximum acceptable downtime\n- **Recovery Point Objective (RPO)**: Maximum data loss tolerance\n- **Failover systems**: Hot, warm, and cold standby sites\n- **Recovery procedures**: Step-by-step restoration processes\n\n## Implementation Strategy\n\n```yaml\n# Example BDR Configuration\nbackup_strategy:\n  schedule: \"daily at 2 AM\"\n  retention: \"30 days daily, 12 months weekly\"\n  locations: [\"local\", \"cloud\", \"offsite\"]\n  \ndisaster_recovery:\n  rto: \"4 hours\"\n  rpo: \"1 hour\"\n  failover_type: \"warm_standby\"\n  testing_frequency: \"quarterly\"\n```\n\n## Best Practices\n- **3-2-1 Rule**: 3 copies, 2 different media, 1 off-site location\n- **Regular testing**: Validate backup integrity and recovery procedures\n- **Documentation**: Maintain detailed runbooks for disaster scenarios\n- **Automation**: Reduce human error in backup and recovery processes",
+  "diagram": "graph TD\n    A[Production Systems] --> B[Automated Backups]\n    B --> C[Local Storage]\n    B --> D[Cloud Storage]\n    B --> E[Offsite Storage]\n    \n    F[Disaster Event] --> G[Failover Trigger]\n    G --> H[Recovery Procedures]\n    H --> I[Restore from Backups]\n    I --> J[Systems Operational]\n    \n    K[Regular Testing] --> L[Backup Validation]\n    L --> M[Recovery Drills]\n    M --> N[Process Improvement]\n    \n    style A fill:#e1f5fe\n    style J fill:#c8e6c9\n    style F fill:#ffebee\n    style G fill:#ffcdd2",
+  "difficulty": "beginner",
+  "tags": [
+    "backup",
+    "dr"
+  ],
+  "lastUpdated": "2025-12-13T06:29:40.130Z"
+}

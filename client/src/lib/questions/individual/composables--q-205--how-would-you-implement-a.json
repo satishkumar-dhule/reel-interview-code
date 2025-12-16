@@ -1,0 +1,14 @@
+{
+  "id": "q-205",
+  "question": "How would you implement a Compose Navigation with nested graphs and shared view models while handling configuration changes and deep linking?",
+  "answer": "Use NavHost with nested NavGraphs, HiltViewModel for scoped VMs, and SavedStateHandle for deep link parameters.",
+  "explanation": "## Concept Overview\nCompose Navigation uses a single-activity architecture with declarative navigation graphs. Nested graphs allow modular navigation while shared ViewModels maintain state across related destinations.\n\n## Implementation Details\n- Create nested NavGraphs using `navigation(startDestination)` builder\n- Scope ViewModels to navigation graphs using `hiltViewModel()` or `viewModel()`\n- Handle deep links with `navDeepLink` and extract parameters via `SavedStateHandle`\n- Preserve state during config changes with `rememberSaveable`\n\n## Code Example\n```kotlin\n@Composable\nfun AppNavigation() {\n    val navController = rememberNavController()\n    \n    NavHost(\n        navController = navController,\n        startDestination = \"home\"\n    ) {\n        navigation(\"profile\", \"profile_graph\") {\n            composable(\"profile/{userId}\") {\n                val viewModel: ProfileViewModel = hiltViewModel()\n                ProfileScreen(viewModel)\n            }\n        }\n    }\n}\n```\n\n## Common Pitfalls\n- ViewModel scoping issues when sharing between nested graphs\n- Deep link parameter parsing errors\n- State loss during configuration changes\n- Navigation stack management with complex flows",
+  "tags": [
+    "composables",
+    "state",
+    "navigation"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[NavHost] --> B[Home Graph]\n    A --> C[Profile Graph]\n    A --> D[Settings Graph]\n    C --> E[Profile Screen]\n    C --> F[Edit Profile]\n    E --> G[ProfileViewModel]\n    F --> G\n    H[Deep Link] --> I[SavedStateHandle]\n    I --> G\n    J[Config Change] --> K[rememberSaveable]\n    K --> G",
+  "lastUpdated": "2025-12-14T12:58:18.964Z"
+}

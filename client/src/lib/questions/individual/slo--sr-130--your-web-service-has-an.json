@@ -1,0 +1,14 @@
+{
+  "id": "sr-130",
+  "question": "Your web service has an SLO of 99.9% availability over 30 days. You've had 3 outages: 45 minutes, 20 minutes, and 15 minutes. What's your current availability SLI and are you meeting your SLO?",
+  "answer": "SLI: 99.81% availability. Not meeting 99.9% SLO - exceeded error budget by 0.09%.",
+  "explanation": "## SLI Calculation\n\n**Total time in 30 days:** 30 × 24 × 60 = 43,200 minutes\n\n**Total downtime:** 45 + 20 + 15 = 80 minutes\n\n**Uptime:** 43,200 - 80 = 43,120 minutes\n\n**SLI (Service Level Indicator):** (43,120 ÷ 43,200) × 100 = **99.81%**\n\n## SLO Analysis\n\n**Target SLO:** 99.9% availability\n**Current SLI:** 99.81%\n**Status:** ❌ **Not meeting SLO**\n\n## Error Budget\n\n**Allowed downtime for 99.9% SLO:** 43,200 × 0.001 = 43.2 minutes\n**Actual downtime:** 80 minutes\n**Error budget exceeded by:** 80 - 43.2 = 36.8 minutes (0.09%)\n\n## Key Concepts\n\n- **SLI (Service Level Indicator):** Actual measured performance metric\n- **SLO (Service Level Objective):** Target reliability goal\n- **Error Budget:** Allowed unreliability (100% - SLO%)\n\nWhen SLI < SLO, you've exceeded your error budget and should focus on reliability improvements over new features.",
+  "diagram": "graph TD\n    A[30 Days Total Time<br/>43,200 minutes] --> B[Calculate Downtime]\n    B --> C[Outage 1: 45 min<br/>Outage 2: 20 min<br/>Outage 3: 15 min]\n    C --> D[Total Downtime<br/>80 minutes]\n    A --> E[Calculate Uptime<br/>43,200 - 80 = 43,120 min]\n    E --> F[SLI Calculation<br/>43,120 ÷ 43,200 × 100]\n    F --> G[Current SLI<br/>99.81%]\n    H[SLO Target<br/>99.9%] --> I{SLI ≥ SLO?}\n    G --> I\n    I -->|No| J[❌ SLO Breach<br/>Error Budget Exceeded]\n    I -->|Yes| K[✅ SLO Met<br/>Within Error Budget]\n    L[Error Budget<br/>43.2 minutes allowed] --> M[Budget Exceeded<br/>36.8 minutes over]",
+  "difficulty": "intermediate",
+  "tags": [
+    "slo",
+    "sli",
+    "error-budget"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

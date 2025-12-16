@@ -1,0 +1,14 @@
+{
+  "id": "q-229",
+  "question": "What is the difference between tokenization and stemming in NLP text preprocessing?",
+  "answer": "Tokenization splits text into words/tokens, while stemming reduces words to their root form by removing suffixes.",
+  "explanation": "## Tokenization vs Stemming\n\n**Tokenization** breaks text into individual units (tokens) like words or subwords. It's the first step in text preprocessing.\n\n**Stemming** reduces words to their base or root form by removing prefixes/suffixes, often resulting in non-words.\n\n### Implementation Examples\n\n```python\n# Tokenization\nfrom nltk.tokenize import word_tokenize\ntext = \"running dogs\"\ntokens = word_tokenize(text)  # ['running', 'dogs']\n\n# Stemming\nfrom nltk.stem import PorterStemmer\nstemmer = PorterStemmer()\nstemmed = [stemmer.stem(token) for token in tokens]  # ['run', 'dog']\n```\n\n### Common Pitfalls\n- Tokenization struggles with contractions and hyphenated words\n- Stemming can over-aggressively reduce words (e.g., 'university' → 'univers')\n- Both are language-dependent\n\n### Use Cases\n- Tokenization: Feature extraction, vocabulary building\n- Stemming: Search indexing, text normalization for classification",
+  "tags": [
+    "tokenization",
+    "stemming",
+    "ner"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Raw Text] --> B[Tokenization]\n    B --> C[Tokens: 'running', 'dogs']\n    C --> D[Stemming]\n    D --> E[Stemmed: 'run', 'dog']\n    B --> F[Feature Extraction]\n    D --> G[Search Indexing]\n    F --> H[ML Model Input]\n    G --> I[Text Retrieval]",
+  "lastUpdated": "2025-12-15T01:16:14.413Z"
+}

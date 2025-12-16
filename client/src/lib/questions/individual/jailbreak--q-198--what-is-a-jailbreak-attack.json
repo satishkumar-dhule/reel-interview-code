@@ -1,0 +1,14 @@
+{
+  "id": "q-198",
+  "question": "What is a jailbreak attack in prompt engineering and how do guardrails prevent it?",
+  "answer": "A jailbreak attack bypasses AI safety controls using malicious prompts. Guardrails filter and block harmful inputs/outputs.",
+  "explanation": "## Concept Overview\nJailbreak attacks are techniques used to circumvent AI model safety restrictions by crafting specific prompts that trick the model into generating harmful or restricted content.\n\n## Implementation Details\nGuardrails are safety mechanisms that:\n- **Input filtering**: Scan prompts for malicious patterns\n- **Output monitoring**: Check responses for policy violations\n- **Context awareness**: Maintain conversation safety state\n- **Real-time blocking**: Prevent harmful content generation\n\n## Code Example\n```python\ndef apply_guardrails(prompt, response):\n    # Input filtering\n    if contains_jailbreak_patterns(prompt):\n        return \"Request blocked: Safety violation detected\"\n    \n    # Output monitoring\n    if violates_content_policy(response):\n        return \"Content filtered: Policy violation\"\n    \n    return response\n```\n\n## Common Pitfalls\n- Over-filtering legitimate requests\n- Pattern matching evasion techniques\n- Context window limitations\n- False positives in benign content",
+  "tags": [
+    "jailbreak",
+    "guardrails",
+    "content-filtering"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[User Prompt] --> B{Input Guardrails}\n    B -->|Malicious| C[Block Request]\n    B -->|Safe| D[AI Model]\n    D --> E[Response]\n    E --> F{Output Guardrails}\n    F -->|Harmful| G[Filter Response]\n    F -->|Safe| H[Return Response]\n    C --> I[Error Message]\n    G --> I",
+  "lastUpdated": "2025-12-14T12:57:32.946Z"
+}

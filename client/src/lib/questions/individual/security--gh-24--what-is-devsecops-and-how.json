@@ -1,0 +1,13 @@
+{
+  "id": "gh-24",
+  "question": "What is DevSecOps and how does it differ from traditional DevOps security approaches?",
+  "answer": "DevSecOps integrates security throughout the entire software development lifecycle by making security a shared responsibility embedded in CI/CD pipelines, rather than a separate final-stage gate.",
+  "explanation": "DevSecOps represents a cultural and technical shift where security becomes an integral part of development operations rather than an afterthought. Unlike traditional approaches where security teams review code just before deployment, DevSecOps implements automated security checks throughout the development process.\n\n**Key differences from traditional DevOps security:**\n- **Shift-left approach**: Security testing begins early in development, not just before production\n- **Automated security integration**: Security tools are embedded directly in CI/CD pipelines\n- **Shared responsibility**: Developers own security alongside their feature development\n- **Continuous monitoring**: Ongoing security assessment rather than periodic audits\n\n**Core DevSecOps principles:**\n- Security as code: Treating security policies and configurations as version-controlled artifacts\n- Infrastructure as code security: Automated validation of cloud resource configurations\n- Static and dynamic analysis: Code scanning integrated into build processes\n- Secret management: Automated detection and secure handling of credentials\n- Compliance as code: Automated verification against security standards and regulations\n- Continuous security testing: Regular penetration testing and vulnerability assessments",
+  "diagram": "graph TD\n    A[Developer] --> B[Code Commit]\n    B --> C[Automated Security Scan]\n    C --> D[Static Analysis]\n    D --> E[Dependency Check]\n    E --> F[Build & Test]\n    F --> G[Dynamic Analysis]\n    G --> H[Deploy to Staging]\n    H --> I[Security Validation]\n    I --> J[Deploy to Production]\n    J --> K[Continuous Monitoring]\n    K --> L[Vulnerability Detection]\n    L --> M[Automated Remediation]\n    M --> A\n    \n    style C fill:#ffeb3b\n    style D fill:#ffeb3b\n    style E fill:#ffeb3b\n    style G fill:#ffeb3b\n    style I fill:#ffeb3b\n    style K fill:#ffeb3b\n    style L fill:#ffeb3b",
+  "difficulty": "advanced",
+  "tags": [
+    "security",
+    "devsecops"
+  ],
+  "lastUpdated": "2025-12-12T10:04:46.787Z"
+}

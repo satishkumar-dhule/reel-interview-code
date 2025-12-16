@@ -1,0 +1,12 @@
+{
+  "id": "gh-104",
+  "question": "What is Canary Analysis?",
+  "answer": "Canary Analysis is a deployment strategy that releases changes to a small subset of users or servers before rolling out to the entire infrastructure, ...",
+  "explanation": "Canary Analysis is a deployment strategy that releases changes to a small subset of users or servers before rolling out to the entire infrastructure, allowing for early detection of issues.",
+  "difficulty": "advanced",
+  "tags": [
+    "advanced",
+    "cloud"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

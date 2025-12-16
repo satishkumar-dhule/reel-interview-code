@@ -1,0 +1,14 @@
+{
+  "id": "gh-20",
+  "question": "What are the components of the ELK Stack and how do they work together to process log data?",
+  "answer": "The ELK Stack is a centralized logging solution consisting of Elasticsearch (search engine), Logstash (data processing), and Kibana (visualization).",
+  "explanation": "The ELK Stack is a comprehensive log management and analytics platform:\n\n## Components:\n\n* **Elasticsearch:** Distributed search and analytics engine that stores and indexes data\n* **Logstash:** Data collection and transformation pipeline that processes logs from multiple sources\n* **Kibana:** Visualization dashboard for exploring and analyzing data stored in Elasticsearch\n\n## Data Flow:\n\n1. Logstash collects logs from various sources (applications, servers, services)\n2. Logstash processes, filters, and transforms the log data\n3. Processed data is indexed and stored in Elasticsearch\n4. Kibana provides real-time dashboards and visualizations for analysis\n\n## Common Use Cases:\n\n* Centralized log aggregation\n* Security monitoring and threat detection\n* Application performance monitoring\n* Business intelligence and analytics\n* Debugging and troubleshooting",
+  "diagram": "graph TD\n    A[Application Logs] --> B[Logstash]\n    C[Server Logs] --> B\n    D[System Metrics] --> B\n    B --> E[Elasticsearch]\n    E --> F[Kibana Dashboard]\n    G[Beats] --> B\n    F --> H[Visualizations]\n    F --> I[Alerts]\n    F --> J[Reports]",
+  "difficulty": "beginner",
+  "tags": [
+    "observability",
+    "monitoring",
+    "logging"
+  ],
+  "lastUpdated": "2025-12-12T10:03:43.564Z"
+}

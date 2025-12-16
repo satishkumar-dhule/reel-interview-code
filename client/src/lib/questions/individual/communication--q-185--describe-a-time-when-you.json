@@ -1,0 +1,13 @@
+{
+  "id": "q-185",
+  "question": "Describe a time when you had to work with a difficult team member. How did you handle the situation and what was the outcome?",
+  "answer": "I focused on understanding their perspective, found common ground, and established clear communication protocols.",
+  "explanation": "This behavioral question assesses your interpersonal skills, conflict resolution abilities, and emotional intelligence. A strong answer should demonstrate: 1) Self-awareness in recognizing the difficulty, 2) Empathy in understanding the other person's perspective, 3) Proactive communication strategies, 4) Focus on team goals over personal differences, 5) Ability to turn a negative situation into a positive outcome. The STAR method (Situation, Task, Action, Result) works well here. Key indicators of a good response include taking ownership of the solution rather than blaming, showing respect for the difficult person, and demonstrating how the experience improved team dynamics.",
+  "tags": [
+    "communication",
+    "collaboration"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Identify Conflict] --> B[Understand Perspective]\n    B --> C[Find Common Ground]\n    C --> D[Establish Communication Protocols]\n    D --> E[Monitor Progress]\n    E --> F[Positive Outcome]",
+  "lastUpdated": "2025-12-14T10:25:58.352Z"
+}

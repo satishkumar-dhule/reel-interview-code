@@ -1,0 +1,26 @@
+{
+  "id": "q-255",
+  "question": "How would you implement OWASP ASVS L3 input validation for a REST API endpoint that accepts JSON payloads with nested objects?",
+  "answer": "Use schema validation with JSON Schema, whitelist allowed fields, validate data types and ranges, and sanitize inputs at each nested level.",
+  "explanation": "## OWASP ASVS L3 Input Validation\n\nThe OWASP Application Security Verification Standard (ASVS) Level 3 requires comprehensive input validation for security-critical applications.\n\n### Implementation Details\n\n**Schema Validation Approach:**\n- Use JSON Schema for structural validation\n- Implement whitelist-based field validation\n- Apply type checking and range validation\n- Sanitize inputs at each nesting level\n\n**Code Example (Node.js/Express):**\n```javascript\nconst Joi = require('joi');\n\nconst userSchema = Joi.object({\n  name: Joi.string().min(2).max(50).pattern(/^[a-zA-Z\\s]+$/),\n  email: Joi.string().email(),\n  address: Joi.object({\n    street: Joi.string().required(),\n    city: Joi.string().required(),\n    zip: Joi.string().pattern(/^\\d{5}(-\\d{4})?$/)\n  }).required()\n});\n\napp.post('/users', (req, res) => {\n  const { error } = userSchema.validate(req.body);\n  if (error) return res.status(400).json({ error: error.details });\n  // Process validated data\n});\n```\n\n### Common Pitfalls\n- **Blacklisting** instead of whitelisting allowed fields\n- **Client-side only validation** without server-side enforcement\n- **Missing nested object validation** - validate each level\n- **Inconsistent error messages** that leak system information\n- **Performance impact** from complex regex patterns\n\n### Security Benefits\n- Prevents injection attacks (SQL, NoSQL, XSS)\n- Stops data structure manipulation attacks\n- Ensures data integrity and business rule compliance",
+  "tags": [
+    "top10",
+    "asvs",
+    "samm"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Client Request] --> B[JSON Schema Validation]\n    B --> C{Valid Schema?}\n    C -->|No| D[400 Bad Request]\n    C -->|Yes| E[Field Type Validation]\n    E --> F{Valid Types?}\n    F -->|No| G[400 Bad Request]\n    F -->|Yes| H[Range/Pattern Validation]\n    H --> I{Valid Values?}\n    I -->|No| J[400 Bad Request]\n    I -->|Yes| K[Sanitization Layer]\n    K --> L[Business Logic]\n    L --> M[Database]",
+  "sourceUrl": "https://owasp.org/www-project-application-security-verification-standard/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-15T10:44:38.190Z"
+}

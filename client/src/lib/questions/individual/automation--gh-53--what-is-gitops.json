@@ -1,0 +1,13 @@
+{
+  "id": "gh-53",
+  "question": "What is GitOps?",
+  "answer": "GitOps is a way of implementing Continuous Deployment for cloud native applications. It focuses on a developer-centric experience when operating infra...",
+  "explanation": "GitOps is a way of implementing Continuous Deployment for cloud native applications. It focuses on a developer-centric experience when operating infrastructure, by using tools developers are already familiar with, including Git and Continuous Deployment tools.\n\nPrinciples:\n1. **Declarative:**\n- Infrastructure as code\n- Application configuration as code\n\n2. **Version Controlled:**\n- Git as single source of truth\n- Audit trail for changes\n\n3. **Automated:**\n- Pull-based deployment\n- Continuous reconciliation",
+  "diagram": "\ngraph LR\n    Git[Git Repo] --> Operator[GitOps Operator]\n    Operator --> K8s[Kubernetes]\n    K8s --> App[Application]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "automation",
+    "tools"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

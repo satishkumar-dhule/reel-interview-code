@@ -1,0 +1,14 @@
+{
+  "id": "q-201",
+  "question": "How does an LSTM cell's forget gate regulate information flow compared to a simple RNN?",
+  "answer": "LSTM forget gate uses sigmoid to selectively discard previous cell state, preventing vanishing gradients unlike simple RNNs.",
+  "explanation": "## LSTM Forget Gate Overview\nThe forget gate is a key component that controls what information from the previous cell state should be retained or discarded.\n\n## Implementation Details\n- Input: Previous hidden state (h_t-1) and current input (x_t)\n- Activation: Sigmoid function outputs values between 0-1\n- Operation: Element-wise multiplication with previous cell state\n- Output: Filtered cell state passed to next time step\n\n## Code Example\n```python\n# Forget gate computation\nf_t = sigmoid(W_f * [h_t-1, x_t] + b_f)\n# Apply to cell state\nC_t = f_t * C_t-1\n```\n\n## Common Pitfalls\n- Sigmoid saturation leading to gradient issues\n- Improper weight initialization causing gate to always forget\n- Not balancing forget/input gates for optimal information flow",
+  "tags": [
+    "lstm",
+    "gru",
+    "seq2seq"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Previous Hidden State h_t-1] --> D[Concatenate]\n    B[Current Input x_t] --> D\n    D --> E[Forget Gate: sigmoid(Wf * [h_t-1, x_t] + bf)]\n    F[Previous Cell State C_t-1] --> G[Multiply: ft * C_t-1]\n    E --> G\n    G --> H[New Cell State C_t]\n    H --> I[Output Gate]\n    I --> J[Current Hidden State h_t]",
+  "lastUpdated": "2025-12-14T12:57:53.724Z"
+}

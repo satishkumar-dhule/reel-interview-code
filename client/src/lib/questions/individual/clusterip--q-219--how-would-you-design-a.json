@@ -1,0 +1,15 @@
+{
+  "id": "q-219",
+  "question": "How would you design a zero-downtime service migration strategy using Kubernetes Service selectors and Endpoints controller to avoid connection drops during rolling updates?",
+  "answer": "Use dual-service approach with overlapping selectors and gradual traffic shifting via EndpointsSlice API while maintaining connection affinity.",
+  "explanation": "## Concept Overview\nZero-downtime migration requires careful coordination of Service selectors and Endpoints to maintain existing connections while routing new traffic to updated pods.\n\n## Implementation Details\n- Deploy new version with different labels (e.g., version=v2)\n- Create temporary Service with overlapping selectors\n- Use EndpointsSlice controller for gradual traffic splitting\n- Implement connection draining with terminationGracePeriodSeconds\n- Leverage sessionAffinity for stateful applications\n\n## Code Example\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: app-migration\nspec:\n  selector:\n    app: myapp\n    version: v1  # Gradually change to v2\n  sessionAffinity: ClientIP\n  sessionAffinityConfig:\n    clientIP:\n      timeoutSeconds: 300\n```\n\n## Common Pitfalls\n- Not accounting for DNS caching delays\n- Ignoring connection timeout during pod termination\n- Forgetting to update Ingress rules after migration\n- Missing health check readiness probes causing traffic to terminating pods",
+  "tags": [
+    "clusterip",
+    "nodeport",
+    "loadbalancer",
+    "ingress"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Client] --> B[Ingress Controller]\n    B --> C[Service v1]\n    B --> D[Service v2]\n    C --> E[Pods v1]\n    D --> F[Pods v2]\n    G[Endpoints Controller] --> C\n    G --> D\n    H[EndpointsSlice API] --> G\n    I[Traffic Splitting] --> H\n    J[Connection Affinity] --> C\n    J --> D",
+  "lastUpdated": "2025-12-15T01:15:01.016Z"
+}

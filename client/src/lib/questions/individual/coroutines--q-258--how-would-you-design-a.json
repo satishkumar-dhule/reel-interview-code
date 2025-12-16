@@ -1,0 +1,26 @@
+{
+  "id": "q-258",
+  "question": "How would you design a reactive Android ViewModel using StateFlow with sealed classes to handle network API responses, ensuring proper error handling and loading states?",
+  "answer": "Use MutableStateFlow<UiState> with sealed class (Loading/Success/Error) and collect with catch operator for error handling in coroutine scope.",
+  "explanation": "## Concept Overview\nCombining StateFlow with sealed classes creates a type-safe, reactive state management pattern perfect for handling API responses. The StateFlow holds the current UI state while sealed classes define all possible states, enabling compile-time safety when handling different scenarios.\n\n## Implementation Details\n\n### 1. Define Sealed Class for UI States\n```kotlin\nsealed class UiState<out T> {\n    object Loading : UiState<Nothing>()\n    data class Success<T>(val data: T) : UiState<T>()\n    data class Error(val exception: Throwable) : UiState<Nothing>()\n}\n```\n\n### 2. ViewModel Implementation\n```kotlin\nclass UserRepository @Inject constructor(\n    private val apiService: ApiService\n) {\n    private val _usersState = MutableStateFlow<UiState<List<User>>>(UiState.Loading)\n    val usersState: StateFlow<UiState<List<User>>> = _usersState.asStateFlow()\n\n    fun fetchUsers() {\n        viewModelScope.launch {\n            _usersState.value = UiState.Loading\n            apiService.getUsers()\n                .catch { exception ->\n                    _usersState.value = UiState.Error(exception)\n                }\n                .collect { users ->\n                    _usersState.value = UiState.Success(users)\n                }\n        }\n    }\n}\n```\n\n### 3. Activity/Fragment Collection\n```kotlin\nlifecycleScope.launch {\n    viewModel.usersState.collect { state ->\n        when (state) {\n            is UiState.Loading -> showProgressBar()\n            is UiState.Success -> showUsers(state.data)\n            is UiState.Error -> showError(state.exception.message)\n        }\n    }\n}\n```\n\n## Common Pitfalls\n- **Memory Leaks**: Always use `viewModelScope` or `lifecycleScope` for coroutines\n- **State Conflation**: StateFlow is conflated by default - rapid updates may be lost\n- **Backpressure**: Use `buffer()` or `conflate() strategically for high-frequency updates\n- **Initial State**: Always initialize StateFlow with a meaningful default state\n- **Error Propagation**: Don't forget the `catch` operator to prevent cancellation",
+  "tags": [
+    "coroutines",
+    "flow",
+    "sealed-classes"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[User Action] --> B[ViewModel.fetchUsers]\n    B --> C[_usersState.value = Loading]\n    C --> D[API Service Call]\n    D --> E{Response}\n    E -->|Success| F[_usersState.value = Success]\n    E -->|Error| G[_usersState.value = Error]\n    F --> H[UI Updates with Data]\n    G --> I[UI Shows Error Message]\n    C --> J[UI Shows Loading]\n    J --> K[StateFlow.collect in Activity]\n    K --> L[when statement handles state]\n    L --> M{State Type}\n    M -->|Loading| N[Show ProgressBar]\n    M -->|Success| O[Display Data]\n    M -->|Error| P[Show Error]",
+  "sourceUrl": "https://medium.com/@dharmakshetri/robust-error-handling-in-android-7aedf5b6a878",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/watch?v=rnRsUiI3W9o",
+    "longVideo": "https://www.youtube.com/watch?v=5OrK81ZRoNY"
+  },
+  "companies": [
+    "Airbnb",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:46:44.471Z"
+}

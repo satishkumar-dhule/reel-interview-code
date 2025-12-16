@@ -121,3 +121,6 @@ export function useSubChannels(channelId: string) {
     error: null 
   };
 }
+
+// Re-export Question type
+export type { Question };

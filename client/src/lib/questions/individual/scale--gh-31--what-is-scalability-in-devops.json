@@ -1,0 +1,13 @@
+{
+  "id": "gh-31",
+  "question": "What is Scalability in DevOps?",
+  "answer": "Scalability is the capability of a system to handle a growing amount of work by adding resources to the system. There are two types of scaling:",
+  "explanation": "Scalability is the capability of a system to handle a growing amount of work by adding resources to the system. There are two types of scaling:\n\n1. **Vertical Scaling (Scale Up):**\n- Adding more power to existing resources\n- Example: Upgrading CPU/RAM\n\n2. **Horizontal Scaling (Scale Out):**\n- Adding more resources\n- Example: Adding more servers",
+  "diagram": "\ngraph TD\n    subgraph Vertical\n    S1[Small] --> S2[Large]\n    end\n    subgraph Horizontal\n    H1[Server] --- H2[Server] --- H3[Server]\n    end\n",
+  "difficulty": "advanced",
+  "tags": [
+    "scale",
+    "ha"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

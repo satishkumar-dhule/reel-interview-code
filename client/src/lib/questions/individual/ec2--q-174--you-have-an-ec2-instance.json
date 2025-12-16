@@ -1,0 +1,13 @@
+{
+  "id": "q-174",
+  "question": "You have an EC2 instance that suddenly becomes unresponsive. What steps would you take to troubleshoot this issue, and what AWS tools would you use?",
+  "answer": "Check CloudWatch metrics, use EC2 Serial Console, examine system logs, and verify security group/network ACLs.",
+  "explanation": "When an EC2 instance becomes unresponsive, follow this troubleshooting approach:\n\n1. **Check CloudWatch Metrics**: Monitor CPUUtilization, NetworkIn/Out, and StatusCheckFailed metrics to identify resource exhaustion or hardware issues.\n\n2. **Use EC2 Serial Console**: Connect via serial console for OS-level access even when SSH is unavailable, allowing you to check system logs and processes.\n\n3. **Examine System Logs**: Review system logs through CloudWatch Logs or by attaching the root volume to another instance to investigate crash dumps or error messages.\n\n4. **Verify Network Configuration**: Check security groups and network ACLs to ensure proper connectivity. Confirm that the instance still has a public IP if required.\n\n5. **Check Instance Status**: Use AWS Systems Manager to check if the instance is running and responsive to AWS API calls.\n\n6. **Reboot or Recover**: If necessary, use the AWS Console reboot function, or as a last resort, stop and restart the instance.",
+  "tags": [
+    "ec2",
+    "compute"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[EC2 Instance Unresponsive] --> B[Check CloudWatch Metrics]\n    B --> C{Resource Issues?}\n    C -->|Yes| D[Scale Up Resources]\n    C -->|No| E[Use Serial Console]\n    E --> F[Examine System Logs]\n    F --> G{Network Issues?}\n    G -->|Yes| H[Check Security Groups/NACLs]\n    G -->|No| I[Verify Instance Status]\n    I --> J[Reboot Instance]\n    J --> K{Fixed?}\n    K -->|No| L[Stop/Restart Instance]\n    K -->|Yes| M[Issue Resolved]",
+  "lastUpdated": "2025-12-14T10:24:13.668Z"
+}

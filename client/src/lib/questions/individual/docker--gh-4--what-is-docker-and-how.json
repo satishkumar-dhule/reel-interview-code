@@ -1,0 +1,13 @@
+{
+  "id": "gh-4",
+  "question": "What is Docker and how does containerization differ from traditional virtualization?",
+  "answer": "Docker is a containerization platform that packages applications with their dependencies into isolated containers. Unlike VMs, containers share the host OS kernel, making them lightweight and faster to start up.",
+  "explanation": "# Docker Containerization\n\n## Key Concepts:\n- **Containers**: Isolated runtime environments that bundle applications with all dependencies\n- **Images**: Read-only templates used to create containers\n- **Dockerfile**: Text file with instructions to build Docker images\n\n## Benefits over Virtual Machines:\n- **Lightweight**: Share host OS kernel (no guest OS needed)\n- **Fast startup**: Seconds vs minutes for VMs\n- **Resource efficient**: Lower memory and CPU overhead\n- **Portability**: Run consistently across different environments\n\n## Common Use Cases:\n- Application deployment and scaling\n- Development environment consistency\n- Microservices architecture\n- CI/CD pipeline integration",
+  "diagram": "graph TD\n    A[Developer Code] --> B[Dockerfile]\n    B --> C[Docker Build]\n    C --> D[Docker Image]\n    D --> E[Container Runtime]\n    E --> F[Running Container]\n    \n    G[Host OS] --> H[Docker Engine]\n    H --> E\n    \n    I[Application] --> J[Libraries]\n    J --> K[Dependencies]\n    K --> F\n    \n    L[VM] --> M[Guest OS]\n    M --> N[App + Deps]\n    \n    style F fill:#e1f5fe\n    style H fill:#f3e5f5\n    style N fill:#ffebee",
+  "difficulty": "beginner",
+  "tags": [
+    "docker",
+    "containers"
+  ],
+  "lastUpdated": "2025-12-12T09:11:47.712Z"
+}

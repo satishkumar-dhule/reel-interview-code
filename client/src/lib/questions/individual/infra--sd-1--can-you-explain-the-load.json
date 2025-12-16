@@ -1,0 +1,14 @@
+{
+  "id": "sd-1",
+  "question": "Can you explain the Load Balancer strategy? When would you use Layer 4 vs Layer 7 load balancing?",
+  "answer": "Load Balancing distributes traffic across multiple servers to ensure reliability and scalability.",
+  "explanation": "A Load Balancer (LB) acts as a reverse proxy. \n\n**Layer 4 (Transport Layer)**: Distributes based on IP/Port. Fast, low overhead, but no context of content. Good for simple packet distribution.\n\n**Layer 7 (Application Layer)**: Inspects HTTP headers/content. Can route based on URL/cookies (e.g., /api to Service A, /static to Service B). More expensive but smarter.\n\n**Common Algorithms**:\n- **Round Robin**: Sequential.\n- **Least Connections**: Sends to server with fewest active connections.\n- **IP Hash**: Ensures a user always goes to the same server (sticky sessions).",
+  "diagram": "graph LR\n    User --> LB[Load Balancer]\n    LB -->|Layer 4| S1[\"Server 1<br/>IP:Port\"]\n    LB -->|Layer 7| S2[\"Server 2<br/>/api\"]\n    style LB fill:#fff,stroke:#000,color:#000",
+  "difficulty": "advanced",
+  "tags": [
+    "infra",
+    "scale",
+    "networking"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

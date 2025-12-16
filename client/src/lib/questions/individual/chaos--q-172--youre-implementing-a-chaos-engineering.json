@@ -1,0 +1,13 @@
+{
+  "id": "q-172",
+  "question": "You're implementing a chaos engineering experiment to test database failover. Your application uses a primary-replica PostgreSQL setup with connection pooling. How would you design a chaos experiment to verify that your application gracefully handles primary database failures without data loss?",
+  "answer": "Inject primary DB failure, verify connection pool redirects to replica, check write operations queue, confirm no data corruption.",
+  "explanation": "## Chaos Engineering Database Failover Test\n\n### Experiment Design\n1. **Hypothesis**: Application will automatically failover to replica DB when primary fails, maintaining read availability and queuing writes\n2. **Blast Radius**: Start with 5% of traffic, gradually increase to 100%\n3. **Steady State Metrics**: 99.9% uptime, <100ms response time, zero data loss\n\n### Implementation Steps\n1. **Baseline Measurement**: Monitor normal DB connection patterns, response times, error rates\n2. **Fault Injection**: Use `iptables` or cloud provider tools to block connections to primary DB\n3. **Observation**: Monitor connection pool behavior, failover latency, error handling\n4. **Recovery**: Restore primary connectivity, verify resync and write queue processing\n\n### Key Validation Points\n- Connection pool detects failure within 30 seconds\n- Read operations continue on replica with <200ms latency increase\n- Write operations are queued and processed after recovery\n- No duplicate or lost transactions\n- Application returns appropriate error messages for write failures\n\n### Tools & Techniques\n- **Chaos Monkey**: For random instance termination\n- **Gremlin**: For targeted network failures\n- **Litmus Chaos**: For Kubernetes-native experiments\n- **Custom Scripts**: Using `pg_isready()` and connection pool metrics",
+  "tags": [
+    "chaos",
+    "resilience"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[Application] --> B[Connection Pool]\n    B --> C[Primary DB]\n    B --> D[Replica DB]\n    E[Chaos Engine] -->|Block Connection| C\n    B -->|Failover| D\n    F[Write Queue] -->|Queue During Failover| B\n    G[Monitoring] -->|Track Metrics| A\n    G -->|Track Metrics| B\n    G -->|Track Metrics| C\n    G -->|Track Metrics| D",
+  "lastUpdated": "2025-12-14T10:23:56.354Z"
+}

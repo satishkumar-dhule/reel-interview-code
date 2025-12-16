@@ -1,0 +1,14 @@
+{
+  "id": "q-196",
+  "question": "How would you implement a rate-limited async HTTP client using aiohttp and asyncio.Semaphore to handle 1000 requests with a maximum of 50 concurrent connections?",
+  "answer": "Use asyncio.Semaphore(50) to limit concurrency and asyncio.sleep for rate limiting between request batches.",
+  "explanation": "## Concept Overview\nRate limiting prevents overwhelming servers while maintaining high throughput. Combining aiohttp with asyncio.Semaphore provides both connection pooling and request throttling.\n\n## Implementation Details\n- **Semaphore**: Controls maximum concurrent connections (50)\n- **Rate limiting**: Adds delays between request batches\n- **Error handling**: Manages timeouts and HTTP errors gracefully\n- **Session reuse**: Single aiohttp.ClientSession for connection pooling\n\n## Code Example\n```python\nimport asyncio\nimport aiohttp\nfrom typing import List\n\nasync def fetch_with_semaphore(session: aiohttp.ClientSession, \n                              semaphore: asyncio.Semaphore, \n                              url: str) -> str:\n    async with semaphore:\n        async with session.get(url) as response:\n            return await response.text()\n\nasync def rate_limited_fetch(urls: List[str], \n                           max_concurrent: int = 50,\n                           rate_delay: float = 0.1) -> List[str]:\n    semaphore = asyncio.Semaphore(max_concurrent)\n    connector = aiohttp.TCPConnector(limit=max_concurrent)\n    \n    async with aiohttp.ClientSession(connector=connector) as session:\n        tasks = []\n        for i, url in enumerate(urls):\n            if i > 0 and i % max_concurrent == 0:\n                await asyncio.sleep(rate_delay)\n            task = fetch_with_semaphore(session, semaphore, url)\n            tasks.append(task)\n        \n        return await asyncio.gather(*tasks, return_exceptions=True)\n```\n\n## Common Pitfalls\n- **Memory leaks**: Not properly closing sessions and connections\n- **Rate limiting too aggressive**: Excessive delays reduce throughput\n- **Exception handling**: Unhandled exceptions can crash the entire batch\n- **Semaphore starvation**: Poor semaphore sizing can cause bottlenecks",
+  "tags": [
+    "asyncio",
+    "aiohttp",
+    "concurrency"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[1000 URLs] --> B[Create Semaphore 50]\n    B --> C[Process in Batches]\n    C --> D[Batch 1: 50 Requests]\n    C --> E[Rate Limit Delay]\n    D --> F[aiohttp Session]\n    F --> G[Concurrent Fetch]\n    E --> H[Batch 2: 50 Requests]\n    H --> F\n    G --> I[Collect Results]\n    I --> J[Return All Responses]",
+  "lastUpdated": "2025-12-14T12:57:22.140Z"
+}

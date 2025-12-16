@@ -1,0 +1,13 @@
+{
+  "id": "q-182",
+  "question": "What is the first lifecycle method called when an Android Activity is created?",
+  "answer": "onCreate() is called first when an Activity is created.",
+  "explanation": "The Android Activity lifecycle begins with onCreate(), which is called when the activity is first created. This is where you should perform basic initialization, such as calling setContentView() and initializing UI components. onCreate() is followed by onStart(), then onResume() as the activity becomes visible and interactive to the user.",
+  "tags": [
+    "lifecycle",
+    "components"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[onCreate] --> B[onStart]\n    B --> C[onResume]\n    C --> D[Running]\n    D --> E[onPause]\n    E --> F[onStop]\n    F --> G[onDestroy]",
+  "lastUpdated": "2025-12-14T10:25:24.462Z"
+}

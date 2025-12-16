@@ -1,0 +1,15 @@
+{
+  "id": "do-2",
+  "question": "What are the key differences between Blue/Green and Canary deployment strategies?",
+  "answer": "Blue/Green enables instant switching between environments, while Canary gradually shifts traffic for safer rollouts.",
+  "explanation": "**Blue/Green Deployment:**\n- Maintains two identical production environments (Blue=current, Green=new)\n- Deploy new version to Green environment and test thoroughly\n- Switch load balancer to route 100% traffic to Green instantly\n- Enables immediate rollback but requires double infrastructure resources\n\n**Canary Deployment:**\n- Gradually routes small percentage of traffic to new version\n- Start with 5% traffic to new version, monitor metrics and errors\n- Incrementally increase to 25%, 50%, then 100% based on performance\n- Lower risk and resource usage but slower deployment process",
+  "diagram": "graph TD\n    A[Users] --> B[Load Balancer]\n    B -->|100%| C[Blue Environment v1]\n    B -.->|Switch| D[Green Environment v2]\n    \n    E[Users] --> F[Load Balancer]\n    F -->|95%| G[Version 1]\n    F -->|5%| H[Version 2 Canary]",
+  "difficulty": "intermediate",
+  "tags": [
+    "deployment",
+    "strategy",
+    "cicd",
+    "jenkins"
+  ],
+  "lastUpdated": "2025-12-12T09:10:00.382Z"
+}

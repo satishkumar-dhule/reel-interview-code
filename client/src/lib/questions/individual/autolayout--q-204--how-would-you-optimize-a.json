@@ -1,0 +1,14 @@
+{
+  "id": "q-204",
+  "question": "How would you optimize a UITableView with 10,000+ complex cells using Auto Layout while maintaining 60fps scrolling and memory efficiency?",
+  "answer": "Use cell reuse, pre-calculate heights, implement heightForRowAt caching, and optimize Auto Layout constraints with manual layout when needed.",
+  "explanation": "## Concept Overview\nOptimizing large UITableViews requires balancing memory usage, rendering performance, and smooth scrolling. Auto Layout adds computational overhead that becomes critical at scale.\n\n## Implementation Details\n\n### Cell Reuse Strategy\n```swift\noverride func prepareForReuse() {\n    super.prepareForReuse()\n    // Reset expensive operations\n    imageView.image = nil\n    complexView.resetContent()\n}\n```\n\n### Height Caching System\n```swift\nprivate var heightCache: [IndexPath: CGFloat] = [:]\n\nfunc tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {\n    if let cached = heightCache[indexPath] {\n        return cached\n    }\n    let height = calculateHeight(for: indexPath)\n    heightCache[indexPath] = height\n    return height\n}\n```\n\n### Auto Layout Optimization\n- Use `setNeedsLayout()` instead of `layoutIfNeeded()`\n- Prefer `intrinsicContentSize` over complex constraints\n- Implement `systemLayoutSizeFitting` for height calculation\n\n### Memory Management\n- Use weak references for cell closures\n- Implement `didEndDisplaying` for cleanup\n- Consider async image loading with placeholder\n\n## Common Pitfalls\n- Not caching heights leads to expensive recalculations\n- Complex Auto Layout in cell configuration blocks\n- Memory leaks from strong reference cycles\n- Ignoring cell reuse lifecycle",
+  "tags": [
+    "autolayout",
+    "tableview",
+    "collectionview"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[User Scrolls] --> B[dequeueReusableCell]\n    B --> C{Height Cached?}\n    C -->|Yes| D[Use Cached Height]\n    C -->|No| E[Calculate Height]\n    E --> F[Cache Height]\n    F --> G[Configure Cell]\n    G --> H[Apply Constraints]\n    H --> I[Render Cell]\n    I --> J[Display]\n    D --> G",
+  "lastUpdated": "2025-12-14T12:58:12.254Z"
+}

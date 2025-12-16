@@ -1,0 +1,13 @@
+{
+  "id": "gh-27",
+  "question": "What is Git and how does it facilitate collaborative software development through its distributed architecture?",
+  "answer": "Git is a distributed version control system that tracks changes in source code, enabling multiple developers to work simultaneously on projects while maintaining a complete history of all modification",
+  "explanation": "Git is a distributed version control system that revolutionized collaborative software development by providing a decentralized approach to code management.\n\n**Key Concepts:**\n- **Repository**: Complete project history with all files and metadata\n- **Commit**: Snapshot of changes with unique hash identifier\n- **Branch**: Independent line of development for features or fixes\n- **Merge**: Integration of changes from different branches\n- **Pull Request**: Mechanism for code review and integration\n- **Clone**: Local copy of remote repository\n- **Push/Pull**: Synchronize changes between local and remote repositories\n\n**Distributed Architecture Benefits:**\n- Every developer has full repository copy\n- Offline work capability\n- Faster operations (no network dependency)\n- Better backup and redundancy\n- Flexible collaboration workflows",
+  "diagram": "graph TD\n    A[Working Directory] -->|git add| B[Staging Area]\n    B -->|git commit| C[Local Repository]\n    C -->|git push| D[Remote Repository]\n    D -->|git pull/fetch| C\n    E[Developer 1] --> A\n    F[Developer 2] --> A\n    G[Feature Branch] -->|git merge| C\n    H[Main Branch] -->|git checkout| A",
+  "difficulty": "advanced",
+  "tags": [
+    "git",
+    "vcs"
+  ],
+  "lastUpdated": "2025-12-12T10:04:58.385Z"
+}

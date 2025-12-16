@@ -1,0 +1,26 @@
+{
+  "id": "q-267",
+  "question": "What's the difference between REST, GraphQL, and gRPC in terms of protocol and data format?",
+  "answer": "REST uses HTTP/1.1 with JSON/XML, GraphQL uses HTTP with JSON, and gRPC uses HTTP/2 with Protocol Buffers.",
+  "explanation": "## Concept\nREST is an architectural style using standard HTTP methods for resource-based operations. GraphQL is a query language allowing flexible data retrieval from single endpoints. gRPC is a high-performance RPC framework using contract-first design.\n\n## Implementation\n```javascript\n// REST\nGET /users/123\n\n// GraphQL\nquery { user(id: 123) { name, email } }\n\n// gRPC (protobuf)\nrpc GetUser(GetUserRequest) returns (UserResponse)\n```\n\n## Trade-offs\nREST: Simple, cacheable, but over/under-fetches data. GraphQL: Flexible queries, but complex server implementation. gRPC: Fast, type-safe, but HTTP/2 required and less browser-friendly.\n\n## Pitfalls\nREST suffers from N+1 queries. GraphQL can cause deep query complexity issues. gRPC requires protobuf compilation and tooling.",
+  "tags": [
+    "rest",
+    "graphql",
+    "grpc",
+    "openapi"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart TD\n    A[Client Request] --> B{API Type}\n    B -->|REST| C[HTTP/1.1 + JSON]\n    B -->|GraphQL| D[HTTP + JSON Query]\n    B -->|gRPC| E[HTTP/2 + Protobuf]\n    C --> F[Resource-Based Endpoints]\n    D --> G[Single GraphQL Endpoint]\n    E --> H[Service Methods]\n    F --> I[Response]\n    G --> I\n    H --> I",
+  "sourceUrl": "https://developer.mozilla.org/en-US/docs/Glossary/REST",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-16T01:16:49.435Z"
+}

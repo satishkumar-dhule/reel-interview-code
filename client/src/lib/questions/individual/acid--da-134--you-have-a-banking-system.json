@@ -1,0 +1,13 @@
+{
+  "id": "da-134",
+  "question": "You have a banking system where Account A transfers $100 to Account B, but during the transaction, Account B gets deleted by another process. The transfer uses READ COMMITTED isolation. What happens to the $100, and how would you prevent data inconsistency?",
+  "answer": "Money disappears into deleted account. Use SELECT FOR UPDATE or SERIALIZABLE isolation to prevent phantom reads and ensure referential integrity.",
+  "explanation": "## Transaction Isolation and Phantom Reads\n\nThis scenario demonstrates a **phantom read** problem in READ COMMITTED isolation:\n\n### What Happens:\n1. **Transaction T1** (transfer): Reads Account A balance, debits $100\n2. **Transaction T2** (deletion): Deletes Account B \n3. **Transaction T1**: Attempts to credit Account B - but it no longer exists\n4. **Result**: $100 vanishes from the system\n\n### Why READ COMMITTED Fails:\n- Only prevents **dirty reads** and **non-repeatable reads**\n- Does **NOT** prevent **phantom reads** (rows appearing/disappearing)\n- Account B's existence isn't locked during the transfer\n\n### Solutions:\n\n#### 1. Row-Level Locking\n```sql\nBEGIN;\nSELECT balance FROM accounts WHERE id = 'B' FOR UPDATE;\n-- This locks Account B, preventing deletion\nUPDATE accounts SET balance = balance - 100 WHERE id = 'A';\nUPDATE accounts SET balance = balance + 100 WHERE id = 'B';\nCOMMIT;\n```\n\n#### 2. SERIALIZABLE Isolation\n```sql\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;\n-- Prevents all anomalies including phantom reads\n```\n\n#### 3. Application-Level Validation\n```sql\nBEGIN;\nIF NOT EXISTS (SELECT 1 FROM accounts WHERE id = 'B') THEN\n    ROLLBACK;\nEND IF;\n-- Proceed with transfer\nCOMMIT;\n```\n\n### Best Practice:\nUse **SELECT FOR UPDATE** on target accounts before any transfer to ensure atomicity and prevent phantom deletions.",
+  "diagram": "graph TD\n    A[Transaction T1: Transfer $100] --> B[Read Account A: $500]\n    A --> C[Read Account B: $200]\n    D[Transaction T2: Delete Account B] --> E[DELETE FROM accounts WHERE id='B']\n    B --> F[UPDATE Account A: $400]\n    C --> G[UPDATE Account B: ???]\n    E --> H[Account B Deleted]\n    G --> I[ERROR: Account B not found]\n    F --> J[Money Lost: $100 vanished]\n    \n    K[Solution: SELECT FOR UPDATE] --> L[Lock Account B]\n    L --> M[Prevent Deletion]\n    M --> N[Safe Transfer]",
+  "difficulty": "advanced",
+  "tags": [
+    "acid",
+    "transactions"
+  ],
+  "lastUpdated": "2025-12-12T09:14:57.084Z"
+}

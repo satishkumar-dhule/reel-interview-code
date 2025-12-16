@@ -1,0 +1,13 @@
+{
+  "id": "q-177",
+  "question": "What is the primary difference between model serving and model deployment in machine learning?",
+  "answer": "Deployment is the overall process; serving is the runtime API that provides predictions.",
+  "explanation": "Model deployment encompasses the entire process of making a machine learning model available for use, including infrastructure setup, monitoring, and maintenance. Model serving specifically refers to the runtime component that exposes the model through an API endpoint to handle prediction requests. While deployment is a one-time or periodic process, serving is continuous and handles real-time inference requests.",
+  "tags": [
+    "mlops",
+    "deployment"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[Model Training] --> B[Model Deployment]\n    B --> C[Infrastructure Setup]\n    B --> D[Monitoring]\n    B --> E[Model Serving]\n    E --> F[API Endpoint]\n    E --> G[Real-time Predictions]\n    F --> H[Client Applications]",
+  "lastUpdated": "2025-12-14T10:24:37.037Z"
+}

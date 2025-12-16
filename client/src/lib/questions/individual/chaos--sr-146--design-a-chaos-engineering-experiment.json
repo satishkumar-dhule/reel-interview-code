@@ -1,0 +1,13 @@
+{
+  "id": "sr-146",
+  "question": "Design a chaos engineering experiment to test the resilience of a microservices-based e-commerce platform during a database partition event. How would you ensure the experiment doesn't cause customer data loss while still providing meaningful insights?",
+  "answer": "Implement controlled partition with circuit breakers, canary deployments, and data consistency checks to isolate failures.",
+  "explanation": "## Chaos Engineering Experiment Design\n\n### **Objective**\nTest system resilience during database partition events while preventing customer data loss.\n\n### **Key Components**\n1. **Blast Radius Control**: Limit impact to non-critical services first\n2. **Data Consistency Validation**: Ensure no data corruption or loss\n3. **Gradual Escalation**: Start with read-only operations, then controlled writes\n\n### **Implementation Steps**\n1. **Preparation Phase**\n   - Identify critical data paths (orders, payments, user data)\n   - Set up monitoring and alerting for data consistency\n   - Create rollback procedures\n\n2. **Experiment Execution**\n   - Inject network partition between primary and replica databases\n   - Monitor service behavior and automatic failover mechanisms\n   - Validate circuit breaker patterns and retry logic\n\n3. **Validation Criteria**\n   - No customer order data loss\n   - Payment processing maintains ACID properties\n   - User sessions remain consistent\n   - System recovers within SLA thresholds\n\n### **Safety Mechanisms**\n- **Canary Deployment**: Test on 1% traffic first\n- **Automated Rollback**: Trigger on data inconsistency detection\n- **Read-Only Mode**: Switch to read-only during critical operations\n- **Data Verification**: Post-experiment consistency checks",
+  "diagram": "graph TD\n    A[Client Request] --> B[API Gateway]\n    B --> C[Order Service]\n    B --> D[Payment Service]\n    B --> E[User Service]\n    \n    C --> F[Primary DB]\n    C --> G[Replica DB]\n    D --> H[Payment DB]\n    E --> I[User DB]\n    \n    F -.->|Network Partition| G\n    \n    J[Chaos Controller] --> K[Network Partition]\n    J --> L[Monitoring System]\n    J --> M[Circuit Breaker]\n    \n    L --> N[Data Consistency Check]\n    L --> O[Performance Metrics]\n    \n    M --> P[Failover to Replica]\n    M --> Q[Read-Only Mode]\n    \n    N --> R{Data Valid?}\n    R -->|Yes| S[Continue Experiment]\n    R -->|No| T[Auto Rollback]",
+  "difficulty": "advanced",
+  "tags": [
+    "chaos",
+    "resilience"
+  ],
+  "lastUpdated": "2025-12-12T10:14:55.204Z"
+}

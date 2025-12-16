@@ -1,0 +1,14 @@
+{
+  "id": "al-2",
+  "question": "Explain QuickSort vs MergeSort. Which is better?",
+  "answer": "QuickSort is generally faster in practice (cache locality) but unstable. MergeSort is stable but uses O(n) space.",
+  "explanation": "**QuickSort**:\n- Avg: O(n log n), Worst: O(n^2) (bad pivot).\n- Space: O(log n) stack.\n- **In-place**.\n\n**MergeSort**:\n- Always O(n log n).\n- Space: O(n) (aux array).\n- **Stable** (preserves order of equals).\n\n**Verdict**: Arrays -> QuickSort. Linked Lists -> MergeSort.",
+  "diagram": "\ngraph TD\n    A[Array] --> P{Pick Pivot}\n    P --> L[Left < Pivot]\n    P --> R[Right > Pivot]\n    L --> Sort1[Recurse]\n    R --> Sort2[Recurse]\n",
+  "difficulty": "intermediate",
+  "tags": [
+    "sort",
+    "recursion",
+    "complexity"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.185Z"
+}

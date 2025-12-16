@@ -1,0 +1,13 @@
+{
+  "id": "fr-157",
+  "question": "What is the difference between `let`, `const`, and `var` in JavaScript?",
+  "answer": "var is function-scoped and hoisted; let/const are block-scoped. const cannot be reassigned, let can be.",
+  "explanation": "## Variable Declarations in JavaScript\n\n### `var`\n- **Scope**: Function-scoped (or globally-scoped if declared outside a function)\n- **Hoisting**: Hoisted to the top of its scope and initialized with `undefined`\n- **Reassignment**: Can be reassigned\n- **Redeclaration**: Can be redeclared in the same scope\n\n```javascript\nfunction example() {\n  console.log(x); // undefined (hoisted)\n  var x = 5;\n  var x = 10; // OK - can redeclare\n}\n```\n\n### `let`\n- **Scope**: Block-scoped (limited to the block `{}` where it's defined)\n- **Hoisting**: Hoisted but not initialized (temporal dead zone)\n- **Reassignment**: Can be reassigned\n- **Redeclaration**: Cannot be redeclared in the same scope\n\n```javascript\nif (true) {\n  let y = 5;\n  y = 10; // OK - can reassign\n  // let y = 15; // Error - cannot redeclare\n}\n// console.log(y); // Error - y is not defined\n```\n\n### `const`\n- **Scope**: Block-scoped\n- **Hoisting**: Hoisted but not initialized (temporal dead zone)\n- **Reassignment**: Cannot be reassigned\n- **Redeclaration**: Cannot be redeclared in the same scope\n- **Note**: For objects/arrays, the reference cannot change, but properties/elements can be modified\n\n```javascript\nconst z = 5;\n// z = 10; // Error - cannot reassign\n\nconst obj = { name: 'John' };\nobj.name = 'Jane'; // OK - modifying property\n// obj = {}; // Error - cannot reassign reference\n```\n\n### Best Practices\n- Use `const` by default\n- Use `let` when you need to reassign\n- Avoid `var` in modern JavaScript",
+  "diagram": "graph TD\n    A[Variable Declaration] --> B[var]\n    A --> C[let]\n    A --> D[const]\n    B --> E[Function Scoped]\n    B --> F[Hoisted with undefined]\n    B --> G[Can Redeclare]\n    C --> H[Block Scoped]\n    C --> I[Temporal Dead Zone]\n    C --> J[Can Reassign]\n    D --> K[Block Scoped]\n    D --> L[Temporal Dead Zone]\n    D --> M[Cannot Reassign]\n    D --> N[Object Properties Mutable]",
+  "difficulty": "beginner",
+  "tags": [
+    "js",
+    "core"
+  ],
+  "lastUpdated": "2025-12-13T01:09:09.317Z"
+}

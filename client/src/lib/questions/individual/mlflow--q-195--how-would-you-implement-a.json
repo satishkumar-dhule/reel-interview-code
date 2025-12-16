@@ -1,0 +1,14 @@
+{
+  "id": "q-195",
+  "question": "How would you implement a canary deployment strategy for a TensorFlow model using MLflow and Kubernetes, ensuring zero downtime and automatic rollback on performance degradation?",
+  "answer": "Use MLflow model registry with blue-green deployment, Kubernetes traffic splitting, and automated monitoring with Prometheus alerts for rollback triggers.",
+  "explanation": "## Concept Overview\nCanary deployment routes small percentage of traffic to new model version while monitoring performance metrics. If degradation detected, automatically rollback to stable version.\n\n## Implementation Details\n- **MLflow Model Registry**: Track model versions and metadata\n- **Kubernetes Istio/Service Mesh**: Split traffic between versions (e.g., 95% stable, 5% canary)\n- **Prometheus + Grafana**: Monitor latency, error rates, prediction drift\n- **Automated Rollback**: Alertmanager triggers helm rollback or k8s deployment rollback\n\n## Code Example\n```yaml\n# Kubernetes VirtualService for traffic splitting\napiVersion: networking.istio.io/v1beta1\nkind: VirtualService\nmetadata:\n  name: model-service\nspec:\n  http:\n  - match:\n    - headers:\n        canary:\n          exact: \"true\"\n    route:\n    - destination:\n        host: model-service\n        subset: canary\n      weight: 5\n  - route:\n    - destination:\n        host: model-service\n        subset: stable\n      weight: 95\n```\n\n## Common Pitfalls\n- Insufficient monitoring leading to undetected performance issues\n- Traffic splitting ratios not gradually increased\n- Missing data schema validation between model versions\n- Cold start issues affecting canary performance metrics",
+  "tags": [
+    "mlflow",
+    "kubeflow",
+    "sagemaker"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[User Request] --> B[Load Balancer]\n    B --> C{Traffic Split}\n    C -->|95%| D[Stable Model v2.1]\n    C -->|5%| E[Canary Model v2.2]\n    D --> F[Response]\n    E --> G[Performance Monitor]\n    G --> H{Metrics OK?}\n    H -->|Yes| I[Gradual Traffic Increase]\n    H -->|No| J[Automatic Rollback]\n    I --> C\n    J --> K[Alert Team]\n    F --> L[User]",
+  "lastUpdated": "2025-12-14T12:57:12.565Z"
+}

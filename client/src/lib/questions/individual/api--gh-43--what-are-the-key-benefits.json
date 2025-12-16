@@ -1,0 +1,13 @@
+{
+  "id": "gh-43",
+  "question": "What are the key benefits of implementing an API Gateway in a microservices architecture, and how does it address common distributed system challenges?",
+  "answer": "API Gateway provides centralized security, traffic management, monitoring, and service abstraction for microservices.",
+  "explanation": "Key benefits include:\n\n**Security & Access Control:**\n- Centralized authentication and authorization\n- SSL/TLS termination and certificate management\n- API key management and validation\n- Protection against common attacks (DDoS, injection)\n\n**Traffic Management:**\n- Load balancing across service instances\n- Rate limiting and throttling\n- Request/response transformation and validation\n- Circuit breaker patterns for fault tolerance\n\n**Monitoring & Analytics:**\n- Centralized logging and metrics collection\n- Real-time API usage analytics\n- Performance monitoring and alerting\n- Request tracing across services\n\n**Developer Experience:**\n- Single entry point for all APIs\n- API versioning and backward compatibility\n- Documentation and testing interfaces\n- Simplified client integration",
+  "diagram": "graph TD\n    A[Client Applications] --> B[API Gateway]\n    B --> C[Authentication Service]\n    B --> D[User Service]\n    B --> E[Order Service]\n    B --> F[Payment Service]\n    B --> G[Notification Service]\n    H[Load Balancer] --> B\n    B --> I[Rate Limiter]\n    B --> J[Cache Layer]\n    B --> K[Monitoring & Logs]\n    L[Admin Dashboard] --> K",
+  "difficulty": "intermediate",
+  "tags": [
+    "api",
+    "service-mesh"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

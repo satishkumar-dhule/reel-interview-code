@@ -1,0 +1,13 @@
+{
+  "id": "gh-46",
+  "question": "What are the key components of comprehensive API documentation and how do they facilitate developer integration?",
+  "answer": "API documentation provides structured technical specifications including endpoints, request/response schemas, authentication, and usage examples to enable developer integration.",
+  "explanation": "## Concept Overview\nAPI documentation serves as the primary interface between API providers and consumers, detailing how to effectively use and integrate with the service.\n\n## Implementation\n### Core Components:\n- **Endpoint Reference**: HTTP methods, URLs, and parameters\n- **Schema Definitions**: Request/response data structures using JSON Schema or OpenAPI\n- **Authentication**: OAuth, API keys, and token management\n- **Code Examples**: SDK samples in multiple languages\n\n### OpenAPI Specification:\n```yaml\nopenapi: 3.0.0\ninfo:\n  title: User API\n  version: 1.0.0\npaths:\n  /users:\n    get:\n      summary: Retrieve users\n      parameters:\n        - name: limit\n          in: query\n          schema:\n            type: integer\n      responses:\n        '200':\n          description: User list\n          content:\n            application/json:\n              schema:\n                type: array\n                items:\n                  $ref: '#/components/schemas/User'\n```\n\n## Trade-offs\n**Pros**: Standardized integration, reduced support tickets, faster onboarding\n**Cons**: Maintenance overhead, versioning complexity, documentation drift\n\n## Common Pitfalls\n- Outdated examples that don't match current API behavior\n- Missing error response documentation\n- Inconsistent authentication flows across endpoints\n- Lack of versioning strategy documentation",
+  "difficulty": "beginner",
+  "tags": [
+    "api",
+    "service-mesh"
+  ],
+  "lastUpdated": "2025-12-15T06:37:27.110Z",
+  "diagram": "graph TD\n    A[API Documentation] --> B[OpenAPI Spec]\n    A --> C[Interactive Console]\n    A --> D[Code Examples]\n    \n    B --> E[Endpoint Definitions]\n    B --> F[Schema Validation]\n    B --> G[Authentication Rules]\n    \n    C --> H[Try-it-Now]\n    C --> I[Response Preview]\n    \n    D --> J[Multiple Languages]\n    D --> K[SDK Samples]\n    \n    E --> L[HTTP Methods]\n    E --> M[Parameters]\n    E --> N[Response Codes]\n    \n    F --> O[Request Schema]\n    F --> P[Response Schema]\n    \n    G --> Q[OAuth 2.0]\n    G --> R[API Keys]\n    G --> S[JWT Tokens]"
+}

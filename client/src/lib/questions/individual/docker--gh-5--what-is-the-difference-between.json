@@ -1,0 +1,13 @@
+{
+  "id": "gh-5",
+  "question": "What is the difference between Docker Image and Docker Container?",
+  "answer": "Docker Image is a read-only template/blueprint, while Docker Container is a running instance of that image.",
+  "explanation": "- **Docker Image:** A read-only template containing application code, runtime, libraries, dependencies, and system tools. Images are built from Dockerfiles and stored in registries. They serve as blueprints for creating containers.\n\n- **Docker Container:** A runnable instance of an image. Containers are isolated processes that can be created, started, stopped, and deleted. Multiple containers can run from the same image simultaneously.\n\n- **Key Differences:**\n  - Images are immutable templates; containers are mutable runtime instances\n  - Images are stored; containers are executed\n  - One image can spawn multiple containers\n  - Containers have their own filesystem layer on top of the image",
+  "diagram": "graph TD\n    A[Dockerfile] --> B[Docker Image]\n    B --> C[Container 1]\n    B --> D[Container 2]\n    B --> E[Container 3]\n    F[Registry] --> B\n    C --> G[Running Process]\n    D --> H[Running Process]\n    E --> I[Running Process]",
+  "difficulty": "beginner",
+  "tags": [
+    "docker",
+    "containers"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

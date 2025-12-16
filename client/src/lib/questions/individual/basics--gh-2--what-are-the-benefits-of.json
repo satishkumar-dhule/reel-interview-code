@@ -1,0 +1,12 @@
+{
+  "id": "gh-2",
+  "question": "What are the benefits of DevOps?",
+  "answer": "The main benefits of DevOps include:",
+  "explanation": "The main benefits of DevOps include:\n\n1. Faster delivery of features\n2. More stable operating environments\n3. Improved communication and collaboration\n4. More time to innovate (rather than fix/maintain)\n5. Reduced deployment failures and rollbacks\n6. Shorter mean time to recovery",
+  "diagram": "\ngraph TD\n    DevOps --> Speed[Faster Delivery]\n    DevOps --> Stable[Stability]\n    DevOps --> Collab[Collaboration]\n    DevOps --> MTTR[Lower MTTR]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "basics"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

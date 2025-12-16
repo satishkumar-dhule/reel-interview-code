@@ -1,0 +1,14 @@
+{
+  "id": "q-221",
+  "question": "How would you implement a zero-downtime blue-green deployment strategy using Terraform workspaces, remote state locking, and Atlantis for production-scale microservices?",
+  "answer": "Use separate workspaces for blue/green, state locking for consistency, Atlantis for automated PR-based deployments with health checks.",
+  "explanation": "## Concept Overview\nBlue-green deployment maintains two identical production environments, routing traffic between them while Terraform manages infrastructure state.\n\n## Implementation Details\n- **Workspaces**: Create `blue` and `green` workspaces with identical infrastructure\n- **State Management**: Use remote backend with state locking to prevent concurrent modifications\n- **Atlantis Integration**: Configure PR-based workflows that deploy to non-active workspace first\n- **Traffic Routing**: Use load balancer target groups to switch traffic after health checks\n\n## Code Example\n```hcl\n# workspace configuration\nterraform {\n  backend \"s3\" {\n    bucket = \"tf-state-prod\"\n    key    = \"${terraform.workspace}/terraform.tfstate\"\n    region = \"us-east-1\"\n    lock_table = \"tf-locks\"\n  }\n}\n\n# resource with workspace-specific naming\nresource \"aws_lb_target_group\" \"app\" {\n  name = \"app-${terraform.workspace}\"\n  # ... other config\n}\n```\n\n## Common Pitfalls\n- State drift between workspaces causing configuration divergence\n- Insufficient health check timeouts leading to premature traffic switching\n- Missing state locking causing race conditions during concurrent deployments\n- Forgetting to update DNS TTL values for smooth traffic transition",
+  "tags": [
+    "dry",
+    "terragrunt",
+    "atlantis"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Developer PR] --> B[Atlantis Plan]\n    B --> C[Non-active Workspace]\n    C --> D[Terraform Apply]\n    D --> E[Health Checks]\n    E --> F{Healthy?}\n    F -->|Yes| G[Traffic Switch]\n    F -->|No| H[Rollback]\n    G --> I[Active Workspace Update]\n    I --> J[Cleanup Old Resources]",
+  "lastUpdated": "2025-12-15T01:15:17.440Z"
+}

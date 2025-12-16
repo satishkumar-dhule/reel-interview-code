@@ -1,0 +1,2817 @@
+{
+  "files": {
+    "al-1": "struct--al-1--when-would-you-use-a.json",
+    "al-2": "sort--al-2--explain-quicksort-vs-mergesort-which.json",
+    "al-3": "dp--al-3--what-is-dynamic-programming-how.json",
+    "al-152": "dp--al-152--you-have-a-staircase-with.json",
+    "al-163": "sort--al-163--you-have-an-array-where.json",
+    "al-164": "dp--al-164--how-many-ways-can-you.json",
+    "al-165": "struct--al-165--implement-a-trie-data-structure.json",
+    "al-166": "dp--al-166--given-a-string-find-the.json",
+    "al-167": "dp--al-167--count-ways-to-reach-target.json",
+    "al-170": "dp--al-170--given-an-array-of-integers.json",
+    "db-1": "sql--db-1--what-is-the-difference-between.json",
+    "db-2": "acid--db-2--how-do-acid-properties-ensure.json",
+    "gh-67": "db--gh-67--how-does-database-devops-integrate.json",
+    "da-125": "sql--da-125--explain-database-indexing-and-when.json",
+    "da-128": "acid--da-128--you-have-a-banking-system.json",
+    "da-129": "nosql--da-129--what-is-the-main-difference.json",
+    "da-134": "acid--da-134--you-have-a-banking-system.json",
+    "da-145": "sql--da-145--you-have-a-table-orders.json",
+    "da-156": "sql--da-156--what-is-the-difference-between.json",
+    "da-172": "acid--da-172--in-a-distributed-database-system.json",
+    "da-170": "acid--da-170--youre-building-a-banking-system.json",
+    "do-2": "deployment--do-2--what-are-the-key-differences.json",
+    "do-3": "infra--do-3--what-is-infrastructure-as-code.json",
+    "gh-1": "basics--gh-1--what-are-the-core-principles.json",
+    "gh-2": "basics--gh-2--what-are-the-benefits-of.json",
+    "gh-3": "basics--gh-3--what-is-continuous-integration-and.json",
+    "gh-4": "docker--gh-4--what-is-docker-and-how.json",
+    "gh-5": "docker--gh-5--what-is-the-difference-between.json",
+    "gh-6": "docker--gh-6--what-is-a-dockerfile-and.json",
+    "gh-7": "k8s--gh-7--what-is-kubernetes-and-how.json",
+    "gh-8": "k8s--gh-8--what-are-the-main-components.json",
+    "gh-9": "k8s--gh-9--what-is-a-pod-in.json",
+    "gh-10": "cicd--gh-10--what-is-cicd-pipeline.json",
+    "gh-11": "cicd--gh-11--what-is-jenkins-and-how.json",
+    "gh-12": "cloud--gh-12--what-is-cloud-computing-and.json",
+    "gh-13": "cloud--gh-13--what-is-aws-amazon-web.json",
+    "gh-14": "cloud--gh-14--what-are-the-core-service.json",
+    "gh-15": "cloud--gh-15--what-are-the-different-types.json",
+    "gh-16": "iac--gh-16--what-is-infrastructure-as-code.json",
+    "gh-17": "iac--gh-17--what-is-terraform-and-how.json",
+    "gh-18": "iac--gh-18--what-is-ansible-and-how.json",
+    "gh-19": "observability--gh-19--what-is-monitoring-in-devops.json",
+    "gh-20": "observability--gh-20--what-are-the-components-of.json",
+    "gh-21": "observability--gh-21--how-does-prometheus-implement-a.json",
+    "gh-22": "observability--gh-22--what-is-grafana-and-how.json",
+    "gh-23": "observability--gh-23--explain-the-key-differences-between.json",
+    "gh-24": "security--gh-24--what-is-devsecops-and-how.json",
+    "gh-26": "linux--gh-26--what-are-the-basic-linux.json",
+    "gh-27": "git--gh-27--what-is-git-and-how.json",
+    "gh-28": "git--gh-28--what-is-git-branching-strategy.json",
+    "gh-29": "config-mgmt--gh-29--what-is-configuration-management.json",
+    "gh-30": "config-mgmt--gh-30--what-is-puppet-and-how.json",
+    "gh-35": "backup--gh-35--how-do-backup-and-disaster.json",
+    "gh-36": "backup--gh-36--how-do-different-backup-strategies.json",
+    "gh-37": "cloud-native--gh-37--what-is-cloud-native-architecture.json",
+    "gh-38": "cloud-native--gh-38--what-are-microservices.json",
+    "gh-39": "cloud-native--gh-39--what-is-service-mesh.json",
+    "gh-40": "perf--gh-40--what-is-performance-testing-and.json",
+    "gh-41": "perf--gh-41--what-are-the-different-types.json",
+    "gh-42": "api--gh-42--what-is-an-api-gateway.json",
+    "gh-43": "api--gh-43--what-are-the-key-benefits.json",
+    "gh-44": "api--gh-44--how-do-you-implement-a.json",
+    "gh-45": "api--gh-45--how-do-rate-limiting-algorithms.json",
+    "gh-46": "api--gh-46--what-are-the-key-components.json",
+    "gh-48": "k8s--gh-48--what-are-daemonsets-in-kubernetes.json",
+    "gh-49": "k8s--gh-49--what-is-helm.json",
+    "gh-50": "k8s--gh-50--how-does-istio-implement-service.json",
+    "gh-51": "k8s--gh-51--what-is-container-runtime-interface.json",
+    "gh-53": "automation--gh-53--what-is-gitops.json",
+    "gh-54": "automation--gh-54--what-is-argocd.json",
+    "gh-55": "automation--gh-55--how-does-tekton-provide-a.json",
+    "gh-56": "automation--gh-56--what-are-the-key-deployment.json",
+    "gh-57": "finops--gh-57--what-is-cloud-cost-optimization.json",
+    "gh-58": "finops--gh-58--what-are-aws-reserved-instances.json",
+    "gh-64": "metrics--gh-64--what-are-the-four-key.json",
+    "gh-65": "metrics--gh-65--what-is-mean-time-to.json",
+    "gh-66": "serverless--gh-66--how-does-serverless-computing-abstract.json",
+    "gh-68": "security--gh-68--what-is-network-security-in.json",
+    "gh-69": "security--gh-69--how-does-zero-trust-security.json",
+    "gh-70": "security--gh-70--what-is-ssltls.json",
+    "gh-71": "security--gh-71--how-does-a-web-application.json",
+    "gh-72": "security--gh-72--what-is-network-segmentation.json",
+    "gh-74": "culture--gh-74--how-does-devops-culture-transform.json",
+    "gh-75": "culture--gh-75--what-are-the-core-devops.json",
+    "gh-83": "migration--gh-83--how-do-you-perform-cloud.json",
+    "gh-84": "migration--gh-84--what-is-application-modernization.json",
+    "gh-85": "migration--gh-85--how-do-cloud-migration-tools.json",
+    "gh-87": "advanced--gh-87--how-does-finops-implement-cost.json",
+    "gh-88": "advanced--gh-88--what-is-policy-as-code.json",
+    "gh-89": "advanced--gh-89--what-is-chaos-engineering.json",
+    "gh-90": "advanced--gh-90--what-is-bluegreen-deployment.json",
+    "gh-91": "advanced--gh-91--what-is-feature-flagging.json",
+    "gh-92": "advanced--gh-92--how-does-a-service-catalog.json",
+    "gh-93": "advanced--gh-93--how-do-you-implement-and.json",
+    "gh-94": "advanced--gh-94--what-is-a-service-level.json",
+    "gh-95": "advanced--gh-95--what-is-a-service-level.json",
+    "gh-96": "advanced--gh-96--what-is-a-runbook.json",
+    "gh-97": "advanced--gh-97--how-do-incident-response-playbooks.json",
+    "gh-99": "advanced--gh-99--what-is-tracing-in-observability.json",
+    "gh-100": "advanced--gh-100--what-is-a-sidecar-pattern.json",
+    "gh-101": "advanced--gh-101--what-is-a-service-mesh.json",
+    "gh-102": "advanced--gh-102--what-is-github-actions.json",
+    "gh-103": "advanced--gh-103--what-is-a-selfhealing-system.json",
+    "gh-104": "advanced--gh-104--what-is-canary-analysis.json",
+    "gh-105": "advanced--gh-105--what-is-infrastructure-drift.json",
+    "de-127": "docker--de-127--how-would-you-implement-a.json",
+    "de-135": "helm--de-135--you-have-a-helm-chart.json",
+    "de-136": "gitops--de-136--you-have-a-gitops-workflow.json",
+    "de-137": "terraform--de-137--you-have-a-terraform-configuration.json",
+    "fe-1": "react--fe-1--how-does-reacts-virtual-dom.json",
+    "fe-2": "js--fe-2--what-is-the-event-loop.json",
+    "fe-3": "js--fe-3--explain-closure-in-javascript-with.json",
+    "fr-154": "perf--fr-154--what-happens-when-you-load.json",
+    "fr-157": "js--fr-157--what-is-the-difference-between.json",
+    "fr-161": "react--fr-161--how-would-you-implement-a.json",
+    "fr-162": "js--fr-162--explain-how-javascripts-event-loop.json",
+    "fr-163": "perf--fr-163--you-have-a-react-app.json",
+    "fr-172": "perf--fr-172--how-would-you-optimize-the.json",
+    "fr-173": "js--fr-173--what-is-the-output-of.json",
+    "sre-1": "metrics--sre-1--what-are-slis-slos-and.json",
+    "sre-2": "management--sre-2--what-is-an-error-budget.json",
+    "gh-59": "sre--gh-59--what-is-site-reliability-engineering.json",
+    "gh-60": "sre--gh-60--what-are-service-level-objectives.json",
+    "gh-61": "sre--gh-61--what-are-service-level-indicators.json",
+    "gh-62": "sre--gh-62--what-is-error-budget.json",
+    "gh-63": "sre--gh-63--what-is-toil-in-sre.json",
+    "gh-77": "monitoring--gh-77--what-are-monitoring-tools.json",
+    "gh-78": "monitoring--gh-78--what-are-monitoring-best-practices.json",
+    "gh-79": "monitoring--gh-79--what-is-application-performance-monitori.json",
+    "sr-124": "metrics--sr-124--what-are-the-four-golden.json",
+    "sr-126": "incident--sr-126--what-makes-a-good-blameless.json",
+    "sr-130": "slo--sr-130--your-web-service-has-an.json",
+    "sr-131": "capacity--sr-131--youre-managing-a-microservices-platform.json",
+    "sr-133": "metrics--sr-133--whats-the-difference-between-logs.json",
+    "sr-142": "incident--sr-142--you-receive-a-pagerduty-alert.json",
+    "sr-143": "capacity--sr-143--your-web-application-currently-handles.json",
+    "sr-146": "chaos--sr-146--design-a-chaos-engineering-experiment.json",
+    "sr-147": "reliability--sr-147--your-distributed-system-has-5.json",
+    "sr-148": "capacity--sr-148--youre-designing-capacity-planning-for.json",
+    "sr-149": "capacity--sr-149--youre-designing-capacity-planning-for.json",
+    "sr-150": "chaos--sr-150--youre-implementing-chaos-engineering-for.json",
+    "sr-153": "chaos--sr-153--youre-implementing-chaos-engineering-for.json",
+    "sr-155": "metrics--sr-155--what-is-the-difference-between.json",
+    "sr-154": "slo--sr-154--your-api-serves-10m-requestsday.json",
+    "sr-169": "slo--sr-169--your-api-service-has-an.json",
+    "sd-1": "infra--sd-1--can-you-explain-the-load.json",
+    "sd-2": "hashing--sd-2--what-is-consistent-hashing-and.json",
+    "sd-3": "theory--sd-3--explain-the-cap-theorem-can.json",
+    "sd-4": "db--sd-4--how-do-you-handle-database.json",
+    "sd-5": "security--sd-5--design-a-rate-limiter-what.json",
+    "gh-31": "scale--gh-31--what-is-scalability-in-devops.json",
+    "gh-32": "scale--gh-32--what-is-high-availability.json",
+    "gh-33": "scale--gh-33--how-do-different-load-balancing.json",
+    "gh-34": "scale--gh-34--what-is-auto-scaling.json",
+    "sy-132": "api--sy-132--design-a-distributed-rate-limiting.json",
+    "sy-137": "dist-sys--sy-137--design-a-distributed-system-that.json",
+    "sy-138": "api--sy-138--design-a-distributed-rate-limiting.json",
+    "sy-139": "api--sy-139--design-a-rate-limiting-system.json",
+    "sy-140": "api--sy-140--design-a-rate-limiting-service.json",
+    "sy-141": "infra--sy-141--design-a-globally-distributed-serverless.json",
+    "sy-144": "dist-sys--sy-144--design-a-distributed-rate-limiting.json",
+    "sy-151": "api--sy-151--design-a-rate-limiting-api.json",
+    "sy-158": "dist-sys--sy-158--design-a-distributed-rate-limiter.json",
+    "sy-169": "infra--sy-169--design-a-simple-url-shortening.json",
+    "sy-171": "infra--sy-171--design-a-globally-distributed-multiregio.json",
+    "q-167": "tree--q-167--write-a-function-to-find.json",
+    "q-168": "css--q-168--what-is-the-css-box.json",
+    "q-169": "cache--q-169--what-is-the-primary-difference.json",
+    "q-170": "index--q-170--when-would-you-choose-a.json",
+    "q-171": "docker--q-171--you-have-a-docker-container.json",
+    "q-172": "chaos--q-172--youre-implementing-a-chaos-engineering.json",
+    "q-173": "pods--q-173--what-is-a-kubernetes-pod.json",
+    "q-174": "ec2--q-174--you-have-an-ec2-instance.json",
+    "q-175": "state--q-175--you-have-a-terraform-configuration.json",
+    "q-176": "streaming--q-176--what-is-the-difference-between.json",
+    "q-177": "mlops--q-177--what-is-the-primary-difference.json",
+    "q-178": "python--q-178--in-python-when-do-is.json",
+    "q-179": "encryption--q-179--explain-how-perfect-forward-secrecy.json",
+    "q-180": "dns--q-180--what-is-the-primary-purpose.json",
+    "q-181": "swift--q-181--explain-the-difference-between-weak.json",
+    "q-182": "lifecycle--q-182--what-is-the-first-lifecycle.json",
+    "q-183": "native--q-183--what-is-the-primary-purpose.json",
+    "q-184": "project--q-184--youre-managing-a-critical-system.json",
+    "q-185": "communication--q-185--describe-a-time-when-you.json",
+    "q-186": "lb--q-186--how-would-you-implement-session.json",
+    "q-187": "arrays--q-187--how-would-you-implement-a.json",
+    "q-188": "lighthouse--q-188--how-would-you-implement-a.json",
+    "q-189": "saga--q-189--how-does-the-saga-pattern.json",
+    "q-190": "acid--q-190--what-is-the-difference-between.json",
+    "q-191": "dockerfile--q-191--what-is-the-purpose-of.json",
+    "q-192": "prometheus--q-192--how-would-you-implement-opentelemetry.json",
+    "q-193": "crds--q-193--what-is-the-role-of.json",
+    "q-194": "dry--q-194--how-would-you-design-a.json",
+    "q-195": "mlflow--q-195--how-would-you-implement-a.json",
+    "q-196": "asyncio--q-196--how-would-you-implement-a.json",
+    "q-197": "transformer--q-197--how-would-you-implement-efficient.json",
+    "q-198": "jailbreak--q-198--what-is-a-jailbreak-attack.json",
+    "q-199": "vllm--q-199--when-deploying-llm-inference-with.json",
+    "q-200": "unet--q-200--how-does-unet-architecture-achieve.json",
+    "q-201": "lstm--q-201--how-does-an-lstm-cells.json",
+    "q-202": "mfa--q-202--how-do-passkeys-implement-passwordless.json",
+    "q-203": "tcp--q-203--how-does-tcps-congestion-control.json",
+    "q-204": "autolayout--q-204--how-would-you-optimize-a.json",
+    "q-205": "composables--q-205--how-would-you-implement-a.json",
+    "q-206": "hermes--q-206--how-would-you-optimize-react.json",
+    "q-207": "test-driven--q-207--how-would-you-implement-a.json",
+    "q-208": "selenium--q-208--what-is-the-difference-between.json",
+    "q-209": "postman--q-209--how-would-you-design-a.json",
+    "q-210": "cpu-profiling--q-210--how-would-you-implement-cpu.json",
+    "q-211": "delegation--q-211--how-would-you-implement-a.json",
+    "q-212": "situation--q-212--how-do-you-structure-a.json",
+    "q-213": "cache--q-213--how-would-you-design-a.json",
+    "q-214": "bfs--q-214--given-a-directed-weighted-graph.json",
+    "q-215": "react--q-215--how-would-you-implement-a.json",
+    "q-216": "mongodb--q-216--how-would-you-implement-eventual.json",
+    "q-217": "argocd--q-217--how-would-you-design-a.json",
+    "q-218": "chaos-monkey--q-218--how-would-you-design-a.json",
+    "q-219": "clusterip--q-219--how-would-you-design-a.json",
+    "q-220": "vpc--q-220--how-would-you-design-a.json",
+    "q-221": "dry--q-221--how-would-you-implement-a.json",
+    "q-222": "kafka--q-222--how-would-you-design-a.json",
+    "q-223": "precision--q-223--how-would-you-design-a.json",
+    "q-224": "pep8--q-224--how-would-you-implement-a.json",
+    "q-225": "lora--q-225--when-implementing-lora-finetuning-for.json",
+    "q-226": "chain-of-thought--q-226--how-would-you-design-a.json",
+    "q-227": "quantization--q-227--how-would-you-implement-dynamic.json",
+    "q-228": "unet--q-228--how-would-you-optimize-a.json",
+    "q-229": "tokenization--q-229--what-is-the-difference-between.json",
+    "q-230": "xss--q-230--how-would-you-implement-a.json",
+    "q-231": "edge--q-231--how-would-you-implement-cache.json",
+    "q-232": "autolayout--q-232--how-does-auto-layout-constraint.json",
+    "q-233": "hermes--q-233--how-does-hermes-engine-improve.json",
+    "q-234": "jest--q-234--how-would-you-design-a.json",
+    "q-235": "cypress--q-235--what-is-the-purpose-of.json",
+    "q-236": "wiremock--q-236--how-would-you-implement-a.json",
+    "q-237": "jmeter--q-237--how-would-you-design-a.json",
+    "q-238": "dist-sys--q-238--how-does-raft-consensus-algorithm.json",
+    "q-239": "dp--q-239--how-would-you-implement-a.json",
+    "q-240": "js--q-240--what-is-a-closure-in.json",
+    "q-241": "jwt--q-241--how-would-you-implement-jwt.json",
+    "q-242": "mongodb--q-242--how-does-mongodbs-document-structure.json",
+    "q-243": "ansible--q-243--how-would-you-implement-an.json",
+    "q-244": "prometheus--q-244--what-is-the-difference-between.json",
+    "q-245": "containers--q-245--how-do-init-containers-differ.json",
+    "q-246": "lambda--q-246--how-would-you-implement-a.json",
+    "q-247": "remote-state--q-247--how-does-terraform-remote-state.json",
+    "q-248": "dag--q-248--how-would-you-implement-exactlyonce.json",
+    "q-249": "asyncio--q-249--how-would-you-implement-a.json",
+    "q-250": "lora--q-250--what-is-lora-and-how.json",
+    "q-251": "prompt-tuning--q-251--how-would-you-implement-a.json",
+    "q-252": "quantization--q-252--what-is-posttraining-quantization-and.json",
+    "q-253": "yolo--q-253--how-does-yolo-divide-an.json",
+    "q-254": "lstm--q-254--when-implementing-a-bidirectional-gru.json",
+    "q-255": "top10--q-255--how-would-you-implement-owasp.json",
+    "q-256": "tcp--q-256--how-does-quic-solve-tcps.json",
+    "q-257": "optionals--q-257--what-is-optional-chaining-in.json",
+    "q-258": "coroutines--q-258--how-would-you-design-a.json",
+    "q-259": "api-testing--q-259--how-would-you-design-integration.json",
+    "q-260": "selenium--q-260--how-would-you-design-a.json",
+    "q-261": "delegation--q-261--how-would-you-implement-a.json",
+    "q-262": "situation--q-262--describe-a-time-when-you.json",
+    "q-263": "virtual-memory--q-263--how-does-demand-paging-work.json",
+    "q-264": "posix--q-264--how-do-pipes-work-in.json",
+    "q-265": "top--q-265--how-would-you-implement-a.json",
+    "q-266": "kafka--q-266--how-would-you-design-a.json",
+    "q-267": "rest--q-267--whats-the-difference-between-rest.json",
+    "q-268": "explain--q-268--how-would-you-optimize-a.json",
+    "q-269": "ansible--q-269--what-is-the-primary-difference.json",
+    "q-270": "slo--q-270--your-microservice-has-a-999.json",
+    "q-271": "containers--q-271--how-would-you-design-a.json",
+    "q-272": "dry--q-272--how-would-you-implement-a.json",
+    "q-273": "hyperparameter--q-273--whats-the-difference-between-hyperparame.json",
+    "q-274": "cnn--q-274--how-would-you-implement-a.json",
+    "q-275": "tcp--q-275--how-does-quic-solve-http2s.json",
+    "q-276": "systemd--q-276--in-a-production-environment-how.json",
+    "q-277": "find--q-277--how-would-you-efficiently-process.json",
+    "q-278": "test-pyramid--q-278--how-would-you-design-a.json",
+    "q-279": "playwright--q-279--what-is-the-difference-between.json",
+    "q-280": "cpu-profiling--q-280--what-is-the-difference-between.json",
+    "q-281": "communication--q-281--how-do-you-influence-technical.json",
+    "q-282": "event-sourcing--q-282--explain-the-event-sourcing-pattern.json"
+  },
+  "metadata": {
+    "al-1": {
+      "question": "When would you use a Linked List over an Array?",
+      "channel": "struct",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-12T09:07:04.185Z"
+    },
+    "al-2": {
+      "question": "Explain QuickSort vs MergeSort. Which is better?",
+      "channel": "sort",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.185Z"
+    },
+    "al-3": {
+      "question": "What is Dynamic Programming? How is it different from Recursion?",
+      "channel": "dp",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.185Z"
+    },
+    "al-152": {
+      "question": "You have a staircase with n steps. You can climb 1, 2, or 3 steps at a time. How many distinct ways ",
+      "channel": "dp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:07:52.426Z"
+    },
+    "al-163": {
+      "question": "You have an array where each element appears twice except one element that appears once. Sort the ar",
+      "channel": "sort",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T16:57:00.393Z"
+    },
+    "al-164": {
+      "question": "How many ways can you reach a target sum using array elements where each element can be used multipl",
+      "channel": "dp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:36:33.514Z"
+    },
+    "al-165": {
+      "question": "Implement a Trie data structure for efficient prefix search. What are its advantages over a hash map",
+      "channel": "struct",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T16:59:48.670Z"
+    },
+    "al-166": {
+      "question": "Given a string, find the minimum number of insertions and deletions to make it a palindrome. Each in",
+      "channel": "dp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T16:59:58.522Z"
+    },
+    "al-167": {
+      "question": "Count ways to reach target sum using dice rolls 1-6",
+      "channel": "dp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T17:00:15.427Z"
+    },
+    "al-170": {
+      "question": "Given an array of integers where each element represents the maximum number of steps you can jump fo",
+      "channel": "dp",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:17:23.338Z"
+    },
+    "db-1": {
+      "question": "What is the difference between Clustered and Non-Clustered Indexes?",
+      "channel": "sql",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.186Z"
+    },
+    "db-2": {
+      "question": "How do ACID properties ensure data integrity in a banking transaction where $100 is transferred from",
+      "channel": "acid",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:08:19.686Z"
+    },
+    "gh-67": {
+      "question": "How does Database DevOps integrate database schema changes into CI/CD pipelines while ensuring data ",
+      "channel": "db",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:11:16.660Z"
+    },
+    "da-125": {
+      "question": "Explain database indexing and when should you use it?",
+      "channel": "sql",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:11:28.015Z"
+    },
+    "da-128": {
+      "question": "You have a banking system where users can transfer money between accounts. Design a transaction to h",
+      "channel": "acid",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.186Z"
+    },
+    "da-129": {
+      "question": "What is the main difference between SQL and NoSQL databases in terms of data structure?",
+      "channel": "nosql",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.186Z"
+    },
+    "da-134": {
+      "question": "You have a banking system where Account A transfers $100 to Account B, but during the transaction, A",
+      "channel": "acid",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:14:57.084Z"
+    },
+    "da-145": {
+      "question": "You have a table `orders` with columns (id, user_id, amount, created_at) and need to find users who ",
+      "channel": "sql",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:05:38.475Z"
+    },
+    "da-156": {
+      "question": "What is the difference between DELETE and TRUNCATE commands in SQL?",
+      "channel": "sql",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:08:56.357Z"
+    },
+    "da-172": {
+      "question": "In a distributed database system, how would you implement a two-phase commit protocol to ensure atom",
+      "channel": "acid",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:18:08.909Z"
+    },
+    "da-170": {
+      "question": "You're building a banking system where users can transfer money between accounts. How would you desi",
+      "channel": "acid",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:18:46.794Z"
+    },
+    "do-2": {
+      "question": "What are the key differences between Blue/Green and Canary deployment strategies?",
+      "channel": "deployment",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:10:00.382Z"
+    },
+    "do-3": {
+      "question": "What is Infrastructure as Code (IaC)? Why use Terraform?",
+      "channel": "infra",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-1": {
+      "question": "What are the core principles and practices of DevOps, and how does it bridge the gap between develop",
+      "channel": "basics",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:10:12.989Z"
+    },
+    "gh-2": {
+      "question": "What are the benefits of DevOps?",
+      "channel": "basics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-3": {
+      "question": "What is Continuous Integration and how does it improve software development quality?",
+      "channel": "basics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:11:40.451Z"
+    },
+    "gh-4": {
+      "question": "What is Docker and how does containerization differ from traditional virtualization?",
+      "channel": "docker",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:11:47.712Z"
+    },
+    "gh-5": {
+      "question": "What is the difference between Docker Image and Docker Container?",
+      "channel": "docker",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-6": {
+      "question": "What is a Dockerfile and how does it enable containerized application deployment?",
+      "channel": "docker",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-7": {
+      "question": "What is Kubernetes and how does it orchestrate containerized applications at scale?",
+      "channel": "k8s",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:59:12.880Z"
+    },
+    "gh-8": {
+      "question": "What are the main components of Kubernetes architecture?",
+      "channel": "k8s",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-9": {
+      "question": "What is a Pod in Kubernetes and why is it considered the smallest deployable unit?",
+      "channel": "k8s",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:15:00.000Z"
+    },
+    "gh-10": {
+      "question": "What is CI/CD Pipeline?",
+      "channel": "cicd",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-11": {
+      "question": "What is Jenkins and how does it facilitate continuous integration and continuous delivery (CI/CD) in",
+      "channel": "cicd",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:08.627Z"
+    },
+    "gh-12": {
+      "question": "What is cloud computing and what are its key service models?",
+      "channel": "cloud",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-13": {
+      "question": "What is AWS (Amazon Web Services)?",
+      "channel": "cloud",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-14": {
+      "question": "What are the core service categories in Microsoft Azure and how do they work together to support clo",
+      "channel": "cloud",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-15": {
+      "question": "What are the different types of cloud services?",
+      "channel": "cloud",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-16": {
+      "question": "What is Infrastructure as Code and why has it become essential for modern DevOps practices?",
+      "channel": "iac",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:05:12.467Z"
+    },
+    "gh-17": {
+      "question": "What is Terraform and how does it implement Infrastructure as Code (IaC) workflows?",
+      "channel": "iac",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:05:18.550Z"
+    },
+    "gh-18": {
+      "question": "What is Ansible and how does it work for infrastructure automation?",
+      "channel": "iac",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-19": {
+      "question": "What is monitoring in DevOps and how does it differ from observability?",
+      "channel": "observability",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:39.942Z"
+    },
+    "gh-20": {
+      "question": "What are the components of the ELK Stack and how do they work together to process log data?",
+      "channel": "observability",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:03:43.564Z"
+    },
+    "gh-21": {
+      "question": "How does Prometheus implement a pull-based monitoring system, and what are the key components in its",
+      "channel": "observability",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:03:55.884Z"
+    },
+    "gh-22": {
+      "question": "What is Grafana and how does it integrate with different data sources for monitoring and visualizati",
+      "channel": "observability",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:15.574Z"
+    },
+    "gh-23": {
+      "question": "Explain the key differences between monitoring and logging in DevOps, and when would you use each?",
+      "channel": "observability",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:23.386Z"
+    },
+    "gh-24": {
+      "question": "What is DevSecOps and how does it differ from traditional DevOps security approaches?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:46.787Z"
+    },
+    "gh-26": {
+      "question": "What are the basic Linux commands every DevOps engineer should know?",
+      "channel": "linux",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-27": {
+      "question": "What is Git and how does it facilitate collaborative software development through its distributed ar",
+      "channel": "git",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:58.385Z"
+    },
+    "gh-28": {
+      "question": "What is Git Branching Strategy?",
+      "channel": "git",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-29": {
+      "question": "What is Configuration Management?",
+      "channel": "config-mgmt",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-30": {
+      "question": "What is Puppet and how does it manage infrastructure configuration?",
+      "channel": "config-mgmt",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T06:29:18.865Z"
+    },
+    "gh-35": {
+      "question": "How do Backup and Disaster Recovery strategies ensure business continuity after system failures?",
+      "channel": "backup",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T06:29:40.130Z"
+    },
+    "gh-36": {
+      "question": "How do different backup strategies balance storage efficiency, backup speed, and recovery time?",
+      "channel": "backup",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T06:30:02.658Z"
+    },
+    "gh-37": {
+      "question": "What is Cloud Native Architecture?",
+      "channel": "cloud-native",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-38": {
+      "question": "What are Microservices?",
+      "channel": "cloud-native",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-39": {
+      "question": "What is Service Mesh?",
+      "channel": "cloud-native",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-40": {
+      "question": "What is Performance Testing and how does it differ from Load and Stress Testing?",
+      "channel": "perf",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T06:30:09.394Z"
+    },
+    "gh-41": {
+      "question": "What are the different types of performance testing and when would you use each?",
+      "channel": "perf",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-42": {
+      "question": "What is an API Gateway?",
+      "channel": "api",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-43": {
+      "question": "What are the key benefits of implementing an API Gateway in a microservices architecture, and how do",
+      "channel": "api",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-44": {
+      "question": "How do you implement a comprehensive API security strategy that protects against common vulnerabilit",
+      "channel": "api",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T06:30:21.829Z"
+    },
+    "gh-45": {
+      "question": "How do rate limiting algorithms like Token Bucket and Leaky Bucket control API request flow?",
+      "channel": "api",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-46": {
+      "question": "What are the key components of comprehensive API documentation and how do they facilitate developer ",
+      "channel": "api",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:37:27.110Z"
+    },
+    "gh-48": {
+      "question": "What are DaemonSets in Kubernetes?",
+      "channel": "k8s",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-49": {
+      "question": "What is Helm?",
+      "channel": "k8s",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-50": {
+      "question": "How does Istio implement service mesh architecture using sidecar proxies?",
+      "channel": "k8s",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:36:55.073Z"
+    },
+    "gh-51": {
+      "question": "What is Container Runtime Interface (CRI)?",
+      "channel": "k8s",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-53": {
+      "question": "What is GitOps?",
+      "channel": "automation",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-54": {
+      "question": "What is ArgoCD?",
+      "channel": "automation",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-55": {
+      "question": "How does Tekton provide a cloud-native framework for building CI/CD pipelines on Kubernetes?",
+      "channel": "automation",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-56": {
+      "question": "What are the key deployment strategies in Kubernetes and when should each be used?",
+      "channel": "automation",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:50.414Z"
+    },
+    "gh-57": {
+      "question": "What is Cloud Cost Optimization and what are the key strategies to reduce cloud spending?",
+      "channel": "finops",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-58": {
+      "question": "What are AWS Reserved Instances and how do they compare to On-Demand pricing?",
+      "channel": "finops",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-64": {
+      "question": "What are the four key DORA metrics for measuring DevOps performance?",
+      "channel": "metrics",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:37:19.064Z"
+    },
+    "gh-65": {
+      "question": "What is Mean Time to Recovery (MTTR)?",
+      "channel": "metrics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-66": {
+      "question": "How does serverless computing abstract infrastructure management and what are its key execution char",
+      "channel": "serverless",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:36:14.867Z"
+    },
+    "gh-68": {
+      "question": "What is Network Security in DevOps?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-69": {
+      "question": "How does Zero Trust Security implement identity-based access control with micro-segmentation?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:36:25.331Z"
+    },
+    "gh-70": {
+      "question": "What is SSL/TLS?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-71": {
+      "question": "How does a Web Application Firewall (WAF) protect against OWASP Top 10 attacks at the application la",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:37:02.499Z"
+    },
+    "gh-72": {
+      "question": "What is Network Segmentation?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-74": {
+      "question": "How does DevOps culture transform traditional siloed development and operations into collaborative w",
+      "channel": "culture",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:32.542Z"
+    },
+    "gh-75": {
+      "question": "What are the core DevOps practices that enable continuous delivery and collaboration?",
+      "channel": "culture",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-83": {
+      "question": "How do you perform cloud service assessment using the Cloud Adoption Framework?",
+      "channel": "migration",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:59.764Z"
+    },
+    "gh-84": {
+      "question": "What is Application Modernization?",
+      "channel": "migration",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-85": {
+      "question": "How do cloud migration tools automate application and data transfer between on-premise and cloud env",
+      "channel": "migration",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:12.528Z"
+    },
+    "gh-87": {
+      "question": "How does FinOps implement cost allocation and chargeback models in multi-cloud environments?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:37:11.384Z"
+    },
+    "gh-88": {
+      "question": "What is Policy as Code?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-89": {
+      "question": "What is Chaos Engineering?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-90": {
+      "question": "What is Blue/Green Deployment?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-91": {
+      "question": "What is Feature Flagging?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-92": {
+      "question": "How does a Service Catalog enable self-service infrastructure provisioning in an Internal Developer ",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:21.512Z"
+    },
+    "gh-93": {
+      "question": "How do you implement and monitor Service Level Agreements (SLAs) in a distributed system?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:40.728Z"
+    },
+    "gh-94": {
+      "question": "What is a Service Level Objective (SLO)?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-95": {
+      "question": "What is a Service Level Indicator (SLI)?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-96": {
+      "question": "What is a Runbook?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-97": {
+      "question": "How do Incident Response Playbooks automate security incident workflows using predefined procedures ",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:34:38.851Z"
+    },
+    "gh-99": {
+      "question": "What is Tracing in Observability?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-100": {
+      "question": "What is a Sidecar Pattern?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-101": {
+      "question": "What is a Service Mesh Control Plane?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-102": {
+      "question": "What is GitHub Actions?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-103": {
+      "question": "What is a Self-Healing System?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-104": {
+      "question": "What is Canary Analysis?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "gh-105": {
+      "question": "What is Infrastructure Drift?",
+      "channel": "advanced",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "de-127": {
+      "question": "How would you implement a multi-stage Docker build to optimize image size while maintaining the abil",
+      "channel": "docker",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "de-135": {
+      "question": "You have a Helm chart that needs to deploy different configurations for staging and production envir",
+      "channel": "helm",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:15:12.319Z"
+    },
+    "de-136": {
+      "question": "You have a GitOps workflow where application configs are stored in a separate config repository from",
+      "channel": "gitops",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:15:31.620Z"
+    },
+    "de-137": {
+      "question": "You have a Terraform configuration that creates an AWS S3 bucket. After running 'terraform apply', y",
+      "channel": "terraform",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:15:44.757Z"
+    },
+    "fe-1": {
+      "question": "How does React's Virtual DOM diffing algorithm work during reconciliation, and what role do keys pla",
+      "channel": "react",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:35:02.691Z"
+    },
+    "fe-2": {
+      "question": "What is the Event Loop in JavaScript? How do Microtasks differ from Macrotasks?",
+      "channel": "js",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "fe-3": {
+      "question": "Explain 'Closure' in JavaScript with a practical use case.",
+      "channel": "js",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.187Z"
+    },
+    "fr-154": {
+      "question": "What happens when you load a large image without specifying width and height attributes in the HTML?",
+      "channel": "perf",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:08:31.827Z"
+    },
+    "fr-157": {
+      "question": "What is the difference between `let`, `const`, and `var` in JavaScript?",
+      "channel": "js",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:09:09.317Z"
+    },
+    "fr-161": {
+      "question": "How would you implement a React hook that tracks component render count and warns when it exceeds a ",
+      "channel": "react",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T03:02:58.720Z"
+    },
+    "fr-162": {
+      "question": "Explain how JavaScript's event loop handles microtasks vs macrotasks. What happens when a Promise re",
+      "channel": "js",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T03:03:14.094Z"
+    },
+    "fr-163": {
+      "question": "You have a React app rendering a list of 10,000 items. Each item has a complex component with multip",
+      "channel": "perf",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T03:04:11.191Z"
+    },
+    "fr-172": {
+      "question": "How would you optimize the rendering performance of a React component that displays a large list (10",
+      "channel": "perf",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:19:05.794Z"
+    },
+    "fr-173": {
+      "question": "What is the output of this code and explain the event loop behavior: console.log('A'); setTimeout(()",
+      "channel": "js",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:19:30.686Z"
+    },
+    "sre-1": {
+      "question": "What are SLIs, SLOs, and SLAs? How do they relate?",
+      "channel": "metrics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sre-2": {
+      "question": "What is an Error Budget and how do you use it?",
+      "channel": "management",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-59": {
+      "question": "What is Site Reliability Engineering?",
+      "channel": "sre",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-60": {
+      "question": "What are Service Level Objectives (SLOs)?",
+      "channel": "sre",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-61": {
+      "question": "What are Service Level Indicators (SLIs)?",
+      "channel": "sre",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-62": {
+      "question": "What is Error Budget?",
+      "channel": "sre",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-63": {
+      "question": "What is Toil in SRE?",
+      "channel": "sre",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-77": {
+      "question": "What are Monitoring Tools?",
+      "channel": "monitoring",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-78": {
+      "question": "What are Monitoring Best Practices?",
+      "channel": "monitoring",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-79": {
+      "question": "What is Application Performance Monitoring?",
+      "channel": "monitoring",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": false,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sr-124": {
+      "question": "What are the four golden signals of monitoring?",
+      "channel": "metrics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sr-126": {
+      "question": "What makes a good blameless postmortem?",
+      "channel": "incident",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sr-130": {
+      "question": "Your web service has an SLO of 99.9% availability over 30 days. You've had 3 outages: 45 minutes, 20",
+      "channel": "slo",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sr-131": {
+      "question": "You're managing a microservices platform with 50 services. Service A has a 95th percentile latency o",
+      "channel": "capacity",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sr-133": {
+      "question": "What's the difference between logs, metrics, and traces in observability?",
+      "channel": "metrics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:14:39.919Z"
+    },
+    "sr-142": {
+      "question": "You receive a PagerDuty alert at 3 AM: 'Production API is returning 500 errors'. What are your first",
+      "channel": "incident",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:04:51.668Z"
+    },
+    "sr-143": {
+      "question": "Your web application currently handles 1000 requests per minute during peak hours. Each request take",
+      "channel": "capacity",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:05:04.369Z"
+    },
+    "sr-146": {
+      "question": "Design a chaos engineering experiment to test the resilience of a microservices-based e-commerce pla",
+      "channel": "chaos",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:14:55.204Z"
+    },
+    "sr-147": {
+      "question": "Your distributed system has 5 microservices with the following failure rates: Service A (0.1%), Serv",
+      "channel": "reliability",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:15:16.631Z"
+    },
+    "sr-148": {
+      "question": "You're designing capacity planning for a microservices platform handling 100M requests/day with 3x t",
+      "channel": "capacity",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:15:33.442Z"
+    },
+    "sr-149": {
+      "question": "You're designing capacity planning for a microservices platform handling 10M daily active users. Eac",
+      "channel": "capacity",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:15:55.304Z"
+    },
+    "sr-150": {
+      "question": "You're implementing chaos engineering for a distributed payment system processing $10M daily transac",
+      "channel": "chaos",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:16:21.457Z"
+    },
+    "sr-153": {
+      "question": "You're implementing chaos engineering for a microservices architecture. Your payment service has a 9",
+      "channel": "chaos",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:08:12.121Z"
+    },
+    "sr-155": {
+      "question": "What is the difference between metrics, logs, and traces in observability, and when would you use ea",
+      "channel": "metrics",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:08:45.260Z"
+    },
+    "sr-154": {
+      "question": "Your API serves 10M requests/day with a 99.9% availability SLO and 30-day error budget. After a 4-ho",
+      "channel": "slo",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:09:58.799Z"
+    },
+    "sr-169": {
+      "question": "Your API service has an SLO of 99.9% availability. If you have 5 incidents this month with downtimes",
+      "channel": "slo",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:18:30.948Z"
+    },
+    "sd-1": {
+      "question": "Can you explain the Load Balancer strategy? When would you use Layer 4 vs Layer 7 load balancing?",
+      "channel": "infra",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sd-2": {
+      "question": "What is Consistent Hashing and why is it critical for distributed caches?",
+      "channel": "hashing",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sd-3": {
+      "question": "Explain the CAP Theorem. Can you really 'choose two'?",
+      "channel": "theory",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sd-4": {
+      "question": "How do you handle Database Sharding? What are the downsides?",
+      "channel": "db",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sd-5": {
+      "question": "Design a Rate Limiter. What algorithms would you consider?",
+      "channel": "security",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-31": {
+      "question": "What is Scalability in DevOps?",
+      "channel": "scale",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-32": {
+      "question": "What is High Availability?",
+      "channel": "scale",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "gh-33": {
+      "question": "How do different load balancing algorithms distribute traffic across servers, and what are the trade",
+      "channel": "scale",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:34:54.977Z"
+    },
+    "gh-34": {
+      "question": "What is Auto Scaling?",
+      "channel": "scale",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sy-132": {
+      "question": "Design a distributed rate limiting system that can handle 1M+ requests per second across multiple da",
+      "channel": "api",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:07:04.188Z"
+    },
+    "sy-137": {
+      "question": "Design a distributed system that provides exactly-once processing guarantees for event streams with ",
+      "channel": "dist-sys",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:36:23.632Z"
+    },
+    "sy-138": {
+      "question": "Design a distributed rate limiting system that can handle 10M requests per minute across 100+ micros",
+      "channel": "api",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:36:34.140Z"
+    },
+    "sy-139": {
+      "question": "Design a rate limiting system for a multi-tenant API that supports burst capacity with token bucket ",
+      "channel": "api",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:36:49.367Z"
+    },
+    "sy-140": {
+      "question": "Design a rate limiting service that can handle 10 million requests per second with distributed consi",
+      "channel": "api",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:37:42.396Z"
+    },
+    "sy-141": {
+      "question": "Design a globally distributed serverless platform for real-time collaborative document editing with ",
+      "channel": "infra",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T09:38:09.154Z"
+    },
+    "sy-144": {
+      "question": "Design a distributed rate limiting system that can handle 1M+ requests per second across multiple da",
+      "channel": "dist-sys",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-12T10:05:21.929Z"
+    },
+    "sy-151": {
+      "question": "Design a rate limiting API for a multi-tenant SaaS platform where different customers have different",
+      "channel": "api",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:07:37.875Z"
+    },
+    "sy-158": {
+      "question": "Design a distributed rate limiter that can handle 1M requests/second across 100 data centers with <1",
+      "channel": "dist-sys",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-13T01:09:32.003Z"
+    },
+    "sy-169": {
+      "question": "Design a simple URL shortening service like bit.ly. What components would you need and how would the",
+      "channel": "infra",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:17:10.517Z"
+    },
+    "sy-171": {
+      "question": "Design a globally distributed, multi-region database system that provides strong consistency with 99",
+      "channel": "infra",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T01:17:45.908Z"
+    },
+    "q-167": {
+      "question": "Write a function to find the maximum depth of a binary tree.",
+      "channel": "tree",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:15.663Z"
+    },
+    "q-168": {
+      "question": "What is the CSS 'box model' and what are its four main components?",
+      "channel": "css",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:21.924Z"
+    },
+    "q-169": {
+      "question": "What is the primary difference between cache-aside and read-through caching patterns?",
+      "channel": "cache",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:29.514Z"
+    },
+    "q-170": {
+      "question": "When would you choose a composite index over multiple single-column indexes in a relational database",
+      "channel": "index",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:36.574Z"
+    },
+    "q-171": {
+      "question": "You have a Docker container that keeps crashing and restarting. How would you debug this issue witho",
+      "channel": "docker",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:44.913Z"
+    },
+    "q-172": {
+      "question": "You're implementing a chaos engineering experiment to test database failover. Your application uses ",
+      "channel": "chaos",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:23:56.354Z"
+    },
+    "q-173": {
+      "question": "What is a Kubernetes Pod and what is its primary purpose?",
+      "channel": "pods",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:05.546Z"
+    },
+    "q-174": {
+      "question": "You have an EC2 instance that suddenly becomes unresponsive. What steps would you take to troublesho",
+      "channel": "ec2",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:13.668Z"
+    },
+    "q-175": {
+      "question": "You have a Terraform configuration with multiple developers working on the same infrastructure. How ",
+      "channel": "state",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:23.645Z"
+    },
+    "q-176": {
+      "question": "What is the difference between batch processing and stream processing in data engineering?",
+      "channel": "streaming",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:30.213Z"
+    },
+    "q-177": {
+      "question": "What is the primary difference between model serving and model deployment in machine learning?",
+      "channel": "mlops",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:37.037Z"
+    },
+    "q-178": {
+      "question": "In Python, when do `is` and `==` return different results, and why does this happen with object iden",
+      "channel": "python",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T06:36:44.300Z"
+    },
+    "q-179": {
+      "question": "Explain how Perfect Forward Secrecy (PFS) works in TLS and why it's important for secure communicati",
+      "channel": "encryption",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:24:56.470Z"
+    },
+    "q-180": {
+      "question": "What is the primary purpose of DNS in computer networking?",
+      "channel": "dns",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:03.157Z"
+    },
+    "q-181": {
+      "question": "Explain the difference between weak and unowned references in Swift. When would you use each?",
+      "channel": "swift",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:19.093Z"
+    },
+    "q-182": {
+      "question": "What is the first lifecycle method called when an Android Activity is created?",
+      "channel": "lifecycle",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:24.462Z"
+    },
+    "q-183": {
+      "question": "What is the primary purpose of Native Modules in React Native?",
+      "channel": "native",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:30.699Z"
+    },
+    "q-184": {
+      "question": "You're managing a critical system migration with 3 teams working in parallel. Team A (backend) is 2 ",
+      "channel": "project",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:50.357Z"
+    },
+    "q-185": {
+      "question": "Describe a time when you had to work with a difficult team member. How did you handle the situation ",
+      "channel": "communication",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T10:25:58.352Z"
+    },
+    "q-186": {
+      "question": "How would you implement session affinity (sticky sessions) in HAProxy while maintaining high availab",
+      "channel": "lb",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:55:48.802Z"
+    },
+    "q-187": {
+      "question": "How would you implement a thread-safe LRU cache using a HashMap and DoublyLinkedList, considering ev",
+      "channel": "arrays",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:55:58.501Z"
+    },
+    "q-188": {
+      "question": "How would you implement a performance budget system that automatically detects bundle regressions an",
+      "channel": "lighthouse",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:06.033Z"
+    },
+    "q-189": {
+      "question": "How does the Saga pattern handle distributed transactions across multiple microservices?",
+      "channel": "saga",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:12.283Z"
+    },
+    "q-190": {
+      "question": "What is the difference between READ COMMITTED and REPEATABLE READ isolation levels in database trans",
+      "channel": "acid",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:19.417Z"
+    },
+    "q-191": {
+      "question": "What is the purpose of a multi-stage Docker build and how does it reduce final image size?",
+      "channel": "dockerfile",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:25.477Z"
+    },
+    "q-192": {
+      "question": "How would you implement OpenTelemetry instrumentation to capture RED metrics (Rate, Errors, Duration",
+      "channel": "prometheus",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:32.904Z"
+    },
+    "q-193": {
+      "question": "What is the role of a Custom Resource Definition (CRD) in a Kubernetes Operator and how does it enab",
+      "channel": "crds",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:40.663Z"
+    },
+    "q-194": {
+      "question": "How would you design a Terragrunt + Atlantis workflow that prevents state lock contention across 50+",
+      "channel": "dry",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:56:59.238Z"
+    },
+    "q-195": {
+      "question": "How would you implement a canary deployment strategy for a TensorFlow model using MLflow and Kuberne",
+      "channel": "mlflow",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:12.565Z"
+    },
+    "q-196": {
+      "question": "How would you implement a rate-limited async HTTP client using aiohttp and asyncio.Semaphore to hand",
+      "channel": "asyncio",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:22.140Z"
+    },
+    "q-197": {
+      "question": "How would you implement efficient KV caching in a transformer decoder to reduce redundant computatio",
+      "channel": "transformer",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:27.458Z"
+    },
+    "q-198": {
+      "question": "What is a jailbreak attack in prompt engineering and how do guardrails prevent it?",
+      "channel": "jailbreak",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:32.946Z"
+    },
+    "q-199": {
+      "question": "When deploying LLM inference with vLLM and Triton Inference Server, how do you handle request batchi",
+      "channel": "vllm",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:39.013Z"
+    },
+    "q-200": {
+      "question": "How does U-Net architecture achieve pixel-perfect segmentation using encoder-decoder skip connection",
+      "channel": "unet",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:48.368Z"
+    },
+    "q-201": {
+      "question": "How does an LSTM cell's forget gate regulate information flow compared to a simple RNN?",
+      "channel": "lstm",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:53.724Z"
+    },
+    "q-202": {
+      "question": "How do passkeys implement passwordless authentication using public-key cryptography?",
+      "channel": "mfa",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:57:59.065Z"
+    },
+    "q-203": {
+      "question": "How does TCP's congestion control algorithm interact with HTTP/2's multiplexing when multiple stream",
+      "channel": "tcp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:05.203Z"
+    },
+    "q-204": {
+      "question": "How would you optimize a UITableView with 10,000+ complex cells using Auto Layout while maintaining ",
+      "channel": "autolayout",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:12.254Z"
+    },
+    "q-205": {
+      "question": "How would you implement a Compose Navigation with nested graphs and shared view models while handlin",
+      "channel": "composables",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:18.964Z"
+    },
+    "q-206": {
+      "question": "How would you optimize React Native list performance with Hermes and Reanimated when dealing with 10",
+      "channel": "hermes",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:29.256Z"
+    },
+    "q-207": {
+      "question": "How would you implement a test-driven development workflow for a REST API endpoint using Jest and Su",
+      "channel": "test-driven",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:36.848Z"
+    },
+    "q-208": {
+      "question": "What is the difference between Selenium WebDriver and Selenium Grid, and when would you use each?",
+      "channel": "selenium",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:42.567Z"
+    },
+    "q-209": {
+      "question": "How would you design a REST API testing framework that handles rate limiting, circuit breaking, and ",
+      "channel": "postman",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:49.361Z"
+    },
+    "q-210": {
+      "question": "How would you implement CPU profiling with flame graphs to identify performance bottlenecks in a Nod",
+      "channel": "cpu-profiling",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:58:56.785Z"
+    },
+    "q-211": {
+      "question": "How would you implement a technical debt repayment framework using the 20% time allocation model whi",
+      "channel": "delegation",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:59:03.940Z"
+    },
+    "q-212": {
+      "question": "How do you structure a STAR method response when describing a time you resolved a technical conflict",
+      "channel": "situation",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-14T12:59:10.575Z"
+    },
+    "q-213": {
+      "question": "How would you design a multi-tier caching strategy with cache warming, invalidation, and fallback fo",
+      "channel": "cache",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:07.965Z"
+    },
+    "q-214": {
+      "question": "Given a directed weighted graph with up to 10^6 edges and frequent edge weight updates, design a dat",
+      "channel": "bfs",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:16.817Z"
+    },
+    "q-215": {
+      "question": "How would you implement a custom useDebounce hook that works with React's concurrent features and pr",
+      "channel": "react",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:24.506Z"
+    },
+    "q-216": {
+      "question": "How would you implement eventual consistency in a multi-region DynamoDB application with write confl",
+      "channel": "mongodb",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:36.568Z"
+    },
+    "q-217": {
+      "question": "How would you design a GitOps multi-cluster deployment strategy using ArgoCD that handles blue-green",
+      "channel": "argocd",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:45.789Z"
+    },
+    "q-218": {
+      "question": "How would you design a chaos engineering experiment to test database failover while maintaining tran",
+      "channel": "chaos-monkey",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:14:53.944Z"
+    },
+    "q-219": {
+      "question": "How would you design a zero-downtime service migration strategy using Kubernetes Service selectors a",
+      "channel": "clusterip",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:01.016Z"
+    },
+    "q-220": {
+      "question": "How would you design a multi-AZ VPC architecture with Route53 latency-based routing to CloudFront, A",
+      "channel": "vpc",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:10.104Z"
+    },
+    "q-221": {
+      "question": "How would you implement a zero-downtime blue-green deployment strategy using Terraform workspaces, r",
+      "channel": "dry",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:17.440Z"
+    },
+    "q-222": {
+      "question": "How would you design a Kafka Streams application to handle exactly-once processing with stateful agg",
+      "channel": "kafka",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:24.826Z"
+    },
+    "q-223": {
+      "question": "How would you design a production-scale evaluation pipeline that dynamically adjusts metrics based o",
+      "channel": "precision",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:31.690Z"
+    },
+    "q-224": {
+      "question": "How would you implement a thread-safe singleton with lazy initialization and proper type hints in Py",
+      "channel": "pep8",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:39.683Z"
+    },
+    "q-225": {
+      "question": "When implementing LoRA fine-tuning for a 7B parameter LLM, how do you determine the optimal rank (r)",
+      "channel": "lora",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:45.393Z"
+    },
+    "q-226": {
+      "question": "How would you design a prompt-engineering system that dynamically selects between chain-of-thought, ",
+      "channel": "chain-of-thought",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:52.406Z"
+    },
+    "q-227": {
+      "question": "How would you implement dynamic quantization-aware training with mixed-precision to optimize inferen",
+      "channel": "quantization",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:15:58.831Z"
+    },
+    "q-228": {
+      "question": "How would you optimize a real-time medical image segmentation pipeline using SAM with 100ms latency ",
+      "channel": "unet",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:08.123Z"
+    },
+    "q-229": {
+      "question": "What is the difference between tokenization and stemming in NLP text preprocessing?",
+      "channel": "tokenization",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:14.413Z"
+    },
+    "q-230": {
+      "question": "How would you implement a Content Security Policy (CSP) with nonce-based inline script protection to",
+      "channel": "xss",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:20.924Z"
+    },
+    "q-231": {
+      "question": "How would you implement cache purging for a multi-region CDN when content updates need to propagate ",
+      "channel": "edge",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:28.689Z"
+    },
+    "q-232": {
+      "question": "How does Auto Layout constraint resolution work when creating a UITableView with dynamic cell height",
+      "channel": "autolayout",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:34.591Z"
+    },
+    "q-233": {
+      "question": "How does Hermes engine improve React Native app startup performance compared to JavaScriptCore?",
+      "channel": "hermes",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:46.577Z"
+    },
+    "q-234": {
+      "question": "How would you design a Jest test suite to handle 10,000+ concurrent async tests while preventing tes",
+      "channel": "jest",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:16:55.498Z"
+    },
+    "q-235": {
+      "question": "What is the purpose of Cypress fixtures and how do you load fixture data in a component test?",
+      "channel": "cypress",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:17:02.710Z"
+    },
+    "q-236": {
+      "question": "How would you implement a contract testing strategy using MSW (Mock Service Worker) to ensure fronte",
+      "channel": "wiremock",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:17:10.493Z"
+    },
+    "q-237": {
+      "question": "How would you design a distributed load testing setup using k6 with multiple cloud regions to simula",
+      "channel": "jmeter",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 0,
+      "lastUpdated": "2025-12-15T01:17:21.977Z"
+    },
+    "q-238": {
+      "question": "How does Raft consensus algorithm ensure leader election and log replication in distributed systems?",
+      "channel": "dist-sys",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 10,
+      "lastUpdated": "2025-12-15T10:21:55.021Z"
+    },
+    "q-239": {
+      "question": "How would you implement a React useMemo hook to optimize a recursive Fibonacci function with memoiza",
+      "channel": "dp",
+      "difficulty": "intermediate",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:22:40.571Z"
+    },
+    "q-240": {
+      "question": "What is a closure in JavaScript and how does it enable data encapsulation?",
+      "channel": "js",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:23:11.088Z"
+    },
+    "q-241": {
+      "question": "How would you implement JWT authentication with RS256 signing and refresh token rotation to prevent ",
+      "channel": "jwt",
+      "difficulty": "intermediate",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:23:49.410Z"
+    },
+    "q-242": {
+      "question": "How does MongoDB's document structure differ from SQL's table rows for storing user data?",
+      "channel": "mongodb",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:24:25.402Z"
+    },
+    "q-243": {
+      "question": "How would you implement an Ansible role for zero-downtime deployment of a web application using blue",
+      "channel": "ansible",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:27:02.340Z"
+    },
+    "q-244": {
+      "question": "What is the difference between metrics, logs, and traces in observability, and how do OpenTelemetry ",
+      "channel": "prometheus",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:29:26.331Z"
+    },
+    "q-245": {
+      "question": "How do init containers differ from sidecar containers in a Kubernetes pod?",
+      "channel": "containers",
+      "difficulty": "beginner",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 7,
+      "lastUpdated": "2025-12-15T10:30:44.088Z"
+    },
+    "q-246": {
+      "question": "How would you implement a serverless workflow using AWS Step Functions to coordinate Lambda function",
+      "channel": "lambda",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:31:05.765Z"
+    },
+    "q-247": {
+      "question": "How does Terraform remote state prevent conflicts when multiple team members work on the same infras",
+      "channel": "remote-state",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:31:37.796Z"
+    },
+    "q-248": {
+      "question": "How would you implement exactly-once processing in a data pipeline when both source (Kafka) and sink",
+      "channel": "dag",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 7,
+      "lastUpdated": "2025-12-15T10:33:27.688Z"
+    },
+    "q-249": {
+      "question": "How would you implement a connection pool manager for aiohttp that handles graceful degradation unde",
+      "channel": "asyncio",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:37:51.772Z"
+    },
+    "q-250": {
+      "question": "What is LoRA and how does it reduce parameters when fine-tuning large language models?",
+      "channel": "lora",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:38:15.939Z"
+    },
+    "q-251": {
+      "question": "How would you implement a DSPy optimizer to automatically improve few-shot prompts for a classificat",
+      "channel": "prompt-tuning",
+      "difficulty": "intermediate",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:39:51.364Z"
+    },
+    "q-252": {
+      "question": "What is post-training quantization and how does it reduce model size without retraining?",
+      "channel": "quantization",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:40:03.497Z"
+    },
+    "q-253": {
+      "question": "How does YOLO divide an input image into a grid and predict bounding boxes for object detection?",
+      "channel": "yolo",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 6,
+      "lastUpdated": "2025-12-15T10:40:31.189Z"
+    },
+    "q-254": {
+      "question": "When implementing a bidirectional GRU vs LSTM for sequence labeling, how do gradient clipping thresh",
+      "channel": "lstm",
+      "difficulty": "intermediate",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 8,
+      "lastUpdated": "2025-12-15T10:44:10.500Z"
+    },
+    "q-255": {
+      "question": "How would you implement OWASP ASVS L3 input validation for a REST API endpoint that accepts JSON pay",
+      "channel": "top10",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:44:38.190Z"
+    },
+    "q-256": {
+      "question": "How does QUIC solve TCP's head-of-line blocking problem in HTTP/2 multiplexing, and what are the imp",
+      "channel": "tcp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 6,
+      "lastUpdated": "2025-12-15T10:45:30.101Z"
+    },
+    "q-257": {
+      "question": "What is optional chaining in Swift and how does it prevent runtime crashes when accessing nested opt",
+      "channel": "optionals",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:45:41.220Z"
+    },
+    "q-258": {
+      "question": "How would you design a reactive Android ViewModel using StateFlow with sealed classes to handle netw",
+      "channel": "coroutines",
+      "difficulty": "intermediate",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:46:44.471Z"
+    },
+    "q-259": {
+      "question": "How would you design integration tests for a Saga pattern implementation across 5 microservices to e",
+      "channel": "api-testing",
+      "difficulty": "advanced",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 7,
+      "lastUpdated": "2025-12-15T10:49:22.446Z"
+    },
+    "q-260": {
+      "question": "How would you design a Selenium Grid architecture to handle 10,000 parallel test sessions while prev",
+      "channel": "selenium",
+      "difficulty": "advanced",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 7,
+      "lastUpdated": "2025-12-15T10:50:53.399Z"
+    },
+    "q-261": {
+      "question": "How would you implement a task delegation matrix to optimize team member growth while ensuring proje",
+      "channel": "delegation",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 5,
+      "lastUpdated": "2025-12-15T10:58:01.652Z"
+    },
+    "q-262": {
+      "question": "Describe a time when you used the STAR method to handle a critical production outage during peak tra",
+      "channel": "situation",
+      "difficulty": "advanced",
+      "hasVideo": true,
+      "hasDiagram": true,
+      "companies": 6,
+      "lastUpdated": "2025-12-15T10:58:14.325Z"
+    },
+    "q-263": {
+      "question": "How does demand paging work in virtual memory systems?",
+      "channel": "virtual-memory",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-15T13:27:53.972Z"
+    },
+    "q-264": {
+      "question": "How do pipes work in Unix?",
+      "channel": "posix",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-15T13:56:12.990Z"
+    },
+    "q-265": {
+      "question": "How would you implement a system monitoring tool that combines htop, strace, and lsof functionality?",
+      "channel": "top",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-15T14:02:17.822Z"
+    },
+    "q-266": {
+      "question": "How would you design a message queue system that guarantees exactly-once delivery while maintaining ",
+      "channel": "kafka",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:14:50.277Z"
+    },
+    "q-267": {
+      "question": "What's the difference between REST, GraphQL, and gRPC in terms of protocol and data format?",
+      "channel": "rest",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:16:49.435Z"
+    },
+    "q-268": {
+      "question": "How would you optimize a time-series analytics query that scans 100M+ rows across multiple date part",
+      "channel": "explain",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:17:21.557Z"
+    },
+    "q-269": {
+      "question": "What is the primary difference between Ansible, Puppet, and Chef in configuration management?",
+      "channel": "ansible",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:17:35.187Z"
+    },
+    "q-270": {
+      "question": "Your microservice has a 99.9% availability SLO over 30 days with a 1-hour burn rate alert threshold.",
+      "channel": "slo",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:19:07.763Z"
+    },
+    "q-271": {
+      "question": "How would you design a multi-container pod with init containers and sidecars to implement a zero-dow",
+      "channel": "containers",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:19:41.548Z"
+    },
+    "q-272": {
+      "question": "How would you implement a DRY Terraform configuration using Terragrunt and Atlantis for multi-enviro",
+      "channel": "dry",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:20:50.762Z"
+    },
+    "q-273": {
+      "question": "What's the difference between hyperparameters and parameters in machine learning, and why is cross-v",
+      "channel": "hyperparameter",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:21:50.022Z"
+    },
+    "q-274": {
+      "question": "How would you implement a hybrid CNN architecture combining ResNet residual connections with Efficie",
+      "channel": "cnn",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:29:37.362Z"
+    },
+    "q-275": {
+      "question": "How does QUIC solve HTTP/2's head-of-line blocking issue over TCP, and what are the implementation t",
+      "channel": "tcp",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:33:22.256Z"
+    },
+    "q-276": {
+      "question": "In a production environment, how would you ensure systemd timers and cron jobs execute with proper i",
+      "channel": "systemd",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:34:18.251Z"
+    },
+    "q-277": {
+      "question": "How would you efficiently process a 50GB log file to extract the top 10 most frequent IP addresses f",
+      "channel": "find",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:35:22.661Z"
+    },
+    "q-278": {
+      "question": "How would you design a comprehensive testing strategy for a microservices architecture that scales t",
+      "channel": "test-pyramid",
+      "difficulty": "advanced",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:37:47.468Z"
+    },
+    "q-279": {
+      "question": "What is the difference between getByRole() and getByText() selectors in Playwright testing?",
+      "channel": "playwright",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:38:30.047Z"
+    },
+    "q-280": {
+      "question": "What is the difference between CPU profiling and memory profiling, and when would you use a flame gr",
+      "channel": "cpu-profiling",
+      "difficulty": "beginner",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:39:46.335Z"
+    },
+    "q-281": {
+      "question": "How do you influence technical decisions when you're not the technical lead?",
+      "channel": "communication",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T01:41:21.501Z"
+    },
+    "q-282": {
+      "question": "Explain the event sourcing pattern and its key benefits in distributed systems?",
+      "channel": "event-sourcing",
+      "difficulty": "intermediate",
+      "hasVideo": false,
+      "hasDiagram": true,
+      "companies": 4,
+      "lastUpdated": "2025-12-16T14:07:53.379Z"
+    }
+  },
+  "lastUpdated": "2025-12-16T16:37:43.091Z"
+}

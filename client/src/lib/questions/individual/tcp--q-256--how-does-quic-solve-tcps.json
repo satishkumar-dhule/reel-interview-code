@@ -1,0 +1,28 @@
+{
+  "id": "q-256",
+  "question": "How does QUIC solve TCP's head-of-line blocking problem in HTTP/2 multiplexing, and what are the implementation trade-offs?",
+  "answer": "QUIC eliminates head-of-line blocking using stream-independent packet delivery over UDP, allowing lost packets to only affect their specific stream.",
+  "explanation": "## Concept Overview\nHead-of-line blocking occurs when a single lost packet blocks all subsequent packets, even those belonging to different streams. This affects HTTP/2 over TCP significantly.\n\n## Implementation Details\n- **TCP Approach**: All multiplexed streams share one TCP connection. Packet loss blocks entire connection.\n- **QUIC Approach**: Each QUIC stream operates independently. Lost packets only block their specific stream.\n- QUIC uses connection IDs (not IP+port) for connection identification and migration.\n\n## Code Example\n```bash\n# TCP (HTTP/2) - blocked by single loss\nStream 1: [P1][P2][LOSS][P4] - BLOCKS\nStream 2: [Q1][Q2][Q3][Q4] - BLOCKED despite no loss\n\n# QUIC (HTTP/3) - independent streams\nStream 1: [P1][P2][LOSS][P4] - PARTIAL BLOCK\nStream 2: [Q1][Q2][Q3][Q4] - CONTINUES normally\n```\n\n## Common Pitfalls\n- Increased CPU overhead due to user-space encryption\n- UDP blocked by some corporate firewalls\n- Connection state management complexity\n- Bandwidth estimation challenges in multiplexed streams",
+  "tags": [
+    "tcp",
+    "udp",
+    "http2",
+    "quic"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[HTTP/2 over TCP] --> B[Single TCP Connection]\n    B --> C[Packet Loss on Stream 1]\n    C --> D[All Streams Blocked]\n    \n    E[HTTP/3 over QUIC] --> F[Multiple Independent Streams]\n    F --> G[Packet Loss on Stream 1]\n    G --> H[Only Stream 1 Affected]\n    H --> I[Other Streams Continue]",
+  "sourceUrl": "https://www.haproxy.com/blog/choosing-the-right-transport-protocol-tcp-vs-udp-vs-quic/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Cloudflare",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix"
+  ],
+  "lastUpdated": "2025-12-15T10:45:30.101Z"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "q-239",
+  "question": "How would you implement a React useMemo hook to optimize a recursive Fibonacci function with memoization, and what are the key trade-offs between top-down memoization vs bottom-up tabulation in this context?",
+  "answer": "Use useMemo to cache expensive Fibonacci calculations, memoizing results to prevent O(2^n) recursion. Trade-offs: memoization uses recursion + cache (O(n) space), tabulation uses iteration (O(1) space",
+  "explanation": "## Concept Overview\nDynamic programming optimizes recursive problems by caching subproblem results. In React, useMemo prevents expensive recalculations during re-renders.\n\n## Implementation Details\n### Top-Down Memoization (Recursive)\n```javascript\nconst fibonacci = useMemo(() => {\n  const memo = {};\n  const fib = (n) => {\n    if (n in memo) return memo[n];\n    if (n <= 1) return n;\n    memo[n] = fib(n - 1) + fib(n - 2);\n    return memo[n];\n  };\n  return fib;\n}, []);\n```\n\n### Bottom-Up Tabulation (Iterative)\n```javascript\nconst fibonacci = useMemo(() => {\n  return (n) => {\n    if (n <= 1) return n;\n    let prev = 0, curr = 1;\n    for (let i = 2; i <= n; i++) {\n      [prev, curr] = [curr, prev + curr];\n    }\n    return curr;\n  };\n}, []);\n```\n\n## Common Pitfalls\n- **Dependency array**: Empty array [] ensures function isn't recreated\n- **Memory leaks**: Large memo objects can cause memory issues\n- **Over-optimization**: useMemo overhead may exceed benefits for simple calculations\n- **Referential equality**: useMemo preserves function reference for child components",
+  "tags": [
+    "dp",
+    "memoization",
+    "tabulation"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Component Render] --> B{useMemo Cache Hit?}\n    B -->|Yes| C[Return Cached Result]\n    B -->|No| D[Calculate Fibonacci]\n    D --> E{Memoization Strategy}\n    E -->|Top-Down| F[Recursive + Cache]\n    E -->|Bottom-Up| G[Iterative + Variables]\n    F --> H[Store in Cache]\n    G --> I[Return Result]\n    H --> I\n    C --> J[Prevent Re-render]\n    I --> J",
+  "sourceUrl": "https://www.joshwcomeau.com/react/usememo-and-usecallback/",
+  "videos": {
+    "shortVideo": "https://www.youtube.com/shorts/MyzH0VsQp4Q",
+    "longVideo": "https://www.youtube.com/watch?v=YBSt1jYwVfU"
+  },
+  "companies": [
+    "Airbnb",
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft",
+    "Netflix",
+    "Uber"
+  ],
+  "lastUpdated": "2025-12-15T10:22:40.571Z"
+}

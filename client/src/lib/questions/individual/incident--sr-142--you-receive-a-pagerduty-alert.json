@@ -1,0 +1,13 @@
+{
+  "id": "sr-142",
+  "question": "You receive a PagerDuty alert at 3 AM: 'Production API is returning 500 errors'. What are your first three steps in handling this incident?",
+  "answer": "Acknowledge alert, assess impact, and form response team.",
+  "explanation": "**Incident Response First Steps**:\n\n1. **Acknowledge Alert (0-2 mins)**\n   - Accept PagerDuty incident\n   - Set status to 'Investigating'\n   - Prevent escalation\n\n2. **Assess Impact (2-5 mins)**\n   - Check monitoring dashboards\n   - Verify error rates and latency\n   - Determine user impact scope\n\n3. **Form Response Team (5-10 mins)**\n   - Notify on-call engineer\n   - Create incident channel (Slack)\n   - Document initial timeline\n\n**Key Principles**:\n- Stay calm under pressure\n- Communicate clearly\n- Document everything\n- Follow runbook if available",
+  "diagram": "graph TD\n    A[PagerDuty Alert] --> B[Acknowledge Incident]\n    B --> C[Assess Impact]\n    C --> D[Check Dashboards]\n    C --> E[Verify Error Rates]\n    C --> F[Determine User Impact]\n    D --> G[Form Response Team]\n    E --> G\n    F --> G\n    G --> H[Notify On-Call]\n    G --> I[Create Slack Channel]\n    G --> J[Document Timeline]",
+  "difficulty": "beginner",
+  "tags": [
+    "incident",
+    "postmortem"
+  ],
+  "lastUpdated": "2025-12-12T10:04:51.668Z"
+}

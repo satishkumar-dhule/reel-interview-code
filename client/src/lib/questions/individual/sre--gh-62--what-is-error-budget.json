@@ -1,0 +1,12 @@
+{
+  "id": "gh-62",
+  "question": "What is Error Budget?",
+  "answer": "An Error Budget is the maximum amount of time that a technical system can fail without contractual consequences. It's the difference between the SLO t...",
+  "explanation": "An Error Budget is the maximum amount of time that a technical system can fail without contractual consequences. It's the difference between the SLO target and 100% reliability.\n\nExample calculation:\n```\nSLO Target: 99.9% uptime\nError Budget: 100% - 99.9% = 0.1%\nMonthly Error Budget: 43.2 minutes (0.1% of 30 days)\n```\n\nKey concepts:\n1. **Budget Calculation:**\n- Based on SLO targets\n- Measured over time windows\n- Reset periodically\n\n2. **Budget Usage:**\n- Track incidents\n- Monitor consumption\n- Alert on budget burn",
+  "difficulty": "beginner",
+  "tags": [
+    "sre",
+    "reliability"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

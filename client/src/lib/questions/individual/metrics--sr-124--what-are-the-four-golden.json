@@ -1,0 +1,13 @@
+{
+  "id": "sr-124",
+  "question": "What are the four golden signals of monitoring?",
+  "answer": "Latency, Traffic, Errors, and Saturation - key metrics for service health.",
+  "explanation": "**The Four Golden Signals**:\n\n1. **Latency**: Time to serve a request\n2. **Traffic**: Demand on your system (requests/sec)\n3. **Errors**: Rate of failed requests\n4. **Saturation**: How full your service is (CPU, memory)\n\nThese signals help identify issues before they become outages.",
+  "diagram": "graph TD\n    M[Monitoring] --> L[Latency]\n    M --> T[Traffic]\n    M --> E[Errors]\n    M --> S[Saturation]",
+  "difficulty": "beginner",
+  "tags": [
+    "metrics",
+    "monitoring"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

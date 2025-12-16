@@ -1,0 +1,13 @@
+{
+  "id": "gh-37",
+  "question": "What is Cloud Native Architecture?",
+  "answer": "Cloud Native Architecture is an approach to designing and building applications that exploits the advantages of the cloud computing delivery model. It...",
+  "explanation": "Cloud Native Architecture is an approach to designing and building applications that exploits the advantages of the cloud computing delivery model. It emphasizes:\n\n1. **Characteristics:**\n- Scalability\n- Containerization\n- Automation\n- Orchestration\n- Microservices\n\n2. **Key Principles:**\n- Design for automation\n- Build for resilience\n- Enable scalability\n- Embrace containerization\n- Practice continuous delivery",
+  "diagram": "\ngraph TD\n    Cloud[Cloud Native] --> Containers\n    Cloud --> Microservices\n    Cloud --> K8s[Orchestration]\n    Cloud --> CI[CI/CD]\n",
+  "difficulty": "beginner",
+  "tags": [
+    "cloud-native",
+    "microservices"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

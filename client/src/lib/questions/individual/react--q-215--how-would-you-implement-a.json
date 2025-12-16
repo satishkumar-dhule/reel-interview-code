@@ -1,0 +1,15 @@
+{
+  "id": "q-215",
+  "question": "How would you implement a custom useDebounce hook that works with React's concurrent features and prevents stale closures?",
+  "answer": "Use useRef for latest value, useEffect with cleanup, and useCallback to maintain stable reference while handling concurrent renders.",
+  "explanation": "## Concept Overview\nA custom useDebounce hook delays function execution until after a specified wait time, crucial for search inputs and API calls.\n\n## Implementation Details\n- Use useRef to store the latest callback value, preventing stale closures\n- Implement cleanup in useEffect to cancel pending debounced calls\n- Return useCallback with stable dependencies for concurrent rendering\n- Handle component unmounting to prevent memory leaks\n\n## Code Example\n```javascript\nimport { useCallback, useRef, useEffect } from 'react';\n\nexport function useDebounce(callback, delay) {\n  const callbackRef = useRef(callback);\n  const timeoutRef = useRef(null);\n\n  useEffect(() => {\n    callbackRef.current = callback;\n  }, [callback]);\n\n  return useCallback((...args) => {\n    if (timeoutRef.current) {\n      clearTimeout(timeoutRef.current);\n    }\n    \n    timeoutRef.current = setTimeout(() => {\n      callbackRef.current(...args);\n    }, delay);\n  }, [delay]);\n}\n```\n\n## Common Pitfalls\n- Forgetting to update ref with latest callback causes stale closures\n- Not clearing timeout leads to multiple executions\n- Missing dependency array in useCallback causes unnecessary re-renders\n- Not handling component unmount can cause memory leaks",
+  "tags": [
+    "react",
+    "hooks",
+    "context",
+    "redux"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[User Input] --> B[useDebounce Hook]\n    B --> C{Timeout Exists?}\n    C -->|Yes| D[Clear Previous Timeout]\n    C -->|No| E[Set New Timeout]\n    D --> E\n    E --> F[Wait Delay Period]\n    F --> G[Execute Callback]\n    G --> H[Update State/API Call]",
+  "lastUpdated": "2025-12-15T01:14:24.506Z"
+}

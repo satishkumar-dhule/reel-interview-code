@@ -1,0 +1,13 @@
+{
+  "id": "gh-64",
+  "question": "What are the four key DORA metrics for measuring DevOps performance?",
+  "answer": "DORA metrics are deployment frequency, lead time for changes, change failure rate, and time to restore service.",
+  "explanation": "## Concept Overview\nDORA metrics are industry-standard measurements that correlate with high-performing DevOps teams. They provide quantitative insights into software delivery and operational performance.\n\n## Implementation\n```typescript\ninterface DORAMetrics {\n  deploymentFrequency: number; // deployments per week\n  leadTimeForChanges: number;  // minutes from commit to production\n  changeFailureRate: number;   // percentage of failed deployments\n  timeToRestoreService: number; // minutes to recover from failure\n}\n\n// Calculate change failure rate\nconst calculateCFR = (failedDeployments: number, totalDeployments: number) => {\n  return (failedDeployments / totalDeployments) * 100;\n};\n```\n\n## Trade-offs\n**Pros:**\n- Industry-standardized benchmarks\n- Direct correlation with organizational performance\n- Actionable insights for improvement\n\n**Cons:**\n- Can encourage gaming the metrics\n- May not capture context-specific factors\n- Requires reliable data collection\n\n## Common Pitfalls\n- Focusing on individual metrics in isolation\n- Ignoring qualitative factors like team morale\n- Not establishing baseline measurements before optimization\n- Collecting data without acting on insights",
+  "difficulty": "intermediate",
+  "tags": [
+    "metrics",
+    "kpi"
+  ],
+  "lastUpdated": "2025-12-15T06:37:19.064Z",
+  "diagram": "graph TD\n    A[Code Commit] --> B[Build & Test]\n    B --> C[Deploy to Production]\n    C --> D[Monitor Performance]\n    \n    E[Deployment Frequency] --> C\n    F[Lead Time for Changes] --> A\n    G[Change Failure Rate] --> C\n    H[Time to Restore Service] --> D\n    \n    I[High Performance] --> J[Elite Teams]\n    J --> K[Daily Deployments]\n    J --> L[<1 Hour Lead Time]\n    J --> M[<15% Failure Rate]\n    J --> N[<1 Hour Recovery]"
+}

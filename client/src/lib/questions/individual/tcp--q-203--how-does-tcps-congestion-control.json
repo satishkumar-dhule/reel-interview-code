@@ -1,0 +1,15 @@
+{
+  "id": "q-203",
+  "question": "How does TCP's congestion control algorithm interact with HTTP/2's multiplexing when multiple streams compete for bandwidth?",
+  "answer": "TCP treats all HTTP/2 streams as one connection, so congestion control affects all streams equally, causing head-of-line blocking.",
+  "explanation": "## Concept Overview\nTCP's congestion control operates at the transport layer, managing the entire connection's throughput regardless of how many application-layer streams (HTTP/2) are multiplexed over it.\n\n## Implementation Details\n- TCP uses algorithms like Reno, CUBIC, or BBR to adjust cwnd based on packet loss/RTT\n- HTTP/2 multiplexes multiple streams over a single TCP connection\n- All streams share the same congestion window and experience identical throttling\n\n## Common Pitfalls\n- Assuming per-stream bandwidth allocation\n- Ignoring that packet loss affects all streams simultaneously\n- Not considering TCP head-of-line blocking despite HTTP/2 stream multiplexing\n\n## Code Example\n```go\n// HTTP/2 client configuration\nclient := &http.Client{\n    Transport: &http2.Transport{\n        // Single TCP connection for all streams\n        AllowHTTP: false,\n    },\n}\n```",
+  "tags": [
+    "tcp",
+    "udp",
+    "http2",
+    "quic"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "graph TD\n    A[HTTP/2 Client] --> B[TCP Connection]\n    B --> C[Congestion Control]\n    C --> D[Network]\n    B --> E[Stream 1]\n    B --> F[Stream 2]\n    B --> G[Stream 3]\n    C --> H[Shared cwnd]\n    H --> E\n    H --> F\n    H --> G",
+  "lastUpdated": "2025-12-14T12:58:05.203Z"
+}

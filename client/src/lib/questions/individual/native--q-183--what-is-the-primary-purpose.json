@@ -1,0 +1,13 @@
+{
+  "id": "q-183",
+  "question": "What is the primary purpose of Native Modules in React Native?",
+  "answer": "To access native platform APIs and functionality not available in JavaScript.",
+  "explanation": "Native Modules bridge the gap between JavaScript and native platform code (Java/Kotlin for Android, Objective-C/Swift for iOS). They allow React Native apps to access device-specific features like camera, Bluetooth, GPS, or custom native libraries that aren't exposed through React Native's built-in components. Native Modules create a communication layer where JavaScript can call native methods and receive callbacks, enabling developers to leverage the full power of the underlying platform while maintaining a React Native development experience.",
+  "tags": [
+    "native",
+    "bridge"
+  ],
+  "difficulty": "beginner",
+  "diagram": "graph TD\n    A[React Native JS Code] --> B[Native Module Bridge]\n    B --> C[Android Java/Kotlin Code]\n    B --> D[iOS Objective-C/Swift Code]\n    C --> E[Native Platform APIs]\n    D --> F[Native Platform APIs]\n    E --> G[Device Features]\n    F --> G",
+  "lastUpdated": "2025-12-14T10:25:30.699Z"
+}

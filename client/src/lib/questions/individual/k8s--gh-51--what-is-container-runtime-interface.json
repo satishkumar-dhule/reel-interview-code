@@ -1,0 +1,12 @@
+{
+  "id": "gh-51",
+  "question": "What is Container Runtime Interface (CRI)?",
+  "answer": "Container Runtime Interface (CRI) is an API that allows container runtimes to interact with the container orchestrator. It includes:",
+  "explanation": "Container Runtime Interface (CRI) is an API that allows container runtimes to interact with the container orchestrator. It includes:\n\n1. **Image Management:**\n- Pulling images\n- Pushing images\n- Listing images\n- Deleting images\n\n2. **Container Management:**\n- Creating containers\n- Starting containers\n- Stopping containers\n- Killing containers\n- Inspecting containers\n\n3. **Container Runtime:**\n- Running containers\n- Pausing containers\n- Resuming containers\n- Executing commands in containers",
+  "difficulty": "advanced",
+  "tags": [
+    "k8s",
+    "advanced"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

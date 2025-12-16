@@ -1,0 +1,14 @@
+{
+  "id": "q-209",
+  "question": "How would you design a REST API testing framework that handles rate limiting, circuit breaking, and distributed tracing for microservices with 10,000+ concurrent requests?",
+  "answer": "Implement async request batching with token bucket rate limiting, Hystrix circuit patterns, and OpenTelemetry tracing across test suites.",
+  "explanation": "## Concept Overview\nProduction-scale REST testing requires sophisticated concurrency control and observability. The framework must simulate real-world load while maintaining test reliability.\n\n## Implementation Details\n- **Rate Limiting**: Token bucket algorithm with distributed Redis counters\n- **Circuit Breaking**: Hystrix-style failure threshold with exponential backoff\n- **Distributed Tracing**: OpenTelemetry span propagation across service boundaries\n- **Request Batching**: Async HTTP client pools with connection multiplexing\n\n## Code Example\n```javascript\n// Rate-limited test executor\nclass LoadTestExecutor {\n  constructor(rateLimit, circuitBreaker) {\n    this.tokenBucket = new TokenBucket(rateLimit);\n    this.circuitBreaker = circuitBreaker;\n  }\n\n  async executeTest(testSuite) {\n    const span = tracer.startSpan('rest-test');\n    await this.tokenBucket.acquire();\n    return this.circuitBreaker.execute(async () => {\n      return testSuite.run(span);\n    });\n  }\n}\n```\n\n## Common Pitfalls\n- Ignoring connection pool exhaustion\n- Inadequate error propagation in distributed traces\n- Circuit breaker threshold misconfiguration\n- Memory leaks in async test cleanup",
+  "tags": [
+    "postman",
+    "rest-assured",
+    "supertest"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Test Suite] --> B[Token Bucket]\n    B --> C[Circuit Breaker]\n    C --> D[HTTP Client Pool]\n    D --> E[Microservice A]\n    D --> F[Microservice B]\n    C --> G[OpenTelemetry Tracer]\n    G --> H[Jaeger Collector]\n    B --> I[Redis Rate Store]\n    C --> J[Hystrix Metrics]",
+  "lastUpdated": "2025-12-14T12:58:49.361Z"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "gh-77",
+  "question": "What are Monitoring Tools?",
+  "answer": "Common monitoring tools used in DevOps:",
+  "explanation": "Common monitoring tools used in DevOps:\n\n1. **Infrastructure Monitoring:**\n- Prometheus\n- Nagios\n- Zabbix\n- Datadog\n\n2. **Application Monitoring:**\n```yaml\nTools:\n- New Relic\n- AppDynamics\n- Dynatrace\nFeatures:\n- Transaction tracing\n- Error tracking\n- Performance analytics\n```",
+  "difficulty": "intermediate",
+  "tags": [
+    "monitoring",
+    "infra"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

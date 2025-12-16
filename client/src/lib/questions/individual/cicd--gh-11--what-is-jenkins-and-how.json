@@ -1,0 +1,13 @@
+{
+  "id": "gh-11",
+  "question": "What is Jenkins and how does it facilitate continuous integration and continuous delivery (CI/CD) in modern software development workflows?",
+  "answer": "Jenkins is an open-source automation server that enables CI/CD by automating build, test, and deployment processes through extensible plugins and distributed architecture.",
+  "explanation": "Jenkins is a powerful automation server that plays a crucial role in DevOps practices by enabling continuous integration and continuous delivery (CI/CD) pipelines.\n\n**Key Features:**\n- **Extensible Plugin System**: 1000+ plugins for integration with various tools\n- **Distributed Builds**: Master-agent architecture for scaling workloads\n- **Pipeline as Code**: Jenkinsfile for defining build workflows\n- **Built-in GUI**: Intuitive web interface for configuration and monitoring\n- **Automated Testing**: Integration with testing frameworks for quality assurance\n- **Deployment Automation**: Seamless integration with deployment tools\n\n**Architecture Components:**\n- **Jenkins Master**: Orchestrates builds and manages agents\n- **Jenkins Agents**: Execute build tasks in distributed environments\n- **Pipeline Engine**: Processes Jenkinsfile definitions\n- **Plugin Ecosystem**: Extends functionality for various tools and platforms",
+  "diagram": "graph TD\n    Dev[Developer Pushes Code] --> SCM[SCM Repository]\n    SCM --> Webhook[Webhook Trigger]\n    Webhook --> Jenkins[Jenkins Master]\n    Jenkins --> Pipeline[CI/CD Pipeline]\n    Pipeline --> Build[Build Stage]\n    Pipeline --> Test[Test Stage]\n    Pipeline --> Deploy[Deploy Stage]\n    Build --> Agent1[Jenkins Agent 1]\n    Test --> Agent2[Jenkins Agent 2]\n    Deploy --> Agent3[Jenkins Agent 3]\n    Jenkins --> Monitor[Build Monitoring]\n    Jenkins --> Notif[Notifications]",
+  "difficulty": "advanced",
+  "tags": [
+    "cicd",
+    "automation"
+  ],
+  "lastUpdated": "2025-12-12T10:04:08.627Z"
+}

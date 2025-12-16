@@ -1,0 +1,27 @@
+{
+  "id": "q-250",
+  "question": "What is LoRA and how does it reduce parameters when fine-tuning large language models?",
+  "answer": "LoRA adds low-rank matrices to frozen weights, reducing trainable parameters by freezing original weights and training only small adapter matrices.",
+  "explanation": "## LoRA (Low-Rank Adaptation) Overview\n\nLoRA is a parameter-efficient fine-tuning method that decomposes weight updates into low-rank matrices instead of updating full weight matrices.\n\n## Core Concept\n- **Freeze** the original pre-trained model weights\n- **Add** trainable low-rank matrices to attention layers\n- **Matrix decomposition**: W + ΔW where ΔW = BA (B: r×d, A: r×k)\n- **Rank r** is much smaller than original dimensions\n\n## Implementation\n```python\n# Pseudocode for LoRA implementation\nclass LoRALayer(nn.Module):\n    def __init__(self, in_features, out_features, rank=8):\n        self.lora_A = nn.Linear(in_features, rank, bias=False)\n        self.lora_B = nn.Linear(rank, out_features, bias=False)\n        self.scaling = 1.0 / rank\n    \n    def forward(self, x):\n        # Original weights are frozen\n        return x + self.scaling * self.lora_B(self.lora_A(x))\n```\n\n## Key Benefits\n- **Memory efficiency**: 100-1000x fewer trainable parameters\n- **No inference overhead**: Can merge LoRA weights back into model\n- **Modular**: Easy to switch between different LoRA adapters\n\n## Common Pitfalls\n- Rank too low: Underfitting, poor task performance\n- Rank too high: Loses parameter efficiency benefits\n- Forgetting to scale: Many implementations miss the 1/r scaling factor\n- Target layer selection: Not all layers benefit equally from LoRA",
+  "tags": [
+    "lora",
+    "qlora",
+    "peft",
+    "adapter"
+  ],
+  "difficulty": "beginner",
+  "diagram": "flowchart LR\n    A[Original Weights W] --> B[Frozen]\n    C[Input X] --> D[Linear Layer W]\n    C --> E[LoRA Path]\n    E --> F[Matrix A: r×k]\n    F --> G[Matrix B: r×d]\n    G --> H[Scaling 1/r]\n    D --> I[Addition]\n    H --> I\n    I --> J[Final Output]\n    style B fill:#ffcccc\n    style A fill:#ccffcc",
+  "sourceUrl": "https://arxiv.org/abs/2106.09685",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Apple",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T10:38:15.939Z"
+}

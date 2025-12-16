@@ -1,0 +1,15 @@
+{
+  "id": "q-213",
+  "question": "How would you design a multi-tier caching strategy with cache warming, invalidation, and fallback for a 99.9% availability e-commerce platform?",
+  "answer": "Implement CDN + Redis cluster + local cache with write-through, TTL-based invalidation, and circuit breakers for fallback.",
+  "explanation": "## Multi-Tier Caching Architecture\n\n### Concept Overview\nA robust caching strategy requires multiple layers working together to ensure high availability and performance while maintaining data consistency.\n\n### Implementation Details\n\n**Cache Tiers:**\n- **CDN (L1):** Static assets, API responses with long TTL\n- **Redis Cluster (L2):** Hot data, session state, computed results\n- **Local Cache (L3):** Frequently accessed data per instance\n\n**Cache Warming Strategy:**\n- Pre-populate Redis during low-traffic periods\n- Use predictive algorithms based on access patterns\n- Implement background refresh for expiring keys\n\n**Invalidation Patterns:**\n- **Write-through:** Update cache immediately on database writes\n- **TTL-based:** Automatic expiration with staggered times\n- **Event-driven:** Pub/sub for immediate cache updates\n\n**Fallback Mechanisms:**\n- Circuit breakers to prevent cascade failures\n- Graceful degradation to database queries\n- Stale-while-revalidate for serving expired data\n\n### Code Example\n```javascript\n// Multi-tier cache with fallback\nclass MultiTierCache {\n  async get(key) {\n    // L3: Local cache\n    let value = await this.localCache.get(key);\n    if (value) return value;\n    \n    // L2: Redis with circuit breaker\n    try {\n      value = await this.redis.get(key);\n      if (value) {\n        await this.localCache.set(key, value, 60);\n        return value;\n      }\n    } catch (error) {\n      this.circuitBreaker.recordFailure();\n    }\n    \n    // Fallback: Database\n    value = await this.database.get(key);\n    if (value) {\n      await this.redis.set(key, value, 3600);\n      await this.localCache.set(key, value, 60);\n    }\n    return value;\n  }\n}\n```\n\n### Common Pitfalls\n- **Cache stampede:** Use request coalescing and early expiration\n- **Memory pressure:** Implement LRU eviction and monitoring\n- **Network partitions:** Design for eventual consistency\n- **Hot key concentration:** Use consistent hashing and key sharding",
+  "tags": [
+    "cache",
+    "redis",
+    "memcached",
+    "cdn"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Client Request] --> B{CDN Cache}\n    B -->|Hit| C[Return Response]\n    B -->|Miss| D[Load Balancer]\n    D --> E[Application Server]\n    E --> F{Local Cache}\n    F -->|Hit| G[Return Response]\n    F -->|Miss| H[Redis Cluster]\n    H -->|Hit| I[Update Local Cache]\n    H -->|Miss| J[Database]\n    J --> K[Update Redis]\n    K --> L[Update Local Cache]\n    L --> M[Return Response]\n    N[Cache Invalidation] --> O[Pub/Sub Events]\n    O --> P[Clear All Tiers]\n    Q[Background Warmer] --> R[Pre-populate Cache]",
+  "lastUpdated": "2025-12-15T01:14:07.965Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "gh-15",
+  "question": "What are the different types of cloud services?",
+  "answer": "The main types of cloud services are:",
+  "explanation": "The main types of cloud services are:\n\n1. **IaaS (Infrastructure as a Service):**\n- Provides virtualized computing resources\n- Examples: AWS EC2, Azure VMs\n\n2. **PaaS (Platform as a Service):**\n- Provides platform allowing customers to develop, run, and manage applications\n- Examples: Heroku, Google App Engine\n\n3. **SaaS (Software as a Service):**\n- Provides software applications over the internet\n- Examples: Salesforce, Google Workspace\n\n4. **FaaS (Function as a Service):**\n- Provides serverless computing capabilities\n- Examples: AWS Lambda, Azure Functions",
+  "diagram": "\ngraph TD\n    IaaS[IaaS - Infra] --> PaaS[PaaS - Platform]\n    PaaS --> SaaS[SaaS - Software]\n    FaaS[FaaS - Serverless]\n",
+  "difficulty": "intermediate",
+  "tags": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.187Z"
+}

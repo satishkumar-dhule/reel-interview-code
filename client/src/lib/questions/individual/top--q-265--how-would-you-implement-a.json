@@ -1,0 +1,26 @@
+{
+  "id": "q-265",
+  "question": "How would you implement a system monitoring tool that combines htop, strace, and lsof functionality?",
+  "answer": "Use a modular architecture with separate modules for process monitoring, system calls, and network connections.",
+  "explanation": "## Concept\n\n## Implementation\n\n## Trade-offs\n\n## Pitfalls",
+  "tags": [
+    "top",
+    "htop",
+    "strace",
+    "lsof"
+  ],
+  "difficulty": "intermediate",
+  "diagram": "flowchart LR\n    A[Main] --> B[Process Monitor]\n    A --> C[Strace Module]\n    A --> D[Network Monitor]",
+  "sourceUrl": "https://man7.org/linux/man-pages/",
+  "videos": {
+    "shortVideo": null,
+    "longVideo": null
+  },
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "lastUpdated": "2025-12-15T14:02:17.822Z"
+}

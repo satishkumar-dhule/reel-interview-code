@@ -1,0 +1,14 @@
+{
+  "id": "db-2",
+  "question": "How do ACID properties ensure data integrity in a banking transaction where $100 is transferred from Account A to Account B?",
+  "answer": "Atomicity ensures all-or-nothing execution, Consistency maintains valid states, Isolation prevents interference, Durability guarantees persistence.",
+  "explanation": "**Banking Transfer Scenario**: Account A transfers $100 to Account B\n\n• **Atomicity**: Either both debit from A AND credit to B succeed, or both fail and rollback completely\n• **Consistency**: Database maintains valid state - total money remains constant, account balances never go negative\n• **Isolation**: Concurrent transactions see consistent snapshots - if Account C checks A's balance during transfer, they see either before or after state, never partial\n• **Durability**: Once transaction commits, changes persist even through system crashes via Write-Ahead Logging",
+  "diagram": "graph TD\n    Start[Transfer $100: A → B] --> Atomic{Atomicity Check}\n    Atomic -->|Success| Consistent[Consistency Validation]\n    Atomic -->|Failure| Rollback[Complete Rollback]\n    Consistent --> Isolated[Isolation Control]\n    Isolated --> Durable[Durability Commit]\n    Durable --> Complete[Transaction Complete]\n    Rollback --> Failed[Transaction Failed]",
+  "difficulty": "intermediate",
+  "tags": [
+    "acid",
+    "transactions",
+    "theory"
+  ],
+  "lastUpdated": "2025-12-12T09:08:19.686Z"
+}

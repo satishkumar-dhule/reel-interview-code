@@ -1,0 +1,14 @@
+{
+  "id": "q-226",
+  "question": "How would you design a prompt-engineering system that dynamically selects between chain-of-thought, few-shot, and zero-shot prompting based on real-time performance metrics and task complexity?",
+  "answer": "Implement a meta-learning classifier that evaluates task complexity, latency requirements, and accuracy thresholds to route to optimal prompting strategy.",
+  "explanation": "## Concept Overview\nA dynamic prompt selection system uses meta-learning to choose the optimal prompting strategy based on real-time performance metrics and task characteristics.\n\n## Implementation Details\n- **Task Complexity Classifier**: Uses features like input length, domain specificity, and reasoning depth\n- **Performance Monitor**: Tracks latency, token usage, and accuracy for each strategy\n- **Strategy Router**: Implements weighted decision matrix balancing speed vs accuracy\n- **Feedback Loop**: Continuously updates strategy weights based on outcomes\n\n## Code Example\n```python\nclass PromptStrategySelector:\n    def __init__(self):\n        self.strategy_weights = {\n            'cot': 0.4, 'few_shot': 0.3, 'zero_shot': 0.3\n        }\n        self.performance_history = defaultdict(list)\n    \n    def select_strategy(self, task_features):\n        complexity = self.classify_complexity(task_features)\n        if complexity > 0.8:\n            return 'chain_of_thought'\n        elif task_features['has_examples']:\n            return 'few_shot'\n        else:\n            return 'zero_shot'\n```\n\n## Common Pitfalls\n- Overfitting to specific task types\n- Ignoring latency constraints in production\n- Failing to handle edge cases in strategy switching\n- Not accounting for model-specific optimizations",
+  "tags": [
+    "chain-of-thought",
+    "few-shot",
+    "zero-shot"
+  ],
+  "difficulty": "advanced",
+  "diagram": "graph TD\n    A[Input Task] --> B[Feature Extraction]\n    B --> C[Complexity Classifier]\n    C --> D{Strategy Selection}\n    D -->|High Complexity| E[Chain-of-Thought]\n    D -->|Has Examples| F[Few-Shot]\n    D -->|Simple Task| G[Zero-Shot]\n    E --> H[Performance Monitor]\n    F --> H\n    G --> H\n    H --> I[Feedback Loop]\n    I --> J[Update Weights]\n    J --> C",
+  "lastUpdated": "2025-12-15T01:15:52.406Z"
+}

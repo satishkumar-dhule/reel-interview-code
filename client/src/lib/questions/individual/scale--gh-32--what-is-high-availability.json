@@ -1,0 +1,13 @@
+{
+  "id": "gh-32",
+  "question": "What is High Availability?",
+  "answer": "High Availability (HA) is a characteristic of a system that aims to ensure an agreed level of operational performance, usually uptime, for a higher th...",
+  "explanation": "High Availability (HA) is a characteristic of a system that aims to ensure an agreed level of operational performance, usually uptime, for a higher than normal period.\n\nKey components:\n1. **Redundancy:**\n- Multiple instances\n- No single point of failure\n\n2. **Monitoring:**\n- Health checks\n- Automated failover\n\n3. **Load Balancing:**\n- Traffic distribution\n- Resource optimization",
+  "diagram": "\ngraph TD\n    LB[Load Balancer] --> S1[Server 1]\n    LB --> S2[Server 2]\n    S1 -.->|Failover| S2\n",
+  "difficulty": "advanced",
+  "tags": [
+    "scale",
+    "ha"
+  ],
+  "lastUpdated": "2025-12-12T09:07:04.188Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "q-222",
+  "question": "How would you design a Kafka Streams application to handle exactly-once processing with stateful aggregations while maintaining sub-second latency during traffic spikes?",
+  "answer": "Use EOS with transactional producer, compacted topics for state, and adaptive processing with standby replicas.",
+  "explanation": "## Concept Overview\nExactly-once semantics (EOS) in Kafka Streams ensures no duplicate processing during failures. Stateful aggregations require careful state management and recovery mechanisms.\n\n## Implementation Details\n- Enable `processing.guarantee=exactly_once_v2`\n- Use `KTable` with log compaction for state stores\n- Configure standby replicas for fast failover\n- Implement custom partitioner for key distribution\n- Set appropriate `cache.max.bytes.buffering`\n\n## Code Example\n```java\nProperties props = new Properties();\nprops.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);\nprops.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 1);\nprops.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024);\n\nKStream<String, Event> stream = builder.stream(\"events\");\nKTable<String, Long> aggregated = stream.groupByKey()\n    .aggregate(\n        () -> 0L,\n        (key, event, agg) -> agg + event.getValue(),\n        Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(\"aggregated-store\")\n            .withKeySerde(Serdes.String())\n            .withValueSerde(Serdes.Long())\n            .withLoggingEnabled(Configs.EMPTY)\n    );\n```\n\n## Common Pitfalls\n- Large state stores causing slow recovery\n- Improper key distribution leading to hot partitions\n- Insufficient memory for state store caching\n- Network partitions causing duplicate processing\n- Consumer lag during traffic spikes",
+  "tags": [
+    "kafka",
+    "flink",
+    "kinesis"
+  ],
+  "difficulty": "advanced",
+  "diagram": "flowchart LR\n    A[Producer] --> B[Kafka Topic]\n    B --> C[Kafka Streams App]\n    C --> D[State Store]\n    C --> E[Standby Replica]\n    D --> F[Compact Topic]\n    E --> F\n    C --> G[Output Topic]\n    G --> H[Consumer]\n    I[Traffic Spike] --> C\n    C --> J[Adaptive Processing]\n    J --> K[Scale Out]",
+  "lastUpdated": "2025-12-15T01:15:24.826Z"
+}
