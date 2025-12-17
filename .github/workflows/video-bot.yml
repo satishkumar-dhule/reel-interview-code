@@ -29,6 +29,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        run: npm install dotenv @libsql/client
+
       - name: Install OpenCode CLI
         run: npm install -g opencode-ai
 
