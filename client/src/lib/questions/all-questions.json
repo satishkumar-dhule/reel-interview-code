@@ -38,7 +38,12 @@
         "complexity"
       ],
       "lastUpdated": "2025-12-12T09:07:04.185Z",
-      "lastRemapped": "2025-12-17T06:34:21.300Z"
+      "lastRemapped": "2025-12-17T06:34:21.300Z",
+      "videos": {
+        "shortVideo": "https://www.youtube.com/watch?v=7E7awVFzbRw",
+        "longVideo": "https://www.youtube.com/watch?v=3AW_HTo27YY"
+      },
+      "lastVideoUpdate": "2025-12-17T12:08:20.261Z"
     },
     "al-3": {
       "id": "al-3",
@@ -344,7 +349,12 @@
         "cicd",
         "jenkins"
       ],
-      "lastUpdated": "2025-12-12T09:10:00.382Z"
+      "lastUpdated": "2025-12-12T09:10:00.382Z",
+      "videos": {
+        "shortVideo": "https://www.youtube.com/watch?v=H5z70EBtEow",
+        "longVideo": "https://www.youtube.com/watch?v=0QhUhrWGB9k"
+      },
+      "lastVideoUpdate": "2025-12-17T12:10:31.517Z"
     },
     "do-3": {
       "id": "do-3",
@@ -1647,7 +1657,12 @@
         "perf",
         "internals"
       ],
-      "lastUpdated": "2025-12-15T06:35:02.691Z"
+      "lastUpdated": "2025-12-15T06:35:02.691Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=bRXXCGX_J2w",
+        "longVideo": "https://youtube.com/watch?v=UKn4aVlnB9A"
+      },
+      "lastVideoUpdate": "2025-12-17T12:06:37.289Z"
     },
     "fe-2": {
       "id": "fe-2",
@@ -1661,7 +1676,12 @@
         "async",
         "core"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-12T09:07:04.187Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=e9fY_xlspUI",
+        "longVideo": "https://youtube.com/watch?v=j-z8flppvPs"
+      },
+      "lastVideoUpdate": "2025-12-17T12:12:45.821Z"
     },
     "fe-3": {
       "id": "fe-3",
@@ -1805,7 +1825,12 @@
         "concept",
         "risk"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.188Z"
+      "lastUpdated": "2025-12-12T09:07:04.188Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=LkuunG_GBfs",
+        "longVideo": "https://youtube.com/watch?v=NylI3ji-DBc"
+      },
+      "lastVideoUpdate": "2025-12-17T12:13:20.129Z"
     },
     "gh-59": {
       "id": "gh-59",
@@ -2126,7 +2151,12 @@
         "scale",
         "networking"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.188Z"
+      "lastUpdated": "2025-12-12T09:07:04.188Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=Zt4ItDjFibQ",
+        "longVideo": "https://youtube.com/watch?v=aKMLgFVxZYk"
+      },
+      "lastVideoUpdate": "2025-12-17T12:07:55.089Z"
     },
     "sd-2": {
       "id": "sd-2",
@@ -2140,7 +2170,12 @@
         "dist-sys",
         "caching"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.188Z"
+      "lastUpdated": "2025-12-12T09:07:04.188Z",
+      "videos": {
+        "shortVideo": "https://youtube.com/watch?v=p6wwj0ozifw",
+        "longVideo": "https://youtube.com/watch?v=eMHM1T1Jx8k"
+      },
+      "lastVideoUpdate": "2025-12-17T12:13:54.411Z"
     },
     "sd-3": {
       "id": "sd-3",
@@ -4729,5 +4764,5 @@
       "lastUpdated": "2025-12-17T04:54:23.754Z"
     }
   },
-  "lastUpdated": "2025-12-17T06:43:44.377Z"
+  "lastUpdated": "2025-12-17T12:13:54.416Z"
 }
