@@ -8,7 +8,7 @@ import {
   Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, 
   Star, AlertCircle, Sparkles, Plus, Server, Layers, Smartphone, Shield,
   Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText,
-  CheckCircle, Monitor, Zap, Gauge, Search, X
+  CheckCircle, Monitor, Zap, Gauge, Search, X, Rss
 } from 'lucide-react';
 import { SearchModal } from '../components/SearchModal';
 import { useProgress } from '../hooks/use-progress';
@@ -417,6 +417,16 @@ export default function Home() {
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Discuss
+          </a>
+          <span className="text-border hidden sm:inline">•</span>
+          <a 
+            href="/rss.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-1"
+            title="Subscribe to RSS Feed"
+          >
+            <Rss className="w-3 h-3" /> RSS
           </a>
         </div>
       </footer>

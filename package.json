@@ -29,7 +29,7 @@
   "scripts": {
     "dev": "vite dev --port 5001",
     "dev:server": "NODE_ENV=development tsx server/index.ts",
-    "build": "vite build",
+    "build": "node script/generate-rss.js && node script/generate-sitemap.js && vite build",
     "build:server": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",

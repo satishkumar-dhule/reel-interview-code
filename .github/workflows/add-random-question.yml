@@ -35,10 +35,13 @@ jobs:
         env:
           INPUT_QUESTION: ${{ inputs.question }}
 
+      - name: Regenerate RSS feed
+        run: node script/generate-rss.js
+
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet client/src/lib/questions/; then
+          if git diff --quiet client/src/lib/questions/ client/public/rss.xml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -49,7 +52,7 @@ jobs:
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git add client/src/lib/questions/
+          git add client/src/lib/questions/ client/public/rss.xml
           QUESTION="${{ inputs.question }}"
           TRUNCATED="${QUESTION:0:50}"
           git commit -m "🤖 Add question: ${TRUNCATED}..."

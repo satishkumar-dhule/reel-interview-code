@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Sparkles, Plus, RefreshCw, Rocket, Calendar,
-  ChevronDown, ChevronUp, Tag, Layers
+  ChevronDown, ChevronUp, Tag, Layers, Rss
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import changelogData from '../lib/questions/changelog.json';
@@ -202,7 +202,15 @@ export default function WhatsNew() {
               <h1 className="text-lg font-bold">
                 <span className="text-primary">&gt;</span> What's New
               </h1>
-              <div className="w-16" /> {/* Spacer for centering */}
+              <a
+                href="/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-widest bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 rounded transition-colors"
+                title="Subscribe to RSS Feed"
+              >
+                <Rss className="w-3.5 h-3.5" /> RSS
+              </a>
             </div>
           </div>
         </div>

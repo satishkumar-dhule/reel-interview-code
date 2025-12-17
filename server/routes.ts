@@ -8,6 +8,96 @@ import path from "path";
 const questionsPath = path.join(process.cwd(), "client/src/lib/questions");
 const questionsByChannel: Record<string, any[]> = {};
 
+// Load changelog for RSS feed
+function loadChangelog() {
+  try {
+    const changelogPath = path.join(questionsPath, "changelog.json");
+    return JSON.parse(fs.readFileSync(changelogPath, "utf-8"));
+  } catch {
+    return { entries: [], stats: {} };
+  }
+}
+
+// Load all questions for RSS
+function loadAllQuestions() {
+  try {
+    const allQuestionsPath = path.join(questionsPath, "all-questions.json");
+    const data = JSON.parse(fs.readFileSync(allQuestionsPath, "utf-8"));
+    return data.questions || {};
+  } catch {
+    return {};
+  }
+}
+
+// Generate RSS XML
+function generateRssFeed(baseUrl: string) {
+  const changelog = loadChangelog();
+  const allQuestions = loadAllQuestions();
+  
+  const escapeXml = (str: string) => 
+    str.replace(/&/g, '&amp;')
+       .replace(/</g, '&lt;')
+       .replace(/>/g, '&gt;')
+       .replace(/"/g, '&quot;')
+       .replace(/'/g, '&apos;');
+
+  const items = changelog.entries.slice(0, 20).map((entry: any) => {
+    const pubDate = new Date(entry.date).toUTCString();
+    const questionIds = entry.details?.questionIds || [];
+    
+    // Build description with question details
+    let description = escapeXml(entry.description);
+    if (questionIds.length > 0) {
+      const questionDetails = questionIds
+        .slice(0, 5)
+        .map((id: string) => {
+          const q = allQuestions[id];
+          return q ? `• ${escapeXml(q.question)}` : null;
+        })
+        .filter(Boolean)
+        .join('\n');
+      
+      if (questionDetails) {
+        description += `\n\nSample questions:\n${questionDetails}`;
+      }
+    }
+    
+    const channels = entry.details?.channels || [];
+    const channelTags = channels.slice(0, 5).map((c: string) => 
+      `<category>${escapeXml(c)}</category>`
+    ).join('\n      ');
+
+    return `
+    <item>
+      <title>${escapeXml(entry.title)}</title>
+      <description><![CDATA[${description}]]></description>
+      <pubDate>${pubDate}</pubDate>
+      <guid isPermaLink="false">${entry.date}-${entry.type}</guid>
+      <link>${baseUrl}/whats-new</link>
+      ${channelTags}
+    </item>`;
+  }).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Code Reels - Interview Questions</title>
+    <description>Daily AI-generated technical interview questions for system design, algorithms, frontend, backend, DevOps, and more.</description>
+    <link>${baseUrl}</link>
+    <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
+    <language>en-us</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <ttl>60</ttl>
+    <image>
+      <url>${baseUrl}/favicon.ico</url>
+      <title>Code Reels</title>
+      <link>${baseUrl}</link>
+    </image>
+    ${items}
+  </channel>
+</rss>`;
+}
+
 // Load all channel JSON files
 const channelFiles = ["algorithms", "database", "devops", "frontend", "sre", "system-design"];
 for (const channel of channelFiles) {
@@ -27,6 +117,23 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // RSS Feed endpoint
+  app.get("/rss.xml", (req, res) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers['x-forwarded-host'] || req.get('host');
+    const baseUrl = `${protocol}://${host}`;
+    
+    const rssFeed = generateRssFeed(baseUrl);
+    res.set('Content-Type', 'application/rss+xml; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+    res.send(rssFeed);
+  });
+
+  // Alternate RSS path
+  app.get("/feed", (req, res) => {
+    res.redirect(301, '/rss.xml');
+  });
+
   // Get all channels metadata
   app.get("/api/channels", (_req, res) => {
     const channels = Object.keys(questionsByChannel).map(channelId => ({

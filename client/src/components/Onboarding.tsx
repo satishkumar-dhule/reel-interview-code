@@ -4,7 +4,7 @@ import { rolesConfig, getRecommendedChannels } from '../lib/channels-config';
 import { useUserPreferences } from '../context/UserPreferencesContext';
 import { 
   Layout, Server, Layers, Smartphone, Activity, Shield, 
-  Cpu, Users, Database, Brain, Workflow, Box, Check, ChevronRight, Sparkles
+  Cpu, Users, Database, Brain, Workflow, Box, Check, ChevronRight, Sparkles, X
 } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -24,12 +24,15 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export function Onboarding() {
-  const { setRole, skipOnboarding } = useUserPreferences();
+  const { skipOnboarding } = useUserPreferences();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [step, setStep] = useState<'role' | 'preview'>('role');
+  const [excludedChannels, setExcludedChannels] = useState<Set<string>>(new Set());
 
   const handleRoleSelect = (roleId: string) => {
     setSelectedRole(roleId);
+    // Reset excluded channels when role changes
+    setExcludedChannels(new Set());
   };
 
   const handleContinue = () => {
@@ -37,12 +40,39 @@ export function Onboarding() {
       if (step === 'role') {
         setStep('preview');
       } else {
-        setRole(selectedRole);
+        // Save preferences with excluded channels filtered out
+        const recommended = getRecommendedChannels(selectedRole);
+        const selectedChannels = recommended
+          .filter(c => !excludedChannels.has(c.id))
+          .map(c => c.id);
+        
+        // Save to localStorage directly
+        const prefs = {
+          role: selectedRole,
+          subscribedChannels: selectedChannels,
+          onboardingComplete: true,
+          createdAt: new Date().toISOString()
+        };
+        localStorage.setItem('user-preferences', JSON.stringify(prefs));
+        window.location.href = '/';
       }
     }
   };
 
+  const toggleChannel = (channelId: string) => {
+    setExcludedChannels(prev => {
+      const next = new Set(prev);
+      if (next.has(channelId)) {
+        next.delete(channelId);
+      } else {
+        next.add(channelId);
+      }
+      return next;
+    });
+  };
+
   const recommendedChannels = selectedRole ? getRecommendedChannels(selectedRole) : [];
+  const activeChannels = recommendedChannels.filter(c => !excludedChannels.has(c.id));
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 font-mono">
@@ -134,25 +164,66 @@ export function Onboarding() {
               </h2>
               <p className="text-white/60 text-sm">
                 Based on your role, we've selected {recommendedChannels.length} channels for you.
-                You can always add or remove channels later.
+                <br />
+                <span className="text-white/40">Click on any channel to include or exclude it.</span>
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-              {recommendedChannels.map(channel => (
-                <div
-                  key={channel.id}
-                  className="p-4 border border-white/20 rounded-lg bg-white/5"
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+              {recommendedChannels.map(channel => {
+                const isExcluded = excludedChannels.has(channel.id);
+                return (
+                  <button
+                    key={channel.id}
+                    type="button"
+                    onClick={() => toggleChannel(channel.id)}
+                    className={`
+                      p-4 border rounded-lg text-left transition-all relative group
+                      ${isExcluded 
+                        ? 'border-white/10 bg-white/5 opacity-50' 
+                        : 'border-primary/50 bg-primary/10 ring-1 ring-primary/30'
+                      }
+                    `}
+                  >
+                    {/* Toggle indicator */}
+                    <div className={`
+                      absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center transition-all
+                      ${isExcluded 
+                        ? 'bg-white/10 text-white/30' 
+                        : 'bg-primary text-black'
+                      }
+                    `}>
+                      {isExcluded ? <X className="w-3 h-3" /> : <Check className="w-3 h-3" />}
+                    </div>
+                    
+                    <div className={`mb-2 ${isExcluded ? 'text-white/30' : channel.color}`}>
+                      {iconMap[channel.icon] || <Cpu className="w-5 h-5" />}
+                    </div>
+                    <div className={`font-bold text-sm ${isExcluded ? 'text-white/40' : ''}`}>
+                      {channel.name}
+                    </div>
+                    <div className="text-[10px] text-white/50 line-clamp-2 mt-1">
+                      {channel.description}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Selection summary */}
+            <div className="text-center mb-6 text-sm">
+              <span className="text-white/60">Selected: </span>
+              <span className="text-primary font-bold">{activeChannels.length}</span>
+              <span className="text-white/60"> of {recommendedChannels.length} channels</span>
+              {excludedChannels.size > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setExcludedChannels(new Set())}
+                  className="ml-3 text-xs text-white/40 hover:text-white underline"
                 >
-                  <div className={`mb-2 ${channel.color}`}>
-                    {iconMap[channel.icon] || <Cpu className="w-5 h-5" />}
-                  </div>
-                  <div className="font-bold text-sm">{channel.name}</div>
-                  <div className="text-[10px] text-white/50 line-clamp-2 mt-1">
-                    {channel.description}
-                  </div>
-                </div>
-              ))}
+                  Reset selection
+                </button>
+              )}
             </div>
 
             <div className="flex justify-center gap-4">
@@ -166,14 +237,15 @@ export function Onboarding() {
               <button
                 type="button"
                 data-testid="start-learning-btn"
-                onClick={() => {
-                  if (selectedRole) {
-                    setRole(selectedRole);
-                    // Force reload to apply preferences
-                    window.location.href = '/';
+                onClick={handleContinue}
+                disabled={activeChannels.length === 0}
+                className={`
+                  px-6 py-2 text-sm font-bold rounded flex items-center gap-2 transition-all
+                  ${activeChannels.length > 0
+                    ? 'bg-primary text-black hover:bg-primary/90'
+                    : 'bg-white/10 text-white/30 cursor-not-allowed'
                   }
-                }}
-                className="px-6 py-2 text-sm font-bold rounded bg-primary text-black hover:bg-primary/90 flex items-center gap-2"
+                `}
               >
                 Start Learning <ChevronRight className="w-4 h-4" />
               </button>
