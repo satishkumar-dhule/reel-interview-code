@@ -108,7 +108,7 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
     }
   };
 
-  const effectiveMermaidTheme = selectedMermaidTheme || appThemeToMermaid[appTheme] || 'dark';
+  const effectiveMermaidTheme = selectedMermaidTheme || appThemeToMermaid[appTheme] || 'forest';
 
   const resetView = useCallback(() => {
     setZoom(1);

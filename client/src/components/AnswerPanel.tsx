@@ -11,6 +11,17 @@ import {
 } from 'lucide-react';
 import type { Question } from '../lib/data';
 
+// Check if mermaid diagram content is valid (non-empty and has valid structure)
+function isValidMermaidDiagram(diagram: string | undefined | null): boolean {
+  if (!diagram || typeof diagram !== 'string') return false;
+  const trimmed = diagram.trim();
+  if (!trimmed || trimmed.length < 10) return false;
+  // Check for common mermaid diagram types
+  const validStarts = ['graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'journey', 'gantt', 'pie', 'gitGraph', 'mindmap', 'timeline', 'quadrantChart', 'sankey', 'xychart', 'block'];
+  const firstLine = trimmed.split('\n')[0].toLowerCase().trim();
+  return validStarts.some(start => firstLine.startsWith(start.toLowerCase()));
+}
+
 interface AnswerPanelProps {
   question: Question;
   isCompleted: boolean;
@@ -156,6 +167,10 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             }
             
             if (language === 'mermaid') {
+              // Skip invalid mermaid diagrams
+              if (!isValidMermaidDiagram(codeContent)) {
+                return null;
+              }
               return (
                 <div className="my-6 sm:my-8 w-full clear-both mb-8">
                   <EnhancedMermaid chart={codeContent} />
@@ -301,8 +316,8 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </CollapsibleSection>
         )}
 
-        {/* Diagram Section - Collapsible, compact on mobile */}
-        {question.diagram && (
+        {/* Diagram Section - Collapsible, compact on mobile, skip if invalid */}
+        {isValidMermaidDiagram(question.diagram) && (
           <CollapsibleSection
             id="diagram"
             title="Diagram"
@@ -311,7 +326,7 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             onVisibilityChange={handleVisibilityChange}
           >
             <div className="w-full">
-              <EnhancedMermaid chart={question.diagram} />
+              <EnhancedMermaid chart={question.diagram!} />
             </div>
           </CollapsibleSection>
         )}
