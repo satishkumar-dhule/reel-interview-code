@@ -2,10 +2,10 @@
   "questions": {
     "al-1": {
       "id": "al-1",
-      "question": "When would you use a Linked List over an Array?",
-      "answer": "Linked Lists excel at insertions/deletions, Arrays excel at random access.",
-      "explanation": "**Array**:\n- Access: O(1) (Direct memory address)\n- Insert/Delete: O(n) (Shift elements)\n- Memory: Contiguous\n\n**Linked List**:\n- Access: O(n) (Traversal)\n- Insert/Delete: O(1) (Change pointer - if you have the node)\n- Memory: Scattered (Heap)\n\n**Use List when**: Implementing Queues, Stacks, or when memory is fragmented.",
-      "diagram": "\ngraph LR\n    subgraph Array\n    A1[0] --- A2[1] --- A3[2] --- A4[3]\n    end\n    subgraph LinkedList\n    L1[Node] --> L2[Node] --> L3[Node]\n    end\n",
+      "question": "When would you choose a Linked List over an Array and why?",
+      "answer": "Linked Lists excel at frequent insertions/deletions, Arrays excel at O(1) random access and cache locality.",
+      "explanation": "## Why Asked\nTests understanding of data structure trade-offs and memory management in real-world scenarios.\n## Key Concepts\nTime complexity, memory allocation, cache performance, pointer manipulation.\n## Code Example\n```\n// Insert at head: O(1) for LL vs O(n) for Array\nnode.next = head;\nhead = node;\n```\n## Follow-up Questions\nHow would you implement a doubly linked list? What are memory overhead differences?",
+      "diagram": "flowchart TD\n  A[Choose Data Structure] --> B{Need frequent insertions/deletions?}\n  B -->|Yes| C[Linked List]\n  B -->|No| D[Array]",
       "difficulty": "beginner",
       "tags": [
         "struct",
@@ -18,13 +18,12 @@
         "longVideo": "https://www.youtube.com/watch?v=odW9FU8jPRQ"
       },
       "companies": [
-        "Google",
         "Amazon",
-        "Meta",
-        "Microsoft",
-        "Apple"
+        "Google",
+        "Meta"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.185Z"
+      "lastUpdated": "2025-12-17T06:34:42.916Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-2": {
       "id": "al-2",
@@ -38,21 +37,33 @@
         "recursion",
         "complexity"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.185Z"
+      "lastUpdated": "2025-12-12T09:07:04.185Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-3": {
       "id": "al-3",
-      "question": "What is Dynamic Programming? How is it different from Recursion?",
-      "answer": "DP is Recursion + Optimization (Memoization/Tabulation).",
-      "explanation": "Recursion solves subproblems blindly (potentially repeating work).\n\n**DP** stores the result of subproblems so you never solve the same problem twice.\n\n**Example**: Fibonacci.\n- Recursion: `fib(n-1) + fib(n-2)` -> O(2^n)\n- DP: Store `fib` array -> O(n)\n\n**Two Approaches**:\n1. Top-Down (Memoization)\n2. Bottom-Up (Tabulation)",
-      "diagram": "\ngraph TD\n    P[Problem] --> S1[Subproblem 1]\n    P --> S2[Subproblem 2]\n    S1 --> C[(Cache)]\n    S2 --> C\n    C --> R[Result]\n",
+      "question": "What is Dynamic Programming and how does it differ from plain recursion? When would you choose one over the other?",
+      "answer": "DP optimizes recursion by storing results (memoization/tabulation) to avoid redundant computations, trading space for time.",
+      "explanation": "## Why Asked\nTests understanding of algorithmic optimization and problem-solving approaches\n## Key Concepts\n- Overlapping subproblems\n- Optimal substructure\n- Memoization vs tabulation\n- Time/space complexity trade-offs\n## Code Example\n```\n// Recursion: O(2^n)\nfunction fib(n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n}\n\n// DP: O(n)\nfunction fibDP(n) {\n  const dp = [0, 1];\n  for (let i = 2; i <= n; i++) {\n    dp[i] = dp[i-1] + dp[i-2];\n  }\n  return dp[n];\n}\n```\n## Follow-up Questions\n- When would you use memoization vs tabulation?\n- What's the space complexity of bottom-up DP?\n- Can every recursive solution be converted to DP?",
+      "diagram": "flowchart TD\n  A[Problem] --> B{Has overlapping subproblems?}\n  B -->|No| C[Use plain recursion]\n  B -->|Yes| D{Has optimal substructure?}\n  D -->|No| E[Use other approaches]\n  D -->|Yes| F[Use Dynamic Programming]\n  F --> G{Implementation choice}\n  G --> H[Top-down memoization]\n  G --> I[Bottom-up tabulation]",
       "difficulty": "advanced",
       "tags": [
         "dp",
         "optimization",
         "theory"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.185Z"
+      "lastUpdated": "2025-12-17T06:38:27.076Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "al-152": {
       "id": "al-152",
@@ -65,7 +76,8 @@
         "dp",
         "optimization"
       ],
-      "lastUpdated": "2025-12-13T01:07:52.426Z"
+      "lastUpdated": "2025-12-13T01:07:52.426Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-163": {
       "id": "al-163",
@@ -78,7 +90,8 @@
         "sort",
         "complexity"
       ],
-      "lastUpdated": "2025-12-13T16:57:00.393Z"
+      "lastUpdated": "2025-12-13T16:57:00.393Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-164": {
       "id": "al-164",
@@ -91,7 +104,8 @@
         "dp",
         "optimization"
       ],
-      "lastUpdated": "2025-12-15T06:36:33.514Z"
+      "lastUpdated": "2025-12-15T06:36:33.514Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-165": {
       "id": "al-165",
@@ -104,7 +118,8 @@
         "struct",
         "basics"
       ],
-      "lastUpdated": "2025-12-13T16:59:48.670Z"
+      "lastUpdated": "2025-12-13T16:59:48.670Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-166": {
       "id": "al-166",
@@ -117,7 +132,8 @@
         "dp",
         "optimization"
       ],
-      "lastUpdated": "2025-12-13T16:59:58.522Z"
+      "lastUpdated": "2025-12-13T16:59:58.522Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-167": {
       "id": "al-167",
@@ -130,7 +146,8 @@
         "dp",
         "optimization"
       ],
-      "lastUpdated": "2025-12-13T17:00:15.427Z"
+      "lastUpdated": "2025-12-13T17:00:15.427Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "al-170": {
       "id": "al-170",
@@ -143,26 +160,36 @@
         "dp",
         "optimization"
       ],
-      "lastUpdated": "2025-12-14T01:17:23.338Z"
+      "lastUpdated": "2025-12-14T01:17:23.338Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "db-1": {
       "id": "db-1",
-      "question": "What is the difference between Clustered and Non-Clustered Indexes?",
-      "answer": "Clustered Index defines the physical order of data. Non-Clustered is a separate lookup structure.",
-      "explanation": "**Clustered Index**:\n- Only 1 per table (usually Primary Key).\n- Leaf nodes contain the ACTUAL data rows.\n- Faster for range queries.\n\n**Non-Clustered Index**:\n- Multiple allowed.\n- Leaf nodes contain pointers to the data (row ID or clustered key).\n- Requires 'Bookmark Lookup' (extra hop) to get full data.",
-      "diagram": "graph TD\n    subgraph Clustered\n    Root1 --> Data[\"Data Pages<br/>Sorted\"]\n    end\n    subgraph NonClustered\n    Root2 --> Ptr[Pointers]\n    Ptr -.-> Data\n    end",
+      "question": "What is the difference between Clustered and Non-Clustered Indexes and when would you use each?",
+      "answer": "Clustered Index determines physical data order (1 per table). Non-Clustered is separate lookup structure (many per table).",
+      "explanation": "## Why Asked\nTests database indexing fundamentals and performance optimization skills crucial for data-intensive applications\n## Key Concepts\nPhysical vs logical data organization, storage impact, query performance trade-offs\n## Code Example\n```\n-- Clustered (default on primary key)\nCREATE TABLE users (\n  id INT PRIMARY KEY, -- clustered index\n  name VARCHAR(100)\n);\n\n-- Non-clustered\nCREATE INDEX idx_users_email ON users(email);\n```\n## Follow-up Questions\nHow does index fragmentation affect performance? When would you create a covering index?",
+      "diagram": "flowchart TD\n  A[Query] --> B{Index Type?}\n  B -->|Clustered| C[Direct data access]\n  B -->|Non-Clustered| D[Pointer lookup] --> C\n  C --> E[Result]",
       "difficulty": "beginner",
       "tags": [
         "sql",
         "indexing",
         "perf"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.186Z",
+      "lastUpdated": "2025-12-17T06:35:41.001Z",
       "videos": {
         "shortVideo": "https://youtube.com/watch?v=BxAj3bl00-o",
         "longVideo": "https://youtube.com/watch?v=ITcOiLSfVJQ"
       },
-      "lastVideoUpdate": "2025-12-16T15:11:34.708Z"
+      "lastVideoUpdate": "2025-12-16T15:11:34.708Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z",
+      "sourceUrl": null,
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix"
+      ]
     },
     "db-2": {
       "id": "db-2",
@@ -176,7 +203,8 @@
         "transactions",
         "theory"
       ],
-      "lastUpdated": "2025-12-12T09:08:19.686Z"
+      "lastUpdated": "2025-12-12T09:08:19.686Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "gh-67": {
       "id": "gh-67",
@@ -189,7 +217,8 @@
         "db",
         "devops"
       ],
-      "lastUpdated": "2025-12-12T09:11:16.660Z"
+      "lastUpdated": "2025-12-12T09:11:16.660Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-125": {
       "id": "da-125",
@@ -202,7 +231,8 @@
         "sql",
         "indexing"
       ],
-      "lastUpdated": "2025-12-12T09:11:28.015Z"
+      "lastUpdated": "2025-12-12T09:11:28.015Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-128": {
       "id": "da-128",
@@ -215,7 +245,8 @@
         "acid",
         "transactions"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.186Z"
+      "lastUpdated": "2025-12-12T09:07:04.186Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-129": {
       "id": "da-129",
@@ -228,7 +259,8 @@
         "nosql",
         "mongodb"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.186Z"
+      "lastUpdated": "2025-12-12T09:07:04.186Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-134": {
       "id": "da-134",
@@ -241,7 +273,8 @@
         "acid",
         "transactions"
       ],
-      "lastUpdated": "2025-12-12T09:14:57.084Z"
+      "lastUpdated": "2025-12-12T09:14:57.084Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-145": {
       "id": "da-145",
@@ -254,7 +287,8 @@
         "sql",
         "indexing"
       ],
-      "lastUpdated": "2025-12-12T10:05:38.475Z"
+      "lastUpdated": "2025-12-12T10:05:38.475Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-156": {
       "id": "da-156",
@@ -267,7 +301,8 @@
         "sql",
         "indexing"
       ],
-      "lastUpdated": "2025-12-13T01:08:56.357Z"
+      "lastUpdated": "2025-12-13T01:08:56.357Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-172": {
       "id": "da-172",
@@ -280,7 +315,8 @@
         "acid",
         "transactions"
       ],
-      "lastUpdated": "2025-12-14T01:18:08.909Z"
+      "lastUpdated": "2025-12-14T01:18:08.909Z",
+      "lastRemapped": "2025-12-17T06:34:21.300Z"
     },
     "da-170": {
       "id": "da-170",
@@ -312,17 +348,32 @@
     },
     "do-3": {
       "id": "do-3",
-      "question": "What is Infrastructure as Code (IaC)? Why use Terraform?",
-      "answer": "Managing infrastructure through code (git) rather than manual console clicks.",
-      "explanation": "**Benefits**:\n- **Reproducibility**: Same env every time.\n- **Version Control**: Git history of infra changes.\n- **Automation**: One click deploy.\n\n**Terraform vs Ansible**:\n- Terraform: Provisioning (Building the server/VPC).\n- Ansible: Configuration (Installing software on the server).",
-      "diagram": "\ngraph LR\n    Code[IaC Code] --> Git[Git Repo]\n    Git --> TF[Terraform]\n    TF --> Cloud[Cloud Infra]\n",
+      "question": "What is Infrastructure as Code (IaC) and why is Terraform preferred over manual infrastructure management?",
+      "answer": "Infrastructure as Code automates infrastructure provisioning through machine-readable definition files, enabling version control, repeatability, and collaboration. Terraform provides cloud-agnostic de",
+      "explanation": "## Why Asked\nTests understanding of modern DevOps practices and infrastructure automation principles. Essential for SRE/DevOps roles where infrastructure scalability and reliability are critical.\n\n## Key Concepts\n- Declarative vs imperative infrastructure management\n- Infrastructure reproducibility and version control\n- Terraform state management and remote backends\n- Resource dependencies and graph-based execution\n- Multi-cloud provider support\n- Infrastructure drift detection\n\n## Code Example\n```\n# main.tf - EC2 instance with security group\nresource \"aws_instance\" \"web\" {\n  ami           = \"ami-12345678\"\n  instance_type = \"t3.micro\"\n  \n  tags = {\n    Name = \"WebServer\"\n    Environment = \"production\"\n  }\n}\n\nresource \"aws_security_group\" \"web\" {\n  name        = \"web-sg\"\n  description = \"Allow HTTP traffic\"\n  \n  ingress {\n    from_port   = 80\n    to_port     = 80\n    protocol    = \"tcp\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}\n```\n\n## Follow-up Questions\n- How do you handle Terraform state in team environments?\n- What's the difference between Terraform modules and resources?\n- How do you manage secrets in Terraform?\n- When would you use Terraform vs CloudFormation vs ARM templates?\n- How do you handle blue-green deployments with Terraform?",
+      "diagram": "flowchart TD\n  A[Code Definition] --> B[Terraform Plan]\n  B --> C[Approval]\n  C --> D[Terraform Apply]\n  D --> E[Infrastructure Created]\n  E --> F[State File Updated]\n  F --> G[Drift Detection]\n  G --> H{Changes Needed?}\n  H -->|Yes| A\n  H -->|No| G",
       "difficulty": "beginner",
       "tags": [
         "infra",
         "automation",
         "terraform"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:35:21.098Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Stripe",
+        "Uber"
+      ]
     },
     "gh-1": {
       "id": "gh-1",
@@ -380,16 +431,26 @@
     },
     "gh-5": {
       "id": "gh-5",
-      "question": "What is the difference between Docker Image and Docker Container?",
-      "answer": "Docker Image is a read-only template/blueprint, while Docker Container is a running instance of that image.",
-      "explanation": "- **Docker Image:** A read-only template containing application code, runtime, libraries, dependencies, and system tools. Images are built from Dockerfiles and stored in registries. They serve as blueprints for creating containers.\n\n- **Docker Container:** A runnable instance of an image. Containers are isolated processes that can be created, started, stopped, and deleted. Multiple containers can run from the same image simultaneously.\n\n- **Key Differences:**\n  - Images are immutable templates; containers are mutable runtime instances\n  - Images are stored; containers are executed\n  - One image can spawn multiple containers\n  - Containers have their own filesystem layer on top of the image",
-      "diagram": "graph TD\n    A[Dockerfile] --> B[Docker Image]\n    B --> C[Container 1]\n    B --> D[Container 2]\n    B --> E[Container 3]\n    F[Registry] --> B\n    C --> G[Running Process]\n    D --> H[Running Process]\n    E --> I[Running Process]",
+      "question": "What is the difference between Docker Image and Docker Container, and how do they interact in the container lifecycle?",
+      "answer": "Docker Image is a read-only template containing application layers, while Docker Container is a writable, running instance created from that image.",
+      "explanation": "## Why Asked\nTests understanding of Docker fundamentals and containerization concepts\n## Key Concepts\nImage layers, container lifecycle, immutability vs runtime state\n## Code Example\n```\n# Build image\ndocker build -t app:latest .\n# Run container\ndocker run -d app:latest\n# List running containers\ndocker ps\n```\n## Follow-up Questions\nHow do you share images between environments? What happens when you modify a container?",
+      "diagram": "flowchart TD\n  A[Dockerfile] --> B[Build Image]\n  B --> C[Push to Registry]\n  C --> D[Pull Image]\n  D --> E[Run Container]\n  E --> F[Container Runtime]",
       "difficulty": "beginner",
       "tags": [
         "docker",
         "containers"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:38:41.303Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-6": {
       "id": "gh-6",
@@ -445,16 +506,28 @@
     },
     "gh-10": {
       "id": "gh-10",
-      "question": "What is CI/CD Pipeline?",
-      "answer": "A CI/CD Pipeline is a series of steps that must be performed in order to deliver a new version of software. A pipeline typically includes stages for:",
-      "explanation": "A CI/CD Pipeline is a series of steps that must be performed in order to deliver a new version of software. A pipeline typically includes stages for:\n\n1. Building the code\n2. Running automated tests\n3. Deploying to staging/production environments\n\nExample of a basic Jenkins Pipeline:\n```groovy\npipeline {\nagent any\nstages {\nstage('Build') {\nsteps {\nsh 'npm install'\nsh 'npm run build'\n}\n}\nstage('Test') {\nsteps {\nsh 'npm run test'\n}\n}\nstage('Deploy') {\nsteps {\nsh './deploy.sh'\n}\n}\n}\n}\n```",
-      "diagram": "\ngraph LR\n    Build[Build] --> Test[Test]\n    Test --> Stage[Staging]\n    Stage --> Prod[Production]\n",
+      "question": "What is a CI/CD pipeline and how does it automate software delivery?",
+      "answer": "A CI/CD pipeline automates building, testing, and deploying code changes through stages like commit, build, test, and deploy.",
+      "explanation": "## Why Asked\nTests understanding of modern DevOps practices and automation fundamentals\n## Key Concepts\nContinuous Integration merges code frequently, Continuous Deployment releases automatically, Pipeline stages include build, test, deploy, Automation reduces manual errors\n## Code Example\n```\nname: CI/CD Pipeline\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v2\n      - name: Run tests\n        run: npm test\n      - name: Deploy\n        run: npm run deploy\n```\n## Follow-up Questions\nHow do you handle failed deployments? What monitoring tools do you use? How do you rollback changes?",
+      "diagram": "flowchart TD\n  A[Code Commit] --> B[Build]\n  B --> C[Unit Tests]\n  C --> D[Integration Tests]\n  D --> E[Staging Deploy]\n  E --> F{Manual Approval?}\n  F -->|Yes| G[Production Deploy]\n  F -->|No| H[Auto Deploy]\n  G --> I[Monitoring]\n  H --> I",
       "difficulty": "beginner",
       "tags": [
         "cicd",
         "automation"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:35:50.553Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix"
+      ]
     },
     "gh-11": {
       "id": "gh-11",
@@ -471,10 +544,10 @@
     },
     "gh-12": {
       "id": "gh-12",
-      "question": "What is cloud computing and what are its key service models?",
-      "answer": "Cloud computing delivers computing services over the internet, offering on-demand access to servers, storage, databases, and software.",
-      "explanation": "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software, analytics, and intelligence—over the Internet (\"the cloud\") to offer faster innovation, flexible resources, and economies of scale.\n\n**Key Benefits:**\n• **Cost Efficiency** - Pay only for what you use, no upfront infrastructure costs\n• **Scalability** - Easily scale resources up or down based on demand\n• **Accessibility** - Access services from anywhere with internet connection\n• **Reliability** - Built-in redundancy and disaster recovery\n\n**Service Models:**\n• **IaaS** (Infrastructure as a Service) - Virtual machines, storage, networks\n• **PaaS** (Platform as a Service) - Development platforms and tools\n• **SaaS** (Software as a Service) - Ready-to-use applications",
-      "diagram": "graph TD\n    Cloud[Cloud Computing] --> IaaS[Infrastructure as a Service]\n    Cloud --> PaaS[Platform as a Service]\n    Cloud --> SaaS[Software as a Service]\n    IaaS --> VM[Virtual Machines]\n    IaaS --> Storage[(Storage)]\n    IaaS --> Network[Networking]\n    PaaS --> DevTools[Development Tools]\n    PaaS --> Runtime[Runtime Environment]\n    SaaS --> Email[Email Services]\n    SaaS --> CRM[CRM Applications]",
+      "question": "What are the three main service models of cloud computing and how do they differ?",
+      "answer": "Cloud computing has three service models: IaaS provides infrastructure, PaaS offers platforms for development, and SaaS delivers ready-to-use software applications.",
+      "explanation": "## Why Asked\nAssesses fundamental cloud knowledge and understanding of service hierarchy\n## Key Concepts\nIaaS (Infrastructure), PaaS (Platform), SaaS (Software), resource abstraction levels\n## Code Example\n```\n# AWS Service Models Examples\nIaaS: EC2 instances, S3 storage\nPaaS: Elastic Beanstalk, Lambda\nSaaS: AWS WorkMail, Chime\n```\n## Follow-up Questions\nWhen would you choose IaaS vs PaaS?\nWhat are the cost implications of each model?",
+      "diagram": "flowchart TD\n    A[Cloud Computing] --> B[IaaS]\n    A --> C[PaaS]\n    A --> D[SaaS]\n    B --> E[Virtual Machines]\n    B --> F[Storage]\n    C --> G[Runtime Environment]\n    C --> H[Development Tools]\n    D --> I[Applications]\n    D --> J[User Interface]",
       "difficulty": "beginner",
       "tags": [
         "cloud",
@@ -482,7 +555,17 @@
         "azure",
         "gcp"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:37:04.564Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-13": {
       "id": "gh-13",
@@ -501,10 +584,10 @@
     },
     "gh-14": {
       "id": "gh-14",
-      "question": "What are the core service categories in Microsoft Azure and how do they work together to support cloud applications?",
-      "answer": "Azure provides compute, storage, networking, and database services that integrate to build scalable cloud solutions.",
-      "explanation": "Microsoft Azure is a comprehensive cloud computing platform offering multiple service categories:\n\n**Compute Services:**\n- Virtual Machines - IaaS for custom OS environments\n- App Service - PaaS for web applications\n- Azure Functions - Serverless compute for event-driven workloads\n- Container Instances - Containerized application hosting\n\n**Storage Services:**\n- Blob Storage - Object storage for unstructured data\n- File Storage - Managed file shares\n- Queue Storage - Message queuing service\n- Table Storage - NoSQL key-value store\n\n**Networking Services:**\n- Virtual Network - Isolated network environments\n- Load Balancer - Traffic distribution\n- Application Gateway - Web traffic load balancer with SSL termination\n- VPN Gateway - Secure connections to on-premises\n\n**Database Services:**\n- SQL Database - Managed relational database\n- Cosmos DB - Multi-model NoSQL database\n- Redis Cache - In-memory data store\n\nThese services integrate seamlessly, allowing applications to scale horizontally across regions while maintaining security and performance.",
-      "diagram": "graph TD\n    Azure[Microsoft Azure]\n    Azure --> Compute[Compute Services]\n    Azure --> Storage[Storage Services]\n    Azure --> Network[Networking]\n    Azure --> Database[Database Services]\n    \n    Compute --> VM[Virtual Machines]\n    Compute --> AppSvc[App Service]\n    Compute --> Functions[Azure Functions]\n    \n    Storage --> Blob[Blob Storage]\n    Storage --> Files[File Storage]\n    Storage --> Queue[Queue Storage]\n    \n    Network --> VNet[Virtual Network]\n    Network --> LB[Load Balancer]\n    Network --> Gateway[App Gateway]\n    \n    Database --> SQL[SQL Database]\n    Database --> Cosmos[Cosmos DB]\n    Database --> Redis[Redis Cache]",
+      "question": "How would you design a scalable cloud platform architecture that integrates compute, storage, networking, and database services?",
+      "answer": "Design modular microservices with load balancers, auto-scaling groups, distributed caching, and managed databases for high availability.",
+      "explanation": "## Why Asked\nTests system design skills and cloud architecture understanding\n## Key Concepts\nMicroservices, load balancing, auto-scaling, distributed systems\n## Code Example\n```\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: webapp\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: webapp\n```\n## Follow-up Questions\nHow do you handle failover? What about data consistency?",
+      "diagram": "flowchart TD\n  A[Client Request] --> B[Load Balancer]\n  B --> C[Compute Services]\n  C --> D[Database Layer]\n  D --> E[Storage Backend]",
       "difficulty": "beginner",
       "tags": [
         "cloud",
@@ -512,7 +595,17 @@
         "azure",
         "gcp"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:34:27.611Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-15": {
       "id": "gh-15",
@@ -724,15 +817,25 @@
     "gh-35": {
       "id": "gh-35",
       "question": "How do Backup and Disaster Recovery strategies ensure business continuity after system failures?",
-      "answer": "BDR combines automated data backups with failover systems to restore operations quickly after disasters.",
-      "explanation": "Backup and Disaster Recovery (BDR) is a comprehensive strategy that protects organizations from data loss and system downtime through coordinated backup and recovery processes.\n\n## Key Components\n\n### 1. **Data Backup**\n- **Regular backups**: Automated daily/weekly/monthly schedules\n- **Multiple locations**: On-site, off-site, and cloud storage\n- **Backup types**: Full, incremental, and differential backups\n- **Retention policies**: Short-term and long-term data preservation\n\n### 2. **Disaster Recovery**\n- **Recovery Time Objective (RTO)**: Maximum acceptable downtime\n- **Recovery Point Objective (RPO)**: Maximum data loss tolerance\n- **Failover systems**: Hot, warm, and cold standby sites\n- **Recovery procedures**: Step-by-step restoration processes\n\n## Implementation Strategy\n\n```yaml\n# Example BDR Configuration\nbackup_strategy:\n  schedule: \"daily at 2 AM\"\n  retention: \"30 days daily, 12 months weekly\"\n  locations: [\"local\", \"cloud\", \"offsite\"]\n  \ndisaster_recovery:\n  rto: \"4 hours\"\n  rpo: \"1 hour\"\n  failover_type: \"warm_standby\"\n  testing_frequency: \"quarterly\"\n```\n\n## Best Practices\n- **3-2-1 Rule**: 3 copies, 2 different media, 1 off-site location\n- **Regular testing**: Validate backup integrity and recovery procedures\n- **Documentation**: Maintain detailed runbooks for disaster scenarios\n- **Automation**: Reduce human error in backup and recovery processes",
-      "diagram": "graph TD\n    A[Production Systems] --> B[Automated Backups]\n    B --> C[Local Storage]\n    B --> D[Cloud Storage]\n    B --> E[Offsite Storage]\n    \n    F[Disaster Event] --> G[Failover Trigger]\n    G --> H[Recovery Procedures]\n    H --> I[Restore from Backups]\n    I --> J[Systems Operational]\n    \n    K[Regular Testing] --> L[Backup Validation]\n    L --> M[Recovery Drills]\n    M --> N[Process Improvement]\n    \n    style A fill:#e1f5fe\n    style J fill:#c8e6c9\n    style F fill:#ffebee\n    style G fill:#ffcdd2",
+      "answer": "BDR combines automated data backups with failover systems to restore operations quickly after disasters while maintaining data integrity and minimizing downtime.",
+      "explanation": "## Why Asked\nTests understanding of critical infrastructure resilience and operational continuity planning\n## Key Concepts\n- RTO/RPO metrics\n- Automated backup systems\n- Failover mechanisms\n- Data integrity verification\n- Business continuity planning\n## Code Example\n```\n// Backup verification script\nconst verifyBackup = async (backupId) => {\n  const integrity = await checksum(backupId);\n  const restore = await testRestore(backupId);\n  return { integrity, restoreTime };\n};\n```\n## Follow-up Questions\n- What's your approach to determining RTO/RPO?\n- How do you test disaster recovery plans?\n- What monitoring tools do you use for backup systems?",
+      "diagram": "flowchart TD\n  A[System Failure] --> B[Detect Incident]\n  B --> C[Activate BDR Plan]\n  C --> D[Initiate Failover]\n  D --> E[Restore from Backup]\n  E --> F[Verify Systems]\n  F --> G[Resume Operations]",
       "difficulty": "beginner",
       "tags": [
         "backup",
         "dr"
       ],
-      "lastUpdated": "2025-12-13T06:29:40.130Z"
+      "lastUpdated": "2025-12-17T06:39:47.878Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-36": {
       "id": "gh-36",
@@ -801,16 +904,26 @@
     },
     "gh-41": {
       "id": "gh-41",
-      "question": "What are the different types of performance testing and when would you use each?",
-      "answer": "Load, stress, spike, volume, endurance, and scalability testing - each validates different performance aspects under varying conditions.",
-      "explanation": "Performance testing encompasses several specialized types:\n\n• **Load Testing** - Validates system behavior under expected user load to ensure it meets performance requirements\n• **Stress Testing** - Pushes system beyond normal capacity to identify breaking points and failure modes\n• **Spike Testing** - Tests sudden load increases to verify system handles traffic spikes gracefully\n• **Volume Testing** - Validates performance with large amounts of data to identify database bottlenecks\n• **Endurance Testing** - Runs extended tests to detect memory leaks and resource degradation over time\n• **Scalability Testing** - Determines system's ability to scale up/down with varying loads\n\nExample JMeter configuration:\n```xml\n<ThreadGroup>\n  <stringProp name=\"ThreadGroup.num_threads\">100</stringProp>\n  <stringProp name=\"ThreadGroup.ramp_time\">60</stringProp>\n  <stringProp name=\"ThreadGroup.duration\">300</stringProp>\n</ThreadGroup>\n```",
-      "diagram": "graph TD\n    A[Performance Testing] --> B[Load Testing]\n    A --> C[Stress Testing]\n    A --> D[Spike Testing]\n    A --> E[Volume Testing]\n    A --> F[Endurance Testing]\n    A --> G[Scalability Testing]\n    B --> H[Expected Load]\n    C --> I[Peak Load]\n    D --> J[Sudden Spikes]\n    E --> K[Large Data Sets]\n    F --> L[Extended Duration]\n    G --> M[Variable Capacity]",
+      "question": "What are the different types of performance testing and when would you apply each type in a real-world scenario?",
+      "answer": "Load, stress, spike, volume, endurance, and scalability testing - each validates different performance aspects under varying conditions",
+      "explanation": "## Why Asked\nTests understanding of comprehensive performance strategy and when to apply each testing type\n## Key Concepts\nLoad testing, stress testing, spike testing, volume testing, endurance testing, scalability testing, performance metrics\n## Code Example\n```\n// Load test with Artillery\ncrypto:\n  target: 'https://api.example.com'\n  phases:\n    - duration: 60\n      arrivalRate: 100\n```\n## Follow-up Questions\nHow do you determine which type to use first?\nWhat metrics matter most for each test type?",
+      "diagram": "flowchart TD\n  A[Load Testing] --> B[Normal Load]\n  C[Stress Testing] --> D[Beyond Capacity]\n  E[Spike Testing] --> F[Sudden Traffic]\n  G[Volume Testing] --> H[Large Data]\n  I[Endurance Testing] --> J[Long Duration]\n  K[Scalability Testing] --> L[Growth Capacity]",
       "difficulty": "intermediate",
       "tags": [
         "perf",
         "testing"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:41:40.291Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-42": {
       "id": "gh-42",
@@ -981,16 +1094,28 @@
     },
     "gh-57": {
       "id": "gh-57",
-      "question": "What is Cloud Cost Optimization and what are the key strategies to reduce cloud spending?",
-      "answer": "Cloud Cost Optimization reduces overall cloud spend by identifying waste, right-sizing resources, and leveraging pricing models effectively.",
-      "explanation": "Cloud Cost Optimization is the process of reducing your overall cloud spend by identifying mismanaged resources, eliminating waste, reserving capacity for higher discounts, and right-sizing computing services to scale.\n\n## Key Strategies:\n\n### 1. Resource Optimization\n- **Right-sizing instances** - Match compute resources to actual workload requirements\n- **Shutting down unused resources** - Eliminate idle instances, storage, and services\n- **Using auto-scaling effectively** - Scale resources based on demand patterns\n- **Resource scheduling** - Stop non-production environments during off-hours\n\n### 2. Pricing Optimization\n- **Reserved Instances** - Commit to long-term usage for significant discounts (up to 75%)\n- **Spot Instances** - Use spare capacity at reduced rates for fault-tolerant workloads\n- **Savings Plans** - Flexible pricing model with commitment-based discounts\n- **Volume discounts** - Negotiate better rates for high usage\n\n### 3. Monitoring & Governance\n- **Cost monitoring dashboards** - Track spending patterns and trends\n- **Budget alerts** - Set spending thresholds and notifications\n- **Tagging strategies** - Organize resources for better cost allocation\n- **Regular cost reviews** - Periodic analysis and optimization cycles",
-      "diagram": "graph TD\n    A[Cloud Cost Optimization] --> B[Resource Optimization]\n    A --> C[Pricing Optimization]\n    A --> D[Monitoring & Governance]\n    \n    B --> E[Right-sizing]\n    B --> F[Eliminate Waste]\n    B --> G[Auto-scaling]\n    \n    C --> H[Reserved Instances]\n    C --> I[Spot Instances]\n    C --> J[Savings Plans]\n    \n    D --> K[Cost Monitoring]\n    D --> L[Budget Alerts]\n    D --> M[Regular Reviews]",
+      "question": "What is Cloud Cost Optimization and what are the key strategies to reduce cloud spending in production environments?",
+      "answer": "Cloud Cost Optimization reduces cloud spend by identifying waste, right-sizing resources, using reserved instances, implementing auto-scaling, and monitoring usage patterns.",
+      "explanation": "## Why Asked\nInterviewers test understanding of cloud financial management and practical cost-saving techniques\n## Key Concepts\nResource right-sizing, reserved instances, spot instances, auto-scaling, cost monitoring, tagging strategies\n## Code Example\n```\nresource \"aws_instance\" \"optimized\" {\n  instance_type = \"t3.medium\" # Right-sized\n  spot_price    = \"0.02\" # Use spot when possible\n  tags = {\n    CostCenter = \"engineering\"\n  }\n}\n```\n## Follow-up Questions\nHow do you measure cost optimization success? What tools do you use for cost monitoring?",
+      "diagram": "flowchart TD\n  A[Cost Analysis] --> B[Right-sizing]\n  A --> C[Reserved Instances]\n  A --> D[Auto-scaling]\n  B --> E[Reduced Waste]\n  C --> E\n  D --> E\n  E --> F[Optimized Costs]",
       "difficulty": "beginner",
       "tags": [
         "finops",
         "cost"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:37:27.775Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix"
+      ]
     },
     "gh-58": {
       "id": "gh-58",
@@ -1045,15 +1170,26 @@
     },
     "gh-68": {
       "id": "gh-68",
-      "question": "What is Network Security in DevOps?",
-      "answer": "Network Security in DevOps involves implementing security measures throughout the development and deployment pipeline to protect applications and infr...",
-      "explanation": "Network Security in DevOps involves implementing security measures throughout the development and deployment pipeline to protect applications and infrastructure.\n\nKey components:\n1. **Infrastructure Security:**\n- Firewalls\n- VPNs\n- Network segmentation\n\n2. **Application Security:**\n- TLS encryption\n- API security\n- Authentication/Authorization\n\nExample of security group configuration:\n```yaml\nSecurityGroup:\nType: AWS::EC2::SecurityGroup\nProperties:\nGroupDescription: Web tier security group\nSecurityGroupIngress:\n- IpProtocol: tcp\nFromPort: 443\nToPort: 443\nCidrIp: 0.0.0.0/0\n- IpProtocol: tcp\nFromPort: 80\nToPort: 80\nCidrIp: 0.0.0.0/0\n```",
+      "question": "What security practices should be integrated into DevOps pipelines?",
+      "answer": "Network security in DevOps integrates automated security testing, network segmentation, and continuous monitoring throughout the CI/CD pipeline.",
+      "explanation": "## Why Asked\nAssesses understanding of DevSecOps principles and security automation in modern development workflows.\n\n## Key Concepts\n- Security as Code\n- Continuous security scanning\n- Network segmentation\n- Zero Trust architecture\n- Infrastructure as Code security\n\n## Code Example\n```\n# Example security pipeline stage\nsecurity_scan:\n  stage: test\n  script:\n    - docker run aquasec/trivy image $CI_REGISTRY_IMAGE\n    - zap-baseline.py -t http://$APP_URL\n```\n\n## Follow-up Questions\n- How do you implement zero trust in DevOps?\n- What tools do you use for infrastructure security scanning?\n- How do you handle secrets management in CI/CD?\n- What's your approach to network policy enforcement?",
       "difficulty": "advanced",
       "tags": [
         "security",
         "network"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:39:05.251Z",
+      "diagram": "flowchart TD\n  A[Code Commit] --> B[Static Analysis]\n  B --> C[Container Scan]\n  C --> D[Dynamic Analysis]\n  D --> E[Deploy to Staging]\n  E --> F[Security Testing]\n  F --> G[Production Deploy]",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-69": {
       "id": "gh-69",
@@ -1070,15 +1206,26 @@
     },
     "gh-70": {
       "id": "gh-70",
-      "question": "What is SSL/TLS?",
-      "answer": "SSL/TLS is a cryptographic protocol used to secure communications between a client and a server.",
-      "explanation": "SSL/TLS is a cryptographic protocol used to secure communications between a client and a server.\n\nKey concepts:\n1. **Encryption:**\n- Data is encrypted before transmission\n- Data is decrypted after transmission\n\n2. **Authentication:**\n- Verifies the identity of the communicating parties\n\nExample of SSL/TLS configuration:\n```yaml\nsecurity:\nssl:\nenabled: true\nprotocol: TLSv1.2\nciphers:\n- ECDHE-RSA-AES256-GCM-SHA384\n- ECDHE-RSA-AES128-GCM-SHA256\n```",
+      "question": "How does SSL/TLS handshake establish secure communication and what cryptographic mechanisms are involved?",
+      "answer": "SSL/TLS uses asymmetric encryption for key exchange and symmetric encryption for data transfer, with certificates for authentication.",
+      "explanation": "## Why Asked\nTests understanding of web security fundamentals and cryptographic protocols essential for secure systems design\n## Key Concepts\nHandshake process, certificate validation, cipher suites, asymmetric/symmetric encryption, MAC functions\n## Code Example\n```\n// Simplified TLS handshake\nclientHello()\nserverHello(certificate)\nclientKeyExchange()\nchangeCipherSpec()\nfinished()\n```\n## Follow-up Questions\nWhat's the difference between SSL 3.0 and TLS 1.3?\nHow does certificate pinning work?\nWhat happens during certificate validation?",
       "difficulty": "advanced",
       "tags": [
         "security",
         "network"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:38:18.614Z",
+      "diagram": "flowchart TD\n  A[Client Hello] --> B[Server Hello + Certificate]\n  B --> C[Client Key Exchange]\n  C --> D[Change Cipher Spec]\n  D --> E[Encrypted Communication]",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-71": {
       "id": "gh-71",
@@ -1095,15 +1242,26 @@
     },
     "gh-72": {
       "id": "gh-72",
-      "question": "What is Network Segmentation?",
-      "answer": "Network Segmentation is the practice of dividing a network into smaller, more manageable segments to improve security and performance.",
-      "explanation": "Network Segmentation is the practice of dividing a network into smaller, more manageable segments to improve security and performance.\n\nKey concepts:\n1. **Segmentation:**\n- Divides the network into smaller segments\n- Each segment is isolated from other segments\n\n2. **Security:**\n- Prevents unauthorized access to sensitive data\n- Improves network performance\n\nExample of network segmentation configuration:\n```yaml\nsecurity:\nnetwork:\nsegmentation:\nenabled: true\nrules:\n- rule1\n- rule2\n```",
+      "question": "What is Network Segmentation and how does it improve security?",
+      "answer": "Network Segmentation divides a network into isolated zones to prevent lateral movement and limit breach impact.",
+      "explanation": "## Why Asked\nTests understanding of network security architecture and containment strategies\n## Key Concepts\nSubnetting, VLANs, firewall rules, zero trust, micro-segmentation, access control\n## Code Example\n```\n# AWS Security Group example\naws ec2 create-security-group \\\n  --group-name web-servers \\\n  --description \"Web server segment\"\n```\n## Follow-up Questions\nHow do you implement segmentation in cloud environments? What are the trade-offs? How do you handle inter-segment communication?",
       "difficulty": "advanced",
       "tags": [
         "security",
         "network"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:39:15.230Z",
+      "diagram": "flowchart TD\n  A[Untrusted Network] --> B[Firewall]\n  B --> C[DMZ Segment]\n  B --> D[Application Segment]\n  B --> E[Database Segment]\n  C --> F[Web Servers]\n  D --> G[App Servers]\n  E --> H[Database Servers]",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-74": {
       "id": "gh-74",
@@ -1120,16 +1278,28 @@
     },
     "gh-75": {
       "id": "gh-75",
-      "question": "What are the core DevOps practices that enable continuous delivery and collaboration?",
-      "answer": "DevOps practices include CI/CD, Infrastructure as Code, automated testing, monitoring, and fostering collaboration between development and operations teams.",
-      "explanation": "DevOps practices enable faster, more reliable software delivery through automation and collaboration:\n\n## Technical Practices\n- **Continuous Integration/Continuous Deployment (CI/CD)** - Automated build, test, and deployment pipelines\n- **Infrastructure as Code (IaC)** - Managing infrastructure through version-controlled code\n- **Automated Testing** - Unit, integration, and end-to-end test automation\n- **Monitoring & Observability** - Real-time system health and performance tracking\n- **Configuration Management** - Consistent environment setup and management\n\n## Cultural Practices\n- **Collaboration** - Breaking down silos between Dev and Ops teams\n- **Shared Responsibility** - Joint ownership of application lifecycle\n- **Blameless Post-mortems** - Learning from failures without blame\n- **Continuous Learning** - Regular skill development and knowledge sharing\n\n## Process Practices\n- **Version Control** - Git-based code and configuration management\n- **Agile Methodology** - Iterative development with short feedback loops\n- **Release Management** - Controlled, predictable software releases\n- **Incident Response** - Structured approach to handling production issues",
-      "diagram": "graph TD\n    A[Development Team] --> B[Version Control]\n    B --> C[CI/CD Pipeline]\n    C --> D[Automated Testing]\n    D --> E[Staging Environment]\n    E --> F[Production Deployment]\n    F --> G[Monitoring & Alerts]\n    G --> H[Operations Team]\n    H --> I[Incident Response]\n    I --> A\n    J[Infrastructure as Code] --> E\n    J --> F\n    K[Configuration Management] --> E\n    K --> F",
+      "question": "What DevOps practices are essential for implementing continuous delivery and fostering team collaboration?",
+      "answer": "CI/CD pipelines, Infrastructure as Code, automated testing, monitoring/logging, microservices, and DevSecOps practices enable reliable continuous delivery and cross-team collaboration.",
+      "explanation": "## Why Asked\nAssesses understanding of DevOps fundamentals and practical implementation experience\n## Key Concepts\nCI/CD automation, infrastructure management, testing strategies, observability, team collaboration\n## Code Example\n```\n# GitHub Actions CI/CD example\nname: Deploy\non:\n  push:\n    branches: [main]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - run: npm test\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm run deploy\n```\n## Follow-up Questions\nHow do you handle rollback strategies? What monitoring tools do you prefer? How do you measure deployment success?",
+      "diagram": "flowchart TD\n    A[Code Commit] --> B[Automated Build]\n    B --> C[Unit/Integration Tests]\n    C --> D[Security Scan]\n    D --> E{Tests Pass?}\n    E -->|Yes| F[Deploy to Staging]\n    E -->|No| G[Notify Team]\n    F --> H[E2E Tests]\n    H --> I{Approval?}\n    I -->|Yes| J[Production Deploy]\n    I -->|No| K[Manual Review]\n    J --> L[Monitor & Rollback if needed]",
       "difficulty": "intermediate",
       "tags": [
         "culture",
         "soft-skills"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:40:45.820Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix"
+      ]
     },
     "gh-83": {
       "id": "gh-83",
@@ -1220,15 +1390,26 @@
     },
     "gh-91": {
       "id": "gh-91",
-      "question": "What is Feature Flagging?",
-      "answer": "Feature Flagging (also known as Feature Toggles or Feature Switches) is a software development technique that allows teams to modify system behavior w...",
-      "explanation": "Feature Flagging (also known as Feature Toggles or Feature Switches) is a software development technique that allows teams to modify system behavior without changing code and redeploying. It involves wrapping new features in conditional logic (the \"flag\") that can be toggled on or off in a running application, often via a configuration service.\n\n**Core Concepts:**\n1.  **Decoupling Deployment from Release:** Code can be deployed to production environments with new features \"turned off\" (hidden behind a flag). The feature is then \"released\" (turned on) for users at a later time, independently of the deployment.\n2.  **Conditional Logic:** Code paths for the new feature are executed only if the corresponding flag is enabled.\n3.  **Configuration Service:** A central service or configuration file is often used to manage the state of feature flags, allowing dynamic updates without code changes.\n\n**Types of Feature Flags:**\n*   **Release Toggles:** Used to enable or disable features for all users, often for canary releases or to quickly disable a problematic feature.\n*   **Experiment Toggles (A/B Testing):** Used to show different versions of a feature to different segments of users to measure impact.\n*   **Ops Toggles:** Used to control operational aspects of the system, like enabling detailed logging or switching to a backup system during an incident.\n*   **Permission Toggles:** Used to control access to features for specific user groups (e.g., beta testers, premium users).\n\n**Benefits:**\n*   **Reduced Risk:** New features can be tested in production with a limited audience (canary release) or turned off quickly if issues arise (\"kill switch\").\n*   **Continuous Delivery/Trunk-Based Development:** Allows developers to merge code to the main branch more frequently, even if features are incomplete, by keeping them hidden behind flags.\n*   **A/B Testing and Experimentation:** Facilitates testing different feature variations with real users.\n*   **Gradual Rollouts:** Features can be rolled out to progressively larger groups of users.\n*   **Operational Control:** Provides levers to manage system behavior in production.\n*   **Faster Feedback Loops:** Get feedback on features from a subset of users before a full release.\n\n**Considerations:**\n*   **Flag Management Complexity:** A large number of flags can become difficult to manage. Requires a clear strategy for naming, organizing, and retiring flags.\n*   **Testing Overhead:** Need to test code paths with flags both on and off.\n*   **Technical Debt:** Old flags that are no longer needed should be removed to avoid cluttering the codebase.\n*   **Performance:** Checking flag states might add a small overhead, though usually negligible.",
+      "question": "What is Feature Flagging and how does it enable safer deployments in production?",
+      "answer": "Feature Flagging is a technique that allows developers to enable/disable functionality without deploying new code, providing controlled releases and immediate rollback capabilities.",
+      "explanation": "## Why Asked\nInterview context: Tests understanding of deployment strategies and risk management in production systems\n## Key Concepts\nCore knowledge: Feature toggles, gradual rollouts, A/B testing, kill switches, continuous deployment safety nets\n## Code Example\n```\n// Basic feature flag implementation\nconst isNewFeatureEnabled = process.env.FEATURE_NEW_UI === 'true';\n\nif (isNewFeatureEnabled) {\n  return <NewDashboard />;\n}\nreturn <LegacyDashboard />;\n```\n## Follow-up Questions\nCommon follow-ups: How do you manage flag lifecycle? What are the risks of flag accumulation? How do you test flagged features?",
       "difficulty": "advanced",
       "tags": [
         "advanced",
         "cloud"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:36:35.167Z",
+      "diagram": "flowchart TD\n  A[Developer Pushes Code] --> B[Feature Flag OFF]\n  B --> C{QA Testing}\n  C -->|Pass| D[Enable for 10% Users]\n  D --> E[Monitor Metrics]\n  E -->|Success| F[Enable for 100%]\n  E -->|Issues| G[Disable Flag]\n  F --> H[Clean Up Flag]\n  G --> B",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "gh-92": {
       "id": "gh-92",
@@ -1258,15 +1439,28 @@
     },
     "gh-94": {
       "id": "gh-94",
-      "question": "What is a Service Level Objective (SLO)?",
-      "answer": "A Service Level Objective (SLO) is a specific, measurable, and achievable internal target for a particular aspect of service performance or reliabilit...",
-      "explanation": "A Service Level Objective (SLO) is a specific, measurable, and achievable internal target for a particular aspect of service performance or reliability. SLOs are a key component of Site Reliability Engineering (SRE) practices and are used to guide engineering decisions and balance reliability work with feature development.\n\n**Key Characteristics of an SLO:**\n1.  **Service-Specific:** Defined for a particular user-facing service or critical internal system.\n2.  **User-Focused:** Based on what matters to users (e.g., availability, latency, correctness).\n3.  **Measurable:** Quantifiable using specific metrics (SLIs).\n4.  **Target Value:** A specific numerical goal (e.g., 99.9% availability, 99th percentile latency < 200ms).\n5.  **Measurement Window:** The period over which the SLO is evaluated (e.g., rolling 28 days, calendar month).\n6.  **Internal Target:** Used by the team providing the service to manage and improve reliability. SLOs are typically stricter than any corresponding SLAs to provide a safety margin.\n\n**Purpose of SLOs:**\n*   **Data-Driven Decisions:** Provide a quantitative basis for making decisions about reliability, such as when to invest in more resilient infrastructure or when to prioritize bug fixes over new features.\n*   **Error Budgets:** SLOs directly define error budgets. An error budget is the amount of time or number of events a service can fail to meet its SLO without breaching it. For example, an SLO of 99.9% availability over 30 days allows for approximately 43 minutes of downtime (the error budget).\n*   **Balancing Reliability and Innovation:** If the service is consistently meeting its SLOs (i.e., not consuming its error budget), the team can focus more on feature development. If the error budget is being consumed rapidly, the team must prioritize reliability work.\n*   **Shared Understanding:** Creates a common language and understanding of reliability goals across development, operations, and product teams.\n*   **Alerting:** SLO burn rates (how quickly the error budget is being consumed) are often used to trigger alerts, prompting action before the SLO is breached.\n\n**How to Define Good SLOs:**\n1.  **Identify Critical User Journeys (CUJs):** What are the most important things users do with the service?\n2.  **Choose Appropriate SLIs:** Select metrics that accurately reflect the user experience for those CUJs (e.g., request success rate, latency at a specific percentile).\n3.  **Set Achievable Targets:** Consider historical performance, user expectations, and business requirements. Don't aim for 100% if it's not necessary or feasible, as it can be prohibitively expensive and stifle innovation.\n4.  **Document and Communicate:** Ensure SLOs are well-documented and understood by all stakeholders.\n5.  **Iterate:** Regularly review and refine SLOs based on new data and changing requirements.\n\n**Example SLO:**\n*   **Service:** User Login API\n*   **SLI:** Percentage of successful login requests (HTTP 200 responses) over all valid login attempts.\n*   **Target:** 99.95%\n*   **Period:** Measured over a rolling 28-day window.\n*   **Consequence (Internal):** If the error budget (0.05%) is exceeded, new feature development for the login service is paused, and all engineering effort is directed towards reliability improvements until the service is back within SLO.",
+      "question": "What is a Service Level Objective (SLO) and how does it differ from an SLA?",
+      "answer": "A Service Level Objective (SLO) is an internal reliability target that defines the expected level of service over time, while an SLA is a customer-facing agreement with consequences for failure.",
+      "explanation": "## Why Asked\nSRE interviews assess understanding of reliability metrics and the distinction between internal targets (SLOs) and customer commitments (SLAs). This demonstrates practical site reliability engineering knowledge.\n\n## Key Concepts\n- SLO: Internal reliability target (e.g., 99.9% uptime)\n- SLA: External customer agreement with penalties\n- SLI: Service Level Indicator metrics used to measure SLOs\n- Error budget: The remaining acceptable failure rate\n- SRE practices: Using error budgets to balance innovation vs reliability\n\n## Code Example\n```\n// Example SLO configuration\nconst slo = {\n  service: 'api-gateway',\n  sloType: 'availability',\n  target: 99.9, // 99.9% uptime\n  period: '30d',\n  sli: {\n    numerator: 'successful_requests',\n    denominator: 'total_requests'\n  },\n  errorBudget: 0.001 // 0.1% allowed failures\n};\n```\n\n## Follow-up Questions\n- How do you calculate error budgets from SLOs?\n- What happens when an error budget is exhausted?\n- How do you choose appropriate SLIs for your services?\n- How do SLOs influence release decisions?\n- What's the relationship between SLOs and incident response?",
       "difficulty": "advanced",
       "tags": [
         "advanced",
         "cloud"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:36:06.932Z",
+      "diagram": "flowchart TD\n    A[Define Service] --> B[Identify Key Metrics]\n    B --> C[Set SLIs]\n    C --> D[Establish SLO Targets]\n    D --> E[Monitor SLIs]\n    E --> F{SLO Met?}\n    F -->|Yes| G[Continue Operations]\n    F -->|No| H[Consume Error Budget]\n    H --> I{Error Budget Exhausted?}\n    I -->|No| J[Monitor Closely]\n    I -->|Yes| K[Stop Releases\n    Focus on Reliability]\n    J --> E\n    K --> L[Improve Service]\n    L --> A",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix"
+      ]
     },
     "gh-95": {
       "id": "gh-95",
@@ -1471,17 +1665,27 @@
     },
     "fe-3": {
       "id": "fe-3",
-      "question": "Explain 'Closure' in JavaScript with a practical use case.",
-      "answer": "A Closure is a function remembering its lexical scope even when executed outside that scope.",
-      "explanation": "**Concept**: When a function returns another function, the inner function retains access to the outer function's variables.\n\n**Use Case: Data Privacy / Currying**\n```javascript\nfunction createCounter() {\n  let count = 0; // Private variable\n  return {\n    increment: () => count++,\n    get: () => count\n  };\n}\nconst c = createCounter();\nc.increment(); // 1\n// count is not accessible directly\n```",
-      "diagram": "\ngraph TD\n    Outer[Outer Function] --> Var[count = 0]\n    Outer --> Inner[Inner Function]\n    Inner -.->|Remembers| Var\n",
+      "question": "Explain JavaScript closures with a practical use case and how they're used in real applications?",
+      "answer": "A closure is a function that retains access to its lexical scope, allowing it to use variables from its outer function even after that function has returned.",
+      "explanation": "## Why Asked\nTesting understanding of JavaScript's execution context and memory management\n## Key Concepts\nLexical scoping, function scope, memory retention, callbacks, module pattern\n## Code Example\n```\nfunction createCounter() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nconst counter = createCounter();\nconsole.log(counter()); // 1\nconsole.log(counter()); // 2\n```\n## Follow-up Questions\nWhat's the memory impact of closures? How do they relate to garbage collection? Can you explain closure optimization?",
+      "diagram": "flowchart TD\n  A[Outer Function Called] --> B[Inner Function Created]\n  B --> C[Outer Function Returns]\n  C --> D[Inner Function Accesses Outer Variables]\n  D --> E[Closure Maintains Scope Chain]",
       "difficulty": "intermediate",
       "tags": [
         "js",
         "scope",
         "patterns"
       ],
-      "lastUpdated": "2025-12-12T09:07:04.187Z"
+      "lastUpdated": "2025-12-17T06:34:53.871Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "fr-154": {
       "id": "fr-154",
@@ -2073,16 +2277,26 @@
     },
     "sy-139": {
       "id": "sy-139",
-      "question": "Design a rate limiting system for a multi-tenant API that supports burst capacity with token bucket algorithm, distributed coordination, and dynamic tenant-specific policies",
-      "answer": "Distributed token bucket with Redis-backed state, tenant-specific rate configs, and local caches for performance",
-      "explanation": "This system needs to handle multiple tenants with different rate limits, support burst capacity through token buckets, ensure coordination across multiple API instances, and provide dynamic policy updates.\n\nKey components:\n- **Token Bucket Algorithm**: Each tenant has a bucket with capacity (burst) and refill rate. Tokens are added at configured rate, requests consume tokens.\n- **Distributed State**: Redis stores current token counts and last refill timestamps for each tenant, ensuring consistency across instances.\n- **Local Caching**: Each API instance maintains a local cache of token counts with TTL to reduce Redis calls, using optimistic updates.\n- **Policy Management**: Dynamic rate limit configuration stored in database, propagated through Redis pub/sub.\n- **Fallback**: When Redis unavailable, fall back to local bucket with reduced capacity to prevent service interruption.\n\nPerformance considerations:\n- Pipeline Redis operations for batch updates\n- Use Lua scripts for atomic token operations\n- Implement write-back caching for burst scenarios\n- Separate hot path (rate check) from policy updates\n\nChallenges addressed:\n- Race conditions in distributed environment\n- Clock synchronization issues\n- Graceful degradation during failures\n- Tenant isolation and fairness",
-      "diagram": "graph TD\n    A[Client Request] --> B{Rate Limiter Service}\n    B --> C[Local Cache Check]\n    C -->|Hit| D[Consume Local Tokens]\n    C -->|Miss| E[Redis Token Check]\n    E -->|Available| F[Consume Redis Tokens]\n    E -->|Limited| G[Reject - 429]\n    D --> H[Update Local Cache Async]\n    F --> I[Update Local Cache]\n    H --> J[Forward to API]\n    I --> J\n    G --> K[Return Rate Limit Headers]\n    J --> L[Response]\n    M[Policy Manager] --> N[Redis Pub/Sub]\n    N --> O[Update Local Config]\n    O --> B",
+      "question": "Design a rate limiting system for a multi-tenant API that supports burst capacity using token bucket algorithm with distributed storage?",
+      "answer": "Distributed token bucket with Redis-backed state, tenant-specific configs, and local caches for performance",
+      "explanation": "## Why Asked\nTests distributed systems design and API reliability skills\n## Key Concepts\nToken bucket algorithm, distributed state, Redis, burst handling\n## Code Example\n```\nclass TokenBucket {\n  constructor(capacity, refillRate) {\n    this.capacity = capacity;\n    this.tokens = capacity;\n    this.refillRate = refillRate;\n    this.lastRefill = Date.now();\n  }\n  \n  consume() {\n    const now = Date.now();\n    const elapsed = now - this.lastRefill;\n    this.tokens = Math.min(this.capacity, this.tokens + elapsed * this.refillRate / 1000);\n    this.lastRefill = now;\n    \n    if (this.tokens >= 1) {\n      this.tokens--;\n      return true;\n    }\n    return false;\n  }\n}\n```\n## Follow-up Questions\nHow would you handle Redis failures? What's your monitoring strategy? How do you test system resilience?",
+      "diagram": "flowchart TD\n  A[API Request] --> B{Tenant Lookup}\n  B --> C[Check Token Bucket]\n  C --> D{Tokens Available?}\n  D -->|Yes| E[Process Request]\n  D -->|No| F[Rate Limited]\n  E --> G[Update Redis]\n  F --> H[Return 429]\n  G --> I[End]\n  H --> I",
       "difficulty": "advanced",
       "tags": [
         "api",
         "rest"
       ],
-      "lastUpdated": "2025-12-12T09:36:49.367Z"
+      "lastUpdated": "2025-12-17T06:41:27.643Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "sy-140": {
       "id": "sy-140",
@@ -2294,16 +2508,28 @@
     },
     "q-176": {
       "id": "q-176",
-      "question": "What is the difference between batch processing and stream processing in data engineering?",
-      "answer": "Batch processes data in fixed chunks at intervals; stream processes data continuously as it arrives.",
-      "explanation": "Batch processing collects data over a time period and processes it all at once, typically on a schedule (hourly/daily). It's good for large-scale analytics where latency isn't critical. Stream processing handles data in real-time as it arrives, enabling immediate insights and reactions. Stream processing is essential for use cases like fraud detection, real-time monitoring, and live dashboards where immediate action is required.",
+      "question": "How would you design a data pipeline that handles both batch and streaming workloads for real-time analytics?",
+      "answer": "Lambda architecture using batch layer for historical accuracy and speed layer for real-time insights, combined through serving layer.",
+      "explanation": "## Why Asked\nTests understanding of modern data architecture patterns and handling multiple processing paradigms\n## Key Concepts\nLambda architecture, batch processing, stream processing, data consistency, real-time analytics\n## Code Example\n```\n// Stream processing example (Apache Flink)\nDataStream<Event> stream = env.addSource(kafkaSource);\nstream.window(TumblingProcessingTimeWindows.of(Time.minutes(5)))\n      .aggregate(new CountAggregate())\n      .addSink(sink);\n```",
       "tags": [
         "streaming",
         "kafka"
       ],
       "difficulty": "beginner",
-      "diagram": "graph TD\n    A[Data Source] --> B[Batch Processor]\n    A --> C[Stream Processor]\n    B --> D[Periodic Output]\n    C --> E[Real-time Output]\n    B --> F[High Latency]\n    C --> G[Low Latency]",
-      "lastUpdated": "2025-12-14T10:24:30.213Z"
+      "diagram": "flowchart TD\n    A[Data Source] --> B[Batch Layer]\n    A --> C[Speed Layer]\n    B --> D[Batch View]\n    C --> E[Real-time View]\n    D --> F[Serving Layer]\n    E --> F\n    F --> G[Analytics/Queries]",
+      "lastUpdated": "2025-12-17T06:37:43.771Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Netflix",
+        "Uber"
+      ]
     },
     "q-177": {
       "id": "q-177",
@@ -2359,16 +2585,28 @@
     },
     "q-181": {
       "id": "q-181",
-      "question": "Explain the difference between weak and unowned references in Swift. When would you use each?",
-      "answer": "weak: optional, nils automatically. unowned: non-optional, assumes object exists. Use weak for optional relationships, unowned when object always outlives reference.",
-      "explanation": "In Swift, both `weak` and `unowned` are used to prevent retain cycles in closures and delegate patterns, but they behave differently:\n\n**Weak References:**\n- Always optional (automatically becomes nil when object is deallocated)\n- Must be unwrapped before use\n- Safe to use when the referenced object might be deallocated before the reference\n- Common in delegate patterns and optional relationships\n\n**Unowned References:**\n- Always non-optional (assumes object will always exist when accessed)\n- Doesn't need to be unwrapped\n- Causes runtime crash if accessed after object is deallocated\n- Used when you're certain the referenced object will outlive the reference\n- Common in closure capture lists where parent-child relationship is guaranteed\n\n**Key Difference:** `weak` is safer but requires optional handling, while `unowned` is more convenient but riskier if assumptions are wrong.",
+      "question": "Explain the difference between weak and unowned references in Swift and provide practical use cases for each?",
+      "answer": "weak: optional, nils automatically when object deallocates. unowned: non-optional, assumes object exists, crash if accessed after deallocation.",
+      "explanation": "## Why Asked\nTests memory management understanding and preventing retain cycles in iOS development\n## Key Concepts\n- Automatic Reference Counting (ARC)\n- Strong reference cycles\n- Optional vs non-optional references\n- Lifetime expectations\n## Code Example\n```\nclass Parent {\n    weak var child: Child?\n    unowned let partner: Parent\n}\n\n// weak: when object might become nil (e.g., delegates)\n// unowned: when object outlives reference (e.g., parent-child)\n```\n## Follow-up Questions\n- How do you identify retain cycles?\n- What happens when you access an unowned reference after deallocation?\n- When should you use strong references instead?",
       "tags": [
         "swift",
         "language"
       ],
       "difficulty": "intermediate",
-      "diagram": "graph TD\n    A[Object A] -->|strong| B[Object B]\n    B -->|weak| A\n    C[Parent] -->|strong| D[Child]\n    D -->|unowned| C\n    E[ViewController] -->|strong| F[CustomView]\n    F -->|weak delegate| E\n    G[NetworkManager] -->|strong| H[DataTask]\n    H -->|unowned| G",
-      "lastUpdated": "2025-12-14T10:25:19.093Z"
+      "diagram": "flowchart TD\n  A[Object Created] --> B{Reference Type?}\n  B -->|May become nil| C[weak var]\n  B -->|Always exists| D[unowned]\n  C --> E[Becomes nil on deallocation]\n  D --> F[Crashes if accessed after deallocation]",
+      "lastUpdated": "2025-12-17T06:39:25.374Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ]
     },
     "q-182": {
       "id": "q-182",
@@ -2385,29 +2623,49 @@
     },
     "q-183": {
       "id": "q-183",
-      "question": "What is the primary purpose of Native Modules in React Native?",
-      "answer": "To access native platform APIs and functionality not available in JavaScript.",
-      "explanation": "Native Modules bridge the gap between JavaScript and native platform code (Java/Kotlin for Android, Objective-C/Swift for iOS). They allow React Native apps to access device-specific features like camera, Bluetooth, GPS, or custom native libraries that aren't exposed through React Native's built-in components. Native Modules create a communication layer where JavaScript can call native methods and receive callbacks, enabling developers to leverage the full power of the underlying platform while maintaining a React Native development experience.",
+      "question": "What is the primary purpose of Native Modules in React Native and when would you use them?",
+      "answer": "To access native platform APIs and functionality not available in JavaScript, bridging gap between JS and native code.",
+      "explanation": "## Why Asked\nInterviewers test understanding of React Native's architecture and how to extend functionality beyond standard JavaScript APIs.\n\n## Key Concepts\n- Bridge communication between JavaScript and native code\n- Access to device hardware (camera, GPS, sensors)\n- Performance optimization for computationally intensive tasks\n- Third-party SDK integration\n\n## Code Example\n```\n// Android Native Module\n@ReactMethod\npublic void getDeviceInfo(Promise promise) {\n  try {\n    String deviceModel = Build.MODEL;\n    promise.resolve(deviceModel);\n  } catch (Exception e) {\n    promise.reject(\"ERROR\", e.getMessage());\n  }\n}\n\n// JavaScript usage\nimport { NativeModules } from 'react-native';\nconst { DeviceInfo } = NativeModules;\n\nconst getModel = async () => {\n  const model = await DeviceInfo.getDeviceInfo();\n  console.log(model);\n};\n```\n\n## Follow-up Questions\n- How does the React Native bridge work?\n- What are the performance implications of Native Modules?\n- How do you handle async operations in Native Modules?\n- What's the difference between Turbo Modules and legacy Native Modules?",
       "tags": [
         "native",
         "bridge"
       ],
       "difficulty": "beginner",
-      "diagram": "graph TD\n    A[React Native JS Code] --> B[Native Module Bridge]\n    B --> C[Android Java/Kotlin Code]\n    B --> D[iOS Objective-C/Swift Code]\n    C --> E[Native Platform APIs]\n    D --> F[Native Platform APIs]\n    E --> G[Device Features]\n    F --> G",
-      "lastUpdated": "2025-12-14T10:25:30.699Z"
+      "diagram": "flowchart TD\n  A[JavaScript Code] --> B[React Native Bridge]\n  B --> C[Native Module]\n  C --> D[Platform API]\n  D --> E[Hardware/OS Features]\n  E --> F[Native Module]\n  F --> B\n  B --> A",
+      "lastUpdated": "2025-12-17T06:39:59.907Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-184": {
       "id": "q-184",
-      "question": "You're managing a critical system migration with 3 teams working in parallel. Team A (backend) is 2 weeks behind, Team B (frontend) is on schedule but blocked by Team A, and Team C (DevOps) needs 1 more week for infrastructure setup. The go-live date is fixed in 6 weeks. What's your immediate action plan and risk mitigation strategy?",
+      "question": "You're managing a critical system migration with 3 teams working in parallel. Team A (backend) is 2 weeks behind, Team B (frontend) is on track, and Team C (devops) is 1 week ahead. How do you realign the project timeline to minimize delays?",
       "answer": "Replan with critical path analysis, add resources to Team A, parallelize work, create buffer time.",
-      "explanation": "This is a classic project management crisis scenario requiring immediate intervention. **Immediate Actions:**\n\n1. **Critical Path Analysis**: Identify that Team A is on the critical path - their delay impacts the entire project\n\n2. **Resource Reallocation**: \n   - Move 1-2 developers from Team C (who has buffer) to Team A\n   - Consider bringing in contract developers for Team A\n\n3. **Work Parallelization**:\n   - Team B can work on mock data/stubs while Team A catches up\n   - Team C can proceed with infrastructure setup independently\n\n4. **Risk Mitigation**:\n   - **Schedule Risk**: Implement daily standups, weekly reviews\n   - **Quality Risk**: Increase code review frequency, add automated testing\n   - **Team Burnout**: Monitor team health, consider overtime compensation\n\n5. **Stakeholder Communication**: \n   - Immediate update to leadership on revised timeline\n   - Transparent communication about risks and mitigation plans\n\n6. **Contingency Planning**:\n   - Prepare phased rollout if full migration isn't possible\n   - Identify minimum viable features for go-live\n\nThe key is balancing aggressive recovery with realistic expectations while maintaining team morale.",
+      "explanation": "## Why Asked\nTests project management, cross-functional coordination, and problem-solving under pressure\n## Key Concepts\nCritical path method, resource allocation, risk mitigation, timeline optimization\n## Code Example\n```\nclass ProjectReplan {\n  calculateCriticalPath(teams) {\n    return teams.filter(team => team.isBlocking).sort((a, b) => a.delay - b.delay)\n  }\n}\n```\n## Follow-up Questions\nHow do you communicate delays to stakeholders? What tools would you use for tracking?",
       "tags": [
         "project",
         "planning"
       ],
       "difficulty": "advanced",
-      "diagram": "graph TD\n    A[Current State] --> B{Assess Impact}\n    B --> C[Team A: 2 weeks behind]\n    B --> D[Team B: On schedule but blocked]\n    B --> E[Team C: 1 week buffer]\n    \n    C --> F[Critical Path Analysis]\n    F --> G[Resource Reallocation]\n    G --> H[Add 1-2 devs to Team A]\n    G --> I[Contract support if needed]\n    \n    D --> J[Parallelize Work]\n    J --> K[Team B uses mock data]\n    J --> L[Independent frontend tasks]\n    \n    E --> M[Infrastructure Prep]\n    M --> N[Proceed independently]\n    \n    H --> O[Daily Standups]\n    I --> O\n    K --> O\n    N --> O\n    \n    O --> P[Weekly Reviews]\n    P --> Q[Go-Live in 6 weeks]\n    \n    Q --> R{Risk Monitoring}\n    R --> S[Schedule Risk: Daily tracking]\n    R --> T[Quality Risk: Increased reviews]\n    R --> U[Team Risk: Monitor burnout]\n    \n    S --> V[Contingency Planning]\n    T --> V\n    U --> V\n    \n    V --> W[Phased rollout option]\n    V --> X[MVP features identified]",
-      "lastUpdated": "2025-12-14T10:25:50.357Z"
+      "diagram": "flowchart TD\n  A[Assess Current State] --> B[Identify Critical Path]\n  B --> C[Reallocate Resources]\n  C --> D[Update Timeline]\n  D --> E[Communicate Changes]",
+      "lastUpdated": "2025-12-17T06:41:18.054Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-185": {
       "id": "q-185",
@@ -2566,45 +2824,77 @@
     },
     "q-196": {
       "id": "q-196",
-      "question": "How would you implement a rate-limited async HTTP client using aiohttp and asyncio.Semaphore to handle 1000 requests with a maximum of 50 concurrent connections?",
-      "answer": "Use asyncio.Semaphore(50) to limit concurrency and asyncio.sleep for rate limiting between request batches.",
-      "explanation": "## Concept Overview\nRate limiting prevents overwhelming servers while maintaining high throughput. Combining aiohttp with asyncio.Semaphore provides both connection pooling and request throttling.\n\n## Implementation Details\n- **Semaphore**: Controls maximum concurrent connections (50)\n- **Rate limiting**: Adds delays between request batches\n- **Error handling**: Manages timeouts and HTTP errors gracefully\n- **Session reuse**: Single aiohttp.ClientSession for connection pooling\n\n## Code Example\n```python\nimport asyncio\nimport aiohttp\nfrom typing import List\n\nasync def fetch_with_semaphore(session: aiohttp.ClientSession, \n                              semaphore: asyncio.Semaphore, \n                              url: str) -> str:\n    async with semaphore:\n        async with session.get(url) as response:\n            return await response.text()\n\nasync def rate_limited_fetch(urls: List[str], \n                           max_concurrent: int = 50,\n                           rate_delay: float = 0.1) -> List[str]:\n    semaphore = asyncio.Semaphore(max_concurrent)\n    connector = aiohttp.TCPConnector(limit=max_concurrent)\n    \n    async with aiohttp.ClientSession(connector=connector) as session:\n        tasks = []\n        for i, url in enumerate(urls):\n            if i > 0 and i % max_concurrent == 0:\n                await asyncio.sleep(rate_delay)\n            task = fetch_with_semaphore(session, semaphore, url)\n            tasks.append(task)\n        \n        return await asyncio.gather(*tasks, return_exceptions=True)\n```\n\n## Common Pitfalls\n- **Memory leaks**: Not properly closing sessions and connections\n- **Rate limiting too aggressive**: Excessive delays reduce throughput\n- **Exception handling**: Unhandled exceptions can crash the entire batch\n- **Semaphore starvation**: Poor semaphore sizing can cause bottlenecks",
+      "question": "How would you implement a rate-limited async HTTP client using aiohttp and asyncio.Semaphore to handle 1000 requests while respecting API limits?",
+      "answer": "Use asyncio.Semaphore(50) for concurrency control and aiohttp.ClientSession with time-based rate limiting between requests",
+      "explanation": "## Why Asked\nTests async programming and API rate limiting skills in production scenarios\n## Key Concepts\nAsyncIO, Semaphore, Rate Limiting, HTTP Client Design\n## Code Example\n```\nimport aiohttp\nimport asyncio\n\nasync def rate_limited_client(urls):\n    semaphore = asyncio.Semaphore(50)\n    async with aiohttp.ClientSession() as session:\n        tasks = [fetch_url(session, url, semaphore) for url in urls]\n        return await asyncio.gather(*tasks)\n\nasync def fetch_url(session, url, semaphore):\n    async with semaphore:\n        await asyncio.sleep(0.1)  # Rate limit\n        async with session.get(url) as response:\n            return await response.text()\n```\n## Follow-up Questions\nHow would you handle retries? What about exponential backoff?",
       "tags": [
         "asyncio",
         "aiohttp",
         "concurrency"
       ],
       "difficulty": "intermediate",
-      "diagram": "flowchart LR\n    A[1000 URLs] --> B[Create Semaphore 50]\n    B --> C[Process in Batches]\n    C --> D[Batch 1: 50 Requests]\n    C --> E[Rate Limit Delay]\n    D --> F[aiohttp Session]\n    F --> G[Concurrent Fetch]\n    E --> H[Batch 2: 50 Requests]\n    H --> F\n    G --> I[Collect Results]\n    I --> J[Return All Responses]",
-      "lastUpdated": "2025-12-14T12:57:22.140Z"
+      "diagram": "flowchart TD\n  A[Start] --> B[Create Semaphore]\n  B --> C[Create ClientSession]\n  C --> D[Process URLs Concurrently]\n  D --> E[Apply Rate Limits]\n  E --> F[Return Results]\n  F --> G[End]",
+      "lastUpdated": "2025-12-17T06:38:55.811Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-197": {
       "id": "q-197",
       "question": "How would you implement efficient KV caching in a transformer decoder to reduce redundant computation during autoregressive generation?",
-      "answer": "Store key-value pairs from previous tokens in cache, reuse for attention computation, reducing O(n²) to O(n) complexity.",
-      "explanation": "## Concept Overview\nKV caching stores computed key and value matrices from previous tokens to avoid recomputing attention during generation.\n\n## Implementation Details\n- Cache keys and values after each forward pass\n- Reuse cached KV for new token's attention computation\n- Manage cache size and memory efficiently\n- Handle position embeddings correctly\n\n## Code Example\n```python\nclass KVCache:\n    def __init__(self, max_seq_len):\n        self.key_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.value_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.seq_len = 0\n    \n    def update(self, key, value):\n        self.key_cache[self.seq_len] = key\n        self.value_cache[self.seq_len] = value\n        self.seq_len += 1\n        return self.key_cache[:self.seq_len], self.value_cache[:self.seq_len]\n```\n\n## Common Pitfalls\n- Incorrect position embedding handling\n- Memory leaks from unbounded cache growth\n- Cache invalidation during beam search\n- Batch dimension mismatches",
+      "answer": "Store key-value pairs from previous tokens in cache, reuse for attention computation, reducing O(n²) complexity to O(n) for inference",
+      "explanation": "## Why Asked\nTests understanding of transformer optimization techniques for production AI systems. KV caching is essential for efficient text generation.\n\n## Key Concepts\n- Autoregressive generation and computational redundancy\n- Key-value cache implementation strategies\n- Memory vs computation trade-offs\n- Batch processing with cached states\n\n## Code Example\n```\nclass KVCache:\n    def __init__(self, max_seq_len: int, num_heads: int, head_dim: int):\n        self.k_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.v_cache = torch.zeros(max_seq_len, num_heads, head_dim)\n        self.current_len = 0\n    \n    def update(self, new_k, new_v):\n        seq_len = new_k.shape[1]\n        self.k_cache[self.current_len:self.current_len+seq_len] = new_k\n        self.v_cache[self.current_len:self.current_len+seq_len] = new_v\n        self.current_len += seq_len\n        return self.k_cache[:self.current_len], self.v_cache[:self.current_len]\n```\n\n## Follow-up Questions\n- How do you handle memory constraints with long sequences?\n- What are cache invalidation strategies?\n- How does KV caching work with batch inference?",
       "tags": [
         "transformer",
         "attention",
         "tokenization"
       ],
       "difficulty": "intermediate",
-      "diagram": "flowchart LR\n    A[Input Token] --> B[Compute K,V]\n    B --> C[Store in KV Cache]\n    C --> D[Reuse Cached K,V]\n    D --> E[Attention Computation]\n    E --> F[Next Token]\n    F --> A",
-      "lastUpdated": "2025-12-14T12:57:27.458Z"
+      "diagram": "flowchart TD\n    A[Input Token] --> B[Compute K,V]\n    B --> C[Update KV Cache]\n    C --> D[Query against Cached K,V]\n    D --> E[Attention Computation]\n    E --> F[Generate Next Token]\n    F --> G{More Tokens?}\n    G -->|Yes| A\n    G -->|No| H[End]",
+      "lastUpdated": "2025-12-17T06:41:51.017Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "OpenAI"
+      ]
     },
     "q-198": {
       "id": "q-198",
       "question": "What is a jailbreak attack in prompt engineering and how do guardrails prevent it?",
-      "answer": "A jailbreak attack bypasses AI safety controls using malicious prompts. Guardrails filter and block harmful inputs/outputs.",
-      "explanation": "## Concept Overview\nJailbreak attacks are techniques used to circumvent AI model safety restrictions by crafting specific prompts that trick the model into generating harmful or restricted content.\n\n## Implementation Details\nGuardrails are safety mechanisms that:\n- **Input filtering**: Scan prompts for malicious patterns\n- **Output monitoring**: Check responses for policy violations\n- **Context awareness**: Maintain conversation safety state\n- **Real-time blocking**: Prevent harmful content generation\n\n## Code Example\n```python\ndef apply_guardrails(prompt, response):\n    # Input filtering\n    if contains_jailbreak_patterns(prompt):\n        return \"Request blocked: Safety violation detected\"\n    \n    # Output monitoring\n    if violates_content_policy(response):\n        return \"Content filtered: Policy violation\"\n    \n    return response\n```\n\n## Common Pitfalls\n- Over-filtering legitimate requests\n- Pattern matching evasion techniques\n- Context window limitations\n- False positives in benign content",
+      "answer": "A jailbreak attack bypasses AI safety controls using malicious prompts. Guardrails filter and block harmful inputs while enforcing content policies.",
+      "explanation": "## Why Asked\nTests understanding of AI security and safety mechanisms\n## Key Concepts\nPrompt injection, safety filtering, content moderation, input validation\n## Code Example\n```\nfunction guardrail(prompt) {\n  const blocked = ['ignore instructions', 'bypass safety'];\n  return !blocked.some(word => prompt.includes(word));\n}\n```\n## Follow-up Questions\nHow do you implement input validation?\nWhat are common jailbreak patterns?\nHow do you test guardrail effectiveness?",
       "tags": [
         "jailbreak",
         "guardrails",
         "content-filtering"
       ],
       "difficulty": "beginner",
-      "diagram": "graph TD\n    A[User Prompt] --> B{Input Guardrails}\n    B -->|Malicious| C[Block Request]\n    B -->|Safe| D[AI Model]\n    D --> E[Response]\n    E --> F{Output Guardrails}\n    F -->|Harmful| G[Filter Response]\n    F -->|Safe| H[Return Response]\n    C --> I[Error Message]\n    G --> I",
-      "lastUpdated": "2025-12-14T12:57:32.946Z"
+      "diagram": "flowchart TD\n  A[User Prompt] --> B{Guardrail Check}\n  B -->|Safe| C[Process Request]\n  B -->|Blocked| D[Reject Request]\n  C --> E[Return Response]\n  D --> F[Log Attempt]",
+      "lastUpdated": "2025-12-17T06:41:59.042Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-199": {
       "id": "q-199",
@@ -2623,17 +2913,27 @@
     },
     "q-200": {
       "id": "q-200",
-      "question": "How does U-Net architecture achieve pixel-perfect segmentation using encoder-decoder skip connections?",
-      "answer": "U-Net uses contracting path to capture context and expanding path with skip connections for precise localization.",
-      "explanation": "## Concept Overview\nU-Net is a convolutional neural network designed for biomedical image segmentation. Its key innovation is the U-shaped architecture with skip connections that preserve spatial information.\n\n## Implementation Details\n- **Encoder (Contracting Path)**: Series of convolution + max pooling layers to extract features\n- **Decoder (Expanding Path)**: Upsampling layers that restore spatial resolution\n- **Skip Connections**: Concatenate encoder features with decoder features to preserve fine-grained details\n- **Final Layer**: 1x1 convolution maps features to pixel-wise segmentation mask\n\n## Code Example\n```python\nclass UNet(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.encoder = nn.ModuleList([...])  # Conv blocks\n        self.decoder = nn.ModuleList([...])  # Upsampling blocks\n        self.final = nn.Conv2d(64, num_classes, 1)\n    \n    def forward(self, x):\n        skips = []\n        for enc in self.encoder:\n            x = enc(x)\n            skips.append(x)\n            x = F.max_pool2d(x, 2)\n        \n        for dec, skip in zip(reversed(self.decoder), reversed(skips)):\n            x = dec(x)\n            x = torch.cat([x, skip], dim=1)\n        \n        return self.final(x)\n```\n\n## Common Pitfalls\n- **Vanishing gradients**: Use batch normalization and proper initialization\n- **Memory issues**: Skip connections double feature map sizes\n- **Border artifacts**: Apply padding to maintain spatial dimensions",
+      "question": "How does U-Net's skip connection architecture enable precise medical image segmentation?",
+      "answer": "U-Net uses contracting encoder for context, expanding decoder with skip connections to preserve spatial details for precise pixel-wise segmentation.",
+      "explanation": "## Why Asked\nTests understanding of advanced CNN architectures for medical imaging and computer vision segmentation tasks\n## Key Concepts\n- Encoder-decoder architecture\n- Skip connections for feature preservation\n- Contracting and expanding paths\n- Pixel-wise segmentation\n## Code Example\n```\ndef unet_block(x, skip):\n    x = Conv2D(64, 3, padding='same')(x)\n    x = concatenate([x, skip])\n    return x\n```\n## Follow-up Questions\n- How does U-Net handle class imbalance?\n- What are alternatives to skip connections?\n- How does it compare to FCN?",
       "tags": [
         "unet",
         "mask-rcnn",
         "sam"
       ],
       "difficulty": "beginner",
-      "diagram": "graph TD\n    A[Input Image] --> B[Conv Block 1]\n    B --> C[Max Pool]\n    C --> D[Conv Block 2]\n    D --> E[Max Pool]\n    E --> F[Conv Block 3]\n    F --> G[Max Pool]\n    G --> H[Bottleneck]\n    \n    B --> I[Skip Connection 1]\n    D --> J[Skip Connection 2]\n    F --> K[Skip Connection 3]\n    \n    H --> L[Upconv 1]\n    K --> L\n    L --> M[Conv Block 4]\n    \n    M --> N[Upconv 2]\n    J --> N\n    N --> O[Conv Block 5]\n    \n    O --> P[Upconv 3]\n    I --> P\n    P --> Q[Conv Block 6]\n    \n    Q --> R[1x1 Conv]\n    R --> S[Segmentation Mask]",
-      "lastUpdated": "2025-12-14T12:57:48.368Z"
+      "diagram": "flowchart TD\n  A[Input Image] --> B[Encoder Path]\n  B --> B1[Bottleneck]\n  B1 --> C[Decoder Path]\n  C --> D[Segmentation Output]\n  B -.->|Skip Connections| C",
+      "lastUpdated": "2025-12-17T06:42:09.914Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-201": {
       "id": "q-201",
@@ -2736,17 +3036,27 @@
     },
     "q-208": {
       "id": "q-208",
-      "question": "What is the difference between Selenium WebDriver and Selenium Grid, and when would you use each?",
-      "answer": "WebDriver controls single browsers locally; Grid manages multiple browsers across machines for parallel testing.",
-      "explanation": "## Selenium WebDriver\n- Controls individual browser instances programmatically\n- Runs locally on your machine\n- Direct browser automation through browser-specific drivers\n\n## Selenium Grid\n- Distributes tests across multiple machines/browsers\n- Central hub manages multiple nodes\n- Enables parallel execution and cross-browser testing\n\n## Implementation Example\n```java\n// WebDriver - single browser\nWebDriver driver = new ChromeDriver();\ndriver.get(\"https://example.com\");\n\n// Grid - remote execution\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    DesiredCapabilities.chrome()\n);\n```\n\n## Common Pitfalls\n- WebDriver: Browser driver version mismatches\n- Grid: Network connectivity issues between hub and nodes\n- Both: Improper wait strategies leading to flaky tests",
+      "question": "What is the difference between Selenium WebDriver and Selenium Grid, and when would you use each in your testing strategy?",
+      "answer": "WebDriver controls single browsers locally; Grid manages multiple browsers across machines for parallel test execution and cross-browser testing.",
+      "explanation": "## Why Asked\nInterview context: Tests understanding of Selenium architecture and scalable testing approaches\n## Key Concepts\nCore knowledge: WebDriver for single browser automation, Grid for distributed testing, parallel execution, cross-browser compatibility\n## Code Example\n```\n// WebDriver setup\nWebDriver driver = new ChromeDriver();\n\n// Grid setup\nDesiredCapabilities caps = new DesiredCapabilities();\ncaps.setBrowserName(\"chrome\");\nWebDriver driver = new RemoteWebDriver(gridUrl, caps);\n```\n## Follow-up Questions\nCommon follow-ups: How do you configure Grid nodes? What's the difference between Grid 3 and 4? How do you handle flaky tests?",
       "tags": [
         "selenium",
         "webdriver",
         "grid"
       ],
       "difficulty": "beginner",
-      "diagram": "graph TD\n    A[Test Script] --> B{Choose Approach}\n    B -->|Single Browser| C[WebDriver]\n    B -->|Multiple Browsers| D[Selenium Grid]\n    C --> E[Local Browser Driver]\n    E --> F[Chrome/Firefox/Safari]\n    D --> G[Grid Hub]\n    G --> H[Node 1 - Chrome]\n    G --> I[Node 2 - Firefox]\n    G --> J[Node 3 - Safari]",
-      "lastUpdated": "2025-12-14T12:58:42.567Z"
+      "diagram": "flowchart TD\n  A[Test Strategy] --> B{Single Browser?}\n  B -->|Yes| C[WebDriver]\n  B -->|No| D[Grid]\n  C --> E[Local Testing]\n  D --> F[Parallel Testing]\n  D --> G[Cross-Browser Testing]",
+      "lastUpdated": "2025-12-17T06:42:48.623Z",
+      "sourceUrl": null,
+      "videos": {
+        "shortVideo": null,
+        "longVideo": null
+      },
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta"
+      ]
     },
     "q-209": {
       "id": "q-209",
@@ -3858,9 +4168,9 @@
     },
     "q-263": {
       "id": "q-263",
-      "question": "How does demand paging work in virtual memory systems?",
-      "answer": "Pages load on-demand when accessed, not upfront.",
-      "explanation": "## Concept\nDemand paging loads pages into memory only when accessed, reducing initial memory footprint.\n\n## Implementation\n```c\n// Page fault handler\nif (!page_in_memory(virtual_address)) {\n    load_page_from_disk(virtual_address);\n    restart_instruction();\n}\n```\n\n## Trade-offs\n- **Pros**: Lower memory usage, faster startup\n- **Cons**: Page fault latency, thrashing\n\n## Pitfalls\n- Thrashing under memory pressure\n- Working set estimation errors",
+      "question": "How does demand paging improve memory efficiency in virtual memory systems, and what triggers a page fault?",
+      "answer": "Pages load only when accessed via page faults, avoiding unnecessary memory allocation and improving system performance.",
+      "explanation": "## Why Asked\nTests understanding of virtual memory management, a core OS concept for memory optimization and system performance.\n\n## Key Concepts\n- Demand paging vs pre-paging\n- Page fault handling mechanism\n- Memory management unit (MMU)\n- Page replacement algorithms\n- Working set theory\n\n## Code Example\n```\n// Page fault handler pseudocode\nvoid handle_page_fault(int address) {\n  int page_num = address / PAGE_SIZE;\n  if (page_table[page_num].valid_bit == 0) {\n    load_page_from_disk(page_num);\n    page_table[page_num].valid_bit = 1;\n  }\n  restart_instruction();\n}\n```\n\n## Follow-up Questions\n- How does the OS choose which pages to evict?\n- What's the difference between hard and soft page faults?\n- How does demand paging relate to thrashing?",
       "tags": [
         "virtual-memory",
         "paging",
@@ -3868,7 +4178,7 @@
         "cache"
       ],
       "difficulty": "intermediate",
-      "diagram": "flowchart TD\n    A[Page Access] --> B{Page in RAM?}\n    B -->|No| C[Page Fault]\n    C --> D[Load from Disk]\n   D --> E[Update Page Table]\nE --> F[Restart Access]\nB -->|Yes| F",
+      "diagram": "flowchart TD\n    A[Process accesses memory] --> B{Page in RAM?}\n    B -->|Yes| C[Access data directly]\n    B -->|No| D[Page fault triggered]\n    D --> E[OS handles fault]\n    E --> F[Load page from disk]\n    F --> G[Update page table]\n    G --> H[Restart instruction]\n    H --> C",
       "sourceUrl": null,
       "videos": {
         "shortVideo": null,
@@ -3878,15 +4188,16 @@
         "Amazon",
         "Apple",
         "Google",
+        "Meta",
         "Microsoft"
       ],
-      "lastUpdated": "2025-12-15T13:27:53.972Z"
+      "lastUpdated": "2025-12-17T06:43:07.498Z"
     },
     "q-264": {
       "id": "q-264",
-      "question": "How do pipes work in Unix?",
-      "answer": "Pipes connect processes for data flow.",
-      "explanation": "## Concept\n\nPipes are unidirectional communication channels between processes.\n\n## Implementation\n\n```c\nint fd[2];\npipe(fd);\n```\n\n## Trade-offs\n\n- Pro: Simple IPC\n- Con: One-way only\n\n## Pitfalls\n\n- Buffer overflow risk\n- No bidirectional",
+      "question": "How do Unix pipes enable inter-process communication and what are their performance implications?",
+      "answer": "Pipes provide unidirectional byte streams between processes, using kernel buffers for efficient IPC with blocking I/O semantics.",
+      "explanation": "## Why Asked\nTests understanding of IPC mechanisms and system design principles for scalable applications\n## Key Concepts\nUnidirectional communication, kernel buffering, blocking I/O, file descriptor abstraction, pipe capacity limits\n## Code Example\n```bash\n# Create pipe and connect processes\nls -l | grep \".txt\" | wc -l\n# Kernel manages 64KB buffer between processes\n```\n## Follow-up Questions\nWhat's the difference between named and anonymous pipes? How do pipes handle backpressure? What are alternatives to pipes?",
       "tags": [
         "posix",
         "signals",
@@ -3894,7 +4205,7 @@
         "sockets"
       ],
       "difficulty": "beginner",
-      "diagram": "graph LR\n    A[Process A] -->|writes| B[Process B]",
+      "diagram": "flowchart TD\n  A[Process A] -->|writes| B[Pipe Buffer]\n  B -->|reads| C[Process B]\n  D[Kernel] -->|manages| B",
       "sourceUrl": "https://man7.org/linux/man-pages/pipe.2",
       "videos": {
         "shortVideo": null,
@@ -3902,17 +4213,18 @@
       },
       "companies": [
         "Amazon",
+        "Apple",
         "Google",
         "Meta",
         "Microsoft"
       ],
-      "lastUpdated": "2025-12-15T13:56:12.990Z"
+      "lastUpdated": "2025-12-17T06:43:32.818Z"
     },
     "q-265": {
       "id": "q-265",
-      "question": "How would you implement a system monitoring tool that combines htop, strace, and lsof functionality?",
-      "answer": "Use a modular architecture with separate modules for process monitoring, system calls, and network connections.",
-      "explanation": "## Concept\n\n## Implementation\n\n## Trade-offs\n\n## Pitfalls",
+      "question": "How would you design a unified system monitoring dashboard that aggregates real-time process metrics, system call tracing, and network connection data from htop, strace, and lsof?",
+      "answer": "Implement a web-based dashboard with WebSocket connections collecting data from background processes running htop, strace, and lsof, aggregating metrics in Redis for real-time visualization.",
+      "explanation": "## Why Asked\nTests system monitoring, process management, and data aggregation skills for DevOps/SRE roles\n## Key Concepts\nProcess monitoring, system call tracing, network connections, real-time data aggregation, WebSocket communication\n## Code Example\n```\nconst monitor = {\n  processes: spawn('htop', '--batch=1'),\n  syscalls: spawn('strace', '-p', pid),\n  network: spawn('lsof', '-i'),\n  aggregate: (data) => redis.set('metrics', JSON.stringify(data))\n}\n```\n## Follow-up Questions\nHow would you handle high-frequency data updates? What about security and access controls? How would you scale for multiple servers?",
       "tags": [
         "top",
         "htop",
@@ -3920,7 +4232,7 @@
         "lsof"
       ],
       "difficulty": "intermediate",
-      "diagram": "flowchart LR\n    A[Main] --> B[Process Monitor]\n    A --> C[Strace Module]\n    A --> D[Network Monitor]",
+      "diagram": "flowchart TD\n  A[System Start] --> B[Collect Process Data]\n  B --> C[Trace System Calls]\n  C --> D[Monitor Network Connections]\n  D --> E[Aggregate in Redis]\n  E --> F[WebSocket to Dashboard]\n  F --> G[Real-time Visualization]",
       "sourceUrl": "https://man7.org/linux/man-pages/",
       "videos": {
         "shortVideo": null,
@@ -3930,9 +4242,10 @@
         "Amazon",
         "Google",
         "Meta",
-        "Microsoft"
+        "Microsoft",
+        "Netflix"
       ],
-      "lastUpdated": "2025-12-15T14:02:17.822Z"
+      "lastUpdated": "2025-12-17T06:43:44.377Z"
     },
     "q-266": {
       "id": "q-266",
@@ -4416,5 +4729,5 @@
       "lastUpdated": "2025-12-17T04:54:23.754Z"
     }
   },
-  "lastUpdated": "2025-12-17T04:54:23.759Z"
+  "lastUpdated": "2025-12-17T06:43:44.377Z"
 }
