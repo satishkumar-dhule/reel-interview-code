@@ -12,9 +12,11 @@ import Reels from "@/pages/ReelsRedesigned";
 import AllChannels from "@/pages/AllChannels";
 import MermaidTest from "@/pages/MermaidTest";
 import { Onboarding } from "./components/Onboarding";
+import { MarvelIntro, useMarvelIntro } from "./components/MarvelIntro";
 import { ThemeProvider } from "./context/ThemeContext";
 import { UserPreferencesProvider, useUserPreferences } from "./context/UserPreferencesContext";
 import { usePageViewTracking, useSessionTracking, useInteractionTracking } from "./hooks/use-analytics";
+import { AnimatePresence } from "framer-motion";
 
 function Router() {
   return (
@@ -39,6 +41,21 @@ function AppContent() {
   useInteractionTracking();
   
   const { needsOnboarding } = useUserPreferences();
+  const { showIntro, isChecking, completeIntro } = useMarvelIntro();
+  
+  // Don't render anything while checking localStorage
+  if (isChecking) {
+    return null;
+  }
+  
+  // Show Marvel intro for first-time visitors (before onboarding)
+  if (showIntro) {
+    return (
+      <AnimatePresence>
+        <MarvelIntro onComplete={completeIntro} />
+      </AnimatePresence>
+    );
+  }
   
   // Show onboarding for first-time users
   if (needsOnboarding) {
