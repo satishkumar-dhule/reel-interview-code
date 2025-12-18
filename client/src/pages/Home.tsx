@@ -8,7 +8,7 @@ import {
   Terminal, Cpu, Database, Layout, BarChart2, Palette, Activity, GitBranch, 
   Star, AlertCircle, Sparkles, Plus, Server, Layers, Smartphone, Shield,
   Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText,
-  CheckCircle, Monitor, Zap, Gauge, Search, X, Rss
+  CheckCircle, Monitor, Zap, Gauge, Search, X, Rss, Bot
 } from 'lucide-react';
 import { SearchModal } from '../components/SearchModal';
 import { useProgress } from '../hooks/use-progress';
@@ -323,6 +323,13 @@ export default function Home() {
                title="View Stats [S]"
              >
                 <BarChart2 className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Stats</span>
+             </button>
+             <button 
+               onClick={() => setLocation('/bot-activity')}
+               className="text-[10px] sm:text-xs uppercase tracking-widest hover:text-primary flex items-center gap-1 sm:gap-2 transition-colors p-1"
+               title="Bot Activity"
+             >
+                <Bot className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Bots</span>
              </button>
              <a 
                href="https://github.com/satishkumar-dhule/code-reels"

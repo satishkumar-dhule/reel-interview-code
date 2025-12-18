@@ -22,6 +22,8 @@ function parseQuestion(row: any) {
   };
 }
 
+
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -199,6 +201,9 @@ export async function registerRoutes(
       res.status(500).json({ error: "Failed to fetch companies" });
     }
   });
+
+  // Note: Bot activity is served from static JSON file at /data/bot-activity.json
+  // Generated during build by fetch-questions-for-build.js
 
   return httpServer;
 }

@@ -9,7 +9,8 @@ import {
   writeGitHubOutput,
   logQuestionsAdded,
   validateYouTubeVideos,
-  normalizeCompanies
+  normalizeCompanies,
+  logBotActivity
 } from './utils.js';
 
 // Channel configurations
@@ -219,6 +220,13 @@ IMPORTANT: Return ONLY the JSON object. No other text.`;
     const channelMappings = [{ channel, subChannel: subChannelConfig.subChannel }];
 
     await addUnifiedQuestion(newQuestion, channelMappings);
+    
+    // Log bot activity
+    await logBotActivity(newQuestion.id, 'generate', 'new question created', 'completed', {
+      channel,
+      subChannel: subChannelConfig.subChannel,
+      difficulty
+    });
     
     addedQuestions.push({ ...newQuestion, mappedChannels: channelMappings });
 

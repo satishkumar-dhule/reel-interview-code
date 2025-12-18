@@ -123,6 +123,77 @@ async function main() {
   }, null, 0));
   console.log(`   ✓ stats.json`);
 
+  // Fetch bot activity from work_queue
+  console.log('\n📥 Fetching bot activity...');
+  try {
+    const activityResult = await client.execute(`
+      SELECT 
+        w.id,
+        w.bot_type as botType,
+        w.question_id as questionId,
+        q.question as questionText,
+        q.channel,
+        w.reason as action,
+        w.status,
+        w.result,
+        w.completed_at as completedAt
+      FROM work_queue w
+      LEFT JOIN questions q ON w.question_id = q.id
+      WHERE w.status IN ('completed', 'failed')
+      ORDER BY w.completed_at DESC
+      LIMIT 100
+    `);
+
+    const activities = activityResult.rows.map(row => ({
+      id: row.id,
+      botType: row.botType,
+      questionId: row.questionId,
+      questionText: row.questionText ? String(row.questionText).substring(0, 100) : 'Unknown question',
+      channel: row.channel || 'unknown',
+      action: row.action || 'processed',
+      status: row.status,
+      completedAt: row.completedAt
+    }));
+
+    // Calculate stats per bot
+    const statsResult = await client.execute(`
+      SELECT 
+        bot_type as botType,
+        SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+        SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed,
+        MAX(completed_at) as lastRun
+      FROM work_queue
+      WHERE status IN ('completed', 'failed')
+      GROUP BY bot_type
+      ORDER BY lastRun DESC
+    `);
+
+    const botStats = statsResult.rows.map(row => ({
+      botType: row.botType,
+      completed: Number(row.completed) || 0,
+      failed: Number(row.failed) || 0,
+      lastRun: row.lastRun || new Date().toISOString()
+    }));
+
+    const botActivityFile = path.join(OUTPUT_DIR, 'bot-activity.json');
+    fs.writeFileSync(botActivityFile, JSON.stringify({
+      activities,
+      stats: botStats,
+      lastUpdated: new Date().toISOString()
+    }, null, 0));
+    console.log(`   ✓ bot-activity.json (${activities.length} activities, ${botStats.length} bots)`);
+  } catch (e) {
+    console.log(`   ⚠️ Could not fetch bot activity: ${e.message}`);
+    // Write empty bot activity file
+    const botActivityFile = path.join(OUTPUT_DIR, 'bot-activity.json');
+    fs.writeFileSync(botActivityFile, JSON.stringify({
+      activities: [],
+      stats: [],
+      lastUpdated: new Date().toISOString()
+    }, null, 0));
+    console.log(`   ✓ bot-activity.json (empty - work_queue may not exist)`);
+  }
+
   console.log('\n✅ Static data files generated successfully!');
   console.log(`   Output directory: ${OUTPUT_DIR}`);
   console.log(`   Total questions: ${questions.length}`);

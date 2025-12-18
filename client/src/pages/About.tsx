@@ -4,7 +4,7 @@ import {
   ArrowLeft, Brain, Code, Target, Flame, Lock, Unlock, Volume2, VolumeX,
   Github, Star, MessageSquare, Bug, Sparkles, Zap, BookOpen, Users, 
   Palette, Terminal, Globe, Heart, Coffee, Rocket, ExternalLink, User,
-  Linkedin, Mail, MapPin, Briefcase
+  Linkedin, Mail, MapPin, Briefcase, Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SEOHead } from '../components/SEOHead';
@@ -322,6 +322,26 @@ export default function About() {
                       <div>
                         <h3 className="text-sm font-bold">What's New</h3>
                         <p className="text-xs text-muted-foreground">See latest questions and updates</p>
+                      </div>
+                    </div>
+                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                </a>
+
+                {/* Bot Activity Link */}
+                <a 
+                  href="/bot-activity"
+                  onClick={(e) => { e.preventDefault(); setLocation('/bot-activity'); }}
+                  className="block border border-border rounded-lg p-6 bg-card mb-6 hover:border-primary/50 transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-500/20 rounded-lg">
+                        <Bot className="w-5 h-5 text-purple-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold">Bot Activity</h3>
+                        <p className="text-xs text-muted-foreground">See what our AI bots have been doing</p>
                       </div>
                     </div>
                     <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />

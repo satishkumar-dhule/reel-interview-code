@@ -8,7 +8,8 @@ import {
   writeGitHubOutput,
   logQuestionsImproved,
   getQuestionsNeedingImprovement,
-  getChannelStats
+  getChannelStats,
+  logBotActivity
 } from './utils.js';
 
 // Focus on answer/explanation quality only
@@ -121,6 +122,12 @@ IMPORTANT: Return ONLY the JSON object. No other text.`;
     question.lastUpdated = new Date().toISOString();
 
     await saveQuestion(question);
+    
+    // Log bot activity
+    await logBotActivity(question.id, 'improve', issues.join(', '), 'completed', {
+      channel: question.channel,
+      issuesFixed: issues.length
+    });
     
     improvedQuestions.push(question);
     console.log(`✅ Improved: ${question.id}`);

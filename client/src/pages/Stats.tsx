@@ -4,7 +4,7 @@ import { useGlobalStats } from "../hooks/use-progress";
 import { channels, getQuestions, getAllQuestions, getQuestionDifficulty } from "../lib/data";
 import { 
   ArrowLeft, Trophy, Flame, Zap, Star, AlertCircle, 
-  TrendingUp, Target, Activity, ChevronRight
+  TrendingUp, Target, Activity, ChevronRight, Bot
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { SEOHead } from "../components/SEOHead";
@@ -148,6 +148,7 @@ export default function Stats() {
             </button>
             <h1 className="text-base sm:text-xl font-bold uppercase"><span className="text-primary">&gt;</span> Stats</h1>
             <div className="flex gap-1">
+              <button onClick={() => setLocation('/bot-activity')} className="p-1.5 hover:bg-muted rounded" title="Bot Activity"><Bot className="w-3.5 h-3.5" /></button>
               <a href="https://github.com/satishkumar-dhule/code-reels/issues/new" target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted rounded"><AlertCircle className="w-3.5 h-3.5" /></a>
               <a href="https://github.com/satishkumar-dhule/code-reels" target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted rounded"><Star className="w-3.5 h-3.5" /></a>
             </div>

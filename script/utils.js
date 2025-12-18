@@ -848,3 +848,67 @@ export async function cleanupWorkQueue(daysOld = 7) {
   
   return result.rowsAffected;
 }
+
+// ============================================
+// BOT ACTIVITY LOGGING
+// ============================================
+
+// Log a bot activity (creates a work queue entry for tracking)
+export async function logBotActivity(questionId, botType, action, status = 'completed', result = null) {
+  await initWorkQueue();
+  
+  const now = new Date().toISOString();
+  
+  await dbClient.execute({
+    sql: `INSERT INTO work_queue (question_id, bot_type, priority, status, reason, created_by, created_at, started_at, completed_at, result)
+          VALUES (?, ?, 5, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      questionId,
+      botType,
+      status,
+      action,
+      botType,
+      now,
+      now,
+      now,
+      result ? JSON.stringify(result) : null
+    ]
+  });
+  
+  console.log(`  📊 Logged activity: ${botType} -> ${questionId} (${action})`);
+}
+
+// Get recent bot activity
+export async function getRecentBotActivity(limit = 50, botType = null) {
+  await initWorkQueue();
+  
+  let sql = `
+    SELECT w.*, q.question, q.channel
+    FROM work_queue w
+    LEFT JOIN questions q ON w.question_id = q.id
+    WHERE w.status IN ('completed', 'failed')
+  `;
+  const args = [];
+  
+  if (botType) {
+    sql += ' AND w.bot_type = ?';
+    args.push(botType);
+  }
+  
+  sql += ' ORDER BY w.completed_at DESC LIMIT ?';
+  args.push(limit);
+  
+  const result = await dbClient.execute({ sql, args });
+  
+  return result.rows.map(row => ({
+    id: row.id,
+    questionId: row.question_id,
+    botType: row.bot_type,
+    action: row.reason,
+    status: row.status,
+    result: row.result ? JSON.parse(row.result) : null,
+    completedAt: row.completed_at,
+    questionText: row.question,
+    channel: row.channel
+  }));
+}
