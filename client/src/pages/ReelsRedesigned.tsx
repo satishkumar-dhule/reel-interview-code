@@ -354,7 +354,8 @@ export default function ReelsRedesigned() {
           }
         }
       }
-      else if (e.key === 'ArrowLeft' || e.key === 'Escape') goBack();
+      else if (e.key === 'ArrowLeft') goBack();
+      else if (e.key === 'Escape') setLocation('/');
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -371,18 +372,10 @@ export default function ReelsRedesigned() {
       if (currentChannelIndex !== -1 && currentChannelIndex < subscribedChannels.length - 1) {
         // Go to next channel
         const nextChannel = subscribedChannels[currentChannelIndex + 1];
-        toast({
-          title: "CHANNEL_SWITCH",
-          description: `Moving to ${nextChannel.name}`,
-        });
         setLocation(`/channel/${nextChannel.id}/0`);
       } else if (subscribedChannels.length > 1) {
         // Loop back to first channel
         const firstChannel = subscribedChannels[0];
-        toast({
-          title: "CHANNELS_COMPLETE",
-          description: `Looping back to ${firstChannel.name}`,
-        });
         setLocation(`/channel/${firstChannel.id}/0`);
       }
     }
@@ -404,9 +397,10 @@ export default function ReelsRedesigned() {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
+    // Simple inline feedback instead of blocking toast
     toast({
-      title: "LINK_COPIED",
-      description: "URL saved to clipboard.",
+      title: "✓ Copied",
+      description: "",
     });
   };
 
@@ -455,8 +449,8 @@ export default function ReelsRedesigned() {
     return (
       <div className="h-screen w-full bg-black text-white flex flex-col font-mono">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Back
+          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Home
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -474,8 +468,8 @@ export default function ReelsRedesigned() {
     return (
       <div className="h-screen w-full bg-black text-white flex flex-col font-mono">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Back
+          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Home
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -498,8 +492,8 @@ export default function ReelsRedesigned() {
     return (
       <div className="h-screen w-full bg-black text-white flex flex-col font-mono" data-testid="no-questions-view">
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
-          <button onClick={goBack} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
-            <span className="border border-white/20 p-1 px-2">ESC</span> Back
+          <button onClick={() => setLocation('/')} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary">
+            <span className="border border-white/20 p-1 px-2">ESC</span> Home
           </button>
           <span className="text-xs text-white/50 uppercase tracking-widest">{channel?.name}</span>
         </div>
@@ -561,11 +555,11 @@ export default function ReelsRedesigned() {
         <div className="h-11 sm:h-14 px-2 sm:px-4 z-50 flex justify-between items-center border-b border-white/10 bg-black/90 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <button 
-              onClick={goBack}
+              onClick={() => setLocation('/')}
               className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors group shrink-0"
             >
               <span className="border border-white/20 px-2 py-1 group-hover:border-primary transition-colors">ESC</span> 
-              <span className="hidden sm:inline">Back</span>
+              <span className="hidden sm:inline">Home</span>
             </button>
             
             <div className="h-4 w-px bg-white/20 hidden sm:block shrink-0" />
@@ -683,10 +677,10 @@ export default function ReelsRedesigned() {
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {/* Search button */}
+            {/* Search button - hidden on mobile */}
             <button 
               onClick={() => setShowSearchModal(true)}
-              className="flex items-center gap-1.5 p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors group"
+              className="hidden sm:flex items-center gap-1.5 p-1.5 hover:bg-white/10 border border-white/10 rounded transition-colors group"
               title="Search questions (⌘K)"
             >
               <Search className="w-4 h-4 text-white/70 group-hover:text-white" />
@@ -714,15 +708,15 @@ export default function ReelsRedesigned() {
               </button>
             </div>
 
-            {/* Question Picker */}
+            {/* Question Picker - Simplified on mobile */}
             <Popover.Root open={showQuestionPicker} onOpenChange={setShowQuestionPicker}>
               <Popover.Trigger asChild>
-                <button className="flex items-center gap-2 hover:text-primary transition-colors group">
-                  <List className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                  <span className="text-xs font-mono text-white/50 group-hover:text-white">
-                    {String(currentIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}
+                <button className="flex items-center gap-1 sm:gap-2 hover:text-primary transition-colors group">
+                  <List className="w-4 h-4 opacity-50 group-hover:opacity-100 hidden sm:block" />
+                  <span className="text-[10px] sm:text-xs font-mono text-white/50 group-hover:text-white">
+                    {currentIndex + 1}/{totalQuestions}
                   </span>
-                  {isLastQuestion && <Flag className="w-3 h-3 text-primary animate-pulse" />}
+                  {isLastQuestion && <Flag className="w-3 h-3 text-primary animate-pulse hidden sm:block" />}
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
@@ -873,7 +867,7 @@ export default function ReelsRedesigned() {
               </Popover.Root>
             </div>
 
-            <button onClick={handleShare} className="hover:text-primary transition-colors" title="Share">
+            <button onClick={handleShare} className="hidden sm:block hover:text-primary transition-colors" title="Share">
               <Share2 className="w-4 h-4" />
             </button>
           </div>
@@ -889,10 +883,10 @@ export default function ReelsRedesigned() {
           <AnimatePresence mode="wait" custom={currentIndex}>
             <motion.div
               key={currentQuestion.id}
-              initial={{ opacity: 0 }}
+              initial={isMobile ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              exit={isMobile ? undefined : { opacity: 0 }}
+              transition={{ duration: isMobile ? 0 : 0.2 }}
               className="w-full h-full flex flex-col lg:flex-row overflow-hidden"
             >
               {/* Left: Question Panel - Compact on mobile, smart height based on question length */}
@@ -906,6 +900,7 @@ export default function ReelsRedesigned() {
                   questionNumber={currentIndex + 1}
                   totalQuestions={totalQuestions}
                   isMarked={markedQuestions.includes(currentQuestion.id)}
+                  isCompleted={isCompleted}
                   onToggleMark={() => toggleMark(currentQuestion.id)}
                   timerEnabled={timerEnabled}
                   timeLeft={timeLeft}
@@ -922,20 +917,29 @@ export default function ReelsRedesigned() {
                       markCompleted(currentQuestion.id);
                       trackActivity();
                     }}
-                    className="w-full h-full min-h-[200px] flex flex-col items-center justify-center group hover:bg-white/5 transition-all cursor-pointer"
+                    className="w-full h-full min-h-[120px] sm:min-h-[200px] flex flex-col items-center justify-center group hover:bg-white/5 transition-all cursor-pointer"
                   >
-                    <motion.div
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className="flex flex-col items-center px-4"
-                    >
-                      <Terminal className="w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 text-white/10 group-hover:text-primary/50 transition-colors duration-300" />
-                      <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/30 group-hover:text-white transition-colors text-center">
-                        Tap to Reveal Answer
-                      </span>
-                      <span className="mt-2 sm:mt-4 text-[10px] sm:text-xs text-white/20 font-mono">[OR PRESS →]</span>
-                    </motion.div>
+                    {isMobile ? (
+                      <div className="flex flex-col items-center px-4">
+                        <Terminal className="w-10 h-10 mb-3 text-white/20" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-white/50 text-center">
+                          Tap to Reveal
+                        </span>
+                      </div>
+                    ) : (
+                      <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex flex-col items-center px-4"
+                      >
+                        <Terminal className="w-16 h-16 mb-6 text-white/10 group-hover:text-primary/50 transition-colors duration-300" />
+                        <span className="text-sm font-bold uppercase tracking-widest text-white/30 group-hover:text-white transition-colors text-center">
+                          Tap to Reveal Answer
+                        </span>
+                        <span className="mt-4 text-xs text-white/20 font-mono">[OR PRESS →]</span>
+                      </motion.div>
+                    )}
                   </button>
                 ) : (
                   <AnswerPanel question={currentQuestion} isCompleted={isCompleted} />
@@ -945,94 +949,72 @@ export default function ReelsRedesigned() {
           </AnimatePresence>
         </div>
 
-        {/* Completion Overlay */}
-        <AnimatePresence>
-          {isLastQuestion && showAnswer && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-6 right-6 z-40"
-            >
-              <div className="bg-black/90 backdrop-blur-md border border-primary/50 rounded-lg p-4 shadow-2xl shadow-primary/20">
-                <div className="flex items-center gap-3">
-                  <motion.div animate={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}>
-                    <Flag className="w-6 h-6 text-primary" />
-                  </motion.div>
-                  <div>
-                    <div className="text-xs font-bold text-primary uppercase tracking-widest">🎉 Module Complete!</div>
-                    <div className="text-[10px] text-white/60 mt-0.5">{completed.length}/{totalQuestions} questions done</div>
+        {/* Unified Footer with Status Bar */}
+        <div className="border-t border-white/10 bg-black shrink-0">
+          {/* Status notification bar - shows contextual messages */}
+          <AnimatePresence mode="wait">
+            {isLastQuestion && showAnswer ? (
+              <motion.div
+                key="complete"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="h-8 px-2 sm:px-4 flex items-center justify-between bg-primary/10 border-b border-primary/20">
+                  <div className="flex items-center gap-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-primary">
+                    <Flag className="w-3 h-3" />
+                    <span>🎉 Complete! {completed.length}/{totalQuestions}</span>
                   </div>
-                  <div className="flex gap-2 ml-2">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                  <div className="flex gap-1">
+                    <button
                       onClick={nextQuestion}
-                      className="px-3 py-1.5 bg-primary text-black text-[10px] font-bold uppercase tracking-widest rounded hover:bg-primary/90"
+                      className="px-2 py-0.5 bg-primary text-black text-[9px] font-bold uppercase rounded hover:bg-primary/90"
                     >
-                      Next Channel
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      Next →
+                    </button>
+                    <button
                       onClick={() => setLocation('/')}
-                      className="px-3 py-1.5 bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest rounded hover:bg-white/20 border border-white/20"
+                      className="px-2 py-0.5 bg-white/10 text-white/70 text-[9px] font-bold uppercase rounded hover:bg-white/20"
                     >
                       Home
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Navigation Hint - Shows after 10 seconds on same question */}
-        <AnimatePresence>
-          {showNavHint && !isLastQuestion && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-40"
-            >
-              <div className="bg-primary/90 text-black px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-                <motion.div
-                  animate={{ x: isMobile ? [-3, 3, -3] : [0, 0, 0], y: isMobile ? [0, 0, 0] : [-3, 3, -3] }}
-                  transition={{ duration: 0.5, repeat: Infinity }}
-                >
-                  {isMobile ? (
-                    <ArrowLeft className="w-4 h-4" />
-                  ) : (
-                    <ArrowRight className="w-4 h-4 rotate-90" />
-                  )}
-                </motion.div>
-                <span className="text-xs font-bold uppercase tracking-wider">
-                  {isMobile ? 'Swipe left for next' : 'Press ↓ for next'}
-                </span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Footer - Compact on mobile */}
-        <div className="h-8 sm:h-10 px-2 sm:px-4 border-t border-white/10 flex justify-between items-center text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white/30 bg-black shrink-0">
-          <div className="flex gap-6">
-            <span className="hidden sm:flex items-center gap-1"><span className="text-primary">↑</span> PREV</span>
-            <span className="hidden sm:flex items-center gap-1"><span className="text-primary">↓</span> NEXT</span>
-            <span className="hidden sm:flex items-center gap-1"><span className="text-primary">→</span> REVEAL</span>
-            <span className="sm:hidden text-white/40">← SWIPE →</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className={`${isLastQuestion ? 'text-primary' : 'text-white/40'}`}>
-              {isLastQuestion ? (
-                <span className="flex items-center gap-1"><Flag className="w-3 h-3" /> FINAL</span>
-              ) : (
-                <span>{remainingQuestions} LEFT</span>
-              )}
-            </span>
-            <span className="text-white/20">|</span>
-            <span>v3.0</span>
+              </motion.div>
+            ) : showNavHint && !isLastQuestion ? (
+              <motion.div
+                key="hint"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="h-6 px-2 sm:px-4 flex items-center justify-center bg-primary/10 border-b border-primary/20">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary flex items-center gap-1">
+                    {isMobile ? '← Swipe for next →' : '↓ Press down for next'}
+                  </span>
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+          
+          {/* Main footer */}
+          <div className="h-7 sm:h-8 px-2 sm:px-4 flex justify-between items-center text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-white/30">
+            <div className="flex gap-4 sm:gap-6">
+              <span className="hidden sm:flex items-center gap-1"><span className="text-primary">↑↓</span> NAV</span>
+              <span className="hidden sm:flex items-center gap-1"><span className="text-primary">→</span> REVEAL</span>
+              <span className="sm:hidden text-white/40">← SWIPE →</span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className={isLastQuestion ? 'text-primary' : 'text-white/40'}>
+                {isLastQuestion ? 'FINAL' : `${remainingQuestions} LEFT`}
+              </span>
+              <span className="text-white/20 hidden sm:inline">|</span>
+              <span className="hidden sm:inline">v3.0</span>
+            </div>
           </div>
         </div>
       </div>

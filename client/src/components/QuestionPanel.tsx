@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Hash, Zap, Target, Flame, Bookmark, Clock } from 'lucide-react';
+import { Hash, Zap, Target, Flame, Bookmark, Clock, Check } from 'lucide-react';
 import type { Question } from '../lib/data';
 
 interface QuestionPanelProps {
@@ -7,6 +7,7 @@ interface QuestionPanelProps {
   questionNumber: number;
   totalQuestions: number;
   isMarked: boolean;
+  isCompleted: boolean;
   onToggleMark: () => void;
   timerEnabled: boolean;
   timeLeft: number;
@@ -17,6 +18,7 @@ export function QuestionPanel({
   questionNumber, 
   totalQuestions,
   isMarked,
+  isCompleted,
   onToggleMark,
   timerEnabled,
   timeLeft
@@ -120,17 +122,24 @@ export function QuestionPanel({
         }`}
       >
         {/* Question text - Smart sizing based on length */}
-        <h1 className={`font-bold text-white ${
-          question.question.length > 250 
-            ? 'text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed' // Very long questions
-            : question.question.length > 150
-            ? 'text-sm sm:text-base md:text-lg lg:text-xl leading-snug' // Long questions
-            : question.question.length > 80
-            ? 'text-base sm:text-lg md:text-xl lg:text-2xl leading-snug sm:leading-tight' // Medium questions
-            : 'text-base sm:text-xl md:text-2xl lg:text-3xl leading-tight tracking-tight' // Short questions
-        }`}>
-          {question.question}
-        </h1>
+        <div className="flex items-start gap-2">
+          {isCompleted && (
+            <div className="shrink-0 mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-green-500/20 flex items-center justify-center" title="Completed">
+              <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-400" />
+            </div>
+          )}
+          <h1 className={`font-bold text-white ${
+            question.question.length > 250 
+              ? 'text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed' // Very long questions
+              : question.question.length > 150
+              ? 'text-sm sm:text-base md:text-lg lg:text-xl leading-snug' // Long questions
+              : question.question.length > 80
+              ? 'text-base sm:text-lg md:text-xl lg:text-2xl leading-snug sm:leading-tight' // Medium questions
+              : 'text-base sm:text-xl md:text-2xl lg:text-3xl leading-tight tracking-tight' // Short questions
+          }`}>
+            {question.question}
+          </h1>
+        </div>
 
         {/* Tags - Hidden on mobile for compactness */}
         {question.tags && question.tags.length > 0 && (

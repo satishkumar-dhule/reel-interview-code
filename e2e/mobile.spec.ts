@@ -259,9 +259,9 @@ test.describe('Mobile Experience', () => {
     
     await expect(page.getByTestId('question-panel').or(page.getByTestId('no-questions-view'))).toBeVisible({ timeout: 10000 });
     
-    // Mobile should show swipe hints or navigation buttons
+    // Mobile should show swipe hints in the unified footer
     const hasSwipeHint = await page.getByText(/SWIPE/i).isVisible().catch(() => false);
-    const hasNavButtons = await page.locator('button[title="Next"]').isVisible().catch(() => false);
+    const hasNavButtons = await page.locator('button[title="Next"]').or(page.locator('button[title*="Next"]')).isVisible().catch(() => false);
     
     expect(hasSwipeHint || hasNavButtons).toBeTruthy();
   });

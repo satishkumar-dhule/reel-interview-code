@@ -50,6 +50,7 @@ function CollapsibleSection({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [userToggled, setUserToggled] = useState(false); // Track if user manually toggled
   const sectionRef = useRef<HTMLDivElement>(null);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   // Only auto-collapse when section scrolls above viewport
   // Don't auto-expand - let user control that
@@ -106,28 +107,43 @@ function CollapsibleSection({
             {title}
           </h2>
         </div>
-        <motion.div
-          animate={{ rotate: isExpanded ? 0 : -90 }}
-          transition={{ duration: 0.2 }}
-          className="text-white/50 group-hover:text-white transition-colors"
-        >
-          <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        </motion.div>
-      </button>
-      
-      <AnimatePresence initial={false}>
-        {isExpanded && (
+        {isMobile ? (
+          <div className={`text-white/50 transition-transform ${isExpanded ? '' : '-rotate-90'}`}>
+            <ChevronDown className="w-3.5 h-3.5" />
+          </div>
+        ) : (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden"
+            animate={{ rotate: isExpanded ? 0 : -90 }}
+            transition={{ duration: 0.2 }}
+            className="text-white/50 group-hover:text-white transition-colors"
           >
-            {children}
+            <ChevronDown className="w-4 h-4" />
           </motion.div>
         )}
-      </AnimatePresence>
+      </button>
+      
+      {/* Simplified animation on mobile for better performance */}
+      {isMobile ? (
+        isExpanded && (
+          <div className="overflow-hidden">
+            {children}
+          </div>
+        )
+      ) : (
+        <AnimatePresence initial={false}>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              {children}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </div>
   );
 }
@@ -272,12 +288,14 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
   };
 
 
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 640;
+
   return (
     <motion.div
       ref={scrollContainerRef}
-      initial={{ opacity: 0, y: 20 }}
+      initial={isMobileView ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: isMobileView ? 0 : 0.3 }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
       <div className="max-w-4xl mx-auto px-2 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 space-y-1 sm:space-y-2">
@@ -317,26 +335,28 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
           </CollapsibleSection>
         )}
 
-        {/* Diagram Section - Collapsible, compact on mobile, skip if invalid */}
+        {/* Diagram Section - Hidden on mobile, collapsible on desktop */}
         {isValidMermaidDiagram(question.diagram) && (
-          <CollapsibleSection
-            id="diagram"
-            title="Diagram"
-            icon={<Code2 className="w-3 h-3 sm:w-4 sm:h-4" />}
-            accentColor="primary"
-            onVisibilityChange={handleVisibilityChange}
-          >
-            <div className="w-full">
-              <EnhancedMermaid chart={question.diagram!} />
-            </div>
-          </CollapsibleSection>
+          <div className="hidden sm:block">
+            <CollapsibleSection
+              id="diagram"
+              title="Diagram"
+              icon={<Code2 className="w-3 h-3 sm:w-4 sm:h-4" />}
+              accentColor="primary"
+              onVisibilityChange={handleVisibilityChange}
+            >
+              <div className="w-full">
+                <EnhancedMermaid chart={question.diagram!} />
+              </div>
+            </CollapsibleSection>
+          </div>
         )}
 
-        {/* Quick Answer Section - Collapsible, compact on mobile */}
+        {/* TLDR Section - Collapsible, compact on mobile */}
         {question.answer && question.answer !== question.explanation && (
           <CollapsibleSection
             id="quick-answer"
-            title="Quick Answer"
+            title="TLDR"
             icon={<Lightbulb className="w-3 h-3 sm:w-4 sm:h-4" />}
             accentColor="yellow"
             onVisibilityChange={handleVisibilityChange}
@@ -382,23 +402,6 @@ export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
             {renderMarkdown(question.explanation)}
           </div>
         </CollapsibleSection>
-
-        {/* Completion Badge - Non-collapsible, compact on mobile */}
-        {isCompleted && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg"
-          >
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-              <Check className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-green-400" />
-            </div>
-            <div>
-              <div className="text-[10px] sm:text-sm font-bold text-green-400 uppercase tracking-wide">Completed</div>
-              <div className="text-[9px] sm:text-xs text-green-400/70 hidden sm:block">You've reviewed this question</div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Tags - Non-collapsible, compact on mobile */}
         {question.tags && question.tags.length > 0 && (
