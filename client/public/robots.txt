@@ -1,11 +1,14 @@
-# robots.txt for Code Reels
+# Code Reels - Technical Interview Prep
 # https://reel-interview.github.io
 
 User-agent: *
 Allow: /
 
-# Sitemap location
+# Sitemaps
 Sitemap: https://reel-interview.github.io/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
+
+# Disallow admin/internal paths (none currently)
+# Disallow: /admin/
