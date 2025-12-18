@@ -286,6 +286,37 @@ async function main() {
     console.log(`   ✓ github-analytics.json (empty - table may not exist yet)`);
   }
 
+  // Fetch tests from database
+  console.log('\n📥 Fetching tests...');
+  try {
+    const testsResult = await client.execute(`
+      SELECT id, channel_id, channel_name, title, description, questions, passing_score, created_at, version
+      FROM tests
+      ORDER BY channel_name
+    `);
+
+    const tests = testsResult.rows.map(row => ({
+      id: row.id,
+      channelId: row.channel_id,
+      channelName: row.channel_name,
+      title: row.title,
+      description: row.description,
+      questions: JSON.parse(row.questions),
+      passingScore: row.passing_score || 70,
+      createdAt: row.created_at,
+      version: row.version || 1
+    }));
+
+    const testsFile = path.join(OUTPUT_DIR, 'tests.json');
+    fs.writeFileSync(testsFile, JSON.stringify(tests, null, 0));
+    console.log(`   ✓ tests.json (${tests.length} tests)`);
+  } catch (e) {
+    console.log(`   ⚠️ Could not fetch tests: ${e.message}`);
+    const testsFile = path.join(OUTPUT_DIR, 'tests.json');
+    fs.writeFileSync(testsFile, JSON.stringify([], null, 0));
+    console.log(`   ✓ tests.json (empty - table may not exist yet)`);
+  }
+
   console.log('\n✅ Static data files generated successfully!');
   console.log(`   Output directory: ${OUTPUT_DIR}`);
   console.log(`   Total questions: ${questions.length}`);

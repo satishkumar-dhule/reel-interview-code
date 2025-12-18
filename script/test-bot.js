@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 /**
  * Test Bot - Generates quiz tests for each channel
- * Uses opencode run command for better reliability
- * Outputs to client/public/data/tests.json
+ * Saves tests to Turso database (not local files)
+ * Tests are fetched during build by fetch-questions-for-build.js
  */
 
 import 'dotenv/config';
 import { createClient } from '@libsql/client';
 import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 
 const db = createClient({
   url: process.env.TURSO_DATABASE_URL,
@@ -17,8 +15,7 @@ const db = createClient({
 });
 
 const CHANNEL_ID = process.env.CHANNEL_ID || null;
-const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '5'); // Smaller batches
-const OUTPUT_FILE = 'client/public/data/tests.json';
+const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '5');
 
 const CHANNEL_NAMES = {
   'system-design': 'System Design',
@@ -34,7 +31,27 @@ const CHANNEL_NAMES = {
   'cloud': 'Cloud',
   'networking': 'Networking',
   'behavioral': 'Behavioral',
+  'aws': 'AWS',
+  'kubernetes': 'Kubernetes',
 };
+
+// Initialize tests table
+async function initTable() {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS tests (
+      id TEXT PRIMARY KEY,
+      channel_id TEXT NOT NULL,
+      channel_name TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT,
+      questions TEXT NOT NULL,
+      passing_score INTEGER DEFAULT 70,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      version INTEGER DEFAULT 1
+    )
+  `);
+  console.log('✓ Tests table ready');
+}
 
 async function getChannelQuestions(channelId, limit = 25) {
   const result = await db.execute({
@@ -48,19 +65,25 @@ async function getChannelQuestions(channelId, limit = 25) {
   return result.rows;
 }
 
+async function testExists(channelId) {
+  const result = await db.execute({
+    sql: 'SELECT id FROM tests WHERE channel_id = ?',
+    args: [channelId]
+  });
+  return result.rows.length > 0;
+}
+
 // Generate MCQs using opencode run
 function generateBatchMCQs(questions) {
   const summaries = questions.map((q, i) => 
     `${i + 1}. Q: ${q.question.substring(0, 100)} A: ${q.answer.substring(0, 150)}`
   ).join('\n');
 
-  // Escape for shell - use base64 encoding
   const prompt = `Create ${questions.length} MCQs from these Q&As:\n${summaries}\n\nReturn JSON array: [{"q":"question","o":["a","b","c","d"],"c":[0]}] where c=correct indices. ONLY JSON.`;
   
   const base64Prompt = Buffer.from(prompt).toString('base64');
   
   try {
-    // Use opencode run with the message
     const result = execSync(
       `echo "${base64Prompt}" | base64 -d | opencode run`,
       {
@@ -73,14 +96,11 @@ function generateBatchMCQs(questions) {
 
     // Extract JSON array - handle markdown code blocks
     let jsonStr = result;
-    
-    // Remove markdown code blocks if present
     const codeBlockMatch = result.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (codeBlockMatch) {
       jsonStr = codeBlockMatch[1].trim();
     }
     
-    // Find JSON array
     const jsonMatch = jsonStr.match(/\[[\s\S]*\]/);
     if (!jsonMatch) {
       console.log('    ⚠️ No JSON found');
@@ -119,6 +139,24 @@ function generateBatchMCQs(questions) {
   }
 }
 
+async function saveTestToDb(test) {
+  await db.execute({
+    sql: `INSERT OR REPLACE INTO tests (id, channel_id, channel_name, title, description, questions, passing_score, created_at, version)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      test.id,
+      test.channelId,
+      test.channelName,
+      test.title,
+      test.description,
+      JSON.stringify(test.questions),
+      test.passingScore,
+      test.createdAt,
+      test.version
+    ]
+  });
+}
+
 async function generateTestForChannel(channelId) {
   console.log(`\n📝 ${channelId}`);
   
@@ -150,7 +188,7 @@ async function generateTestForChannel(channelId) {
     return null;
   }
 
-  return {
+  const test = {
     id: `test-${channelId}`,
     channelId,
     channelName: CHANNEL_NAMES[channelId] || channelId,
@@ -161,50 +199,50 @@ async function generateTestForChannel(channelId) {
     createdAt: new Date().toISOString(),
     version: 1
   };
+
+  // Save to database
+  await saveTestToDb(test);
+  console.log(`   ✓ Saved to DB`);
+  
+  return test;
 }
 
 async function main() {
   console.log('🧪 Test Bot\n');
+
+  await initTable();
 
   let channelIds = CHANNEL_ID ? [CHANNEL_ID] : 
     (await db.execute('SELECT DISTINCT channel FROM questions ORDER BY channel')).rows.map(r => r.channel);
 
   console.log(`${channelIds.length} channels`);
 
-  let tests = [];
-  try {
-    if (fs.existsSync(OUTPUT_FILE)) {
-      tests = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf-8'));
-    }
-  } catch {}
-
   let generated = 0;
   
   for (const channelId of channelIds) {
-    if (!CHANNEL_ID && tests.find(t => t.channelId === channelId)) {
+    // Skip if test exists (unless specific channel requested)
+    if (!CHANNEL_ID && await testExists(channelId)) {
       console.log(`⏭️ ${channelId} exists`);
       continue;
     }
 
     const test = await generateTestForChannel(channelId);
-    if (test) {
-      const idx = tests.findIndex(t => t.channelId === channelId);
-      if (idx >= 0) tests[idx] = test;
-      else tests.push(test);
-      generated++;
-    }
+    if (test) generated++;
 
+    // Limit per run (unless specific channel)
     if (!CHANNEL_ID && generated >= 1) {
       console.log(`\n⏸️ Done ${generated}`);
       break;
     }
   }
 
-  const dir = path.dirname(OUTPUT_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(tests, null, 2));
-  console.log(`\n✅ ${tests.length} tests saved`);
+  // Show summary
+  const allTests = await db.execute('SELECT channel_name, questions FROM tests');
+  console.log(`\n✅ ${allTests.rows.length} tests in DB`);
+  allTests.rows.forEach(t => {
+    const qs = JSON.parse(t.questions);
+    console.log(`   - ${t.channel_name}: ${qs.length} MCQs`);
+  });
 }
 
 main().catch(e => {
