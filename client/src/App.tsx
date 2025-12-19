@@ -30,6 +30,7 @@ import { UserPreferencesProvider, useUserPreferences } from "./context/UserPrefe
 import { usePageViewTracking, useSessionTracking, useInteractionTracking } from "./hooks/use-analytics";
 import { AnimatePresence } from "framer-motion";
 import { preloadQuestions } from "./lib/questions-loader";
+import PixelMascot from "./components/PixelMascot";
 
 // New UI is now the default for all users
 const useNewUI = () => {
@@ -108,7 +109,12 @@ function AppContent() {
     return <Onboarding />;
   }
 
-  return <Router />;
+  return (
+    <>
+      <Router />
+      <PixelMascot />
+    </>
+  );
 }
 
 function App() {
