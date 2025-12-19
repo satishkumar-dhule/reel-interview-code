@@ -2,20 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, ArrowRight, Plus, RefreshCw } from 'lucide-react';
-import changelog from '../lib/changelog';
-
-interface ChangelogEntry {
-  date: string;
-  type: 'questions_added' | 'questions_improved' | 'initial' | 'feature';
-  title: string;
-  description: string;
-  details?: {
-    questionsAdded?: number;
-    questionsImproved?: number;
-    channels?: string[];
-    questionIds?: string[];
-  };
-}
+import { fetchChangelog, type ChangelogEntry } from '../lib/changelog';
 
 const LAST_VISIT_KEY = 'last-visit-date';
 const BANNER_DISMISSED_KEY = 'whats-new-banner-dismissed';
@@ -45,8 +32,9 @@ function dismissBanner(): void {
   localStorage.setItem(BANNER_DISMISSED_KEY, getToday());
 }
 
-function getRecentChanges(): ChangelogEntry[] {
-  const entries = changelog.entries as ChangelogEntry[];
+async function getRecentChanges(): Promise<ChangelogEntry[]> {
+  const changelog = await fetchChangelog();
+  const entries = changelog.entries;
   const today = new Date();
   const threeDaysAgo = new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000);
   
@@ -68,12 +56,13 @@ export function WhatsNewBanner() {
     const dismissed = isBannerDismissedToday();
     
     if (!dismissed) {
-      const changes = getRecentChanges();
-      if (changes.length > 0) {
-        setRecentChanges(changes);
-        // Small delay for better UX
-        setTimeout(() => setIsVisible(true), 500);
-      }
+      getRecentChanges().then(changes => {
+        if (changes.length > 0) {
+          setRecentChanges(changes);
+          // Small delay for better UX
+          setTimeout(() => setIsVisible(true), 500);
+        }
+      });
     }
   }, []);
 

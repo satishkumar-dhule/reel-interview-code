@@ -12,7 +12,7 @@ import {
   Flag, Grid3X3, LayoutList, Zap, Target, Flame, Star, AlertCircle, 
   Terminal, Bookmark, Settings, Building2, Search
 } from 'lucide-react';
-import { SearchModal } from '../components/SearchModal';
+import { UnifiedSearch } from '../components/UnifiedSearch';
 import { TestPromptToast } from '../components/TestPromptToast';
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useToast } from '@/hooks/use-toast';
@@ -1021,7 +1021,7 @@ export default function ReelsRedesigned() {
       </div>
       
       {/* Search Modal */}
-      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+      <UnifiedSearch isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
       
       {/* Test Prompt Toast */}
       {channelId && (

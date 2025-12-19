@@ -3,12 +3,10 @@ import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Sparkles, Plus, RefreshCw, Rocket, Calendar,
-  ChevronDown, ChevronUp, Tag, Layers, Rss
+  ChevronDown, ChevronUp, Layers, Rss, Loader2
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
-import changelogData, { type ChangelogData } from '../lib/changelog';
-
-import type { ChangelogEntry } from '../lib/changelog';
+import { defaultChangelog, fetchChangelog, type ChangelogData, type ChangelogEntry } from '../lib/changelog';
 
 const typeConfig = {
   added: { icon: Plus, color: 'text-green-400', bg: 'bg-green-500/20', label: 'New Questions' },
@@ -130,7 +128,15 @@ function ChangelogEntryCard({ entry, index }: { entry: ChangelogEntry; index: nu
 
 export default function WhatsNew() {
   const [, setLocation] = useLocation();
-  const data = changelogData as ChangelogData;
+  const [data, setData] = useState<ChangelogData>(defaultChangelog);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch changelog data on mount
+  useEffect(() => {
+    fetchChangelog()
+      .then(setData)
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const goBack = () => {
     if (window.history.length > 1) {
@@ -226,7 +232,14 @@ export default function WhatsNew() {
             ))}
           </div>
 
-          {data.entries.length === 0 && (
+          {isLoading && (
+            <div className="text-center py-12 text-muted-foreground">
+              <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin" />
+              <p>Loading updates...</p>
+            </div>
+          )}
+
+          {!isLoading && data.entries.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <Sparkles className="w-8 h-8 mx-auto mb-4 opacity-50" />
               <p>No updates yet. Check back soon!</p>

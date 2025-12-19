@@ -8,7 +8,7 @@ import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { MobileNav } from './MobileNav';
 import { MobileHeader } from './MobileHeader';
-import { SearchModal } from '../SearchModal';
+import { UnifiedSearch } from '../UnifiedSearch';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -91,7 +91,7 @@ export function AppLayout({
       <MobileNav onSearchClick={() => setSearchOpen(true)} />
 
       {/* Search Modal */}
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <UnifiedSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { useUserPreferences } from '../context/UserPreferencesContext';
 import { SEOHead } from '../components/SEOHead';
 import { QuestionPanel } from '../components/QuestionPanel';
 import { AnswerPanel } from '../components/AnswerPanel';
-import { SearchModal } from '../components/SearchModal';
+import { UnifiedSearch } from '../components/UnifiedSearch';
 import { trackQuestionView, trackAnswerRevealed } from '../hooks/use-analytics';
 import {
   ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Home, Search,
@@ -330,7 +330,7 @@ export default function ReelsGoogle() {
         />
       </div>
 
-      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+      <UnifiedSearch isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
     </>
   );
 }

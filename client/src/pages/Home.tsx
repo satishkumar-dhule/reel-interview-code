@@ -10,7 +10,7 @@ import {
   Brain, Workflow, Box, Cloud, Code, Network, MessageCircle, Users, Eye, FileText,
   CheckCircle, Monitor, Zap, Gauge, Search, X, Rss, Bot, Trophy, Target
 } from 'lucide-react';
-import { SearchModal } from '../components/SearchModal';
+import { UnifiedSearch } from '../components/UnifiedSearch';
 import { useProgress } from '../hooks/use-progress';
 import { useTheme } from '../context/ThemeContext';
 import { SEOHead } from '../components/SEOHead';
@@ -456,7 +456,7 @@ export default function Home() {
       </div>
       
       {/* Search Modal */}
-      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+      <UnifiedSearch isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
       
       {/* Badge Widget (Desktop) */}
       <BadgeWidget />

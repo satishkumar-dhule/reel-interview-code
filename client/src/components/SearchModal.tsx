@@ -1,16 +1,26 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, ArrowRight, Zap, Target, Flame, Tag, Building2, Video, GitBranch, Filter } from 'lucide-react';
+import { Search, X, ArrowRight, Zap, Target, Flame, Tag, Building2, Video, GitBranch, Filter, Code2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
-import { searchQuestions, type SearchResult } from '../lib/fuzzy-search';
+import { searchAll, type UnifiedSearchResult, type SearchResult, type CodingSearchResult } from '../lib/fuzzy-search';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useUserPreferences } from '../context/UserPreferencesContext';
 import { useToast } from '@/hooks/use-toast';
 import { allChannelsConfig } from '../lib/channels-config';
 import { getQuestions } from '../lib/data';
 import { formatTag } from '../lib/utils';
+import { getAllChallenges } from '../lib/coding-challenges';
 
-type FilterType = 'all' | 'company' | 'video' | 'diagram';
+type FilterType = 'all' | 'company' | 'video' | 'diagram' | 'coding';
+
+// Type guards
+function isQuestionResult(result: UnifiedSearchResult): result is SearchResult {
+  return result.type === 'question';
+}
+
+function isCodingResult(result: UnifiedSearchResult): result is CodingSearchResult {
+  return result.type === 'coding';
+}
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -19,8 +29,8 @@ interface SearchModalProps {
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [filteredResults, setFilteredResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<UnifiedSearchResult[]>([]);
+  const [filteredResults, setFilteredResults] = useState<UnifiedSearchResult[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
@@ -34,6 +44,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   // Filter definitions
   const filters: { id: FilterType; label: string; icon: React.ReactNode }[] = [
     { id: 'all', label: 'All', icon: <Filter className="w-3 h-3" /> },
+    { id: 'coding', label: 'Coding', icon: <Code2 className="w-3 h-3" /> },
     { id: 'company', label: 'Company', icon: <Building2 className="w-3 h-3" /> },
     { id: 'video', label: 'Video', icon: <Video className="w-3 h-3" /> },
     { id: 'diagram', label: 'Diagram', icon: <GitBranch className="w-3 h-3" /> },
@@ -55,7 +66,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   useEffect(() => {
     if (debouncedQuery.length >= 2) {
       setIsSearching(true);
-      const searchResults = searchQuestions(debouncedQuery, 50); // Get more results for filtering
+      const searchResults = searchAll(debouncedQuery, 50); // Get more results for filtering
       setResults(searchResults);
       setSelectedIndex(0);
       setIsSearching(false);
@@ -69,17 +80,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     let filtered = results;
     
     switch (activeFilter) {
+      case 'coding':
+        filtered = results.filter(r => isCodingResult(r));
+        break;
       case 'company':
-        filtered = results.filter(r => r.question.companies && r.question.companies.length > 0);
+        filtered = results.filter(r => isQuestionResult(r) && r.question.companies && r.question.companies.length > 0);
         break;
       case 'video':
         filtered = results.filter(r => 
-          r.question.videos?.shortVideo || r.question.videos?.longVideo
+          isQuestionResult(r) && (r.question.videos?.shortVideo || r.question.videos?.longVideo)
         );
         break;
       case 'diagram':
         filtered = results.filter(r => 
-          r.question.diagram && r.question.diagram.length > 20
+          isQuestionResult(r) && r.question.diagram && r.question.diagram.length > 20
         );
         break;
       default:
@@ -100,15 +114,23 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       setSelectedIndex(i => Math.max(i - 1, 0));
     } else if (e.key === 'Enter' && filteredResults[selectedIndex]) {
       e.preventDefault();
-      navigateToQuestion(filteredResults[selectedIndex]);
+      navigateToResult(filteredResults[selectedIndex]);
     } else if (e.key === 'Escape') {
       onClose();
     }
   }, [filteredResults, selectedIndex, onClose]);
   
-
-  
-  const navigateToQuestion = (result: SearchResult) => {
+  const navigateToResult = (result: UnifiedSearchResult) => {
+    if (isCodingResult(result)) {
+      // Navigate to coding challenge
+      const challenges = getAllChallenges();
+      const challengeIndex = challenges.findIndex(c => c.id === result.challenge.id);
+      setLocation(`/coding/${challengeIndex >= 0 ? challengeIndex : 0}`);
+      onClose();
+      return;
+    }
+    
+    // Navigate to question
     const { question } = result;
     
     // Auto-subscribe if not already subscribed
@@ -185,17 +207,19 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
           {/* Filter Buttons */}
           {results.length > 0 && (
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/30">
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/30 flex-wrap">
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider mr-1">Filter:</span>
               {filters.map(filter => {
                 // Count items for each filter
                 let count = results.length;
-                if (filter.id === 'company') {
-                  count = results.filter(r => r.question.companies && r.question.companies.length > 0).length;
+                if (filter.id === 'coding') {
+                  count = results.filter(r => isCodingResult(r)).length;
+                } else if (filter.id === 'company') {
+                  count = results.filter(r => isQuestionResult(r) && r.question.companies && r.question.companies.length > 0).length;
                 } else if (filter.id === 'video') {
-                  count = results.filter(r => r.question.videos?.shortVideo || r.question.videos?.longVideo).length;
+                  count = results.filter(r => isQuestionResult(r) && (r.question.videos?.shortVideo || r.question.videos?.longVideo)).length;
                 } else if (filter.id === 'diagram') {
-                  count = results.filter(r => r.question.diagram && r.question.diagram.length > 20).length;
+                  count = results.filter(r => isQuestionResult(r) && r.question.diagram && r.question.diagram.length > 20).length;
                 }
                 
                 return (
@@ -256,19 +280,71 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {!isSearching && filteredResults.length > 0 && (
               <div className="py-2">
                 {filteredResults.map((result, index) => {
+                  // Render coding challenge result
+                  if (isCodingResult(result)) {
+                    return (
+                      <button
+                        key={`coding-${result.challenge.id}-${index}`}
+                        ref={el => {
+                          if (index === selectedIndex && el) {
+                            el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                          }
+                        }}
+                        onClick={() => navigateToResult(result)}
+                        className={`w-full px-4 py-3 text-left flex items-start gap-3 transition-colors ${
+                          index === selectedIndex ? 'bg-primary/20' : 'hover:bg-muted/50'
+                        }`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            {result.challenge.difficulty === 'easy' 
+                              ? <Zap className="w-3 h-3 text-green-400" />
+                              : <Target className="w-3 h-3 text-yellow-400" />
+                            }
+                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                              coding/{result.challenge.category}
+                            </span>
+                            <span className="flex items-center gap-0.5 text-[9px] text-purple-600 dark:text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded ml-auto">
+                              <Code2 className="w-2.5 h-2.5" />
+                              Challenge
+                            </span>
+                          </div>
+                          <p className="text-sm text-foreground truncate">
+                            {result.challenge.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate mt-1">
+                            {result.challenge.description}
+                          </p>
+                          {result.challenge.tags && result.challenge.tags.length > 0 && (
+                            <div className="flex items-center gap-1 mt-2">
+                              <Tag className="w-3 h-3 text-muted-foreground/50" />
+                              <span className="text-[10px] text-muted-foreground/50">
+                                {result.challenge.tags.slice(0, 3).map(formatTag).join(', ')}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <ArrowRight className={`w-4 h-4 shrink-0 mt-1 transition-opacity ${
+                          index === selectedIndex ? 'text-primary opacity-100' : 'text-muted-foreground/30 opacity-0'
+                        }`} />
+                      </button>
+                    );
+                  }
+                  
+                  // Render question result
                   const hasCompanies = result.question.companies && result.question.companies.length > 0;
                   const hasVideo = result.question.videos?.shortVideo || result.question.videos?.longVideo;
                   const hasDiagram = result.question.diagram && result.question.diagram.length > 20;
                   
                   return (
                     <button
-                      key={`${result.question.id}-${index}`}
+                      key={`question-${result.question.id}-${index}`}
                       ref={el => {
                         if (index === selectedIndex && el) {
                           el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                         }
                       }}
-                      onClick={() => navigateToQuestion(result)}
+                      onClick={() => navigateToResult(result)}
                       className={`w-full px-4 py-3 text-left flex items-start gap-3 transition-colors ${
                         index === selectedIndex ? 'bg-primary/20' : 'hover:bg-muted/50'
                       }`}

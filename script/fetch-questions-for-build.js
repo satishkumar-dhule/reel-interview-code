@@ -317,6 +317,118 @@ async function main() {
     console.log(`   ✓ tests.json (empty - table may not exist yet)`);
   }
 
+  // Generate changelog from bot activity
+  console.log('\n📥 Generating changelog from bot activity...');
+  try {
+    // Get recent bot activity grouped by date
+    const changelogResult = await client.execute(`
+      SELECT 
+        DATE(completed_at) as date,
+        bot_type,
+        COUNT(*) as count,
+        GROUP_CONCAT(DISTINCT q.channel) as channels
+      FROM work_queue w
+      LEFT JOIN questions q ON w.question_id = q.id
+      WHERE w.status = 'completed'
+        AND w.completed_at >= DATE('now', '-30 days')
+      GROUP BY DATE(completed_at), bot_type
+      ORDER BY date DESC, count DESC
+    `);
+
+    // Group by date
+    const entriesByDate = {};
+    for (const row of changelogResult.rows) {
+      const date = row.date;
+      if (!entriesByDate[date]) {
+        entriesByDate[date] = {
+          date,
+          questionsAdded: 0,
+          questionsImproved: 0,
+          channels: new Set(),
+          activities: []
+        };
+      }
+      
+      const entry = entriesByDate[date];
+      const channels = row.channels ? row.channels.split(',').filter(Boolean) : [];
+      channels.forEach(c => entry.channels.add(c));
+      
+      if (row.bot_type === 'generate' || row.bot_type === 'coding-challenge') {
+        entry.questionsAdded += Number(row.count) || 0;
+        entry.activities.push({ type: row.bot_type, action: 'added', count: Number(row.count) || 0 });
+      } else if (['improve', 'mermaid', 'eli5', 'tldr', 'video', 'company'].includes(row.bot_type)) {
+        entry.questionsImproved += Number(row.count) || 0;
+        entry.activities.push({ type: row.bot_type, action: 'improved', count: Number(row.count) || 0 });
+      }
+    }
+
+    // Convert to changelog entries
+    const changelogEntries = Object.values(entriesByDate)
+      .filter(e => e.questionsAdded > 0 || e.questionsImproved > 0)
+      .map(e => ({
+        date: e.date,
+        type: e.questionsAdded > 0 ? 'added' : 'improved',
+        title: e.questionsAdded > 0 
+          ? `${e.questionsAdded} new question${e.questionsAdded > 1 ? 's' : ''} added`
+          : `${e.questionsImproved} question${e.questionsImproved > 1 ? 's' : ''} improved`,
+        description: `Bot activity on ${e.date}`,
+        details: {
+          questionsAdded: e.questionsAdded,
+          questionsImproved: e.questionsImproved,
+          channels: Array.from(e.channels),
+          activities: e.activities
+        }
+      }))
+      .slice(0, 30); // Keep last 30 days
+
+    // Calculate totals
+    const totals = await client.execute(`
+      SELECT 
+        SUM(CASE WHEN bot_type IN ('generate', 'coding-challenge') THEN 1 ELSE 0 END) as added,
+        SUM(CASE WHEN bot_type NOT IN ('generate', 'coding-challenge') THEN 1 ELSE 0 END) as improved
+      FROM work_queue
+      WHERE status = 'completed'
+    `);
+
+    const changelog = {
+      entries: changelogEntries.length > 0 ? changelogEntries : [{
+        date: new Date().toISOString().split('T')[0],
+        type: 'feature',
+        title: 'Platform Active',
+        description: 'Questions served from Turso database with real-time bot updates.',
+        details: { features: ['Real-time updates', 'AI-powered improvements'] }
+      }],
+      stats: {
+        totalQuestionsAdded: Number(totals.rows[0]?.added) || questions.length,
+        totalQuestionsImproved: Number(totals.rows[0]?.improved) || 0,
+        lastUpdated: new Date().toISOString()
+      }
+    };
+
+    const changelogFile = path.join(OUTPUT_DIR, 'changelog.json');
+    fs.writeFileSync(changelogFile, JSON.stringify(changelog, null, 0));
+    console.log(`   ✓ changelog.json (${changelogEntries.length} entries)`);
+  } catch (e) {
+    console.log(`   ⚠️ Could not generate changelog: ${e.message}`);
+    // Write default changelog
+    const changelogFile = path.join(OUTPUT_DIR, 'changelog.json');
+    fs.writeFileSync(changelogFile, JSON.stringify({
+      entries: [{
+        date: new Date().toISOString().split('T')[0],
+        type: 'feature',
+        title: 'Platform Active',
+        description: 'Questions served from database.',
+        details: {}
+      }],
+      stats: {
+        totalQuestionsAdded: questions.length,
+        totalQuestionsImproved: 0,
+        lastUpdated: new Date().toISOString()
+      }
+    }, null, 0));
+    console.log(`   ✓ changelog.json (default)`);
+  }
+
   console.log('\n✅ Static data files generated successfully!');
   console.log(`   Output directory: ${OUTPUT_DIR}`);
   console.log(`   Total questions: ${questions.length}`);

@@ -1,5 +1,6 @@
-// Fuzzy search utility for finding questions
+// Fuzzy search utility for finding questions and coding challenges
 import { getAllQuestions, type Question } from './questions-loader';
+import { getAllChallenges, type CodingChallenge } from './coding-challenges';
 
 // Simple fuzzy matching score - higher is better
 function fuzzyScore(query: string, text: string): number {
@@ -78,6 +79,14 @@ export interface SearchResult {
   question: Question;
   score: number;
   matchedIn: ('question' | 'answer' | 'tags' | 'channel')[];
+  type: 'question' | 'coding';
+}
+
+export interface CodingSearchResult {
+  challenge: CodingChallenge;
+  score: number;
+  matchedIn: ('title' | 'description' | 'tags' | 'category')[];
+  type: 'coding';
 }
 
 // Search questions with fuzzy matching
@@ -127,7 +136,7 @@ export function searchQuestions(query: string, limit: number = 20): SearchResult
     if (totalScore > 0) {
       // Only add if no existing result or this one has higher score
       if (!existingResult || totalScore > existingResult.score) {
-        resultsMap.set(question.id, { question, score: totalScore, matchedIn });
+        resultsMap.set(question.id, { question, score: totalScore, matchedIn, type: 'question' });
       }
     }
   }
@@ -137,6 +146,69 @@ export function searchQuestions(query: string, limit: number = 20): SearchResult
   results.sort((a, b) => b.score - a.score);
   
   return results.slice(0, limit);
+}
+
+// Search coding challenges with fuzzy matching
+export function searchCodingChallenges(query: string, limit: number = 10): CodingSearchResult[] {
+  if (!query || query.trim().length < 2) return [];
+  
+  const allChallenges = getAllChallenges();
+  const results: CodingSearchResult[] = [];
+  
+  for (const challenge of allChallenges) {
+    const matchedIn: ('title' | 'description' | 'tags' | 'category')[] = [];
+    let totalScore = 0;
+    
+    // Search in title (highest weight)
+    const titleScore = fuzzyScore(query, challenge.title);
+    if (titleScore > 0) {
+      totalScore += titleScore * 3;
+      matchedIn.push('title');
+    }
+    
+    // Search in description
+    const descScore = fuzzyScore(query, challenge.description);
+    if (descScore > 0) {
+      totalScore += descScore * 1.5;
+      matchedIn.push('description');
+    }
+    
+    // Search in tags
+    const tagsText = challenge.tags?.join(' ') || '';
+    const tagsScore = fuzzyScore(query, tagsText);
+    if (tagsScore > 0) {
+      totalScore += tagsScore * 2;
+      matchedIn.push('tags');
+    }
+    
+    // Search in category
+    const categoryScore = fuzzyScore(query, challenge.category.replace(/-/g, ' '));
+    if (categoryScore > 0) {
+      totalScore += categoryScore * 1.5;
+      matchedIn.push('category');
+    }
+    
+    if (totalScore > 0) {
+      results.push({ challenge, score: totalScore, matchedIn, type: 'coding' });
+    }
+  }
+  
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, limit);
+}
+
+// Combined search for both questions and coding challenges
+export type UnifiedSearchResult = SearchResult | CodingSearchResult;
+
+export function searchAll(query: string, limit: number = 20): UnifiedSearchResult[] {
+  const questionResults = searchQuestions(query, limit);
+  const codingResults = searchCodingChallenges(query, Math.floor(limit / 2));
+  
+  // Combine and sort by score
+  const combined: UnifiedSearchResult[] = [...questionResults, ...codingResults];
+  combined.sort((a, b) => b.score - a.score);
+  
+  return combined.slice(0, limit);
 }
 
 // Highlight matching text in a string

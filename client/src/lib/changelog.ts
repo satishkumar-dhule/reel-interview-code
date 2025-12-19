@@ -1,6 +1,6 @@
 /**
- * Changelog data - static for now, can be fetched from API later
- * This replaces the deleted changelog.json
+ * Changelog data - fetched from generated JSON file
+ * Updated automatically by bots during build
  */
 
 export interface ChangelogEntry {
@@ -14,6 +14,7 @@ export interface ChangelogEntry {
     channels?: string[];
     questionIds?: string[];
     features?: string[];
+    activities?: Array<{ type: string; action: string; count: number }>;
   };
 }
 
@@ -26,29 +27,43 @@ export interface ChangelogData {
   };
 }
 
-// Static changelog data - questions are now served from Turso database
-export const changelog: ChangelogData = {
+// Default changelog data - used as fallback
+export const defaultChangelog: ChangelogData = {
   entries: [
     {
       date: new Date().toISOString().split('T')[0],
       type: 'feature',
-      title: 'Migrated to Turso Database',
-      description: 'All questions are now served from Turso database for better performance and real-time updates.',
+      title: 'Platform Active',
+      description: 'Questions served from Turso database with real-time bot updates.',
       details: {
         features: [
           'Questions served from Turso database',
-          'Real-time updates without deployments',
-          'Improved API performance',
-          'Read-only credentials for serving'
+          'Real-time updates from AI bots',
+          'Improved API performance'
         ]
       }
     }
   ],
   stats: {
-    totalQuestionsAdded: 283,
+    totalQuestionsAdded: 0,
     totalQuestionsImproved: 0,
     lastUpdated: new Date().toISOString()
   }
 };
 
+// Fetch changelog from generated JSON file
+export async function fetchChangelog(): Promise<ChangelogData> {
+  try {
+    const response = await fetch('/data/changelog.json');
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch {
+    // Use default if fetch fails
+  }
+  return defaultChangelog;
+}
+
+// Export default for backward compatibility (static fallback)
+export const changelog = defaultChangelog;
 export default changelog;
