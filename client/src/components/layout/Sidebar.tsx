@@ -65,6 +65,7 @@ export function Sidebar({ isOpen, onToggle, onSearch }: SidebarProps) {
     { id: 'home', icon: <Home className="w-5 h-5" />, label: 'Home', path: '/' },
     { id: 'search', icon: <Search className="w-5 h-5" />, label: 'Search', action: onSearch },
     { id: 'channels', icon: <Plus className="w-5 h-5" />, label: 'Channels', path: '/channels' },
+    { id: 'coding', icon: <Code className="w-5 h-5" />, label: 'Coding', path: '/coding' },
     { id: 'stats', icon: <BarChart2 className="w-5 h-5" />, label: 'Stats', path: '/stats' },
     { id: 'badges', icon: <Trophy className="w-5 h-5" />, label: 'Badges', path: '/badges' },
     { id: 'tests', icon: <Target className="w-5 h-5" />, label: 'Tests', path: '/tests' },

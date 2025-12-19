@@ -17,6 +17,7 @@ import BotActivity from "@/pages/BotActivity";
 import Badges from "@/pages/Badges";
 import TestSession from "@/pages/TestSession";
 import Tests from "@/pages/Tests";
+import CodingChallenge from "@/pages/CodingChallenge";
 // Redesigned pages (Google-style)
 import HomeRedesigned from "@/pages/HomeRedesigned";
 import ReelsGoogle from "@/pages/ReelsGoogle";
@@ -62,6 +63,8 @@ function Router() {
       <Route path="/badges" component={Badges} />
       <Route path="/tests" component={Tests} />
       <Route path="/test/:channelId" component={TestSession} />
+      <Route path="/coding" component={CodingChallenge} />
+      <Route path="/coding/:id" component={CodingChallenge} />
       <Route path="/bot-activity" component={BotActivity} />
       <Route path="/channels" component={Channels} />
       <Route path="/test/mermaid" component={MermaidTest} />

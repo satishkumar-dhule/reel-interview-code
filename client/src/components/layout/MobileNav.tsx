@@ -6,7 +6,7 @@
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import {
-  Home, Search, Plus, BarChart2, User, Trophy, Target, Sparkles
+  Home, Search, Plus, BarChart2, User, Trophy, Target, Sparkles, Code
 } from 'lucide-react';
 
 interface MobileNavProps {
@@ -19,9 +19,9 @@ export function MobileNav({ onSearchClick }: MobileNavProps) {
   const navItems = [
     { id: 'home', icon: Home, label: 'Home', path: '/' },
     { id: 'channels', icon: Plus, label: 'Channels', path: '/channels' },
+    { id: 'coding', icon: Code, label: 'Coding', path: '/coding' },
     { id: 'search', icon: Search, label: 'Search', action: onSearchClick },
     { id: 'stats', icon: BarChart2, label: 'Stats', path: '/stats' },
-    { id: 'badges', icon: Trophy, label: 'Badges', path: '/badges' },
   ];
 
   const isActive = (path?: string) => {
