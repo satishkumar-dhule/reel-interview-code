@@ -15,6 +15,7 @@ import {
   calculateScore, saveTestAttempt, TestAttempt, getTestProgress,
   generateShareableBadge, generateLinkedInShare
 } from '../lib/tests';
+import { mascotEvents } from '../components/PixelMascot';
 
 type SessionState = 'loading' | 'ready' | 'in-progress' | 'review' | 'completed';
 
@@ -118,6 +119,13 @@ export default function TestSession() {
     
     saveTestAttempt(test.id, test.channelId, attempt);
     setSessionState('completed');
+    
+    // Trigger mascot reaction based on result
+    if (calcResult.passed) {
+      mascotEvents.celebrate();
+    } else {
+      mascotEvents.disappointed();
+    }
   };
 
   const formatTime = (seconds: number) => {

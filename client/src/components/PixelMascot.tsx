@@ -1,10 +1,48 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type MascotState = 'idle' | 'walk' | 'jump' | 'flip' | 'wave' | 'dance' | 'sleep' | 'spin' | 'bounce' | 'shake' | 'nod' | 'wiggle';
+type MascotState = 'idle' | 'walk' | 'jump' | 'flip' | 'wave' | 'dance' | 'sleep' | 'spin' | 'bounce' | 'shake' | 'nod' | 'wiggle' | 'celebrate' | 'sad';
 type MascotType = 'coder' | 'goat' | 'giraffe' | 'penguin' | 'cat' | 'robot' | 'dog' | 'bunny' | 'fox' | 'owl' | 'duck' | 'frog';
 
 const MASCOT_TYPES: MascotType[] = ['coder', 'goat', 'giraffe', 'penguin', 'cat', 'robot', 'dog', 'bunny', 'fox', 'owl', 'duck', 'frog'];
+
+// Celebration messages per mascot
+const CELEBRATE_MESSAGES: Record<MascotType, string[]> = {
+  coder: ['🎉 You did it!', '💯 Perfect!', '🚀 Shipped!', '⭐ Brilliant!'],
+  goat: ['🐐 GOAT move!', '🏆 Champion!', '🎸 Rock on!', '⭐ Legendary!'],
+  giraffe: ['🦒 Sky high!', '🌟 Stellar!', '🎯 Nailed it!', '👏 Bravo!'],
+  penguin: ['🐧 Ice cold!', '❄️ Smooth!', '🎉 Awesome!', '💎 Flawless!'],
+  cat: ['😺 Purrfect!', '🐱 Meow-nificent!', '⭐ Clawsome!', '🎉 Yay!'],
+  robot: ['🤖 Success!', '✅ Computed!', '🎯 Optimal!', '⚡ Executed!'],
+  dog: ['🐕 Good job!', '🦴 Treat time!', '🎉 Woof woof!', '⭐ Best friend!'],
+  bunny: ['🐰 Hop-tastic!', '🥕 Carrot earned!', '✨ Magical!', '🎉 Yippee!'],
+  fox: ['🦊 Clever!', '🎯 Outsmarted!', '⭐ Sly win!', '🎉 Fantastic!'],
+  owl: ['🦉 Wise choice!', '📚 Scholarly!', '🎓 A+ work!', '⭐ Brilliant!'],
+  duck: ['🦆 Quack-tastic!', '💧 Smooth sailing!', '🎉 Ducky!', '⭐ Splendid!'],
+  frog: ['🐸 Ribbiting!', '🪷 Leap of joy!', '🎉 Toad-ally!', '⭐ Amphibious!'],
+};
+
+// Disappointment messages per mascot
+const SAD_MESSAGES: Record<MascotType, string[]> = {
+  coder: ['🐛 Bug found...', '💔 Syntax error', '🔧 Try again!', '📝 Debug time'],
+  goat: ['🐐 Baaad luck...', '😢 Missed it', '💪 Next time!', '🔄 Retry?'],
+  giraffe: ['🦒 Fell short...', '😔 So close', '🌱 Keep growing!', '💪 Stand tall!'],
+  penguin: ['🐧 Slipped up...', '❄️ Cold miss', '🔄 Waddle back!', '💪 Stay cool!'],
+  cat: ['😿 Meow...', '🐱 Hairball...', '💤 Nap first?', '🔄 9 lives left!'],
+  robot: ['🤖 Error...', '⚠️ Malfunction', '🔧 Recalibrating', '🔄 Rebooting...'],
+  dog: ['🐕 Ruff day...', '😢 Whimper', '🦴 Treat needed', '💪 Fetch again!'],
+  bunny: ['🐰 Oops...', '🥕 Missed carrot', '😢 Hop back!', '💪 Try again!'],
+  fox: ['🦊 Outsmarted...', '😔 Tricky one', '🔄 Sneak back!', '💪 Stay sly!'],
+  owl: ['🦉 Hoo knew...', '📚 Study more', '🌙 Sleep on it', '💪 Wisdom grows!'],
+  duck: ['🦆 Quack...', '💧 Water off', '😢 Paddle on!', '💪 Duck it!'],
+  frog: ['🐸 Ribbit...', '🪷 Missed lily', '😢 Hop back!', '💪 Leap again!'],
+};
+
+// Global event emitter for mascot reactions
+export const mascotEvents = {
+  celebrate: () => window.dispatchEvent(new CustomEvent('mascot-celebrate')),
+  disappointed: () => window.dispatchEvent(new CustomEvent('mascot-sad')),
+};
 
 // Each mascot has unique tricks based on their personality
 const MASCOT_TRICKS: Record<MascotType, MascotState[]> = {
@@ -287,13 +325,15 @@ const getAnimation = (state: MascotState) => {
     case 'shake': return { x: [-3, 3, -3, 3, 0] };
     case 'nod': return { y: [0, 3, 0, 3, 0] };
     case 'wiggle': return { rotate: [-3, 3, -3, 3, 0] };
+    case 'celebrate': return { y: [0, -30, 0, -20, 0, -10, 0], scale: [1, 1.2, 1, 1.1, 1] };
+    case 'sad': return { y: [0, 5, 0], rotate: [-5, 0, 5, 0, -3, 0] };
     default: return {};
   }
 };
 
 const PixelCharacter = ({ mascotType, state, direction }: { mascotType: MascotType; state: MascotState; direction: 'left' | 'right' }) => {
   const SpriteComponent = SPRITE_MAP[mascotType];
-  const loopingStates: MascotState[] = ['walk', 'dance', 'wiggle'];
+  const loopingStates: MascotState[] = ['walk', 'dance', 'wiggle', 'celebrate'];
   return (
     <motion.svg
       width="32"
@@ -301,7 +341,11 @@ const PixelCharacter = ({ mascotType, state, direction }: { mascotType: MascotTy
       viewBox="0 0 32 32"
       style={{ imageRendering: 'pixelated', transform: direction === 'left' ? 'scaleX(-1)' : 'scaleX(1)' }}
       animate={getAnimation(state)}
-      transition={{ duration: state === 'walk' ? 0.3 : 0.5, repeat: loopingStates.includes(state) ? Infinity : 0, ease: 'easeInOut' }}
+      transition={{ 
+        duration: state === 'walk' ? 0.3 : state === 'celebrate' ? 0.8 : state === 'sad' ? 1 : 0.5, 
+        repeat: loopingStates.includes(state) ? Infinity : 0, 
+        ease: 'easeInOut' 
+      }}
     >
       <SpriteComponent state={state} />
     </motion.svg>
@@ -315,6 +359,32 @@ export default function PixelMascot() {
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [message, setMessage] = useState<string | null>(null);
   const lastActivityRef = useRef(Date.now());
+
+  // Listen for celebration/disappointment events from other components
+  useEffect(() => {
+    const handleCelebrate = () => {
+      lastActivityRef.current = Date.now();
+      setState('celebrate');
+      const msgs = CELEBRATE_MESSAGES[mascotType];
+      setMessage(msgs[Math.floor(Math.random() * msgs.length)]);
+      setTimeout(() => { setState('idle'); setMessage(null); }, 3000);
+    };
+    
+    const handleSad = () => {
+      lastActivityRef.current = Date.now();
+      setState('sad');
+      const msgs = SAD_MESSAGES[mascotType];
+      setMessage(msgs[Math.floor(Math.random() * msgs.length)]);
+      setTimeout(() => { setState('idle'); setMessage(null); }, 3000);
+    };
+    
+    window.addEventListener('mascot-celebrate', handleCelebrate);
+    window.addEventListener('mascot-sad', handleSad);
+    return () => {
+      window.removeEventListener('mascot-celebrate', handleCelebrate);
+      window.removeEventListener('mascot-sad', handleSad);
+    };
+  }, [mascotType]);
 
   // Only look at mouse when clicked nearby, otherwise autonomous
   useEffect(() => {

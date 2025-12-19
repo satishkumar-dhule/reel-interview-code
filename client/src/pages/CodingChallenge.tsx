@@ -43,6 +43,7 @@ import {
   ComplexityAnalysis,
 } from '../lib/coding-challenges';
 import { GiscusComments } from '../components/GiscusComments';
+import { mascotEvents } from '../components/PixelMascot';
 
 type ViewState = 'list' | 'challenge';
 
@@ -220,9 +221,13 @@ export default function CodingChallenge() {
           timeSpent,
         });
         setShowSuccessModal(true);
+        mascotEvents.celebrate(); // Mascot celebrates on success!
+      } else {
+        mascotEvents.disappointed(); // Mascot is sad when tests fail
       }
     } catch (error) {
       console.error('Error running tests:', error);
+      mascotEvents.disappointed(); // Mascot is sad on error
     } finally {
       setIsRunning(false);
     }
