@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -53,6 +57,9 @@ jobs:
         
       - name: Build application
         run: pnpm run build
+
+      - name: Build Pagefind search index
+        run: pnpm run build:pagefind
         
       - name: Run E2E tests
         run: pnpm exec playwright test --project=chromium --reporter=line
