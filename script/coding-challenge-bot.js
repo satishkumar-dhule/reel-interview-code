@@ -95,13 +95,42 @@ async function generateChallengeId() {
   return `cc${maxNum + 1}`;
 }
 
-// Check for duplicate challenge by title similarity
+// Check for duplicate challenge by title similarity (fuzzy match)
 async function isDuplicateChallenge(title) {
+  // Normalize title for comparison
+  const normalizedTitle = title.toLowerCase().replace(/[^a-z0-9]/g, '');
+  
+  const result = await dbClient.execute('SELECT title FROM coding_challenges');
+  
+  for (const row of result.rows) {
+    const existingNormalized = row.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Exact match after normalization
+    if (existingNormalized === normalizedTitle) {
+      return true;
+    }
+    
+    // Check if one contains the other (catches "Two Sum" vs "Two Sum II")
+    if (existingNormalized.includes(normalizedTitle) || normalizedTitle.includes(existingNormalized)) {
+      // Only flag if they're very similar (>80% overlap)
+      const shorter = Math.min(existingNormalized.length, normalizedTitle.length);
+      const longer = Math.max(existingNormalized.length, normalizedTitle.length);
+      if (shorter / longer > 0.8) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+// Get existing challenge titles for a category (for prompt context)
+async function getExistingTitlesForCategory(category) {
   const result = await dbClient.execute({
-    sql: `SELECT title FROM coding_challenges WHERE LOWER(title) = LOWER(?)`,
-    args: [title]
+    sql: 'SELECT title FROM coding_challenges WHERE category = ? LIMIT 20',
+    args: [category]
   });
-  return result.rows.length > 0;
+  return result.rows.map(r => r.title);
 }
 
 // Save challenge to database
@@ -160,50 +189,46 @@ CRITICAL RULES:
 
 OUTPUT: Return ONLY valid JSON (no markdown, no explanation):`;
 
-function buildPrompt(difficulty, category, companies) {
+function buildPrompt(difficulty, category, companies, categoryTitles = []) {
+  const avoidTitlesSection = categoryTitles.length > 0 
+    ? `\nExisting ${category} challenges (create something DIFFERENT): ${categoryTitles.join(', ')}`
+    : '';
+
   return `${SYSTEM_PROMPT}
 
 Generate a ${difficulty} coding challenge for category: ${category}
-This type of question is commonly asked at: ${companies.join(', ')}
+Companies: ${companies.join(', ')}${avoidTitlesSection}
 
 Requirements:
-- Difficulty: ${difficulty} (${difficulty === 'easy' ? 'basic concepts, 10 min solve time' : 'requires thinking, 15-20 min solve time'})
+- Difficulty: ${difficulty} (${difficulty === 'easy' ? 'basic, 10 min' : 'medium, 15-20 min'})
 - Category: ${category}
 - 3-4 test cases with edge cases
-- Working solutions in both JavaScript and Python
-- Include the companies where this question is asked
+- Working JS and Python solutions
+- UNIQUE title not similar to existing ones
 
-Return this exact JSON structure:
+Return JSON:
 {
-  "title": "Problem Title Here",
-  "description": "Clear problem description. Given X, return Y. Include constraints.",
+  "title": "Unique Problem Title",
+  "description": "Clear description with constraints.",
   "difficulty": "${difficulty}",
   "category": "${category}",
-  "tags": ["${category}", "tag2", "tag3"],
+  "tags": ["${category}", "tag2"],
   "companies": ${JSON.stringify(companies)},
   "starterCode": {
-    "javascript": "function solutionName(param) {\\n  // Your code here\\n  \\n}",
-    "python": "def solution_name(param):\\n    # Your code here\\n    pass"
+    "javascript": "function solve(param) {\\n  // Your code here\\n}",
+    "python": "def solve(param):\\n    # Your code here\\n    pass"
   },
   "testCases": [
-    {"id": "1", "input": "[1,2,3]", "expectedOutput": "6", "description": "Basic case"},
-    {"id": "2", "input": "[]", "expectedOutput": "0", "description": "Empty array"},
-    {"id": "3", "input": "[5]", "expectedOutput": "5", "description": "Single element"}
+    {"id": "1", "input": "[1,2,3]", "expectedOutput": "6", "description": "Basic"},
+    {"id": "2", "input": "[]", "expectedOutput": "0", "description": "Empty"},
+    {"id": "3", "input": "[5]", "expectedOutput": "5", "description": "Single"}
   ],
-  "hints": [
-    "Think about the simplest approach first",
-    "Consider using X data structure",
-    "The optimal solution uses Y technique"
-  ],
+  "hints": ["Hint 1", "Hint 2"],
   "sampleSolution": {
-    "javascript": "function solutionName(param) {\\n  // working solution\\n  return result;\\n}",
-    "python": "def solution_name(param):\\n    # working solution\\n    return result"
+    "javascript": "function solve(param) { return result; }",
+    "python": "def solve(param): return result"
   },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1)",
-    "explanation": "Brief explanation of why"
-  },
+  "complexity": {"time": "O(n)", "space": "O(1)", "explanation": "Why"},
   "timeLimit": ${difficulty === 'easy' ? 10 : 15}
 }`;
 }
@@ -248,10 +273,12 @@ function validateChallenge(data) {
 
 async function generateChallenge(difficulty, category) {
   const companies = getRandomCompanies();
+  const categoryTitles = await getExistingTitlesForCategory(category);
+  
   console.log(`\n🎯 Generating ${difficulty} challenge for ${category}...`);
   console.log(`🏢 Target companies: ${companies.join(', ')}`);
   
-  const prompt = buildPrompt(difficulty, category, companies);
+  const prompt = buildPrompt(difficulty, category, companies, categoryTitles);
   
   console.log('\n📝 Prompt sent to OpenCode');
   console.log('─'.repeat(50));
