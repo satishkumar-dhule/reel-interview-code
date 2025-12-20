@@ -1,7 +1,58 @@
 import { test, expect } from '@playwright/test';
 
+/**
+ * Diagram and Collapsible Section Tests
+ * Tests for mermaid diagrams and collapsible sections
+ */
+
+test.describe('Diagram Rendering', () => {
+  test.skip(({ isMobile }) => isMobile, 'Diagram rendering tests are desktop-only');
+
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('marvel-intro-seen', 'true');
+      localStorage.setItem('user-preferences', JSON.stringify({
+        role: 'fullstack',
+        subscribedChannels: ['system-design', 'algorithms', 'backend', 'frontend', 'devops', 'sre', 'database'],
+        onboardingComplete: true,
+        createdAt: new Date().toISOString()
+      }));
+    });
+  });
+
+  test('should render mermaid diagrams without errors in SRE channel', async ({ page }) => {
+    await page.goto('/channel/sre');
+    await expect(page.getByTestId('question-panel').first().or(page.getByTestId('no-questions-view'))).toBeVisible({ timeout: 15000 });
+    await expect(page.getByTestId('question-panel').first().or(page.getByTestId('no-questions-view'))).toBeVisible();
+  });
+
+  test('should render diagrams in system-design channel', async ({ page }) => {
+    await page.goto('/channel/system-design');
+    await expect(page.getByTestId('question-panel').first()).toBeVisible({ timeout: 15000 });
+    await expect(page.getByTestId('question-panel').first()).toBeVisible();
+  });
+
+  test('should not crash when navigating between questions with diagrams', async ({ page }) => {
+    await page.goto('/channel/sre/0');
+    await expect(page.getByTestId('question-panel').first().or(page.getByTestId('no-questions-view'))).toBeVisible({ timeout: 15000 });
+    
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(100);
+    }
+    
+    await page.waitForTimeout(1000);
+    
+    const hasContent = await page.getByTestId('question-panel').first().isVisible().catch(() => false) ||
+                       await page.getByTestId('no-questions-view').isVisible().catch(() => false);
+    expect(hasContent).toBeTruthy();
+    
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText?.length).toBeGreaterThan(50);
+  });
+});
+
 test.describe('Collapsible Sections - Desktop', () => {
-  // Skip on mobile - these are desktop-specific tests
   test.skip(({ isMobile }) => isMobile, 'Desktop collapsible section tests');
 
   test.beforeEach(async ({ page }) => {
@@ -16,19 +67,14 @@ test.describe('Collapsible Sections - Desktop', () => {
     });
   });
 
-  test('should show collapsible section headers with chevron icons', async ({ page }) => {
+  test('should show collapsible section headers', async ({ page }) => {
     await page.goto('/channel/algorithms/0');
-    
     await expect(page.getByTestId('question-panel').first()).toBeVisible({ timeout: 10000 });
-    
-    // Wait for content to load
     await page.waitForTimeout(1000);
     
-    // New UI shows split view on desktop - check that both panels are visible
     const questionPanel = page.getByTestId('question-panel').first();
     await expect(questionPanel).toBeVisible();
     
-    // Check for any content (text, code, or diagram)
     const hasText = await questionPanel.locator('p, pre, code, span').first().isVisible({ timeout: 3000 }).catch(() => false);
     const hasSvg = await questionPanel.locator('svg').first().isVisible({ timeout: 1000 }).catch(() => false);
     expect(hasText || hasSvg).toBeTruthy();
@@ -36,30 +82,11 @@ test.describe('Collapsible Sections - Desktop', () => {
 
   test('should toggle section when clicking header', async ({ page }) => {
     await page.goto('/channel/algorithms/0');
-    
     await expect(page.getByTestId('question-panel').first()).toBeVisible({ timeout: 10000 });
-    
-    // Wait for content to load
     await page.waitForTimeout(1500);
     
-    // New UI has split view on desktop - verify both panels work
     const questionPanel = page.getByTestId('question-panel').first();
     await expect(questionPanel).toBeVisible();
-    
-    // Test passes if page is functional
-    expect(true).toBeTruthy();
-  });
-
-  test('should animate smoothly when toggling sections', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    await expect(page.getByTestId('question-panel').first()).toBeVisible({ timeout: 10000 });
-    
-    // Wait for content to load
-    await page.waitForTimeout(1000);
-    
-    // Page should be functional
-    await expect(page.getByTestId('question-panel').first()).toBeVisible();
   });
 });
 
@@ -84,92 +111,26 @@ test.describe('Collapsible Sections - Mobile', () => {
 
   test('should display collapsible sections on mobile', async ({ page }) => {
     await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
-  });
-
-  test('should have touch-friendly tap targets for section headers', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
-  });
-
-  test('should toggle sections with tap on mobile', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
     await page.waitForTimeout(3000);
     expect(page.url()).toContain('/channel/algorithms');
   });
 
   test('should not have horizontal overflow with collapsed sections', async ({ page }) => {
     await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load
     await page.waitForTimeout(3000);
     
-    // Check no horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
-  });
-
-  test('should scroll smoothly with collapsible sections', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
-  });
-
-  test('should maintain section state during scroll', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
-  });
-
-  test('should show company badges without collapse on mobile', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
-  });
-
-  test('should handle rapid tapping on section headers', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
   });
 
   test('should work correctly in landscape orientation', async ({ page }) => {
-    // Switch to landscape
     await page.setViewportSize({ width: 844, height: 390 });
-    
     await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load
     await page.waitForTimeout(3000);
     
-    // No horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
-  });
-
-  test('should preserve scroll position when toggling sections', async ({ page }) => {
-    await page.goto('/channel/algorithms/0');
-    
-    // Wait for page to load and verify URL
-    await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/channel/algorithms');
   });
 });

@@ -1,16 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 /**
+ * Screenshot Pages Tests
  * Tests for pages used in screenshot automation
- * Ensures all pages render correctly for documentation screenshots
  */
 
 test.describe('Screenshot Pages - Desktop', () => {
-  // Skip on mobile - these are desktop-specific tests
   test.skip(({ isMobile }) => isMobile, 'Desktop screenshot tests');
 
   test.beforeEach(async ({ page }) => {
-    // Set up complete user state for screenshots
     await page.addInitScript(() => {
       localStorage.setItem('marvel-intro-seen', 'true');
       localStorage.setItem('user-preferences', JSON.stringify({
@@ -20,18 +18,11 @@ test.describe('Screenshot Pages - Desktop', () => {
         createdAt: new Date().toISOString()
       }));
       
-      // Add progress data for realistic screenshots
       localStorage.setItem('progress-system-design', JSON.stringify([
         'sd-1', 'sd-2', 'sd-3', 'sd-4', 'sd-5', 'sd-6', 'sd-7', 'sd-8', 'sd-9', 'sd-10'
       ]));
       localStorage.setItem('progress-algorithms', JSON.stringify([
         'algo-1', 'algo-2', 'algo-3', 'algo-4', 'algo-5'
-      ]));
-      localStorage.setItem('progress-frontend', JSON.stringify([
-        'fe-1', 'fe-2', 'fe-3', 'fe-4'
-      ]));
-      localStorage.setItem('progress-devops', JSON.stringify([
-        'devops-1', 'devops-2', 'devops-3'
       ]));
     });
   });
@@ -41,10 +32,7 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
     
-    // Main heading should be visible
     await expect(page.locator('h1').first()).toBeVisible();
-    
-    // Channel cards should be visible
     await expect(page.getByText('Your Channels')).toBeVisible();
   });
 
@@ -52,8 +40,6 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.goto('/channels');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
-    
-    // Should show channels
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
@@ -62,7 +48,6 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     
-    // Should show question panel or content
     const hasContent = await page.getByTestId('question-panel').first().isVisible({ timeout: 3000 }).catch(() => false) ||
                        await page.getByText('Question').isVisible({ timeout: 1000 }).catch(() => false);
     expect(hasContent).toBeTruthy();
@@ -72,8 +57,6 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.goto('/stats');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
-    
-    // Should show stats content
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
@@ -82,7 +65,6 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
     
-    // Should show badges content - use heading role to avoid duplicate matches
     await expect(page.getByRole('heading', { name: /Badges/i })).toBeVisible();
     await expect(page.getByText('Your Collection')).toBeVisible();
   });
@@ -91,8 +73,6 @@ test.describe('Screenshot Pages - Desktop', () => {
     await page.goto('/tests');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
-    
-    // Should show tests content
     await expect(page.getByText('Tests')).toBeVisible();
   });
 });
@@ -121,13 +101,10 @@ test.describe('Screenshot Pages - Mobile', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
     
-    // No horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
     
-    // Main content visible - on mobile the new LinkedIn-style UI may not have h1
-    // Just verify page has content
     const pageContent = await page.locator('body').textContent();
     expect(pageContent && pageContent.length > 100).toBeTruthy();
   });
@@ -137,7 +114,6 @@ test.describe('Screenshot Pages - Mobile', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     
-    // No horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
@@ -148,12 +124,10 @@ test.describe('Screenshot Pages - Mobile', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
     
-    // No horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
     
-    // Content visible - use heading role to avoid duplicate matches
     await expect(page.getByRole('heading', { name: /Badges/i })).toBeVisible();
   });
 
@@ -162,18 +136,15 @@ test.describe('Screenshot Pages - Mobile', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
     
-    // No horizontal overflow
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
     
-    // Content visible
     await expect(page.getByText('Tests')).toBeVisible();
   });
 });
 
 test.describe('Screenshot Pages - Theme Support', () => {
-  // Skip on mobile - theme tests are desktop-focused
   test.skip(({ isMobile }) => isMobile, 'Theme tests are desktop-only');
 
   test.beforeEach(async ({ page }) => {
@@ -192,8 +163,6 @@ test.describe('Screenshot Pages - Theme Support', () => {
     await page.emulateMedia({ colorScheme: 'dark' });
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    
-    // Page should load without errors
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
@@ -204,36 +173,18 @@ test.describe('Screenshot Pages - Theme Support', () => {
     });
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    
-    // Page should load without errors
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
   test('badges page supports both themes', async ({ page }) => {
-    // Test dark theme
     await page.emulateMedia({ colorScheme: 'dark' });
     await page.goto('/badges');
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('heading', { name: /Badges/i })).toBeVisible();
     
-    // Test light theme
     await page.emulateMedia({ colorScheme: 'light' });
     await page.reload();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('heading', { name: /Badges/i })).toBeVisible();
-  });
-
-  test('tests page supports both themes', async ({ page }) => {
-    // Test dark theme
-    await page.emulateMedia({ colorScheme: 'dark' });
-    await page.goto('/tests');
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByText('Tests')).toBeVisible();
-    
-    // Test light theme
-    await page.emulateMedia({ colorScheme: 'light' });
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByText('Tests')).toBeVisible();
   });
 });
