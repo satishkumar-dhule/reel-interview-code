@@ -80,7 +80,13 @@ export function MobileHomeFocused() {
       {hasChannels ? (
         <FeaturedQuestionCard 
           channels={subscribedChannels}
-          onStartLearning={(channelId) => setLocation(`/channel/${channelId}`)}
+          onStartLearning={(channelId, questionIndex) => {
+            if (questionIndex !== undefined && questionIndex > 0) {
+              setLocation(`/channel/${channelId}/${questionIndex}`);
+            } else {
+              setLocation(`/channel/${channelId}`);
+            }
+          }}
         />
       ) : (
         <WelcomeCard onGetStarted={() => setLocation('/channels')} />
@@ -125,9 +131,10 @@ function FeaturedQuestionCard({
   onStartLearning 
 }: { 
   channels: any[];
-  onStartLearning: (channelId: string) => void;
+  onStartLearning: (channelId: string, questionIndex?: number) => void;
 }) {
   const [featuredQuestion, setFeaturedQuestion] = useState<Question | null>(null);
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -142,7 +149,13 @@ function FeaturedQuestionCard({
           const uncompleted = relevantQuestions.filter(q => !completedIds.has(q.id));
           const pool = uncompleted.length > 0 ? uncompleted : relevantQuestions;
           const randomIndex = Math.floor(Math.random() * pool.length);
-          setFeaturedQuestion(pool[randomIndex]);
+          const selectedQuestion = pool[randomIndex];
+          setFeaturedQuestion(selectedQuestion);
+          
+          // Find the index of this question within its channel
+          const channelQuestions = allQuestions.filter(q => q.channel === selectedQuestion.channel);
+          const indexInChannel = channelQuestions.findIndex(q => q.id === selectedQuestion.id);
+          setQuestionIndex(indexInChannel >= 0 ? indexInChannel : 0);
         }
       } catch (e) {
         console.error('Failed to load featured question', e);
@@ -194,7 +207,7 @@ function FeaturedQuestionCard({
 
         {/* Question */}
         <button 
-          onClick={() => onStartLearning(featuredQuestion.channel)}
+          onClick={() => onStartLearning(featuredQuestion.channel, questionIndex)}
           className="w-full p-3 sm:p-5 text-left hover:bg-muted/30 transition-colors"
         >
           <div className="flex items-center gap-2 mb-2 sm:mb-3">
