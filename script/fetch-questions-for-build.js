@@ -291,7 +291,7 @@ async function main() {
   console.log('\n📥 Fetching tests...');
   try {
     const testsResult = await client.execute(`
-      SELECT id, channel_id, channel_name, title, description, questions, passing_score, created_at, version
+      SELECT id, channel_id, channel_name, title, description, questions, passing_score, created_at, last_updated, version
       FROM tests
       ORDER BY channel_name
     `);
@@ -305,6 +305,7 @@ async function main() {
       questions: JSON.parse(row.questions),
       passingScore: row.passing_score || 70,
       createdAt: row.created_at,
+      lastUpdated: row.last_updated,
       version: row.version || 1
     }));
 

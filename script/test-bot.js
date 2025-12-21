@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 /**
- * Test Bot - Generates quiz tests for each channel
- * Saves tests to Turso database (not local files)
- * Tests are fetched during build by fetch-questions-for-build.js
+ * Test Bot - Generates and expands quiz tests for each channel
+ * 
+ * Features:
+ * - Creates new tests for channels without tests
+ * - Adds new MCQs to existing tests from new questions
+ * - Tracks which questions have been converted to avoid duplicates
+ * - Supports large question pools (50+ questions per test)
+ * - Random 15-20 questions selected per session in UI
  */
 
 import 'dotenv/config';
@@ -15,7 +20,9 @@ const db = createClient({
 });
 
 const CHANNEL_ID = process.env.CHANNEL_ID || null;
-const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '100');
+const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '10');
+const MIN_QUESTIONS_FOR_TEST = 10;
+const MAX_NEW_MCQS_PER_RUN = parseInt(process.env.MAX_NEW_MCQS || '25');
 
 const CHANNEL_NAMES = {
   'system-design': 'System Design',
@@ -33,9 +40,13 @@ const CHANNEL_NAMES = {
   'behavioral': 'Behavioral',
   'aws': 'AWS',
   'kubernetes': 'Kubernetes',
+  'terraform': 'Terraform',
+  'testing': 'Testing',
+  'machine-learning': 'Machine Learning',
+  'generative-ai': 'Generative AI',
 };
 
-// Initialize tests table
+// Initialize tests table with question tracking
 async function initTable() {
   await db.execute(`
     CREATE TABLE IF NOT EXISTS tests (
@@ -47,17 +58,62 @@ async function initTable() {
       questions TEXT NOT NULL,
       passing_score INTEGER DEFAULT 70,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      last_updated TEXT,
       version INTEGER DEFAULT 1
     )
   `);
-  console.log('✓ Tests table ready');
+  
+  // Add last_updated column if it doesn't exist (migration)
+  try {
+    await db.execute(`ALTER TABLE tests ADD COLUMN last_updated TEXT`);
+    console.log('✓ Added last_updated column');
+  } catch (e) {
+    // Column already exists, ignore
+  }
+  
+  // Track which questions have been converted to MCQs
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS test_question_map (
+      question_id TEXT PRIMARY KEY,
+      test_id TEXT NOT NULL,
+      mcq_id TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  
+  console.log('✓ Tables ready');
 }
 
-async function getChannelQuestions(channelId, limit = 25) {
+// Get existing test for channel
+async function getExistingTest(channelId) {
   const result = await db.execute({
-    sql: `SELECT id, question, answer, difficulty 
-          FROM questions 
-          WHERE channel = ? 
+    sql: 'SELECT * FROM tests WHERE channel_id = ?',
+    args: [channelId]
+  });
+  if (result.rows.length === 0) return null;
+  
+  const row = result.rows[0];
+  return {
+    id: row.id,
+    channelId: row.channel_id,
+    channelName: row.channel_name,
+    title: row.title,
+    description: row.description,
+    questions: JSON.parse(row.questions),
+    passingScore: row.passing_score,
+    createdAt: row.created_at,
+    lastUpdated: row.last_updated,
+    version: row.version
+  };
+}
+
+// Get questions that haven't been converted to MCQs yet
+async function getUnconvertedQuestions(channelId, limit = 25) {
+  const result = await db.execute({
+    sql: `SELECT q.id, q.question, q.answer, q.difficulty 
+          FROM questions q
+          LEFT JOIN test_question_map m ON q.id = m.question_id
+          WHERE q.channel = ? AND m.question_id IS NULL
           ORDER BY RANDOM()
           LIMIT ?`,
     args: [channelId, limit]
@@ -65,12 +121,13 @@ async function getChannelQuestions(channelId, limit = 25) {
   return result.rows;
 }
 
-async function testExists(channelId) {
+// Get total question count for channel
+async function getChannelQuestionCount(channelId) {
   const result = await db.execute({
-    sql: 'SELECT id FROM tests WHERE channel_id = ?',
+    sql: 'SELECT COUNT(*) as count FROM questions WHERE channel = ?',
     args: [channelId]
   });
-  return result.rows.length > 0;
+  return result.rows[0]?.count || 0;
 }
 
 // Generate MCQs using opencode run
@@ -89,10 +146,10 @@ Return a JSON array with this exact structure:
 [{"q":"question text","o":["option a","option b","option c","option d"],"c":[0],"e":"brief explanation"}]
 
 Where:
-- q = question text
-- o = array of 4 options
+- q = question text (rephrase slightly for variety)
+- o = array of 4 plausible options (make wrong options realistic)
 - c = array of correct option indices (0-based)
-- e = brief explanation
+- e = brief explanation of why the answer is correct
 
 IMPORTANT: Return ONLY the JSON array. No other text.`;
 
@@ -119,6 +176,7 @@ IMPORTANT: Return ONLY the JSON array. No other text.`;
       isCorrect: correctIndices.includes(idx)
     }));
 
+    // Ensure at least one correct answer
     if (!options.some(o => o.isCorrect)) options[0].isCorrect = true;
 
     return {
@@ -133,10 +191,23 @@ IMPORTANT: Return ONLY the JSON array. No other text.`;
   }).filter(Boolean);
 }
 
+// Save question mapping to track converted questions
+async function saveQuestionMapping(testId, mcqs) {
+  for (const mcq of mcqs) {
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO test_question_map (question_id, test_id, mcq_id, created_at)
+            VALUES (?, ?, ?, ?)`,
+      args: [mcq.questionId, testId, mcq.id, new Date().toISOString()]
+    });
+  }
+}
+
+// Save test to database
 async function saveTestToDb(test) {
   await db.execute({
-    sql: `INSERT OR REPLACE INTO tests (id, channel_id, channel_name, title, description, questions, passing_score, created_at, version)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT OR REPLACE INTO tests 
+          (id, channel_id, channel_name, title, description, questions, passing_score, created_at, last_updated, version)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       test.id,
       test.channelId,
@@ -146,97 +217,155 @@ async function saveTestToDb(test) {
       JSON.stringify(test.questions),
       test.passingScore,
       test.createdAt,
+      test.lastUpdated || new Date().toISOString(),
       test.version
     ]
   });
 }
 
-async function generateTestForChannel(channelId) {
+// Process channel - create new test or expand existing
+async function processChannel(channelId) {
   console.log(`\n📝 ${channelId}`);
   
-  const questions = await getChannelQuestions(channelId, 25);
-  console.log(`   ${questions.length} questions`);
+  const totalQuestions = await getChannelQuestionCount(channelId);
+  const unconverted = await getUnconvertedQuestions(channelId, MAX_NEW_MCQS_PER_RUN);
+  const existingTest = await getExistingTest(channelId);
   
-  if (questions.length < 10) {
-    console.log(`   ⚠️ Not enough`);
-    return null;
+  console.log(`   Total: ${totalQuestions} | Unconverted: ${unconverted.length} | Has test: ${!!existingTest}`);
+  
+  // Skip if no unconverted questions
+  if (unconverted.length === 0) {
+    console.log(`   ⏭️ No new questions to convert`);
+    return { action: 'skip', reason: 'no-new-questions' };
+  }
+  
+  // Skip if not enough questions for new test
+  if (!existingTest && totalQuestions < MIN_QUESTIONS_FOR_TEST) {
+    console.log(`   ⚠️ Not enough questions (need ${MIN_QUESTIONS_FOR_TEST})`);
+    return { action: 'skip', reason: 'not-enough-questions' };
   }
 
-  const testQuestions = [];
-  
-  for (let i = 0; i < questions.length; i += BATCH_SIZE) {
-    const batch = questions.slice(i, i + BATCH_SIZE);
-    console.log(`   Batch ${Math.floor(i / BATCH_SIZE) + 1}...`);
+  // Generate MCQs in batches
+  const newMCQs = [];
+  for (let i = 0; i < unconverted.length; i += BATCH_SIZE) {
+    const batch = unconverted.slice(i, i + BATCH_SIZE);
+    console.log(`   Batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(unconverted.length / BATCH_SIZE)}...`);
     
     const mcqs = await generateBatchMCQs(batch);
-    testQuestions.push(...mcqs);
-    console.log(`   ✓ ${mcqs.length} MCQs`);
+    newMCQs.push(...mcqs);
+    console.log(`   ✓ Generated ${mcqs.length} MCQs`);
     
-    if (i + BATCH_SIZE < questions.length) {
+    // Rate limiting between batches
+    if (i + BATCH_SIZE < unconverted.length) {
       await new Promise(r => setTimeout(r, 2000));
     }
   }
 
-  if (testQuestions.length < 10) {
-    console.log(`   ⚠️ Only ${testQuestions.length}`);
-    return null;
+  if (newMCQs.length === 0) {
+    console.log(`   ⚠️ Failed to generate MCQs`);
+    return { action: 'failed', reason: 'generation-failed' };
   }
 
-  const test = {
-    id: `test-${channelId}`,
-    channelId,
-    channelName: CHANNEL_NAMES[channelId] || channelId,
-    title: `${CHANNEL_NAMES[channelId] || channelId} Knowledge Test`,
-    description: `Test your ${CHANNEL_NAMES[channelId] || channelId} knowledge.`,
-    questions: testQuestions,
-    passingScore: 70,
-    createdAt: new Date().toISOString(),
-    version: 1
-  };
+  const testId = `test-${channelId}`;
+  const channelName = CHANNEL_NAMES[channelId] || channelId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-  // Save to database
-  await saveTestToDb(test);
-  console.log(`   ✓ Saved to DB`);
-  
-  return test;
+  if (existingTest) {
+    // Expand existing test
+    const updatedQuestions = [...existingTest.questions, ...newMCQs];
+    const updatedTest = {
+      ...existingTest,
+      questions: updatedQuestions,
+      lastUpdated: new Date().toISOString(),
+      version: existingTest.version + 1
+    };
+    
+    await saveTestToDb(updatedTest);
+    await saveQuestionMapping(testId, newMCQs);
+    
+    console.log(`   ✅ Expanded: ${existingTest.questions.length} → ${updatedQuestions.length} MCQs (v${updatedTest.version})`);
+    return { action: 'expanded', added: newMCQs.length, total: updatedQuestions.length };
+  } else {
+    // Create new test
+    const test = {
+      id: testId,
+      channelId,
+      channelName,
+      title: `${channelName} Knowledge Test`,
+      description: `Test your ${channelName} knowledge with randomly selected questions.`,
+      questions: newMCQs,
+      passingScore: 70,
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      version: 1
+    };
+
+    await saveTestToDb(test);
+    await saveQuestionMapping(testId, newMCQs);
+    
+    console.log(`   ✅ Created new test with ${newMCQs.length} MCQs`);
+    return { action: 'created', total: newMCQs.length };
+  }
 }
 
 async function main() {
-  console.log('🧪 Test Bot\n');
+  console.log('🧪 Test Bot - Generate & Expand Tests\n');
 
   await initTable();
 
-  let channelIds = CHANNEL_ID ? [CHANNEL_ID] : 
-    (await db.execute('SELECT DISTINCT channel FROM questions ORDER BY channel')).rows.map(r => r.channel);
+  // Get channels to process
+  let channelIds;
+  if (CHANNEL_ID) {
+    channelIds = [CHANNEL_ID];
+  } else {
+    const result = await db.execute('SELECT DISTINCT channel FROM questions ORDER BY channel');
+    channelIds = result.rows.map(r => r.channel);
+  }
 
-  console.log(`${channelIds.length} channels`);
+  console.log(`📊 ${channelIds.length} channels to check\n`);
 
-  let generated = 0;
-  
+  const stats = { created: 0, expanded: 0, skipped: 0, failed: 0 };
+  let processed = 0;
+  const maxPerRun = CHANNEL_ID ? 1 : 3; // Process up to 3 channels per run (unless specific channel)
+
   for (const channelId of channelIds) {
-    // Skip if test exists (unless specific channel requested)
-    if (!CHANNEL_ID && await testExists(channelId)) {
-      console.log(`⏭️ ${channelId} exists`);
-      continue;
+    const result = await processChannel(channelId);
+    
+    if (result.action === 'created') {
+      stats.created++;
+      processed++;
+    } else if (result.action === 'expanded') {
+      stats.expanded++;
+      processed++;
+    } else if (result.action === 'failed') {
+      stats.failed++;
+    } else {
+      stats.skipped++;
     }
 
-    const test = await generateTestForChannel(channelId);
-    if (test) generated++;
-
-    // Limit per run (unless specific channel)
-    if (!CHANNEL_ID && generated >= 1) {
-      console.log(`\n⏸️ Done ${generated}`);
+    // Limit channels per run to avoid timeout
+    if (!CHANNEL_ID && processed >= maxPerRun) {
+      console.log(`\n⏸️ Processed ${processed} channels this run`);
       break;
     }
   }
 
   // Show summary
-  const allTests = await db.execute('SELECT channel_name, questions FROM tests');
-  console.log(`\n✅ ${allTests.rows.length} tests in DB`);
-  allTests.rows.forEach(t => {
+  console.log('\n' + '='.repeat(50));
+  console.log('📊 SUMMARY');
+  console.log('='.repeat(50));
+  
+  const allTests = await db.execute('SELECT channel_name, questions, version FROM tests ORDER BY channel_name');
+  console.log(`\n✅ ${allTests.rows.length} tests in database:\n`);
+  
+  let totalMCQs = 0;
+  for (const t of allTests.rows) {
     const qs = JSON.parse(t.questions);
-    console.log(`   - ${t.channel_name}: ${qs.length} MCQs`);
-  });
+    totalMCQs += qs.length;
+    console.log(`   ${t.channel_name.padEnd(20)} ${String(qs.length).padStart(3)} MCQs (v${t.version})`);
+  }
+  
+  console.log(`\n   ${'TOTAL'.padEnd(20)} ${String(totalMCQs).padStart(3)} MCQs`);
+  console.log(`\nThis run: ${stats.created} created, ${stats.expanded} expanded, ${stats.skipped} skipped, ${stats.failed} failed`);
 }
 
 main().catch(e => {

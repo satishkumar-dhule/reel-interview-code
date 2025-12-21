@@ -59,7 +59,8 @@ export default function TestSession() {
 
   const startTest = useCallback(() => {
     if (!test) return;
-    const sessionQuestions = getSessionQuestions(test, 20);
+    // Select 15 random questions from the pool for each session
+    const sessionQuestions = getSessionQuestions(test, 15);
     setQuestions(sessionQuestions);
     setAnswers({});
     setCurrentIndex(0);
@@ -183,7 +184,7 @@ export default function TestSession() {
               <div className="space-y-3 mb-6 text-sm">
                 <div className="flex justify-between p-2 bg-muted/20 rounded">
                   <span className="text-muted-foreground">Questions</span>
-                  <span className="font-bold">20 (random)</span>
+                  <span className="font-bold">15 (random from {test.questions.length})</span>
                 </div>
                 <div className="flex justify-between p-2 bg-muted/20 rounded">
                   <span className="text-muted-foreground">Passing Score</span>
