@@ -1478,7 +1478,7 @@ html {
   border-radius: var(--radius);
 }
 
-/* Giscus Comments Styling */
+/* Giscus Comments Styling - Clean & Minimal */
 .giscus-container {
   width: 100%;
 }
@@ -1491,11 +1491,19 @@ html {
   width: 100% !important;
   border: none !important;
   color-scheme: dark;
+  min-height: 150px;
 }
 
-/* Make Giscus blend with dark theme */
+/* Make Giscus blend seamlessly with dark theme */
 .giscus-container iframe {
   color-scheme: dark;
+  background: transparent !important;
+}
+
+/* Hide Giscus branding and extra elements for cleaner look */
+.giscus-container .giscus-frame {
+  --color-canvas-default: transparent !important;
+  --color-canvas-subtle: hsl(var(--muted) / 0.3) !important;
 }
 
 

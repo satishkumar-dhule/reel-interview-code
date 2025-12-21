@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Loader2 } from 'lucide-react';
+import { MessageCircle, ChevronDown, Loader2 } from 'lucide-react';
 
 interface GiscusCommentsProps {
   questionId: string;
@@ -27,20 +27,19 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
     script.setAttribute('data-category', 'General');
     script.setAttribute('data-category-id', 'DIC_kwDOQmWfU84Cz7Th');
     script.setAttribute('data-mapping', 'specific');
-    script.setAttribute('data-term', questionId); // Use questionId for unique discussions per question
+    script.setAttribute('data-term', questionId);
     script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-reactions-enabled', '0'); // Disable reactions for cleaner look
     script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'bottom');
-    script.setAttribute('data-theme', 'dark_dimmed');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', 'transparent_dark');
     script.setAttribute('data-lang', 'en');
     script.setAttribute('data-loading', 'lazy');
     script.crossOrigin = 'anonymous';
     script.async = true;
 
     script.onload = () => {
-      // Give Giscus a moment to render
-      setTimeout(() => setIsLoading(false), 1000);
+      setTimeout(() => setIsLoading(false), 800);
     };
 
     containerRef.current.appendChild(script);
@@ -54,15 +53,20 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
 
   return (
     <div className="w-full">
-      {/* Discuss Button */}
+      {/* Compact Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/50 rounded-lg transition-all group"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-all group"
       >
-        <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-        <span className="text-[10px] sm:text-sm text-purple-400 group-hover:text-purple-300 font-medium transition-colors">
-          {isOpen ? 'Hide Discussion' : 'Discuss'}
-        </span>
+        <div className="flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+          <span className="text-xs sm:text-sm text-muted-foreground group-hover:text-foreground font-medium transition-colors">
+            Discussion
+          </span>
+        </div>
+        <ChevronDown 
+          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
+        />
       </button>
 
       {/* Giscus Container */}
@@ -72,35 +76,20 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden mt-3 sm:mt-4"
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="overflow-hidden"
           >
-            <div className="p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-purple-400" />
-                  <span className="text-xs sm:text-sm font-medium text-white/80">
-                    Discussion
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                >
-                  <X className="w-4 h-4 text-white/50 hover:text-white/80" />
-                </button>
-              </div>
-              
+            <div className="pt-3">
               {isLoading && (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />
-                  <span className="ml-2 text-sm text-white/60">Loading comments...</span>
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+                  <span className="ml-2 text-xs text-muted-foreground">Loading...</span>
                 </div>
               )}
               
               <div 
                 ref={containerRef} 
-                className="giscus-container min-h-[200px]"
+                className="giscus-container"
                 style={{ colorScheme: 'dark' }}
               />
             </div>

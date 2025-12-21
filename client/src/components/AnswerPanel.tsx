@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { 
   BookOpen, Code2, Lightbulb, ExternalLink, Building2, 
-  ChevronDown, Baby, Copy, Check, Tag, MessageSquare,
+  ChevronDown, Baby, Copy, Check, Tag,
   Zap, List
 } from 'lucide-react';
 import type { Question } from '../lib/data';
@@ -444,14 +444,8 @@ export function AnswerPanel({ question }: AnswerPanelProps) {
           </a>
         )}
 
-        {/* Discussion */}
-        <ExpandableCard
-          title="Discussion"
-          icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />}
-          defaultExpanded={false}
-        >
-          <GiscusComments questionId={question.id} />
-        </ExpandableCard>
+        {/* Discussion - Direct embed without extra wrapper */}
+        <GiscusComments questionId={question.id} />
 
       </div>
     </motion.div>
