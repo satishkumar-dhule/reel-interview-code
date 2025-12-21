@@ -16,6 +16,7 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
     if (!isOpen || !containerRef.current) return;
@@ -35,7 +36,7 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
     script.setAttribute('data-mapping', 'specific');
     script.setAttribute('data-term', questionId);
     script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '0'); // Disable reactions for cleaner look
+    script.setAttribute('data-reactions-enabled', '0');
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'top');
     script.setAttribute('data-theme', 'transparent_dark');
@@ -48,14 +49,37 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
       setTimeout(() => setIsLoading(false), 800);
     };
 
+    scriptRef.current = script;
     containerRef.current.appendChild(script);
 
+    // Listen for giscus messages to handle auth redirects
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== 'https://giscus.app') return;
+      
+      // Handle giscus ready event
+      if (event.data?.giscus?.discussion) {
+        setIsLoading(false);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
     return () => {
+      window.removeEventListener('message', handleMessage);
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
+      scriptRef.current = null;
     };
   }, [isOpen, questionId]);
+
+  // Handle hash fragment from OAuth redirect
+  useEffect(() => {
+    // Check if we're returning from a Giscus OAuth redirect
+    if (window.location.hash.includes('giscus')) {
+      setIsOpen(true);
+    }
+  }, []);
 
   return (
     <div className="w-full mt-4">

@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -34,6 +34,33 @@ import { preloadQuestions } from "./lib/questions-loader";
 import PixelMascot from "./components/PixelMascot";
 import BackgroundMascots from "./components/BackgroundMascots";
 
+// Handle SPA redirect from 404.html (GitHub Pages)
+function useSpaRedirect() {
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    // Check if we're returning from a 404 redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('spa-redirect') === 'true') {
+      try {
+        const stored = sessionStorage.getItem('spa-redirect');
+        if (stored) {
+          const { path, search, hash } = JSON.parse(stored);
+          sessionStorage.removeItem('spa-redirect');
+          
+          // Navigate to the intended path
+          const fullPath = path + (search || '') + (hash || '');
+          // Use replaceState to clean up the URL
+          window.history.replaceState(null, '', fullPath);
+          setLocation(path);
+        }
+      } catch (e) {
+        console.error('SPA redirect error:', e);
+      }
+    }
+  }, [setLocation]);
+}
+
 function Router() {
   return (
     <Switch>
@@ -60,6 +87,9 @@ function Router() {
 }
 
 function AppContent() {
+  // Handle SPA redirects from 404.html (GitHub Pages)
+  useSpaRedirect();
+  
   // Initialize analytics hooks
   usePageViewTracking();
   useSessionTracking();
