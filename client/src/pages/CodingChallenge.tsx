@@ -545,10 +545,10 @@ export default function CodingChallenge() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="flex-1 overflow-hidden lg:!h-auto lg:!opacity-100"
+                      className="flex-1 overflow-hidden lg:overflow-y-auto lg:!h-auto lg:!opacity-100"
                       data-testid="problem-content"
                     >
-                      <div className="flex-1 overflow-y-auto p-4 max-h-[40vh] lg:max-h-none">
+                      <div className="p-4 max-h-[40vh] overflow-y-auto lg:max-h-none lg:overflow-visible">
                   <h1 className="text-lg font-bold mb-3" data-testid="challenge-title">
                     {currentChallenge.title}
                   </h1>
