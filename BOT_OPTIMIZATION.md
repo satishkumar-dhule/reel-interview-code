@@ -174,3 +174,52 @@ const templates = { ..., newtask: newtaskTemplate };
 ```javascript
 const result = await ai.run('newtask', { ...context });
 ```
+
+
+## LangGraph Integration
+
+### Adaptive Improvement Pipeline
+
+A new LangGraph-based improvement pipeline has been added that intelligently orchestrates question improvements through multiple specialized nodes with conditional routing.
+
+**Location:** `script/ai/graphs/improvement-graph.js`
+
+**Flow:**
+```
+┌──────────┐     ┌───────┐     ┌─────────────────────────────────────┐
+│ ANALYZE  │────▶│ ROUTE │────▶│ improve_answer | improve_explanation │
+│ (score)  │     │       │     │ add_eli5 | add_tldr | add_diagram   │
+└──────────┘     └───────┘     └──────────────────┬──────────────────┘
+                                                  │
+                                                  ▼
+                                           ┌──────────┐
+                                           │ VALIDATE │──▶ (loop or END)
+                                           └──────────┘
+```
+
+**Nodes:**
+- `analyze` - Scores question relevance and detects issues
+- `route` - Routes to appropriate improvement node based on current issue
+- `improve_answer` - Enhances answer quality
+- `improve_explanation` - Deepens explanation with more context
+- `add_eli5` - Creates simple explanation for beginners
+- `add_tldr` - Creates one-liner summary
+- `add_diagram` - Creates Mermaid visualization
+- `validate` - Checks if more improvements needed, loops or ends
+
+**Features:**
+- Adaptive routing based on detected issues
+- Iterates until all issues resolved or max retries (3)
+- Tracks all improvements made
+- Integrates with existing AI framework
+
+**Usage:**
+```javascript
+import { improveQuestion } from './ai/graphs/improvement-graph.js';
+
+const result = await improveQuestion(question);
+// result.success, result.score, result.improvements, result.updatedQuestion
+```
+
+**Bot:** `script/langgraph-improve-bot.js`
+**Workflow:** `.github/workflows/langgraph-improve-bot.yml` (runs at 06:00 UTC)

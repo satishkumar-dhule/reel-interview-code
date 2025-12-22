@@ -1,0 +1,53 @@
+name: 🧠 LangGraph Improve Bot
+
+on:
+  schedule:
+    # Run at 06:00 UTC daily (after relevance bot)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: 'Number of questions to process'
+        required: false
+        default: '10'
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Install OpenCode CLI
+        run: |
+          curl -fsSL https://opencode.ai/install.sh | bash
+          echo "$HOME/.opencode/bin" >> $GITHUB_PATH
+          
+      - name: Run LangGraph Improve Bot
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '10' }}
+        run: node script/langgraph-improve-bot.js
+        
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🧠 LangGraph Improve Bot Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Processed questions using adaptive improvement pipeline" >> $GITHUB_STEP_SUMMARY
