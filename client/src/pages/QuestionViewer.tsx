@@ -316,7 +316,7 @@ export default function QuestionViewer() {
             </div>
             {/* Mobile Content - Swipeable */}
             <div 
-              className="flex-1 overflow-hidden"
+              className="flex-1 overflow-y-auto"
               onTouchStart={swipeHandlers.onTouchStart}
               onTouchMove={swipeHandlers.onTouchMove}
               onTouchEnd={swipeHandlers.onTouchEnd}
