@@ -12,6 +12,7 @@ import {
   ChevronDown, User, Settings, LogOut
 } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { VisitCounter } from '../VisitCounter';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -106,6 +107,11 @@ export function TopBar({ onMenuClick, onSearchClick, title, showBackButton }: To
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
+
+          {/* Visit Counter */}
+          <div className="hidden sm:flex items-center px-3 py-1.5 bg-muted/50 rounded-full">
+            <VisitCounter showLabel={true} />
+          </div>
 
           {/* GitHub */}
           <a
