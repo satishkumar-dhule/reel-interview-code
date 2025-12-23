@@ -12,6 +12,7 @@ import { useProgress, useGlobalStats } from '../../hooks/use-progress';
 import { ProgressStorage } from '../../services/storage.service';
 import { getAllQuestions } from '../../lib/questions-loader';
 import type { Question } from '../../types';
+import { DailyReviewCard } from '../DailyReviewCard';
 import {
   Cpu, Terminal, Layout, Database, Activity, GitBranch, Server,
   Layers, Smartphone, Shield, Brain, Workflow, Box, Cloud, Code,
@@ -101,6 +102,9 @@ export function MobileHomeFocused() {
           onStatsClick={() => setLocation('/stats')}
         />
       )}
+
+      {/* Daily Review - Spaced Repetition */}
+      {hasChannels && <DailyReviewCard />}
 
       {/* Continue Learning - show more channels */}
       {hasChannels && (

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EnhancedMermaid } from './EnhancedMermaid';
 import { YouTubePlayer } from './YouTubePlayer';
@@ -9,11 +9,16 @@ import remarkGfm from 'remark-gfm';
 import { 
   BookOpen, Code2, Lightbulb, ExternalLink, Building2, 
   ChevronDown, Baby, Copy, Check, Tag,
-  Zap, List
+  Zap, List, Brain, RotateCcw
 } from 'lucide-react';
 import type { Question } from '../lib/data';
 import { GiscusComments } from './GiscusComments';
 import { formatTag } from '../lib/utils';
+import { 
+  getCard, recordReview, addToSRS, isInSRS,
+  getMasteryLabel, getMasteryColor, getNextReviewPreview,
+  type ReviewCard, type ConfidenceRating 
+} from '../lib/spaced-repetition';
 
 /**
  * Preprocess markdown text to fix common formatting issues
@@ -244,9 +249,46 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   );
 }
 
-export function AnswerPanel({ question }: AnswerPanelProps) {
+export function AnswerPanel({ question, isCompleted }: AnswerPanelProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 640;
+  const [srsCard, setSrsCard] = useState<ReviewCard | null>(null);
+  const [hasRated, setHasRated] = useState(false);
+  const [showRatingButtons, setShowRatingButtons] = useState(false);
+
+  // Load or create SRS card when question changes
+  useEffect(() => {
+    if (question) {
+      const card = getCard(question.id, question.channel, question.difficulty);
+      setSrsCard(card);
+      setHasRated(false);
+      // Show rating buttons if card already has reviews
+      setShowRatingButtons(card.totalReviews > 0);
+    }
+  }, [question.id]);
+
+  // Handle SRS rating
+  const handleSRSRate = (rating: ConfidenceRating) => {
+    if (!question) return;
+    
+    const updatedCard = recordReview(
+      question.id,
+      question.channel,
+      question.difficulty,
+      rating
+    );
+    setSrsCard(updatedCard);
+    setHasRated(true);
+    setShowRatingButtons(false);
+  };
+
+  // Add to SRS and show rating buttons
+  const handleAddToSRS = () => {
+    if (!question) return;
+    const card = addToSRS(question.id, question.channel, question.difficulty);
+    setSrsCard(card);
+    setShowRatingButtons(true);
+  };
 
   const renderMarkdown = useCallback((text: string) => {
     const processedText = preprocessMarkdown(text);
@@ -394,6 +436,40 @@ export function AnswerPanel({ question }: AnswerPanelProps) {
           </div>
         )}
 
+        {/* SRS Rating Card */}
+        <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Brain className="w-4 h-4 text-purple-500" />
+            <span className="text-xs sm:text-sm font-semibold text-purple-500">Spaced Repetition</span>
+            {srsCard && srsCard.totalReviews > 0 && (
+              <span className={`text-xs px-2 py-0.5 rounded ${getMasteryColor(srsCard.masteryLevel)} bg-muted/50`}>
+                {getMasteryLabel(srsCard.masteryLevel)}
+              </span>
+            )}
+          </div>
+          
+          {hasRated ? (
+            <div className="flex items-center gap-2 text-sm text-green-500">
+              <Check className="w-4 h-4" />
+              <span>Rated! Next review: {srsCard?.nextReview}</span>
+            </div>
+          ) : showRatingButtons && srsCard ? (
+            <SRSRatingButtons card={srsCard} onRate={handleSRSRate} />
+          ) : (
+            <div className="flex items-center justify-between">
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Add to your review queue for better retention
+              </p>
+              <button
+                onClick={handleAddToSRS}
+                className="px-3 py-1.5 bg-purple-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-purple-600 transition-colors"
+              >
+                Start Learning
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* ELI5 - Compact card */}
         {question.eli5 && (
           <ExpandableCard
@@ -482,5 +558,36 @@ export function AnswerPanel({ question }: AnswerPanelProps) {
 
       </div>
     </motion.div>
+  );
+}
+
+
+// Inline SRS Rating Buttons for AnswerPanel
+function SRSRatingButtons({ card, onRate }: { card: ReviewCard; onRate: (rating: ConfidenceRating) => void }) {
+  const previews = getNextReviewPreview(card);
+
+  const buttons: { rating: ConfidenceRating; label: string; preview: string; color: string }[] = [
+    { rating: 'again', label: 'Again', preview: previews.again, color: 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20' },
+    { rating: 'hard', label: 'Hard', preview: previews.hard, color: 'bg-orange-500/10 text-orange-500 border-orange-500/30 hover:bg-orange-500/20' },
+    { rating: 'good', label: 'Good', preview: previews.good, color: 'bg-green-500/10 text-green-500 border-green-500/30 hover:bg-green-500/20' },
+    { rating: 'easy', label: 'Easy', preview: previews.easy, color: 'bg-blue-500/10 text-blue-500 border-blue-500/30 hover:bg-blue-500/20' },
+  ];
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs text-muted-foreground">How well did you know this?</p>
+      <div className="flex gap-2">
+        {buttons.map((btn) => (
+          <button
+            key={btn.rating}
+            onClick={() => onRate(btn.rating)}
+            className={`flex-1 flex flex-col items-center gap-0.5 py-2 rounded-lg border transition-colors ${btn.color}`}
+          >
+            <span className="text-xs font-medium">{btn.label}</span>
+            <span className="text-[10px] opacity-70">{btn.preview}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
