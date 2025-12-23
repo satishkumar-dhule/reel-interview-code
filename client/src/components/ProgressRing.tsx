@@ -26,11 +26,18 @@ export function ProgressRing({
 }: ProgressRingProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (progress / 100) * circumference;
+  const normalizedProgress = Math.min(100, Math.max(0, progress));
+  const offset = circumference - (normalizedProgress / 100) * circumference;
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="transform -rotate-90">
+    <div className="relative inline-flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+      <svg 
+        width={size} 
+        height={size} 
+        viewBox={`0 0 ${size} ${size}`}
+        className="transform -rotate-90"
+        style={{ overflow: 'visible' }}
+      >
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -49,12 +56,10 @@ export function ProgressRing({
           stroke={color}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          initial={animate ? { strokeDashoffset: circumference } : false}
+          strokeDasharray={circumference}
+          initial={animate ? { strokeDashoffset: circumference } : { strokeDashoffset: offset }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          style={{
-            strokeDasharray: circumference,
-          }}
         />
       </svg>
       {/* Center content */}
