@@ -1,5 +1,6 @@
 /**
  * Mermaid Diagram Prompt Template
+ * Optimized for ~450px wide panel display
  */
 
 import { jsonOutputRule, qualityRules, buildSystemContext } from './base.js';
@@ -16,29 +17,16 @@ export const examples = [
     input: { question: "How does DNS resolution work?", tags: ["networking", "dns"] },
     output: {
       diagram: `flowchart TD
-  subgraph Client["🖥️ Client Side"]
-    A[("🌐 Browser")]
-    B[("💾 Local Cache")]
-  end
+  A["🌐 Browser"] -->|query| B["💾 Local Cache"]
+  B -->|miss| C["🔄 Resolver"]
+  C -->|ask| D["🌍 Root DNS"]
+  D -->|refer| E["📍 TLD Server"]
+  E -->|refer| F["✅ Auth Server"]
+  F -->|IP address| C
+  C -->|response| A
   
-  subgraph DNS["☁️ DNS Infrastructure"]
-    C[("🔄 Recursive Resolver")]
-    D[("🌍 Root Server")]
-    E[("📍 TLD Server")]
-    F[("✅ Authoritative Server")]
-  end
-  
-  A -->|"1. Query domain"| B
-  B -->|"2. Cache miss"| C
-  C -->|"3. Where is .com?"| D
-  D -->|"4. Ask TLD"| E
-  E -->|"5. Ask authoritative"| F
-  F -->|"6. IP: 93.184.216.34"| C
-  C -->|"7. Return IP"| A
-  
-  style A fill:#e1f5fe,stroke:#01579b
-  style F fill:#c8e6c9,stroke:#2e7d32
-  style C fill:#fff3e0,stroke:#ef6c00`,
+  style A fill:#e3f2fd,stroke:#1565c0
+  style F fill:#e8f5e9,stroke:#2e7d32`,
       diagramType: "flowchart",
       confidence: "high"
     }
@@ -48,31 +36,19 @@ export const examples = [
     output: {
       diagram: `sequenceDiagram
   participant U as 👤 User
-  participant C as 📱 Client App
-  participant A as 🔐 Auth Server
-  participant R as 🗄️ Resource Server
+  participant C as 📱 App
+  participant A as 🔐 Auth
+  participant R as 🗄️ API
   
-  rect rgb(240, 248, 255)
-    Note over U,C: Authorization Request
-    U->>+C: Click "Login with Google"
-    C->>A: Redirect to /authorize
-    A->>U: Show login form
-    U->>A: Enter credentials
-  end
-  
-  rect rgb(240, 255, 240)
-    Note over A,C: Token Exchange
-    A->>C: Authorization code
-    C->>+A: Exchange code + client_secret
-    A->>-C: Access token + Refresh token
-  end
-  
-  rect rgb(255, 248, 240)
-    Note over C,R: API Access
-    C->>+R: Request + Bearer token
-    R->>R: Validate token
-    R->>-C: Protected resource
-  end`,
+  U->>C: Login click
+  C->>A: Auth request
+  A->>U: Login form
+  U->>A: Credentials
+  A->>C: Auth code
+  C->>A: Exchange code
+  A->>C: Access token
+  C->>R: API + token
+  R->>C: Data`,
       diagramType: "sequence",
       confidence: "high"
     }
@@ -80,44 +56,22 @@ export const examples = [
   {
     input: { question: "Explain microservices architecture", tags: ["architecture", "distributed-systems"] },
     output: {
-      diagram: `flowchart TB
-  subgraph Gateway["🚪 API Gateway"]
-    GW[("🔀 Load Balancer")]
-  end
+      diagram: `flowchart TD
+  GW["🚪 API Gateway"]
   
-  subgraph Services["⚙️ Microservices"]
-    direction LR
-    US[("👤 User Service")]
-    OS[("📦 Order Service")]
-    PS[("💳 Payment Service")]
-    NS[("📧 Notification")]
-  end
+  GW --> US["👤 Users"]
+  GW --> OS["📦 Orders"]
+  GW --> PS["💳 Payments"]
   
-  subgraph Data["💾 Data Layer"]
-    direction LR
-    DB1[("🗄️ Users DB")]
-    DB2[("🗄️ Orders DB")]
-    MQ[("📨 Message Queue")]
-    CACHE[("⚡ Redis Cache")]
-  end
+  US --> DB1[("🗄️ DB")]
+  OS --> DB2[("🗄️ DB")]
+  OS --> MQ["📨 Queue"]
+  PS --> MQ
   
-  GW -->|"REST/gRPC"| US
-  GW -->|"REST/gRPC"| OS
-  GW -->|"REST/gRPC"| PS
-  
-  US --> DB1
-  US --> CACHE
-  OS --> DB2
-  OS -->|"publish"| MQ
-  PS -->|"subscribe"| MQ
-  NS -->|"subscribe"| MQ
-  
-  style GW fill:#bbdefb,stroke:#1976d2
-  style US fill:#c8e6c9,stroke:#388e3c
-  style OS fill:#fff9c4,stroke:#fbc02d
-  style PS fill:#ffccbc,stroke:#e64a19
-  style NS fill:#e1bee7,stroke:#7b1fa2
-  style MQ fill:#b2ebf2,stroke:#00838f`,
+  style GW fill:#e3f2fd,stroke:#1565c0
+  style MQ fill:#fff3e0,stroke:#ef6c00
+  style DB1 fill:#e8f5e9,stroke:#2e7d32
+  style DB2 fill:#e8f5e9,stroke:#2e7d32`,
       diagramType: "flowchart",
       confidence: "high"
     }
@@ -127,19 +81,19 @@ export const examples = [
 export const badExamples = [
   'A[Start] --> B[End]',
   'A[Input] --> B[Process] --> C[Output]',
-  'A[Step 1] --> B[Step 2] --> C[Step 3]',
-  'A[Concept] --> B[Implementation]',
-  'Plain diagrams without any styling or colors',
-  'Generic labels without context'
+  'Diagrams with very long node labels',
+  'LR (left-right) layouts - too wide for panel',
+  'More than 12 nodes - too complex',
+  'Deeply nested subgraphs'
 ];
 
 // Use centralized guidelines from config
 export const guidelines = [
-  `Create a diagram with ${config.qualityThresholds.diagram.minNodes}-10 specific nodes`,
+  `Create a diagram with ${config.qualityThresholds.diagram.minNodes}-10 nodes (sweet spot: 6-8)`,
   ...config.guidelines.diagram,
   'DO NOT create trivial diagrams like "Start -> End"',
   'DO NOT use generic labels like "Step 1", "Concept", "Implementation"',
-  'ALWAYS add visual styling with colors and shapes'
+  'ALWAYS add visual styling with colors'
 ];
 
 export function build(context) {
@@ -147,30 +101,38 @@ export function build(context) {
   
   return `${buildSystemContext('diagram')}
 
-Create a VIBRANT, visually appealing Mermaid diagram for this interview question.
+Create a COMPACT, visually appealing Mermaid diagram optimized for a ~450px wide panel.
 
 Question: "${question}"
 Answer: "${(answer || '').substring(0, 300)}"
 Tags: ${(tags || []).slice(0, 4).join(', ') || 'technical'}
 
-CRITICAL REQUIREMENTS:
+DISPLAY CONSTRAINTS (CRITICAL):
+- Panel width: ~450px - diagram must fit without horizontal scroll
+- ALWAYS use TD (top-down) layout - NEVER use LR (left-right)
+- Keep node labels SHORT: max 15-20 characters
+- Use abbreviations: "Auth" not "Authentication", "DB" not "Database"
+- 6-10 nodes maximum - focus on KEY components only
+- Avoid subgraphs unless essential (they add width)
+- Single emoji per label is fine, but keep text short
+
+STYLING REQUIREMENTS:
+- Add emojis to make nodes visually distinct (🔒 🌐 💾 📦 ⚙️ 🔄 ✅ 📨)
+- Use cylinder [()] for databases only
+- Add 2-4 style lines for key nodes with colors
+- Keep edge labels to 1-2 words max
+
+COLOR PALETTE:
+- Blue (#e3f2fd, #1565c0) - entry points, APIs
+- Green (#e8f5e9, #2e7d32) - databases, success
+- Orange (#fff3e0, #ef6c00) - queues, async
+- Purple (#f3e5f5, #7b1fa2) - services
+
+COMPACT LABEL EXAMPLES:
+✅ Good: "🔐 Auth", "📦 Orders", "💾 Cache", "🌐 Gateway"
+❌ Bad: "Authentication Service", "Order Management System"
+
 ${guidelines.map(g => `- ${g}`).join('\n')}
-
-STYLING REQUIREMENTS (MANDATORY):
-- Use subgraphs to group related components with descriptive titles
-- Add emojis in node labels (🔒 🌐 💾 📦 ⚙️ 🔄 ✅ 📨 etc.)
-- Use different node shapes: [] rounded, ([]) stadium, [()] cylinder for DBs, {} diamond for decisions
-- Add style lines with colors: style NodeId fill:#color,stroke:#color
-- For sequence diagrams: use rect rgb() blocks to highlight phases
-- Use descriptive edge labels with action verbs
-
-COLOR PALETTE TO USE:
-- Blue (#bbdefb, #1976d2) - networking, APIs, gateways
-- Green (#c8e6c9, #388e3c) - success, validation, databases
-- Orange (#fff9c4, #fbc02d) - processing, services
-- Red (#ffccbc, #e64a19) - errors, security, payments
-- Purple (#e1bee7, #7b1fa2) - notifications, async
-- Cyan (#b2ebf2, #00838f) - caching, queues
 
 EXAMPLES OF BAD DIAGRAMS (DO NOT CREATE):
 ${badExamples.map(e => `- ${e}`).join('\n')}
