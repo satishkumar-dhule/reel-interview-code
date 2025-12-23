@@ -55,7 +55,11 @@ export function MobileChannels() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const questionCounts: Record<string, number> = {};
-  stats.forEach(s => { questionCounts[s.id] = s.total; });
+  const newThisWeekCounts: Record<string, number> = {};
+  stats.forEach(s => { 
+    questionCounts[s.id] = s.total;
+    newThisWeekCounts[s.id] = s.newThisWeek || 0;
+  });
 
   const filteredChannels = allChannelsConfig.filter(channel => {
     const matchesSearch = channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -139,6 +143,7 @@ export function MobileChannels() {
               isSubscribed={isSubscribed(channel.id)}
               onToggle={() => toggleSubscription(channel.id)}
               questionCount={questionCounts[channel.id] || 0}
+              newThisWeek={newThisWeekCounts[channel.id]}
               index={index}
               onNavigate={() => setLocation(`/channel/${channel.id}`)}
             />
@@ -152,6 +157,7 @@ export function MobileChannels() {
               category={group}
               channels={group.channels}
               questionCounts={questionCounts}
+              newThisWeekCounts={newThisWeekCounts}
               isSubscribed={isSubscribed}
               onToggle={toggleSubscription}
               onNavigate={(id) => setLocation(`/channel/${id}`)}
@@ -206,6 +212,7 @@ function CategorySection({
   category, 
   channels, 
   questionCounts,
+  newThisWeekCounts,
   isSubscribed,
   onToggle,
   onNavigate
@@ -213,6 +220,7 @@ function CategorySection({
   category: any;
   channels: ChannelConfig[];
   questionCounts: Record<string, number>;
+  newThisWeekCounts: Record<string, number>;
   isSubscribed: (id: string) => boolean;
   onToggle: (id: string) => void;
   onNavigate: (id: string) => void;
@@ -240,6 +248,7 @@ function CategorySection({
             isSubscribed={isSubscribed(channel.id)}
             onToggle={() => onToggle(channel.id)}
             questionCount={questionCounts[channel.id] || 0}
+            newThisWeek={newThisWeekCounts[channel.id]}
             index={index}
             onNavigate={() => onNavigate(channel.id)}
             compact
@@ -263,6 +272,7 @@ function ChannelListCard({
   isSubscribed, 
   onToggle,
   questionCount,
+  newThisWeek,
   index,
   onNavigate,
   compact = false
@@ -271,6 +281,7 @@ function ChannelListCard({
   isSubscribed: boolean;
   onToggle: () => void;
   questionCount: number;
+  newThisWeek?: number;
   index: number;
   onNavigate: () => void;
   compact?: boolean;
@@ -284,10 +295,18 @@ function ChannelListCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
       className={`
-        bg-card border rounded-xl overflow-hidden transition-all
+        relative bg-card border rounded-xl overflow-hidden transition-all
         ${isSubscribed ? 'border-primary/30' : 'border-border'}
       `}
     >
+      {/* New badge */}
+      {newThisWeek && newThisWeek > 0 && (
+        <div className="absolute top-2 right-2 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm">
+          <Sparkles className="w-2.5 h-2.5" />
+          +{newThisWeek}
+        </div>
+      )}
+
       <div className="flex items-center gap-3 p-3">
         {/* Icon */}
         <button

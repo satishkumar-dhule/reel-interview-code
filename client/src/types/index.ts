@@ -74,6 +74,7 @@ export interface ChannelDetailedStats {
   beginner: number;
   intermediate: number;
   advanced: number;
+  newThisWeek?: number;
 }
 
 export interface ChannelData {

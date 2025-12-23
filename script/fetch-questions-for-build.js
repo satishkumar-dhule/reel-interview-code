@@ -37,7 +37,17 @@ function parseQuestionRow(row) {
     eli5: row.eli5,
     relevanceScore: row.relevance_score,
     lastUpdated: row.last_updated,
+    createdAt: row.created_at,
   };
+}
+
+// Check if a date is within the last 7 days
+function isWithinLastWeek(dateStr) {
+  if (!dateStr) return false;
+  const date = new Date(dateStr);
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  return date >= weekAgo;
 }
 
 async function main() {
@@ -62,7 +72,7 @@ async function main() {
         questions: [],
         subChannels: new Set(),
         companies: new Set(),
-        stats: { total: 0, beginner: 0, intermediate: 0, advanced: 0 }
+        stats: { total: 0, beginner: 0, intermediate: 0, advanced: 0, newThisWeek: 0 }
       };
     }
     
@@ -70,6 +80,11 @@ async function main() {
     channelData[q.channel].subChannels.add(q.subChannel);
     channelData[q.channel].stats.total++;
     channelData[q.channel].stats[q.difficulty]++;
+    
+    // Count questions added in the last week
+    if (isWithinLastWeek(q.createdAt)) {
+      channelData[q.channel].stats.newThisWeek++;
+    }
     
     if (q.companies) {
       q.companies.forEach(c => channelData[q.channel].companies.add(c));

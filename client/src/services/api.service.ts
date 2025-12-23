@@ -285,6 +285,7 @@ export const StatsService = {
           beginner: data.stats.beginner,
           intermediate: data.stats.intermediate,
           advanced: data.stats.advanced,
+          newThisWeek: (data.stats as any).newThisWeek || 0,
         });
       } catch {
         // Skip if channel fails

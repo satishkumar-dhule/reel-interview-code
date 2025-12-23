@@ -259,7 +259,7 @@ export default function QuestionViewer() {
       />
 
       <div className="h-screen flex flex-col bg-background overflow-hidden">
-        {/* Header */}
+        {/* Header with integrated filters */}
         <Header
           channel={channel}
           onBack={() => setLocation('/')}
@@ -267,16 +267,13 @@ export default function QuestionViewer() {
           currentIndex={currentIndex}
           totalQuestions={totalQuestions}
           progress={progress}
-        />
-
-        {/* Filters Bar */}
-        <FiltersBar
-          channel={channel}
-          selectedSubChannel={selectedSubChannel}
-          selectedDifficulty={selectedDifficulty}
-          selectedCompany={selectedCompany}
-          companiesWithCounts={companiesWithCounts}
-          onFilterChange={handleFilterChange}
+          filters={{
+            selectedSubChannel,
+            selectedDifficulty,
+            selectedCompany,
+            companiesWithCounts,
+            onFilterChange: handleFilterChange
+          }}
         />
 
         {/* Main Content - Desktop: Split View, Mobile: Tabs */}
@@ -370,73 +367,75 @@ export default function QuestionViewer() {
   );
 }
 
-// Header Component
-function Header({ channel, onBack, onSearch, currentIndex, totalQuestions, progress }: any) {
+// Header Component with integrated filters
+function Header({ channel, onBack, onSearch, currentIndex, totalQuestions, progress, filters }: any) {
+  const { selectedSubChannel, selectedDifficulty, selectedCompany, companiesWithCounts, onFilterChange } = filters || {};
+  
   return (
-    <header className="h-14 bg-card border-b border-border flex items-center px-4 gap-4 shrink-0">
-      <button onClick={onBack} className="p-2 hover:bg-muted rounded-lg transition-colors">
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-      
-      <div className="flex-1 min-w-0">
-        <h1 className="font-semibold truncate">{channel.name}</h1>
-        {totalQuestions > 0 && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>{currentIndex + 1} of {totalQuestions}</span>
-            <div className="flex-1 max-w-[100px] h-1 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full" style={{ width: `${progress}%` }} />
+    <header className="bg-card border-b border-border shrink-0">
+      <div className="h-14 flex items-center px-4 gap-3">
+        <button onClick={onBack} className="p-2 hover:bg-muted rounded-lg transition-colors shrink-0">
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        
+        <div className="shrink-0">
+          <h1 className="font-semibold">{channel.name}</h1>
+          {totalQuestions > 0 && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>{currentIndex + 1} of {totalQuestions}</span>
+              <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full" style={{ width: `${progress}%` }} />
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* Filters - integrated into header */}
+        {filters && (
+          <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar mx-2">
+            {/* Subchannel Filter */}
+            {channel.subChannels?.length > 1 && (
+              <FilterDropdown
+                label={channel.subChannels.find((s: any) => s.id === selectedSubChannel)?.name || 'Topic'}
+                options={channel.subChannels.map((s: any) => ({ id: s.id, label: s.name }))}
+                selected={selectedSubChannel}
+                onSelect={(v) => onFilterChange('sub', v)}
+              />
+            )}
+
+            {/* Difficulty Filter */}
+            <FilterDropdown
+              label={selectedDifficulty === 'all' ? 'Difficulty' : selectedDifficulty}
+              options={[
+                { id: 'all', label: 'All Levels', icon: <Target className="w-3 h-3" /> },
+                { id: 'beginner', label: 'Easy', icon: <Zap className="w-3 h-3 text-green-500" /> },
+                { id: 'intermediate', label: 'Medium', icon: <Target className="w-3 h-3 text-yellow-500" /> },
+                { id: 'advanced', label: 'Hard', icon: <Flame className="w-3 h-3 text-red-500" /> },
+              ]}
+              selected={selectedDifficulty}
+              onSelect={(v) => onFilterChange('diff', v)}
+            />
+
+            {/* Company Filter */}
+            {companiesWithCounts.length > 0 && (
+              <FilterDropdown
+                label={selectedCompany === 'all' ? 'Company' : selectedCompany}
+                options={[
+                  { id: 'all', label: 'All Companies', icon: <Building2 className="w-3 h-3" /> },
+                  ...companiesWithCounts.map((c: any) => ({ id: c.name, label: `${c.name} (${c.count})` }))
+                ]}
+                selected={selectedCompany}
+                onSelect={(v) => onFilterChange('company', v)}
+              />
+            )}
           </div>
         )}
+
+        <button onClick={onSearch} className="p-2 hover:bg-muted rounded-lg transition-colors shrink-0">
+          <Search className="w-5 h-5" />
+        </button>
       </div>
-
-      <button onClick={onSearch} className="p-2 hover:bg-muted rounded-lg transition-colors">
-        <Search className="w-5 h-5" />
-      </button>
     </header>
-  );
-}
-
-// Filters Bar Component
-function FiltersBar({ channel, selectedSubChannel, selectedDifficulty, selectedCompany, companiesWithCounts, onFilterChange }: any) {
-  return (
-    <div className="h-12 bg-card/50 border-b border-border flex items-center px-4 gap-2 overflow-x-auto shrink-0">
-      {/* Subchannel Filter */}
-      {channel.subChannels?.length > 1 && (
-        <FilterDropdown
-          label={channel.subChannels.find((s: any) => s.id === selectedSubChannel)?.name || 'Topic'}
-          options={channel.subChannels.map((s: any) => ({ id: s.id, label: s.name }))}
-          selected={selectedSubChannel}
-          onSelect={(v) => onFilterChange('sub', v)}
-        />
-      )}
-
-      {/* Difficulty Filter */}
-      <FilterDropdown
-        label={selectedDifficulty === 'all' ? 'Difficulty' : selectedDifficulty}
-        options={[
-          { id: 'all', label: 'All Levels', icon: <Target className="w-3 h-3" /> },
-          { id: 'beginner', label: 'Beginner', icon: <Zap className="w-3 h-3 text-green-500" /> },
-          { id: 'intermediate', label: 'Intermediate', icon: <Target className="w-3 h-3 text-yellow-500" /> },
-          { id: 'advanced', label: 'Advanced', icon: <Flame className="w-3 h-3 text-red-500" /> },
-        ]}
-        selected={selectedDifficulty}
-        onSelect={(v) => onFilterChange('diff', v)}
-      />
-
-      {/* Company Filter */}
-      {companiesWithCounts.length > 0 && (
-        <FilterDropdown
-          label={selectedCompany === 'all' ? 'Company' : selectedCompany}
-          options={[
-            { id: 'all', label: 'All Companies', icon: <Building2 className="w-3 h-3" /> },
-            ...companiesWithCounts.map((c: any) => ({ id: c.name, label: `${c.name} (${c.count})` }))
-          ]}
-          selected={selectedCompany}
-          onSelect={(v) => onFilterChange('company', v)}
-        />
-      )}
-    </div>
   );
 }
 

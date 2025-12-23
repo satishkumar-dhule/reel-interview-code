@@ -61,7 +61,11 @@ export default function AllChannelsRedesigned() {
 
   // Create question count map
   const questionCounts: Record<string, number> = {};
-  stats.forEach(s => { questionCounts[s.id] = s.total; });
+  const newThisWeekCounts: Record<string, number> = {};
+  stats.forEach(s => { 
+    questionCounts[s.id] = s.total;
+    newThisWeekCounts[s.id] = s.newThisWeek || 0;
+  });
 
   // Filter channels
   const filteredChannels = allChannelsConfig.filter(channel => {
@@ -172,6 +176,7 @@ export default function AllChannelsRedesigned() {
                   isSubscribed={isSubscribed(channel.id)}
                   onToggle={() => toggleSubscription(channel.id)}
                   questionCount={questionCounts[channel.id] || 0}
+                  newThisWeek={newThisWeekCounts[channel.id]}
                   index={index}
                 />
               ))}
@@ -202,6 +207,7 @@ export default function AllChannelsRedesigned() {
                         isSubscribed={isSubscribed(channel.id)}
                         onToggle={() => toggleSubscription(channel.id)}
                         questionCount={questionCounts[channel.id] || 0}
+                        newThisWeek={newThisWeekCounts[channel.id]}
                         index={index}
                       />
                     ))}
@@ -232,12 +238,14 @@ function ChannelCard({
   isSubscribed, 
   onToggle,
   questionCount,
+  newThisWeek,
   index
 }: { 
   channel: ChannelConfig; 
   isSubscribed: boolean; 
   onToggle: () => void;
   questionCount: number;
+  newThisWeek?: number;
   index: number;
 }) {
   const { completed } = useProgress(channel.id);
@@ -250,7 +258,7 @@ function ChannelCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
       className={`
-        bg-card border rounded-xl p-5 transition-all cursor-pointer group
+        relative bg-card border rounded-xl p-5 transition-all cursor-pointer group
         ${isSubscribed 
           ? 'border-primary/50 bg-primary/5'
           : 'border-border hover:border-primary/30 hover:shadow-md'
@@ -258,6 +266,14 @@ function ChannelCard({
       `}
       onClick={onToggle}
     >
+      {/* New badge */}
+      {newThisWeek && newThisWeek > 0 && (
+        <div className="absolute -top-2 -right-2 flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
+          <Sparkles className="w-3 h-3" />
+          +{newThisWeek} new
+        </div>
+      )}
+
       <div className="flex items-start justify-between mb-4">
         <div className={`p-3 rounded-lg transition-colors ${
           isSubscribed 
