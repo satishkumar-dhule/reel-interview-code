@@ -15,15 +15,19 @@ interface QuestionPanelProps {
   timeLeft: number;
 }
 
-// Background mascot SVGs based on difficulty/emotion
+// Background mascot SVGs based on difficulty/emotion - hidden on mobile to save space
 function BackgroundMascot({ difficulty }: { difficulty: string }) {
+  // Hide on mobile - only show on larger screens
+  const baseClasses = "hidden sm:block absolute bottom-8 right-8 w-32 h-32 lg:w-40 lg:h-40 opacity-[0.06] pointer-events-none select-none z-0";
+  
   // Thinking robot for easy - curious and friendly
   if (difficulty === 'beginner') {
     return (
       <svg 
-        className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 opacity-[0.06] pointer-events-none"
+        className={baseClasses}
         viewBox="0 0 100 100" 
         fill="currentColor"
+        aria-hidden="true"
       >
         {/* Happy robot with lightbulb */}
         <circle cx="50" cy="45" r="28" strokeWidth="3" stroke="currentColor" fill="none" />
@@ -48,9 +52,10 @@ function BackgroundMascot({ difficulty }: { difficulty: string }) {
   if (difficulty === 'intermediate') {
     return (
       <svg 
-        className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 opacity-[0.06] pointer-events-none"
+        className={baseClasses}
         viewBox="0 0 100 100" 
         fill="currentColor"
+        aria-hidden="true"
       >
         {/* Focused robot with gear */}
         <circle cx="50" cy="45" r="28" strokeWidth="3" stroke="currentColor" fill="none" />
@@ -74,9 +79,10 @@ function BackgroundMascot({ difficulty }: { difficulty: string }) {
   // Intense robot for hard - sweating but determined
   return (
     <svg 
-      className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 opacity-[0.06] pointer-events-none"
+      className={baseClasses}
       viewBox="0 0 100 100" 
       fill="currentColor"
+      aria-hidden="true"
     >
       {/* Intense robot */}
       <circle cx="50" cy="45" r="28" strokeWidth="3" stroke="currentColor" fill="none" />
