@@ -364,6 +364,67 @@ export function getMasteryColor(level: number): string {
 }
 
 /**
+ * Get mastery level emoji/icon
+ */
+export function getMasteryEmoji(level: number): string {
+  const emojis = ['🌱', '📚', '🌿', '🌳', '⭐', '👑'];
+  return emojis[Math.min(level, 5)];
+}
+
+/**
+ * XP System - Calculate XP earned from a review
+ */
+export function calculateXP(rating: ConfidenceRating, masteryLevel: number): number {
+  const baseXP: Record<ConfidenceRating, number> = {
+    again: 5,
+    hard: 10,
+    good: 15,
+    easy: 20
+  };
+  // Bonus XP for higher mastery cards
+  const masteryBonus = masteryLevel * 2;
+  return baseXP[rating] + masteryBonus;
+}
+
+/**
+ * Get user's total XP and level
+ */
+export function getUserXP(): { totalXP: number; level: number; xpToNext: number; progress: number } {
+  const statsStr = localStorage.getItem(STATS_KEY);
+  const stats = statsStr ? JSON.parse(statsStr) : { totalXP: 0 };
+  const totalXP = stats.totalXP || 0;
+  
+  // Level formula: level = floor(sqrt(totalXP / 100))
+  const level = Math.floor(Math.sqrt(totalXP / 100)) + 1;
+  const xpForCurrentLevel = Math.pow(level - 1, 2) * 100;
+  const xpForNextLevel = Math.pow(level, 2) * 100;
+  const xpToNext = xpForNextLevel - totalXP;
+  const progress = ((totalXP - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100;
+  
+  return { totalXP, level, xpToNext, progress: Math.max(0, Math.min(100, progress)) };
+}
+
+/**
+ * Add XP to user's total
+ */
+export function addXP(amount: number): { totalXP: number; level: number; leveledUp: boolean } {
+  const statsStr = localStorage.getItem(STATS_KEY);
+  const stats = statsStr ? JSON.parse(statsStr) : { totalXP: 0, reviewStreak: 0, lastReviewDate: null };
+  
+  const oldLevel = Math.floor(Math.sqrt((stats.totalXP || 0) / 100)) + 1;
+  stats.totalXP = (stats.totalXP || 0) + amount;
+  const newLevel = Math.floor(Math.sqrt(stats.totalXP / 100)) + 1;
+  
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  
+  return { 
+    totalXP: stats.totalXP, 
+    level: newLevel, 
+    leveledUp: newLevel > oldLevel 
+  };
+}
+
+/**
  * Get confidence rating label
  */
 export function getRatingLabel(rating: ConfidenceRating): string {
@@ -410,6 +471,10 @@ export default {
   isInSRS,
   getMasteryLabel,
   getMasteryColor,
+  getMasteryEmoji,
   getRatingLabel,
-  getNextReviewPreview
+  getNextReviewPreview,
+  calculateXP,
+  getUserXP,
+  addXP
 };

@@ -8,17 +8,20 @@ import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, Brain, Flame, Trophy, Eye,
-  ChevronRight, RotateCcw, Check, Zap
+  ChevronRight, RotateCcw, Check, Zap, Star
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { 
   getDueCards, recordReview, getSRSStats,
-  getMasteryLabel, getMasteryColor, getNextReviewPreview,
+  getMasteryLabel, getMasteryColor, getMasteryEmoji, getNextReviewPreview,
+  calculateXP, addXP, getUserXP,
   type ReviewCard, type ConfidenceRating 
 } from '../lib/spaced-repetition';
 import { getQuestionById } from '../lib/questions-loader';
 import type { Question } from '../types';
 import { EnhancedMermaid } from '../components/EnhancedMermaid';
+import { Confetti } from '../components/Confetti';
+import { ProgressRing } from '../components/ProgressRing';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -95,6 +98,9 @@ export default function ReviewSession() {
   const [currentCard, setCurrentCard] = useState<ReviewCard | null>(null);
   const [reviewedCount, setReviewedCount] = useState(0);
   const [sessionStats, setSessionStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
+  const [sessionXP, setSessionXP] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [xpPopup, setXpPopup] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
 
   // Load due cards
   useEffect(() => {
@@ -135,6 +141,15 @@ export default function ReviewSession() {
       rating
     );
 
+    // Calculate and add XP
+    const xpEarned = calculateXP(rating, currentCard.masteryLevel);
+    addXP(xpEarned);
+    setSessionXP(prev => prev + xpEarned);
+    
+    // Show XP popup
+    setXpPopup({ amount: xpEarned, show: true });
+    setTimeout(() => setXpPopup({ amount: 0, show: false }), 1000);
+
     // Update session stats
     setSessionStats(prev => ({ ...prev, [rating]: prev[rating] + 1 }));
     setReviewedCount(prev => prev + 1);
@@ -145,6 +160,7 @@ export default function ReviewSession() {
       setCurrentIndex(nextIndex);
       loadQuestion(dueCards[nextIndex]);
     } else {
+      setShowConfetti(true);
       setSessionState('completed');
     }
   };
@@ -190,6 +206,22 @@ export default function ReviewSession() {
         title="Review Session | Code Reels"
         description="Spaced repetition review session for optimal learning retention"
       />
+
+      <Confetti isActive={showConfetti} />
+      
+      {/* XP Popup */}
+      <AnimatePresence>
+        {xpPopup.show && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-purple-500 text-white rounded-full font-bold shadow-lg"
+          >
+            +{xpPopup.amount} XP ⚡
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="min-h-screen bg-background flex flex-col">
         {/* Header */}
@@ -271,7 +303,8 @@ export default function ReviewSession() {
                       }`}>
                         {currentCard.difficulty}
                       </span>
-                      <span className={`px-2 py-1 text-xs font-medium rounded bg-muted ${getMasteryColor(currentCard.masteryLevel)}`}>
+                      <span className={`px-2 py-1 text-xs font-medium rounded bg-muted flex items-center gap-1 ${getMasteryColor(currentCard.masteryLevel)}`}>
+                        <span>{getMasteryEmoji(currentCard.masteryLevel)}</span>
                         {getMasteryLabel(currentCard.masteryLevel)}
                       </span>
                     </div>
@@ -441,6 +474,7 @@ export default function ReviewSession() {
               <CompletedScreen 
                 stats={sessionStats} 
                 totalReviewed={reviewedCount}
+                sessionXP={sessionXP}
                 onGoHome={() => setLocation('/')}
                 onContinue={() => {
                   // Reload to check for more due cards
@@ -450,6 +484,8 @@ export default function ReviewSession() {
                     setCurrentIndex(0);
                     setReviewedCount(0);
                     setSessionStats({ again: 0, hard: 0, good: 0, easy: 0 });
+                    setSessionXP(0);
+                    setShowConfetti(false);
                     // Load first card directly
                     const question = getQuestionById(cards[0].questionId);
                     if (question) {
@@ -506,15 +542,18 @@ function RatingButtons({ card, onRate }: { card: ReviewCard; onRate: (rating: Co
 function CompletedScreen({ 
   stats, 
   totalReviewed,
+  sessionXP,
   onGoHome,
   onContinue
 }: { 
   stats: { again: number; hard: number; good: number; easy: number };
   totalReviewed: number;
+  sessionXP: number;
   onGoHome: () => void;
   onContinue: () => void;
 }) {
   const srsStats = getSRSStats();
+  const userXP = getUserXP();
   const hasMoreDue = srsStats.dueToday > 0;
 
   return (
@@ -525,27 +564,86 @@ function CompletedScreen({
       className="flex-1 flex items-center justify-center p-4"
     >
       <div className="text-center max-w-md">
+        {/* Trophy animation */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', delay: 0.2, duration: 0.8 }}
+          className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-500/20 flex items-center justify-center mx-auto mb-6 relative"
         >
-          <Trophy className="w-10 h-10 text-green-500" />
+          <Trophy className="w-12 h-12 text-yellow-500" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.2, 1] }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="absolute -top-1 -right-1"
+          >
+            <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+          </motion.div>
         </motion.div>
 
-        <h2 className="text-2xl font-bold mb-2">
-          {totalReviewed === 0 ? 'All Caught Up!' : 'Session Complete!'}
-        </h2>
-        <p className="text-muted-foreground mb-6">
+        <motion.h2 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-2xl font-bold mb-2"
+        >
+          {totalReviewed === 0 ? 'All Caught Up!' : '🎉 Session Complete!'}
+        </motion.h2>
+        
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-muted-foreground mb-4"
+        >
           {totalReviewed === 0 
             ? 'No cards due for review right now.'
-            : `You reviewed ${totalReviewed} cards. Great work!`
+            : `You reviewed ${totalReviewed} cards. Amazing work!`
           }
-        </p>
+        </motion.p>
+
+        {/* XP Earned */}
+        {sessionXP > 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-full mb-6"
+          >
+            <Zap className="w-5 h-5 text-purple-400" />
+            <span className="text-lg font-bold text-purple-400">+{sessionXP} XP</span>
+          </motion.div>
+        )}
+
+        {/* Level Progress */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mb-6 p-4 bg-muted/30 rounded-xl"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Level {userXP.level}</span>
+            <span className="text-xs text-muted-foreground">{userXP.xpToNext} XP to next</span>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${userXP.progress}%` }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
+            />
+          </div>
+        </motion.div>
 
         {totalReviewed > 0 && (
-          <div className="grid grid-cols-4 gap-2 mb-6 p-4 bg-muted/30 rounded-xl">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="grid grid-cols-4 gap-2 mb-6 p-4 bg-muted/30 rounded-xl"
+          >
             <div className="text-center">
               <div className="text-lg font-bold text-red-500">{stats.again}</div>
               <div className="text-xs text-muted-foreground">Again</div>
@@ -562,22 +660,37 @@ function CompletedScreen({
               <div className="text-lg font-bold text-blue-500">{stats.easy}</div>
               <div className="text-xs text-muted-foreground">Easy</div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Streak info */}
         {srsStats.reviewStreak > 0 && (
-          <div className="flex items-center justify-center gap-2 mb-6 text-orange-500">
-            <Flame className="w-5 h-5" />
-            <span className="font-medium">{srsStats.reviewStreak} day review streak!</span>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="flex items-center justify-center gap-2 mb-6"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1 }}
+            >
+              <Flame className="w-6 h-6 text-orange-500" />
+            </motion.div>
+            <span className="font-bold text-orange-500">{srsStats.reviewStreak} day streak! 🔥</span>
+          </motion.div>
         )}
 
-        <div className="space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9 }}
+          className="space-y-3"
+        >
           {hasMoreDue && (
             <button
               onClick={onContinue}
-              className="w-full py-3 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition-colors"
+              className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity"
             >
               Continue Reviewing ({srsStats.dueToday} more)
             </button>
@@ -587,12 +700,12 @@ function CompletedScreen({
             className={`w-full py-3 rounded-xl font-medium transition-colors ${
               hasMoreDue 
                 ? 'bg-muted text-foreground hover:bg-muted/80' 
-                : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                : 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:opacity-90'
             }`}
           >
             Back to Home
           </button>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
