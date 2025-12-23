@@ -14,18 +14,24 @@ interface GiscusCommentsProps {
 }
 
 export function GiscusComments({ questionId }: GiscusCommentsProps) {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   
   const giscusTheme = LIGHT_THEMES.includes(theme) ? 'light' : 'transparent_dark';
 
   useEffect(() => {
-    if (!isOpen || !containerRef.current) return;
+    // Only load when opened and not already loaded for this question
+    if (!isOpen || !containerRef.current || hasLoaded) return;
 
     setIsLoading(true);
-    containerRef.current.innerHTML = '';
+    
+    // Clear any existing content safely
+    while (containerRef.current.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild);
+    }
 
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
@@ -46,11 +52,15 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
 
     containerRef.current.appendChild(script);
 
-    const timeout = setTimeout(() => setIsLoading(false), 3000);
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+      setHasLoaded(true);
+    }, 3000);
 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin === 'https://giscus.app' && event.data?.giscus) {
         setIsLoading(false);
+        setHasLoaded(true);
         clearTimeout(timeout);
       }
     };
@@ -61,7 +71,13 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
       window.removeEventListener('message', handleMessage);
       clearTimeout(timeout);
     };
-  }, [isOpen, questionId, giscusTheme]);
+  }, [isOpen, questionId, giscusTheme, hasLoaded]);
+
+  // Reset hasLoaded when questionId changes
+  useEffect(() => {
+    setHasLoaded(false);
+    setIsOpen(false);
+  }, [questionId]);
 
   return (
     <div className="w-full mt-4 pb-20">
@@ -91,7 +107,7 @@ export function GiscusComments({ questionId }: GiscusCommentsProps) {
           )}
           <div 
             ref={containerRef}
-            className="giscus"
+            className="giscus min-h-[100px]"
             style={{ colorScheme: LIGHT_THEMES.includes(theme) ? 'light' : 'dark' }}
           />
         </div>

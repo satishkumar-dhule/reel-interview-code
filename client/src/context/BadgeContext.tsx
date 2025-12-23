@@ -108,9 +108,6 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
       };
     }
     
-    // refreshKey triggers recalculation when questions are completed
-    console.log('Recalculating badge stats, refreshKey:', refreshKey);
-    
     const allQuestions = getAllQuestions();
     
     // Get all completed question IDs across all channels
@@ -175,8 +172,6 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    console.log('Badge stats:', { totalCompleted: allCompletedIds.length, streak, channelsExplored: channelsWithProgress.length });
-
     return {
       totalCompleted: allCompletedIds.length,
       streak,
@@ -203,14 +198,10 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
   // Check for new unlocks
   const checkForNewUnlocks = useCallback(() => {
     const shownBadges = getShownBadges();
-    console.log('Checking for new badge unlocks. Shown badges:', shownBadges);
-    console.log('Badge progress:', badgeProgress.filter(bp => bp.isUnlocked).map(bp => bp.badge.id));
     
     const newUnlocks = badgeProgress
       .filter(bp => bp.isUnlocked && !shownBadges.includes(bp.badge.id))
       .map(bp => bp.badge);
-
-    console.log('New unlocks to show:', newUnlocks.map(b => b.id));
 
     if (newUnlocks.length > 0) {
       setPendingBadges(prev => {
@@ -231,7 +222,6 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!unlockedBadge && pendingBadges.length > 0) {
       const [next, ...rest] = pendingBadges;
-      console.log('Showing badge celebration for:', next.id, next.name);
       setUnlockedBadge(next);
       setPendingBadges(rest);
       markBadgeAsShown(next.id);

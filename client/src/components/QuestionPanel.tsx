@@ -1,7 +1,13 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Target, Flame, Bookmark, Clock, Check, Building2, Hash, TrendingUp } from 'lucide-react';
+import { Zap, Target, Flame, Bookmark, Clock, Check, Building2, Hash, TrendingUp, Brain } from 'lucide-react';
 import type { Question } from '../lib/data';
 import { formatTag } from '../lib/utils';
+import { 
+  getCard, recordReview, addToSRS,
+  getMasteryLabel, getMasteryColor, getNextReviewPreview,
+  type ReviewCard, type ConfidenceRating 
+} from '../lib/spaced-repetition';
 
 interface QuestionPanelProps {
   question: Question;
@@ -118,6 +124,37 @@ export function QuestionPanel({
   timerEnabled,
   timeLeft
 }: QuestionPanelProps) {
+  const [srsCard, setSrsCard] = useState<ReviewCard | null>(null);
+  const [hasRated, setHasRated] = useState(false);
+  const [showRatingButtons, setShowRatingButtons] = useState(false);
+
+  // Load or create SRS card when question changes
+  useEffect(() => {
+    if (question) {
+      const card = getCard(question.id, question.channel, question.difficulty);
+      setSrsCard(card);
+      setHasRated(false);
+      setShowRatingButtons(card.totalReviews > 0);
+    }
+  }, [question.id]);
+
+  // Handle SRS rating
+  const handleSRSRate = (rating: ConfidenceRating) => {
+    if (!question) return;
+    const updatedCard = recordReview(question.id, question.channel, question.difficulty, rating);
+    setSrsCard(updatedCard);
+    setHasRated(true);
+    setShowRatingButtons(false);
+  };
+
+  // Add to SRS and show rating buttons
+  const handleAddToSRS = () => {
+    if (!question) return;
+    const card = addToSRS(question.id, question.channel, question.difficulty);
+    setSrsCard(card);
+    setShowRatingButtons(true);
+  };
+
   const getDifficultyConfig = () => {
     switch (question.difficulty) {
       case 'beginner':
@@ -284,6 +321,59 @@ export function QuestionPanel({
             </div>
           </motion.div>
         )}
+      </div>
+
+      {/* SRS Card - Compact at bottom */}
+      <div className="mt-auto pt-4 max-w-3xl mx-auto w-full">
+        <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Brain className="w-4 h-4 text-purple-500" />
+              <span className="text-xs font-semibold text-purple-500">Spaced Repetition</span>
+              {srsCard && srsCard.totalReviews > 0 && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${getMasteryColor(srsCard.masteryLevel)} bg-muted/50`}>
+                  {getMasteryLabel(srsCard.masteryLevel)}
+                </span>
+              )}
+            </div>
+            
+            {hasRated ? (
+              <div className="flex items-center gap-1.5 text-xs text-green-500">
+                <Check className="w-3.5 h-3.5" />
+                <span>Next: {srsCard?.nextReview}</span>
+              </div>
+            ) : !showRatingButtons && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleAddToSRS(); }}
+                className="px-2.5 py-1 bg-purple-500 text-white text-xs font-medium rounded-lg hover:bg-purple-600 transition-colors"
+              >
+                Learn
+              </button>
+            )}
+          </div>
+          
+          {showRatingButtons && srsCard && !hasRated && (
+            <div className="mt-2 pt-2 border-t border-purple-500/10">
+              <p className="text-[10px] text-muted-foreground mb-2">How well did you know this?</p>
+              <div className="flex gap-1.5">
+                {[
+                  { rating: 'again' as ConfidenceRating, label: 'Again', color: 'bg-red-500/10 text-red-500 border-red-500/30' },
+                  { rating: 'hard' as ConfidenceRating, label: 'Hard', color: 'bg-orange-500/10 text-orange-500 border-orange-500/30' },
+                  { rating: 'good' as ConfidenceRating, label: 'Good', color: 'bg-green-500/10 text-green-500 border-green-500/30' },
+                  { rating: 'easy' as ConfidenceRating, label: 'Easy', color: 'bg-blue-500/10 text-blue-500 border-blue-500/30' },
+                ].map((btn) => (
+                  <button
+                    key={btn.rating}
+                    onClick={(e) => { e.stopPropagation(); handleSRSRate(btn.rating); }}
+                    className={`flex-1 py-1.5 rounded-lg border text-xs font-medium transition-colors ${btn.color} hover:opacity-80`}
+                  >
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Bottom hint */}
