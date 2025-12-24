@@ -177,6 +177,25 @@ nav a.nav-cta:hover { border-color: var(--accent); box-shadow: var(--shadow-glow
 .sources a:hover { text-decoration: underline; }
 .sources .source-type { font-size: 0.6875rem; color: var(--text-muted); margin-left: 0.5rem; text-transform: uppercase; letter-spacing: 0.03em; }
 
+/* Share Snippet - Social Ready */
+.share-snippet { background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2.5rem 0; position: relative; overflow: hidden; }
+.share-snippet::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+.share-snippet-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.share-snippet-header .share-icon { font-size: 1.25rem; }
+.share-snippet-header h3 { flex: 1; font-size: 0.9375rem; font-weight: 600; color: var(--text); margin: 0; }
+.share-buttons { display: flex; gap: 0.5rem; }
+.share-btn { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.share-btn svg { width: 16px; height: 16px; }
+.share-btn:hover { transform: scale(1.1); }
+.share-btn.linkedin:hover { background: #0077b5; color: white; border-color: #0077b5; }
+.share-btn.twitter:hover { background: #000; color: white; border-color: #000; }
+.share-btn.copy:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.share-snippet-content { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem; font-size: 0.9375rem; line-height: 1.7; }
+.snippet-hook { font-weight: 600; color: var(--text); margin-bottom: 0.75rem; font-size: 1rem; }
+.snippet-body { color: var(--text-secondary); margin-bottom: 0.75rem; white-space: pre-line; }
+.snippet-cta { color: var(--accent); font-weight: 500; margin-bottom: 0.5rem; }
+.snippet-link { font-size: 0.8125rem; color: var(--text-muted); word-break: break-all; }
+
 /* CTA - Gradient */
 .cta-box { margin-top: 3rem; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center; position: relative; overflow: hidden; }
 .cta-box::before { content: ''; position: absolute; inset: 0; background: var(--gradient-subtle); opacity: 0.5; }

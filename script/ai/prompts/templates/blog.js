@@ -29,7 +29,12 @@ export const schema = {
   quickReference: ["Key insight 1", "Key insight 2", "Key insight 3"],
   funFact: "Surprising story or historical context about this topic",
   conclusion: "The moral of the story and what to do next",
-  metaDescription: "SEO meta description (150-160 chars)"
+  metaDescription: "SEO meta description (150-160 chars)",
+  socialSnippet: {
+    hook: "Attention-grabbing first line with emoji (max 100 chars)",
+    body: "3-4 punchy bullet points with insights/stats that create FOMO",
+    cta: "Compelling call-to-action to read the full article"
+  }
 };
 
 export const guidelines = [
@@ -79,7 +84,15 @@ export const guidelines = [
   
   // ENDING
   'Conclude with the "so what?" - what should they do differently tomorrow?',
-  'Leave them with one memorable insight they can share with their team'
+  'Leave them with one memorable insight they can share with their team',
+  
+  // SOCIAL SNIPPET (for sharing)
+  'Create a socialSnippet that is ready to copy-paste to LinkedIn/Twitter',
+  'Hook: Start with a provocative statement or surprising stat with emoji (🔥💡🚀)',
+  'Body: 3-4 bullet points that create urgency/FOMO - use numbers, percentages, bold claims',
+  'CTA: End with curiosity gap - hint at what they will learn without giving it away',
+  'Use line breaks for readability, keep it under 300 words total',
+  'Make it feel like insider knowledge being shared'
 ];
 
 export function build(context) {

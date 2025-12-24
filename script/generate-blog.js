@@ -183,7 +183,8 @@ async function initBlogPostsTable() {
     { name: 'glossary', type: 'TEXT' },
     { name: 'real_world_example', type: 'TEXT' },
     { name: 'fun_fact', type: 'TEXT' },
-    { name: 'sources', type: 'TEXT' }
+    { name: 'sources', type: 'TEXT' },
+    { name: 'social_snippet', type: 'TEXT' }
   ];
   
   for (const col of newColumns) {
@@ -252,6 +253,7 @@ async function getAllBlogPosts() {
     realWorldExample: row.real_world_example ? JSON.parse(row.real_world_example) : null,
     funFact: row.fun_fact,
     sources: row.sources ? JSON.parse(row.sources) : [],
+    socialSnippet: row.social_snippet ? JSON.parse(row.social_snippet) : null,
     createdAt: row.created_at
   }));
 }
@@ -264,8 +266,8 @@ async function saveBlogPost(questionId, blogContent, question) {
     sql: `INSERT INTO blog_posts 
           (question_id, title, slug, introduction, sections, conclusion, 
            meta_description, channel, difficulty, tags, diagram, quick_reference,
-           glossary, real_world_example, fun_fact, sources, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           glossary, real_world_example, fun_fact, sources, social_snippet, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       questionId,
       blogContent.title,
@@ -283,6 +285,7 @@ async function saveBlogPost(questionId, blogContent, question) {
       JSON.stringify(blogContent.realWorldExample || null),
       blogContent.funFact || null,
       JSON.stringify(blogContent.sources || []),
+      JSON.stringify(blogContent.socialSnippet || null),
       now
     ]
   });
@@ -617,6 +620,25 @@ nav a.nav-cta:hover { border-color: var(--accent); box-shadow: var(--shadow-glow
 .sources a { color: var(--accent); text-decoration: none; }
 .sources a:hover { text-decoration: underline; }
 .sources .source-type { font-size: 0.6875rem; color: var(--text-muted); margin-left: 0.5rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* Share Snippet - Social Ready */
+.share-snippet { background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2.5rem 0; position: relative; overflow: hidden; }
+.share-snippet::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+.share-snippet-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.share-snippet-header .share-icon { font-size: 1.25rem; }
+.share-snippet-header h3 { flex: 1; font-size: 0.9375rem; font-weight: 600; color: var(--text); margin: 0; }
+.share-buttons { display: flex; gap: 0.5rem; }
+.share-btn { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.share-btn svg { width: 16px; height: 16px; }
+.share-btn:hover { transform: scale(1.1); }
+.share-btn.linkedin:hover { background: #0077b5; color: white; border-color: #0077b5; }
+.share-btn.twitter:hover { background: #000; color: white; border-color: #000; }
+.share-btn.copy:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.share-snippet-content { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem; font-size: 0.9375rem; line-height: 1.7; }
+.snippet-hook { font-weight: 600; color: var(--text); margin-bottom: 0.75rem; font-size: 1rem; }
+.snippet-body { color: var(--text-secondary); margin-bottom: 0.75rem; white-space: pre-line; }
+.snippet-cta { color: var(--accent); font-weight: 500; margin-bottom: 0.5rem; }
+.snippet-link { font-size: 0.8125rem; color: var(--text-muted); word-break: break-all; }
 
 /* CTA - Gradient */
 .cta-box { margin-top: 3rem; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center; position: relative; overflow: hidden; }
@@ -1052,6 +1074,52 @@ function generateArticlePage(article, allArticles) {
       `<li><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a><span class="source-type">${s.type || 'article'}</span></li>`
     ).join('');
     sectionsHtml += `<div class="sources"><h3>Further Reading</h3><ul>${sourceItems}</ul></div>`;
+  }
+  
+  // Social snippet - shareable section
+  const socialSnippet = article.socialSnippet;
+  if (socialSnippet) {
+    const snippetText = `${socialSnippet.hook}\n\n${socialSnippet.body}\n\n${socialSnippet.cta}`;
+    const encodedText = encodeURIComponent(snippetText + `\n\n🔗 `);
+    const articleUrl = `https://open-interview.github.io/posts/${article.id}/${article.blogSlug}/`;
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodeURIComponent(articleUrl)}`;
+    
+    sectionsHtml += `
+    <div class="share-snippet">
+      <div class="share-snippet-header">
+        <span class="share-icon">📣</span>
+        <h3>Share This</h3>
+        <div class="share-buttons">
+          <a href="${linkedInUrl}" target="_blank" rel="noopener" class="share-btn linkedin" title="Share on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="${twitterUrl}" target="_blank" rel="noopener" class="share-btn twitter" title="Share on X/Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <button class="share-btn copy" onclick="copySnippet(this)" title="Copy to clipboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="share-snippet-content" id="shareSnippet">
+        <p class="snippet-hook">${escapeHtml(socialSnippet.hook)}</p>
+        <p class="snippet-body">${escapeHtml(socialSnippet.body).replace(/\n/g, '<br>')}</p>
+        <p class="snippet-cta">${escapeHtml(socialSnippet.cta)}</p>
+        <p class="snippet-link">🔗 ${articleUrl}</p>
+      </div>
+    </div>
+    <script>
+    function copySnippet(btn) {
+      const snippet = document.getElementById('shareSnippet').innerText;
+      navigator.clipboard.writeText(snippet).then(() => {
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+        setTimeout(() => {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+        }, 2000);
+      });
+    }
+    </script>`;
   }
   
   // Related articles section
