@@ -19,10 +19,17 @@ export function useSearchProvider() {
         const response = await fetch('/pagefind/pagefind.js', { method: 'HEAD' });
         setPagefindAvailable(response.ok);
       } catch {
+        // Silently fail - Pagefind not available in dev mode
         setPagefindAvailable(false);
       }
     }
-    checkPagefind();
+    // Only check in production or if not already checked
+    if (import.meta.env.PROD) {
+      checkPagefind();
+    } else {
+      // In dev mode, default to fuzzy search
+      setPagefindAvailable(false);
+    }
   }, []);
 
   const setSearchProvider = (newProvider: SearchProvider) => {
