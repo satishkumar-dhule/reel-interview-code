@@ -289,6 +289,7 @@ nav a:hover { color: var(--accent); }
 .article-content code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
 .article-content ul, .article-content ol { margin: 1.25rem 0; padding-left: 1.5rem; }
 .article-content li { margin-bottom: 0.5rem; }
+.article-content .mermaid { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
 .cta-box { margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05)); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 1rem; text-align: center; }
 .cta-box p { margin-bottom: 1rem; font-size: 1.125rem; }
 .cta-button { display: inline-block; background: var(--accent); color: white; padding: 0.875rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; }
@@ -300,14 +301,18 @@ footer a { color: var(--accent); }
 }
 
 // HTML Generation
-function generateHead(title, description) {
+function generateHead(title, description, includeMermaid = false) {
+  const mermaidScript = includeMermaid ? `
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{primaryColor:'#22c55e',primaryTextColor:'#fff',primaryBorderColor:'#2a2a2a',lineColor:'#4ade80',secondaryColor:'#1a1a1a',tertiaryColor:'#111'}});</script>` : '';
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapeHtml(title)} | Tech Interview Blog</title>
-  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="description" content="${escapeHtml(description)}">${mermaidScript}
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
 </head>
@@ -387,18 +392,20 @@ ${generateFooter()}`;
 function generateArticlePage(article) {
   const category = getCategoryForChannel(article.channel);
   const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const hasDiagram = !!article.diagram;
   
   let sectionsHtml = (article.blogSections || []).map(s => 
     `<h2>${escapeHtml(s.heading)}</h2>${markdownToHtml(s.content)}`
   ).join('');
   
   if (article.diagram) {
-    sectionsHtml += `<h2>Visual Overview</h2><pre><code class="language-mermaid">${escapeHtml(article.diagram)}</code></pre>`;
+    // Use div.mermaid for Mermaid.js to render the diagram
+    sectionsHtml += `<h2>Visual Overview</h2><div class="mermaid">${article.diagram}</div>`;
   }
   
   const tags = (article.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join(' ');
   
-  return `${generateHead(article.blogTitle, article.blogMeta || '')}
+  return `${generateHead(article.blogTitle, article.blogMeta || '', hasDiagram)}
 ${generateHeader()}
 <main><article class="article"><div class="container">
   <a href="/categories/${categorySlug}/" style="color: var(--text-secondary); text-decoration: none; font-size: 0.875rem;">← ${category}</a>
