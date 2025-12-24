@@ -25,6 +25,7 @@ import improveTemplate from './prompts/templates/improve.js';
 import generateTemplate from './prompts/templates/generate.js';
 import relevanceTemplate from './prompts/templates/relevance.js';
 import codingChallengeTemplate from './prompts/templates/coding-challenge.js';
+import blogTemplate from './prompts/templates/blog.js';
 
 // Template registry
 const templates = {
@@ -36,7 +37,8 @@ const templates = {
   improve: improveTemplate,
   generate: generateTemplate,
   relevance: relevanceTemplate,
-  'coding-challenge': codingChallengeTemplate
+  'coding-challenge': codingChallengeTemplate,
+  blog: blogTemplate
 };
 
 // Provider registry
