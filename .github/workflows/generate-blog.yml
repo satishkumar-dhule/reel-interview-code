@@ -4,36 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: 'Question or topic to generate blog from'
+        description: 'Question or topic to generate blog from (channel & difficulty auto-detected)'
         required: true
         type: string
-      channel:
-        description: 'Blog category/channel'
-        required: false
-        type: choice
-        default: 'general'
-        options:
-          - general
-          - system-design
-          - algorithms
-          - frontend
-          - backend
-          - database
-          - devops
-          - kubernetes
-          - aws
-          - security
-          - machine-learning
-          - generative-ai
-      difficulty:
-        description: 'Content difficulty level'
-        required: false
-        type: choice
-        default: 'intermediate'
-        options:
-          - beginner
-          - intermediate
-          - advanced
       publish:
         description: 'Publish to blog site after generation'
         required: false
@@ -69,8 +42,6 @@ jobs:
         run: node script/generate-blog-from-input.js
         env:
           INPUT_TOPIC: ${{ inputs.topic }}
-          INPUT_CHANNEL: ${{ inputs.channel }}
-          INPUT_DIFFICULTY: ${{ inputs.difficulty }}
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -92,18 +63,18 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## �  Blog Post Generator" >> $GITHUB_STEP_SUMMARY
+          echo "## 📝 Blog Post Generator (Auto-Detect Mode)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Input" >> $GITHUB_STEP_SUMMARY
           echo "**Topic:** ${{ inputs.topic }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Channel:** ${{ inputs.channel }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Difficulty:** ${{ inputs.difficulty }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Result" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.generate.outputs.success }}" == "true" ]; then
             echo "✅ **Status:** Success" >> $GITHUB_STEP_SUMMARY
             echo "**Blog ID:** ${{ steps.generate.outputs.blog_id }}" >> $GITHUB_STEP_SUMMARY
             echo "**Title:** ${{ steps.generate.outputs.title }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Channel:** ${{ steps.generate.outputs.channel }} (auto-detected)" >> $GITHUB_STEP_SUMMARY
+            echo "**Difficulty:** ${{ steps.generate.outputs.difficulty }} (auto-detected)" >> $GITHUB_STEP_SUMMARY
             echo "**Slug:** ${{ steps.generate.outputs.slug }}" >> $GITHUB_STEP_SUMMARY
             echo "**Total Posts:** ${{ steps.generate.outputs.total_posts }}" >> $GITHUB_STEP_SUMMARY
           else

@@ -1,11 +1,14 @@
 /**
  * Blog from Input Prompt Template
  * Generates blog posts from a topic/question input
+ * Auto-detects channel and difficulty from the topic
  */
 
 import { jsonOutputRule } from './base.js';
 
 export const schema = {
+  channel: "auto-detected channel (system-design|algorithms|frontend|backend|database|devops|kubernetes|aws|security|machine-learning|generative-ai|sre|testing|behavioral|general)",
+  difficulty: "auto-detected difficulty (beginner|intermediate|advanced)",
   title: "Engaging SEO-friendly title (50-60 chars)",
   introduction: "Hook the reader with why this matters - use storytelling, start with a problem or scenario (2-3 paragraphs)",
   sections: [
@@ -41,6 +44,12 @@ export const schema = {
   }
 };
 
+export const CHANNELS = [
+  'system-design', 'algorithms', 'frontend', 'backend', 'database',
+  'devops', 'kubernetes', 'aws', 'security', 'machine-learning',
+  'generative-ai', 'sre', 'testing', 'behavioral', 'general'
+];
+
 export const guidelines = [
   'Write like you are telling a story to a friend, not documentation',
   'Start with a HOOK: a problem, failure, or "picture this" moment',
@@ -48,19 +57,27 @@ export const guidelines = [
   'Add real-world context from actual companies',
   'Make it engaging and not boring',
   'Include at least 3-4 sections',
-  'Use markdown in content (headers, code blocks, lists)'
+  'Use markdown in content (headers, code blocks, lists)',
+  'Auto-detect the most appropriate channel based on the topic',
+  'Auto-detect difficulty: beginner (basics), intermediate (practical), advanced (deep dive)'
 ];
 
 export function build(context) {
-  const { topic, channel, difficulty } = context;
+  const { topic } = context;
 
   return `You are a JSON generator. Output ONLY valid JSON, no explanations, no markdown, no text before or after.
 
 Create an engaging, comprehensive technical blog post about the following topic.
+AUTOMATICALLY determine the best channel and difficulty level based on the topic content.
 
 Topic/Question: "${topic}"
-Target Channel: ${channel || 'general tech'}
-Difficulty Level: ${difficulty || 'intermediate'}
+
+Available channels: ${CHANNELS.join(', ')}
+
+Difficulty levels:
+- beginner: Basic concepts, introductions, getting started
+- intermediate: Practical implementations, common patterns, real-world usage
+- advanced: Deep dives, optimization, edge cases, expert-level content
 
 Generate a blog post with this exact JSON structure:
 ${JSON.stringify(schema, null, 2)}
@@ -68,7 +85,24 @@ ${JSON.stringify(schema, null, 2)}
 REQUIREMENTS:
 ${guidelines.map(g => `- ${g}`).join('\n')}
 
+CHANNEL DETECTION HINTS:
+- System design topics (scalability, architecture, distributed) → system-design
+- Data structures, sorting, algorithms → algorithms
+- React, CSS, JavaScript, UI → frontend
+- APIs, microservices, servers → backend
+- SQL, NoSQL, databases → database
+- CI/CD, Docker, automation → devops
+- K8s, pods, containers → kubernetes
+- AWS services, cloud → aws
+- Security, auth, encryption → security
+- ML, AI models, training → machine-learning
+- LLMs, prompts, RAG → generative-ai
+- Monitoring, reliability → sre
+- Testing strategies → testing
+- Interview soft skills → behavioral
+- General tech topics → general
+
 ${jsonOutputRule}`;
 }
 
-export default { schema, guidelines, build };
+export default { schema, CHANNELS, guidelines, build };

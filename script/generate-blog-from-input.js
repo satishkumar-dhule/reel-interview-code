@@ -1,6 +1,7 @@
 /**
  * Generate Blog from Input
  * Takes a question or sentence and generates a blog post from it using OpenCode CLI
+ * Auto-detects channel and difficulty from the topic
  * Same pattern as other bots - no APIs, no registration, free model
  * 
  * Usage: INPUT_TOPIC="your question or topic" node script/generate-blog-from-input.js
@@ -21,6 +22,10 @@ if (!url) {
 }
 
 const client = createClient({ url, authToken });
+
+// Valid channels for validation
+const VALID_CHANNELS = blogInputTemplate.CHANNELS;
+const VALID_DIFFICULTIES = ['beginner', 'intermediate', 'advanced'];
 
 // Initialize blog_posts table
 async function initBlogPostsTable() {
@@ -78,12 +83,13 @@ function generateId() {
   return `blog-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 }
 
-// Transform input to blog using OpenCode CLI (same pattern as other bots)
-async function transformToBlogArticle(topic, channel, difficulty) {
-  console.log('🤖 Generating blog with OpenCode CLI...\n');
+// Transform input to blog using OpenCode CLI (auto-detects channel and difficulty)
+async function transformToBlogArticle(topic) {
+  console.log('🤖 Generating blog with OpenCode CLI...');
+  console.log('   (Auto-detecting channel and difficulty from topic)\n');
   
-  // Use centralized template
-  const prompt = blogInputTemplate.build({ topic, channel, difficulty });
+  // Use centralized template - no channel/difficulty needed, AI will detect
+  const prompt = blogInputTemplate.build({ topic });
 
   console.log('📝 PROMPT:');
   console.log('─'.repeat(50));
@@ -104,12 +110,27 @@ async function transformToBlogArticle(topic, channel, difficulty) {
     return null;
   }
   
+  // Validate and normalize channel
+  if (!data.channel || !VALID_CHANNELS.includes(data.channel)) {
+    console.log(`⚠️ Invalid channel "${data.channel}", defaulting to "general"`);
+    data.channel = 'general';
+  }
+  
+  // Validate and normalize difficulty
+  if (!data.difficulty || !VALID_DIFFICULTIES.includes(data.difficulty)) {
+    console.log(`⚠️ Invalid difficulty "${data.difficulty}", defaulting to "intermediate"`);
+    data.difficulty = 'intermediate';
+  }
+  
   console.log('✅ AI transformation complete');
+  console.log(`   🎯 Auto-detected channel: ${data.channel}`);
+  console.log(`   📊 Auto-detected difficulty: ${data.difficulty}`);
+  
   return data;
 }
 
 // Save blog post to database
-async function saveBlogPost(blogContent, channel, difficulty) {
+async function saveBlogPost(blogContent) {
   const now = new Date().toISOString();
   const questionId = generateId();
   const slug = generateSlug(blogContent.title);
@@ -129,8 +150,8 @@ async function saveBlogPost(blogContent, channel, difficulty) {
       JSON.stringify(blogContent.sections || []),
       blogContent.conclusion,
       blogContent.metaDescription,
-      channel || 'general',
-      difficulty || 'intermediate',
+      blogContent.channel,
+      blogContent.difficulty,
       JSON.stringify(blogContent.tags || []),
       blogContent.diagram || null,
       JSON.stringify(blogContent.quickReference || []),
@@ -149,11 +170,9 @@ async function saveBlogPost(blogContent, channel, difficulty) {
 }
 
 async function main() {
-  console.log('=== 📝 Blog Generator - From Input (OpenCode) ===\n');
+  console.log('=== 📝 Blog Generator - Auto-Detect Mode (OpenCode) ===\n');
   
   const inputTopic = process.env.INPUT_TOPIC;
-  const inputChannel = process.env.INPUT_CHANNEL || 'general';
-  const inputDifficulty = process.env.INPUT_DIFFICULTY || 'intermediate';
   
   if (!inputTopic || inputTopic.trim().length < 10) {
     console.error('❌ Error: INPUT_TOPIC environment variable is required (min 10 chars)');
@@ -164,14 +183,13 @@ async function main() {
   
   console.log('📥 Input Topic:');
   console.log(`"${inputTopic}"\n`);
-  console.log(`📂 Channel: ${inputChannel}`);
-  console.log(`📊 Difficulty: ${inputDifficulty}\n`);
+  console.log('🔍 Channel and difficulty will be auto-detected from topic\n');
   
   await initBlogPostsTable();
   
   console.log('🔄 Generating blog content...\n');
   
-  const blogContent = await transformToBlogArticle(inputTopic, inputChannel, inputDifficulty);
+  const blogContent = await transformToBlogArticle(inputTopic);
   
   if (!blogContent || !blogContent.title) {
     console.error('❌ Failed to generate blog content');
@@ -181,10 +199,12 @@ async function main() {
   
   console.log('\n✅ Blog content generated!');
   console.log(`   Title: ${blogContent.title}`);
+  console.log(`   Channel: ${blogContent.channel}`);
+  console.log(`   Difficulty: ${blogContent.difficulty}`);
   console.log(`   Sections: ${blogContent.sections?.length || 0}`);
   
   console.log('\n💾 Saving to database...');
-  const { questionId, slug } = await saveBlogPost(blogContent, inputChannel, inputDifficulty);
+  const { questionId, slug } = await saveBlogPost(blogContent);
   
   console.log(`\n✅ Blog post saved!`);
   console.log(`   ID: ${questionId}`);
@@ -195,11 +215,12 @@ async function main() {
   const totalPosts = result.rows[0]?.count || 0;
   
   console.log('\n=== SUMMARY ===');
-  console.log(`Input:    "${inputTopic.substring(0, 50)}..."`);
-  console.log(`Title:    "${blogContent.title}"`);
-  console.log(`Channel:  ${inputChannel}`);
-  console.log(`ID:       ${questionId}`);
-  console.log(`Slug:     ${slug}`);
+  console.log(`Input:      "${inputTopic.substring(0, 50)}..."`);
+  console.log(`Title:      "${blogContent.title}"`);
+  console.log(`Channel:    ${blogContent.channel} (auto-detected)`);
+  console.log(`Difficulty: ${blogContent.difficulty} (auto-detected)`);
+  console.log(`ID:         ${questionId}`);
+  console.log(`Slug:       ${slug}`);
   console.log(`Total Blog Posts: ${totalPosts}`);
   console.log('=== END ===\n');
   
@@ -208,7 +229,8 @@ async function main() {
     blog_id: questionId,
     title: blogContent.title,
     slug: slug,
-    channel: inputChannel,
+    channel: blogContent.channel,
+    difficulty: blogContent.difficulty,
     total_posts: totalPosts
   });
 }
