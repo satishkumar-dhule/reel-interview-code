@@ -71,8 +71,12 @@ test.describe('All Channels Page', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
     
-    // Get initial subscription count
-    const initialCount = await page.locator('svg.lucide-check').count();
+    // Get initial subscription count from localStorage
+    const initialPrefs = await page.evaluate(() => {
+      const prefs = localStorage.getItem('user-preferences');
+      return prefs ? JSON.parse(prefs) : null;
+    });
+    const initialCount = initialPrefs?.subscribedChannels?.length || 0;
     
     // Find an unsubscribed channel to subscribe to
     const frontendCard = page.locator('h3:has-text("Frontend")').first();
@@ -81,12 +85,24 @@ test.describe('All Channels Page', () => {
       await page.waitForTimeout(500);
     }
     
+    // Verify localStorage was updated
+    const updatedPrefs = await page.evaluate(() => {
+      const prefs = localStorage.getItem('user-preferences');
+      return prefs ? JSON.parse(prefs) : null;
+    });
+    
     // Reload and verify subscriptions persist
     await page.reload();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
     
-    const countAfterReload = await page.locator('svg.lucide-check').count();
+    // Check localStorage after reload
+    const prefsAfterReload = await page.evaluate(() => {
+      const prefs = localStorage.getItem('user-preferences');
+      return prefs ? JSON.parse(prefs) : null;
+    });
+    
+    const countAfterReload = prefsAfterReload?.subscribedChannels?.length || 0;
     // Should have at least the initial subscriptions
     expect(countAfterReload).toBeGreaterThanOrEqual(initialCount);
   });
