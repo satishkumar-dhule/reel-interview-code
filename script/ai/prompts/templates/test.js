@@ -19,7 +19,9 @@ export const guidelines = [
   'Make wrong options realistic and plausible',
   'Ensure exactly 4 options per question',
   'Correct indices are 0-based',
-  'Keep explanations brief but informative'
+  'Keep explanations brief but informative',
+  'IMPORTANT: About 20-30% of questions should have MULTIPLE correct answers (c array with 2+ indices)',
+  'For multi-answer questions, phrase as "Which of the following..." or "Select all that apply..."'
 ];
 
 export function build(context) {
@@ -41,8 +43,12 @@ ${JSON.stringify(schema, null, 2)}
 Where:
 - q = question text (rephrase slightly for variety)
 - o = array of 4 plausible options (make wrong options realistic)
-- c = array of correct option indices (0-based)
+- c = array of correct option indices (0-based). Use [0] for single answer, [0,2] for multiple correct answers
 - e = brief explanation of why the answer is correct
+
+IMPORTANT: Generate a mix of question types:
+- ~70-80% single-answer questions (c has 1 index)
+- ~20-30% multiple-answer questions (c has 2+ indices, phrase as "Which of the following..." or "Select all that apply...")
 
 GUIDELINES:
 ${guidelines.map(g => `- ${g}`).join('\n')}

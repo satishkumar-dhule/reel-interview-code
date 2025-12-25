@@ -157,10 +157,29 @@ export function calculateScore(test: Test, answers: Record<string, string[]>): {
   return { score, correct, total, passed: score >= test.passingScore };
 }
 
-// Get random questions for a test session
+// Shuffle array helper (Fisher-Yates)
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Get random questions for a test session with randomized options
 export function getSessionQuestions(test: Test, count: number = 20): TestQuestion[] {
-  const shuffled = [...test.questions].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(count, test.questions.length));
+  // Shuffle questions
+  const shuffledQuestions = shuffleArray(test.questions);
+  
+  // Take the requested count
+  const selectedQuestions = shuffledQuestions.slice(0, Math.min(count, test.questions.length));
+  
+  // Randomize options for each question
+  return selectedQuestions.map(q => ({
+    ...q,
+    options: shuffleArray(q.options)
+  }));
 }
 
 // Check if test prompt was dismissed for a channel

@@ -7,7 +7,7 @@ import { useLocation, useParams } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Trophy,
-  Share2, RotateCcw, Home, AlertCircle, Check, X
+  Share2, RotateCcw, Home, AlertCircle, Check, X, Zap, ExternalLink, Eye
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import {
@@ -18,6 +18,20 @@ import {
 import { mascotEvents } from '../components/PixelMascot';
 
 type SessionState = 'loading' | 'ready' | 'in-progress' | 'review' | 'completed';
+
+// Auto-submit preference storage
+const AUTO_SUBMIT_KEY = 'test-auto-submit';
+function getAutoSubmitPref(): boolean {
+  try {
+    const stored = localStorage.getItem(AUTO_SUBMIT_KEY);
+    return stored === null ? true : stored === 'true'; // Default ON
+  } catch {
+    return true;
+  }
+}
+function setAutoSubmitPref(value: boolean): void {
+  localStorage.setItem(AUTO_SUBMIT_KEY, String(value));
+}
 
 export default function TestSession() {
   const { channelId } = useParams<{ channelId: string }>();
@@ -31,6 +45,8 @@ export default function TestSession() {
   const [startTime, setStartTime] = useState<number>(0);
   const [timeSpent, setTimeSpent] = useState(0);
   const [result, setResult] = useState<{ score: number; correct: number; total: number; passed: boolean } | null>(null);
+  const [autoSubmit, setAutoSubmit] = useState(getAutoSubmitPref);
+  const [showFeedback, setShowFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
   // Load test
   useEffect(() => {
@@ -79,7 +95,24 @@ export default function TestSession() {
     const current = answers[currentQuestion.id] || [];
     
     if (currentQuestion.type === 'single') {
-      setAnswers({ ...answers, [currentQuestion.id]: [optionId] });
+      const newAnswers = { ...answers, [currentQuestion.id]: [optionId] };
+      setAnswers(newAnswers);
+      
+      // Auto-submit for single choice if enabled
+      if (autoSubmit) {
+        // Check if answer is correct for feedback
+        const correctOption = currentQuestion.options.find(o => o.isCorrect);
+        const isCorrect = correctOption?.id === optionId;
+        setShowFeedback(isCorrect ? 'correct' : 'incorrect');
+        
+        // Auto-advance after brief feedback
+        setTimeout(() => {
+          setShowFeedback(null);
+          if (currentIndex < questions.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+          }
+        }, 600);
+      }
     } else {
       // Multiple choice - toggle
       if (current.includes(optionId)) {
@@ -88,6 +121,12 @@ export default function TestSession() {
         setAnswers({ ...answers, [currentQuestion.id]: [...current, optionId] });
       }
     }
+  };
+
+  const toggleAutoSubmit = () => {
+    const newValue = !autoSubmit;
+    setAutoSubmit(newValue);
+    setAutoSubmitPref(newValue);
   };
 
   const goNext = () => {
@@ -119,7 +158,7 @@ export default function TestSession() {
     };
     
     saveTestAttempt(test.id, test.channelId, attempt);
-    setSessionState('completed');
+    setSessionState('review'); // Go to review first
     
     // Trigger mascot reaction based on result
     if (calcResult.passed) {
@@ -127,6 +166,31 @@ export default function TestSession() {
     } else {
       mascotEvents.disappointed();
     }
+  };
+
+  // Get question results for review
+  const getQuestionResults = () => {
+    return questions.map(q => {
+      const userAnswers = answers[q.id] || [];
+      const correctOptions = q.options.filter(o => o.isCorrect);
+      const correctIds = correctOptions.map(o => o.id);
+      
+      let isCorrect = false;
+      if (q.type === 'single') {
+        isCorrect = userAnswers.length === 1 && correctIds.includes(userAnswers[0]);
+      } else {
+        const allCorrectSelected = correctIds.every(id => userAnswers.includes(id));
+        const noIncorrectSelected = userAnswers.every(id => correctIds.includes(id));
+        isCorrect = allCorrectSelected && noIncorrectSelected && userAnswers.length > 0;
+      }
+      
+      return {
+        question: q,
+        userAnswers,
+        correctOptions,
+        isCorrect
+      };
+    });
   };
 
   const formatTime = (seconds: number) => {
@@ -224,7 +288,7 @@ export default function TestSession() {
         {sessionState === 'in-progress' && currentQuestion && (
           <div className="min-h-screen flex flex-col">
             {/* Header */}
-            <header className="border-b border-border p-3 flex items-center justify-between">
+            <header className="border-b border-border p-3 flex items-center justify-between gap-2">
               <div className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">
                   {currentIndex + 1} / {questions.length}
@@ -236,6 +300,21 @@ export default function TestSession() {
                   />
                 </div>
               </div>
+              
+              {/* Auto-submit toggle */}
+              <button
+                onClick={toggleAutoSubmit}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
+                  autoSubmit 
+                    ? 'bg-primary/20 text-primary border border-primary/30' 
+                    : 'bg-muted/30 text-muted-foreground border border-transparent'
+                }`}
+                title={autoSubmit ? 'Auto-advance ON' : 'Auto-advance OFF'}
+              >
+                <Zap className={`w-3 h-3 ${autoSubmit ? 'text-primary' : ''}`} />
+                <span className="hidden sm:inline">Auto</span>
+              </button>
+              
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="font-mono">{formatTime(timeSpent)}</span>
@@ -280,21 +359,37 @@ export default function TestSession() {
                     <div className="space-y-2">
                       {currentQuestion.options.map((option, i) => {
                         const isSelected = (answers[currentQuestion.id] || []).includes(option.id);
+                        const showCorrect = showFeedback && option.isCorrect;
+                        const showWrong = showFeedback === 'incorrect' && isSelected && !option.isCorrect;
+                        
                         return (
                           <button
                             key={option.id}
                             onClick={() => handleOptionSelect(option.id)}
+                            disabled={showFeedback !== null}
                             className={`w-full p-4 text-left border rounded-lg transition-all ${
-                              isSelected
+                              showCorrect
+                                ? 'border-green-500 bg-green-500/20'
+                                : showWrong
+                                ? 'border-red-500 bg-red-500/20'
+                                : isSelected
                                 ? 'border-primary bg-primary/10'
                                 : 'border-border hover:border-primary/50'
-                            }`}
+                            } ${showFeedback ? 'cursor-default' : ''}`}
                           >
                             <div className="flex items-start gap-3">
                               <div className={`w-6 h-6 rounded-${currentQuestion.type === 'multiple' ? 'md' : 'full'} border-2 flex items-center justify-center flex-shrink-0 ${
-                                isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
+                                showCorrect
+                                  ? 'border-green-500 bg-green-500'
+                                  : showWrong
+                                  ? 'border-red-500 bg-red-500'
+                                  : isSelected 
+                                  ? 'border-primary bg-primary' 
+                                  : 'border-muted-foreground/30'
                               }`}>
-                                {isSelected && <Check className="w-4 h-4 text-primary-foreground" />}
+                                {showCorrect && <Check className="w-4 h-4 text-white" />}
+                                {showWrong && <X className="w-4 h-4 text-white" />}
+                                {!showFeedback && isSelected && <Check className="w-4 h-4 text-primary-foreground" />}
                               </div>
                               <span className="text-sm">{option.text}</span>
                             </div>
@@ -350,6 +445,128 @@ export default function TestSession() {
                     Next <ArrowRight className="w-4 h-4" />
                   </button>
                 )}
+              </div>
+            </footer>
+          </div>
+        )}
+
+        {/* Review State - Show all questions with correct/incorrect */}
+        {sessionState === 'review' && result && (
+          <div className="min-h-screen flex flex-col">
+            {/* Header */}
+            <header className="border-b border-border p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Eye className="w-5 h-5 text-primary" />
+                <h1 className="font-bold">Review Answers</h1>
+              </div>
+              <div className={`px-3 py-1 rounded-full text-sm font-bold ${
+                result.passed ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'
+              }`}>
+                {result.score}% ({result.correct}/{result.total})
+              </div>
+            </header>
+
+            {/* Questions Review */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="max-w-2xl mx-auto space-y-4">
+                {getQuestionResults().map((item, idx) => (
+                  <motion.div
+                    key={item.question.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className={`p-4 border rounded-lg ${
+                      item.isCorrect 
+                        ? 'border-green-500/30 bg-green-500/5' 
+                        : 'border-red-500/30 bg-red-500/5'
+                    }`}
+                  >
+                    {/* Question header */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        item.isCorrect ? 'bg-green-500' : 'bg-red-500'
+                      }`}>
+                        {item.isCorrect ? (
+                          <Check className="w-4 h-4 text-white" />
+                        ) : (
+                          <X className="w-4 h-4 text-white" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs text-muted-foreground">Q{idx + 1}</span>
+                          <span className={`px-1.5 py-0.5 text-[9px] uppercase rounded ${
+                            item.question.difficulty === 'beginner' ? 'bg-green-500/20 text-green-400' :
+                            item.question.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                            'bg-red-500/20 text-red-400'
+                          }`}>
+                            {item.question.difficulty}
+                          </span>
+                        </div>
+                        <p className="text-sm font-medium">{item.question.question}</p>
+                      </div>
+                    </div>
+
+                    {/* Options review */}
+                    <div className="space-y-1.5 ml-9 mb-3">
+                      {item.question.options.map(opt => {
+                        const wasSelected = item.userAnswers.includes(opt.id);
+                        const isCorrectOption = opt.isCorrect;
+                        
+                        return (
+                          <div
+                            key={opt.id}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs ${
+                              isCorrectOption
+                                ? 'bg-green-500/20 text-green-400'
+                                : wasSelected
+                                ? 'bg-red-500/20 text-red-400'
+                                : 'text-muted-foreground'
+                            }`}
+                          >
+                            {isCorrectOption && <CheckCircle className="w-3 h-3" />}
+                            {wasSelected && !isCorrectOption && <XCircle className="w-3 h-3" />}
+                            {!isCorrectOption && !wasSelected && <span className="w-3" />}
+                            <span>{opt.text}</span>
+                            {wasSelected && <span className="ml-auto text-[10px] opacity-70">(your answer)</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Explanation if wrong */}
+                    {!item.isCorrect && item.question.explanation && (
+                      <div className="ml-9 p-2 bg-muted/30 rounded text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">Explanation:</span> {item.question.explanation}
+                      </div>
+                    )}
+
+                    {/* Link to main question */}
+                    {item.question.questionId && (
+                      <div className="ml-9 mt-2">
+                        <a
+                          href={`/channel/${test.channelId}?q=${item.question.questionId}`}
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          View full question & answer
+                        </a>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer className="border-t border-border p-4">
+              <div className="max-w-2xl mx-auto flex gap-3">
+                <button
+                  onClick={() => setSessionState('completed')}
+                  className="flex-1 py-3 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Continue to Results
+                </button>
               </div>
             </footer>
           </div>
@@ -444,6 +661,12 @@ export default function TestSession() {
               </div>
 
               <div className="space-y-2">
+                <button
+                  onClick={() => setSessionState('review')}
+                  className="w-full py-2 bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Eye className="w-4 h-4" /> Review Answers
+                </button>
                 <button
                   onClick={startTest}
                   className="w-full py-2 border border-primary text-primary font-bold rounded hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
