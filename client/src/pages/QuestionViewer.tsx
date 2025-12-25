@@ -277,7 +277,7 @@ export default function QuestionViewer() {
         />
 
         {/* Main Content - Desktop: Split View, Mobile: Tabs */}
-        <div className="flex-1 flex overflow-hidden" data-testid="reels-content">
+        <div className="flex-1 flex overflow-hidden isolate" data-testid="reels-content">
           {/* Desktop Split View */}
           <div className="hidden lg:flex flex-1">
             {/* Question Panel */}
@@ -300,9 +300,9 @@ export default function QuestionViewer() {
           </div>
 
           {/* Mobile Tab View */}
-          <div className="flex-1 flex flex-col lg:hidden">
+          <div className="flex-1 flex flex-col lg:hidden overflow-hidden">
             {/* Mobile Tabs */}
-            <div className="flex border-b border-border">
+            <div className="flex border-b border-border bg-background relative z-10">
               <button
                 onClick={() => setMobileView('question')}
                 className={`flex-1 py-3 text-sm font-medium transition-colors ${
@@ -326,7 +326,7 @@ export default function QuestionViewer() {
             </div>
             {/* Mobile Content - Swipeable */}
             <div 
-              className="flex-1 overflow-y-auto bg-background"
+              className="flex-1 overflow-y-auto overflow-x-hidden bg-background relative z-0"
               onTouchStart={swipeHandlers.onTouchStart}
               onTouchMove={swipeHandlers.onTouchMove}
               onTouchEnd={swipeHandlers.onTouchEnd}
