@@ -95,6 +95,28 @@ function preprocessMarkdown(text: string): string {
 
 type SessionState = 'loading' | 'reviewing' | 'reveal' | 'completed';
 
+// Diagram section that hides itself if rendering fails
+function DiagramSection({ diagram }: { diagram: string }) {
+  const [renderSuccess, setRenderSuccess] = useState<boolean | null>(null);
+  
+  // Don't render the section at all if diagram failed
+  if (renderSuccess === false) {
+    return null;
+  }
+  
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-muted-foreground uppercase mb-2">Diagram</h3>
+      <div className="bg-muted/30 rounded-lg p-4 overflow-x-auto">
+        <EnhancedMermaid 
+          chart={diagram} 
+          onRenderResult={(success) => setRenderSuccess(success)}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function ReviewSession() {
   const [, setLocation] = useLocation();
   const [sessionState, setSessionState] = useState<SessionState>('loading');
@@ -348,14 +370,9 @@ export default function ReviewSession() {
                             <p className="text-base sm:text-lg leading-relaxed text-foreground/90">{currentQuestion.answer}</p>
                           </div>
 
-                          {/* Diagram */}
+                          {/* Diagram - only show if it renders successfully */}
                           {currentQuestion.diagram && (
-                            <div>
-                              <h3 className="text-sm font-semibold text-muted-foreground uppercase mb-2">Diagram</h3>
-                              <div className="bg-muted/30 rounded-lg p-4 overflow-x-auto">
-                                <EnhancedMermaid chart={currentQuestion.diagram} />
-                              </div>
-                            </div>
+                            <DiagramSection diagram={currentQuestion.diagram} />
                           )}
 
                           {/* Full Explanation */}
