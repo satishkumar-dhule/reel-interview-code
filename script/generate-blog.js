@@ -561,11 +561,16 @@ nav a.nav-cta:hover { border-color: var(--accent); box-shadow: var(--shadow-glow
 .category-card a:hover { gap: 0.5rem; }
 .category-card a::after { content: '→'; }
 
-/* Article Page */
-.article { padding: 8rem 0 4rem; max-width: 720px; margin: 0 auto; }
-.article-header { margin-bottom: 3rem; }
-.article-header h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 1.5rem; line-height: 1.25; letter-spacing: -0.03em; }
-.article-intro { font-size: 1.125rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+/* Article Page - Enhanced */
+.article { padding: 8rem 0 4rem; max-width: 760px; margin: 0 auto; }
+.article-header { margin-bottom: 2.5rem; }
+.article-header h1 { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 700; margin-bottom: 1.75rem; line-height: 1.2; letter-spacing: -0.03em; background: linear-gradient(180deg, #fff 0%, #ccc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.article-header .article-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 1.25rem; }
+.article-header .tag { background: var(--bg-elevated); color: var(--text-secondary); padding: 0.375rem 0.875rem; border-radius: 100px; font-weight: 500; font-size: 0.75rem; text-transform: capitalize; letter-spacing: 0.02em; border: 1px solid var(--border); transition: all 0.2s; }
+.article-header .tag:hover { border-color: var(--accent); color: var(--text); }
+.article-header .difficulty { padding: 0.375rem 0.875rem; border-radius: 100px; font-weight: 600; font-size: 0.75rem; text-transform: capitalize; letter-spacing: 0.02em; }
+.article-intro { font-size: 1.1875rem; color: var(--text-secondary); line-height: 1.85; margin-bottom: 2.5rem; padding: 1.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; }
+.article-intro::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
 
 /* Article content - Clean Typography */
 .article-content { font-size: 1rem; line-height: 1.85; color: var(--text-secondary); }
@@ -701,7 +706,8 @@ footer { background: var(--bg); border-top: 1px solid var(--border); padding: 3r
   .featured-card { grid-template-columns: 1fr; padding: 1.5rem; }
   .featured-visual { display: none; }
   .featured-title { font-size: 1.25rem; }
-  .article-header h1 { font-size: 1.5rem; } 
+  .article-header h1 { font-size: 1.625rem; background: linear-gradient(180deg, #fff 0%, #ddd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
+  .article-intro { padding: 1.25rem; font-size: 1.0625rem; }
   nav { gap: 0.25rem; } 
   nav a { padding: 0.5rem 0.75rem; font-size: 0.8125rem; }
   .category-grid, .articles-grid { grid-template-columns: 1fr; }
