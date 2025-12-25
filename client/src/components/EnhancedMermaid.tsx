@@ -119,40 +119,23 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
   const [inlineZoom, setInlineZoom] = useState(1);
   const [isPinching, setIsPinching] = useState(false);
   const inlineTouchRef = useRef({ dist: 0, initialZoom: 1 });
+  const touchStartRef = useRef({ x: 0, y: 0, dist: 0 });
   
   // Detect mobile device
   const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 640;
   
-  // Validate chart content before rendering
-  if (!isValidMermaidSyntax(chart)) {
-    console.warn('EnhancedMermaid: Invalid or non-Mermaid content detected, skipping render');
-    return null;
-  }
-  
-  // Disable mermaid on mobile - show placeholder instead
-  if (isMobileDevice) {
-    return (
-      <div 
-        className="w-full p-4 border border-white/10 bg-black/20 rounded-lg text-center"
-        data-testid="mermaid-mobile-placeholder"
-      >
-        <div className="text-white/50 text-sm mb-2">📊 Diagram</div>
-        <div className="text-white/30 text-xs">
-          Diagrams are best viewed on desktop for optimal experience
-        </div>
-      </div>
-    );
-  }
+  // Check if chart is valid
+  const isValidChart = isValidMermaidSyntax(chart);
 
   // Persist theme selection to localStorage
-  const handleThemeChange = (theme: MermaidTheme | null) => {
+  const handleThemeChange = useCallback((theme: MermaidTheme | null) => {
     setSelectedMermaidTheme(theme);
     if (theme) {
       localStorage.setItem('mermaid-theme', theme);
     } else {
       localStorage.removeItem('mermaid-theme');
     }
-  };
+  }, []);
 
   const effectiveMermaidTheme = selectedMermaidTheme || appThemeToMermaid[appTheme] || 'forest';
 
@@ -161,24 +144,23 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
     setPosition({ x: 0, y: 0 });
   }, []);
 
-  const handleZoomIn = () => setZoom(z => Math.min(z + 0.25, 4));
-  const handleZoomOut = () => setZoom(z => Math.max(z - 0.25, 0.25));
+  const handleZoomIn = useCallback(() => setZoom(z => Math.min(z + 0.25, 4)), []);
+  const handleZoomOut = useCallback(() => setZoom(z => Math.max(z - 0.25, 0.25)), []);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!isExpanded) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-  };
+  }, [isExpanded, position.x, position.y]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isDragging) return;
     setPosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
-  };
+  }, [isDragging, dragStart.x, dragStart.y]);
 
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-  const touchStartRef = useRef({ x: 0, y: 0, dist: 0 });
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (!isExpanded) return;
     if (e.touches.length === 1) {
       setIsDragging(true);
@@ -187,9 +169,9 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
       const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
       touchStartRef.current = { x: position.x, y: position.y, dist };
     }
-  };
+  }, [isExpanded, position.x, position.y]);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isExpanded) return;
     if (e.touches.length === 1 && isDragging) {
       setPosition({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y });
@@ -199,10 +181,11 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
       setZoom(z => Math.max(0.25, Math.min(z * scale, 4)));
       touchStartRef.current.dist = dist;
     }
-  };
+  }, [isExpanded, isDragging, dragStart.x, dragStart.y]);
 
-  const handleTouchEnd = () => setIsDragging(false);
+  const handleTouchEnd = useCallback(() => setIsDragging(false), []);
 
+  // All useEffect hooks must be called unconditionally
   useEffect(() => {
     if (isExpanded) {
       setZoom(1);
@@ -225,6 +208,12 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
   }, [isExpanded, resetView]);
 
   useEffect(() => {
+    // Skip rendering if chart is invalid or on mobile
+    if (!isValidChart || isMobileDevice) {
+      setIsLoading(false);
+      return;
+    }
+    
     if (!chart) {
       setError('Empty diagram');
       setIsLoading(false);
@@ -271,7 +260,42 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
 
     renderChart();
     return () => { cancelled = true; };
-  }, [chart, effectiveMermaidTheme]);
+  }, [chart, effectiveMermaidTheme, isValidChart, isMobileDevice]);
+
+  // Inline touch handlers
+  const handleInlineTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      setIsPinching(true);
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      inlineTouchRef.current = { dist, initialZoom: inlineZoom };
+    }
+  }, [inlineZoom]);
+  
+  const handleInlineTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && isPinching) {
+      e.preventDefault();
+      e.stopPropagation();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const scale = dist / inlineTouchRef.current.dist;
+      const newZoom = Math.max(0.5, Math.min(inlineTouchRef.current.initialZoom * scale, 3));
+      setInlineZoom(newZoom);
+    }
+  }, [isPinching]);
+  
+  const handleInlineTouchEnd = useCallback(() => {
+    setIsPinching(false);
+  }, []);
+  
+  const handleInlineDoubleTap = useCallback(() => {
+    // Toggle between 1x and 1.5x zoom on double tap
+    setInlineZoom(prev => prev === 1 ? 1.5 : 1);
+  }, []);
 
   const mermaidThemes: { id: MermaidTheme; name: string; color: string }[] = [
     { id: 'default', name: 'Default', color: '#326ce5' },
@@ -280,6 +304,29 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
     { id: 'forest', name: 'Forest', color: '#6eaa49' },
     { id: 'base', name: 'Base', color: '#f9a825' },
   ];
+
+  // Now we can have early returns after all hooks are called
+  
+  // Validate chart content before rendering
+  if (!isValidChart) {
+    console.warn('EnhancedMermaid: Invalid or non-Mermaid content detected, skipping render');
+    return null;
+  }
+  
+  // Disable mermaid on mobile - show placeholder instead
+  if (isMobileDevice) {
+    return (
+      <div 
+        className="w-full p-4 border border-white/10 bg-black/20 rounded-lg text-center"
+        data-testid="mermaid-mobile-placeholder"
+      >
+        <div className="text-white/50 text-sm mb-2">📊 Diagram</div>
+        <div className="text-white/30 text-xs">
+          Diagrams are best viewed on desktop for optimal experience
+        </div>
+      </div>
+    );
+  }
 
   // Silently hide failed diagrams - don't show error to user
   if (error) {
@@ -299,6 +346,8 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
   }
 
   if (!svgContent) return null;
+  
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   if (isExpanded) {
     return (
@@ -365,42 +414,6 @@ export function EnhancedMermaid({ chart, compact = false }: EnhancedMermaidProps
       </div>
     );
   }
-
-  const handleInlineTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      setIsPinching(true);
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      inlineTouchRef.current = { dist, initialZoom: inlineZoom };
-    }
-  };
-  
-  const handleInlineTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && isPinching) {
-      e.preventDefault();
-      e.stopPropagation();
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      const scale = dist / inlineTouchRef.current.dist;
-      const newZoom = Math.max(0.5, Math.min(inlineTouchRef.current.initialZoom * scale, 3));
-      setInlineZoom(newZoom);
-    }
-  };
-  
-  const handleInlineTouchEnd = () => {
-    setIsPinching(false);
-  };
-  
-  const handleInlineDoubleTap = () => {
-    // Toggle between 1x and 1.5x zoom on double tap
-    setInlineZoom(prev => prev === 1 ? 1.5 : 1);
-  };
-  
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   return (
     <div ref={containerRef} className="relative group">
