@@ -105,18 +105,27 @@ export async function executePython(
     const pyodide = await initPyodide();
 
     // Wrap the execution to capture the result
+    // The input string may contain multiple comma-separated arguments like "[1,2], [3,4]"
+    // We wrap it in parentheses to create a tuple, then unpack appropriately
     const wrappedCode = `
 import json
 from collections.abc import Iterator, Iterable
 
 ${code}
 
-# Execute the function with the input
-_input = ${input}
-if isinstance(_input, tuple):
-    _result = ${functionName}(*_input)
+# Parse the input - wrap in tuple to handle multiple arguments
+# Input like "[1,2], [3,4]" becomes tuple ([1,2], [3,4])
+_input_tuple = (${input},)
+
+# If input was already a tuple (multiple args), flatten it
+# e.g., (([1,2], [3,4]),) should become ([1,2], [3,4])
+if len(_input_tuple) == 1 and isinstance(_input_tuple[0], tuple):
+    _args = _input_tuple[0]
 else:
-    _result = ${functionName}(_input)
+    _args = _input_tuple
+
+# Call the function with unpacked arguments
+_result = ${functionName}(*_args)
 
 # Convert result to JSON-compatible format
 def to_json_compatible(obj):
@@ -152,9 +161,23 @@ _json_result
     };
   } catch (error) {
     const executionTime = performance.now() - startTime;
+    const errorMessage = error instanceof Error ? error.message : 'Unknown Python error';
+    
+    // Provide more helpful error messages for common issues
+    let friendlyError = errorMessage;
+    if (errorMessage.includes('missing') && errorMessage.includes('required positional argument')) {
+      // Extract function name and expected args from error
+      const match = errorMessage.match(/(\w+)\(\) missing (\d+) required positional argument/);
+      if (match) {
+        friendlyError = `Function signature mismatch: Your ${match[1]}() function expects more arguments than the test provides. Check the expected function signature in the starter code.`;
+      }
+    } else if (errorMessage.includes('takes') && errorMessage.includes('positional argument')) {
+      friendlyError = `Function signature mismatch: Your function has a different number of parameters than expected. Check the starter code for the correct signature.`;
+    }
+    
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown Python error',
+      error: friendlyError,
       executionTime,
     };
   }
