@@ -154,6 +154,7 @@ test.describe('Test Session - Completion', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('marvel-intro-seen', 'true');
+      localStorage.setItem('test-auto-submit', 'false'); // Disable auto-submit for predictable test flow
       localStorage.setItem('user-preferences', JSON.stringify({
         role: 'fullstack',
         subscribedChannels: ['system-design'],
@@ -175,33 +176,45 @@ test.describe('Test Session - Completion', () => {
       await startButton.click();
       await page.waitForTimeout(1000);
       
-      const dots = page.locator('button.w-2.h-2.rounded-full');
-      const dotCount = await dots.count();
+      // Get total questions from progress indicator (e.g., "1 / 15")
+      const progressText = await page.locator('text=/\\d+ \\/ \\d+/').first().textContent();
+      const totalQuestions = progressText ? parseInt(progressText.split('/')[1].trim()) : 15;
       
-      for (let i = 0; i < dotCount; i++) {
+      // Answer all questions by clicking Next until Submit appears
+      for (let i = 0; i < totalQuestions; i++) {
+        // Select first option
         const options = page.locator('button.w-full.p-4.text-left.border.rounded-lg');
         if (await options.first().isVisible({ timeout: 1000 }).catch(() => false)) {
           await options.first().click();
+          await page.waitForTimeout(400);
         }
         
-        if (i < dotCount - 1) {
-          const nextButton = page.getByText('Next');
-          if (await nextButton.isVisible({ timeout: 500 }).catch(() => false)) {
-            await nextButton.click();
-            await page.waitForTimeout(300);
-          }
+        // Check if Submit button is visible (last question)
+        const submitButton = page.getByText('Submit Test');
+        if (await submitButton.isVisible({ timeout: 300 }).catch(() => false)) {
+          await submitButton.click();
+          await page.waitForTimeout(1500);
+          break;
+        }
+        
+        // Otherwise click Next
+        const nextButton = page.getByText('Next');
+        if (await nextButton.isVisible({ timeout: 500 }).catch(() => false)) {
+          await nextButton.click();
+          await page.waitForTimeout(400);
         }
       }
       
-      const submitButton = page.getByText('Submit Test');
-      if (await submitButton.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await submitButton.click();
+      // After submit, we're in review state - click Continue to Results
+      const continueButton = page.getByText('Continue to Results');
+      if (await continueButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await continueButton.click();
         await page.waitForTimeout(1000);
-        
-        const hasResults = await page.getByText('Congratulations!').isVisible({ timeout: 3000 }).catch(() => false) ||
-                          await page.getByText('Keep Practicing!').isVisible({ timeout: 1000 }).catch(() => false);
-        expect(hasResults).toBeTruthy();
       }
+      
+      const hasResults = await page.getByText('Congratulations!').isVisible({ timeout: 3000 }).catch(() => false) ||
+                        await page.getByText('Keep Practicing!').isVisible({ timeout: 1000 }).catch(() => false);
+      expect(hasResults).toBeTruthy();
     }
   });
 
@@ -217,22 +230,45 @@ test.describe('Test Session - Completion', () => {
       await startButton.click();
       await page.waitForTimeout(1000);
       
-      const dots = page.locator('button.w-2.h-2.rounded-full');
-      await dots.last().click();
-      await page.waitForTimeout(500);
+      // Get total questions from progress indicator
+      const progressText = await page.locator('text=/\\d+ \\/ \\d+/').first().textContent();
+      const totalQuestions = progressText ? parseInt(progressText.split('/')[1].trim()) : 15;
       
-      const submitButton = page.getByText('Submit Test');
-      if (await submitButton.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await submitButton.click();
-        await page.waitForTimeout(1000);
+      // Answer all questions
+      for (let i = 0; i < totalQuestions; i++) {
+        const options = page.locator('button.w-full.p-4.text-left.border.rounded-lg');
+        if (await options.first().isVisible({ timeout: 1000 }).catch(() => false)) {
+          await options.first().click();
+          await page.waitForTimeout(400);
+        }
         
-        const tryAgainButton = page.getByText('Try Again');
-        await expect(tryAgainButton).toBeVisible({ timeout: 3000 });
+        const submitButton = page.getByText('Submit Test');
+        if (await submitButton.isVisible({ timeout: 300 }).catch(() => false)) {
+          await submitButton.click();
+          await page.waitForTimeout(1500);
+          break;
+        }
         
-        await tryAgainButton.click();
-        await page.waitForTimeout(1000);
-        await expect(page.getByText(/1 \/ \d+/)).toBeVisible({ timeout: 3000 });
+        const nextButton = page.getByText('Next');
+        if (await nextButton.isVisible({ timeout: 500 }).catch(() => false)) {
+          await nextButton.click();
+          await page.waitForTimeout(400);
+        }
       }
+      
+      // After submit, we're in review state - click Continue to Results
+      const continueButton = page.getByText('Continue to Results');
+      if (await continueButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await continueButton.click();
+        await page.waitForTimeout(1000);
+      }
+      
+      const tryAgainButton = page.getByText('Try Again');
+      await expect(tryAgainButton).toBeVisible({ timeout: 3000 });
+      
+      await tryAgainButton.click();
+      await page.waitForTimeout(1000);
+      await expect(page.getByText(/1 \/ \d+/)).toBeVisible({ timeout: 3000 });
     }
   });
 });
