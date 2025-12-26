@@ -1387,7 +1387,7 @@ ${generateHeader()}
   ${relatedHtml}
   <div class="cta-box">
     <p>Ready to put this into practice?</p>
-    <a href="https://open-interview.github.io/channel/${article.channel}" class="cta-button">Practice Questions →</a>
+    <a href="https://open-interview.github.io/#/channel/${article.channel}" class="cta-button">Practice Questions →</a>
   </div>
 </div></article></main>
 ${generateFooter(allArticles)}`;
