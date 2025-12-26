@@ -109,12 +109,26 @@ async function getExistingTest(channelId) {
 }
 
 // Get questions that haven't been converted to MCQs yet
+// Filters out irrelevant questions that reference specific scenarios or case studies
 async function getUnconvertedQuestions(channelId, limit = 25) {
   const result = await db.execute({
     sql: `SELECT q.id, q.question, q.answer, q.difficulty 
           FROM questions q
           LEFT JOIN test_question_map m ON q.id = m.question_id
           WHERE q.channel = ? AND m.question_id IS NULL
+            -- Filter out questions that reference specific scenarios/case studies
+            AND q.question NOT LIKE '%percentage%did the candidate%'
+            AND q.question NOT LIKE '%the candidate%when%'
+            AND q.question NOT LIKE '%how many%did the candidate%'
+            AND q.question NOT LIKE '%what number%did the candidate%'
+            AND q.question NOT LIKE '%the team%when they%'
+            AND q.question NOT LIKE '%in the scenario%'
+            AND q.question NOT LIKE '%in this case%'
+            -- Filter out overly specific behavioral questions
+            AND q.question NOT LIKE '%monitoring data%decision%'
+            AND q.question NOT LIKE '%critical database migration%'
+            -- Ensure questions are general enough (not referencing "the" specific situation)
+            AND LENGTH(q.question) > 30
           ORDER BY RANDOM()
           LIMIT ?`,
     args: [channelId, limit]

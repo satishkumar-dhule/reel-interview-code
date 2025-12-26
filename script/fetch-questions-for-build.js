@@ -318,18 +318,41 @@ async function main() {
       ORDER BY channel_name
     `);
 
-    const tests = testsResult.rows.map(row => ({
-      id: row.id,
-      channelId: row.channel_id,
-      channelName: row.channel_name,
-      title: row.title,
-      description: row.description,
-      questions: JSON.parse(row.questions),
-      passingScore: row.passing_score || 70,
-      createdAt: row.created_at,
-      lastUpdated: row.last_updated,
-      version: row.version || 1
-    }));
+    // Filter out irrelevant questions that reference specific scenarios/case studies
+    const isIrrelevantQuestion = (q) => {
+      const text = (q.question || '').toLowerCase();
+      return (
+        text.includes('percentage') && text.includes('candidate') ||
+        text.includes('the candidate') && text.includes('when') ||
+        text.includes('how many') && text.includes('candidate') ||
+        text.includes('what number') && text.includes('candidate') ||
+        text.includes('the team') && text.includes('when they') ||
+        text.includes('in the scenario') ||
+        text.includes('in this case') ||
+        text.includes('monitoring data') && text.includes('decision') ||
+        text.includes('critical database migration') ||
+        text.length < 30
+      );
+    };
+
+    const tests = testsResult.rows.map(row => {
+      const allQuestions = JSON.parse(row.questions);
+      // Filter out irrelevant questions
+      const filteredQuestions = allQuestions.filter(q => !isIrrelevantQuestion(q));
+      
+      return {
+        id: row.id,
+        channelId: row.channel_id,
+        channelName: row.channel_name,
+        title: row.title,
+        description: row.description,
+        questions: filteredQuestions,
+        passingScore: row.passing_score || 70,
+        createdAt: row.created_at,
+        lastUpdated: row.last_updated,
+        version: row.version || 1
+      };
+    });
 
     const testsFile = path.join(OUTPUT_DIR, 'tests.json');
     fs.writeFileSync(testsFile, JSON.stringify(tests, null, 0));

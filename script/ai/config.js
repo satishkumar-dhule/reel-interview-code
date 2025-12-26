@@ -134,7 +134,11 @@ export default {
       'Each section header must be on its own line with ## prefix',
       'Bullet points must start with - on a new line, not inline',
       'Code blocks MUST have ``` on its own line, never inline with text',
-      'Format: Text\\n```language\\ncode\\n``` - always newlines before and after code fences'
+      'Format: Text\\n```language\\ncode\\n``` - always newlines before and after code fences',
+      'NEVER reference "the candidate", "the team", or specific scenarios that only make sense in context',
+      'Questions must be GENERAL enough to apply to any interview - avoid "What percentage did X have?"',
+      'For behavioral questions, ask about general situations, NOT specific case study details',
+      'Avoid questions like "In this scenario..." or "In this case..." - they need context to make sense'
     ]
   },
   
