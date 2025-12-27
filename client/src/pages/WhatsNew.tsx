@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, Sparkles, Plus, RefreshCw, Rocket, Calendar,
+  Sparkles, Plus, RefreshCw, Rocket, Calendar,
   ChevronDown, ChevronUp, Layers, Rss, Loader2
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
+import { AppLayout } from '../components/layout/AppLayout';
 import { defaultChangelog, fetchChangelog, type ChangelogData, type ChangelogEntry } from '../lib/changelog';
 
 const typeConfig = {
@@ -138,22 +139,6 @@ export default function WhatsNew() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      setLocation('/');
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') goBack();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { 
@@ -173,40 +158,28 @@ export default function WhatsNew() {
         keywords="code reels updates, changelog, new interview questions, daily updates, interview prep news, new features, AI generated questions"
         canonical="https://open-interview.github.io/whats-new"
       />
-      <div className="min-h-screen bg-background text-foreground font-mono overflow-y-auto">
-        {/* Header */}
-        <div className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
-          <div className="max-w-3xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={goBack}
-                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" /> Back
-              </button>
-              <h1 className="text-lg font-bold">
-                <span className="text-primary">&gt;</span> What's New
-              </h1>
-              <a
-                href="/rss.xml"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-widest bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 rounded transition-colors"
-                title="Subscribe to RSS Feed"
-              >
-                <Rss className="w-3.5 h-3.5" /> RSS
-              </a>
-            </div>
+      <AppLayout title="What's New" showBackOnMobile>
+        <div className="font-mono">
+          {/* RSS Link */}
+          <div className="flex justify-end mb-4">
+            <a
+              href="/rss.xml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-widest bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 rounded transition-colors"
+              title="Subscribe to RSS Feed"
+            >
+              <Rss className="w-3.5 h-3.5" /> RSS
+            </a>
           </div>
-        </div>
 
-        {/* Stats Summary */}
-        <div className="max-w-3xl mx-auto px-4 py-6">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-3 gap-3 mb-6"
-          >
+          {/* Stats Summary */}
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="grid grid-cols-3 gap-3 mb-6"
+            >
             <div className="border border-border rounded-lg p-4 bg-card text-center">
               <div className="text-2xl font-bold text-green-400">{data.stats.totalQuestionsAdded}</div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Questions Added</div>
@@ -245,8 +218,9 @@ export default function WhatsNew() {
               <p>No updates yet. Check back soon!</p>
             </div>
           )}
+          </div>
         </div>
-      </div>
+      </AppLayout>
     </>
   );
 }

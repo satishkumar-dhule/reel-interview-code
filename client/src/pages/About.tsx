@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { 
-  ArrowLeft, Brain, Code, Target, Flame, Lock, Unlock, Volume2, VolumeX,
+  Brain, Code, Target, Flame, Lock, Unlock, Volume2, VolumeX,
   Github, Star, MessageSquare, Bug, Sparkles, Zap, BookOpen, Users, 
   Terminal, Globe, Heart, Coffee, Rocket, ExternalLink, User,
   Linkedin, Mail, MapPin, Briefcase, Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SEOHead } from '../components/SEOHead';
+import { AppLayout } from '../components/layout/AppLayout';
 import { trackEasterEggUnlocked } from '../hooks/use-analytics';
 import { getAllQuestions, channels } from '../lib/data';
 
@@ -22,23 +23,10 @@ export default function About() {
   const allQuestions = getAllQuestions();
   const totalChannels = channels.length;
 
-  const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      setLocation('/');
-    }
-  };
-
   useEffect(() => {
     let keySequence = '';
     
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        goBack();
-        return;
-      }
-      
       const key = e.key.toLowerCase();
       keySequence = (keySequence + key).slice(-6);
       
@@ -105,67 +93,63 @@ export default function About() {
         keywords="about code reels, free interview prep, open source interview platform, ai powered learning, technical interviews, FAANG prep, software engineer interview, coding interview practice"
         canonical="https://open-interview.github.io/about"
       />
-      <div className="min-h-screen bg-background text-foreground font-mono overflow-y-auto">
-        {/* Hero Section */}
-        <div className="relative border-b border-border">
-          <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-            <div className="flex items-center justify-between mb-6">
-              <button onClick={goBack} className="flex items-center gap-2 text-xs uppercase tracking-widest hover:text-primary transition-colors">
-                <ArrowLeft className="w-4 h-4" /> Back
-              </button>
-              <div className="flex items-center gap-2">
+      <AppLayout title="About" showBackOnMobile>
+        <div className="font-mono">
+          {/* Hero Section */}
+          <div className="relative mb-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-end mb-4">
                 <button onClick={() => setSoundEnabled(!soundEnabled)} className="p-2 hover:bg-muted rounded transition-colors" title={soundEnabled ? "Mute" : "Unmute"}>
                   {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
               </div>
+              
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+                <h1 className="text-3xl sm:text-5xl font-bold mb-4">
+                  <span className="text-primary">&gt;</span> Code_Reels
+                </h1>
+                <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto mb-6">
+                  AI-powered interview prep platform. Swipe through bite-sized questions, track your progress, and ace your next technical interview.
+                </p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
+                    <BookOpen className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold">{allQuestions.length}+ Questions</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
+                    <Globe className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold">{totalChannels} Channels</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
+                    <Rocket className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold">Daily Updates</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-            
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-              <h1 className="text-3xl sm:text-5xl font-bold mb-4">
-                <span className="text-primary">&gt;</span> Code_Reels
-              </h1>
-              <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto mb-6">
-                AI-powered interview prep platform. Swipe through bite-sized questions, track your progress, and ace your next technical interview.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
-                  <BookOpen className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-bold">{allQuestions.length}+ Questions</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
-                  <Globe className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-bold">{totalChannels} Channels</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-lg">
-                  <Rocket className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-bold">Daily Updates</span>
-                </div>
-              </div>
-            </motion.div>
           </div>
-        </div>
 
-        {/* Tab Navigation */}
-        <div className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="flex gap-1 overflow-x-auto">
-              {(['features', 'tech', 'community', 'developer'] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 transition-colors whitespace-nowrap ${
-                    activeTab === tab ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+          {/* Tab Navigation */}
+          <div className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10 mb-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex gap-1 overflow-x-auto">
+                {(['features', 'tech', 'community', 'developer'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === tab ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Content */}
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto py-4">
           <AnimatePresence mode="wait">
             {activeTab === 'features' && (
               <motion.div key="features" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
@@ -418,13 +402,14 @@ export default function About() {
 
         {/* Footer */}
         <footer className="border-t border-border py-6 mt-8">
-          <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto text-center">
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
               Made with <Heart className="w-3 h-3 text-red-500" /> and <Coffee className="w-3 h-3 text-amber-500" /> • Open Source • MIT License
             </p>
           </div>
         </footer>
-      </div>
+        </div>
+      </AppLayout>
     </>
   );
 }

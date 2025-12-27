@@ -67,7 +67,11 @@ export default function Profile() {
       />
       
       <AppLayout title="Profile" showBackOnMobile>
-        <div className="max-w-lg mx-auto space-y-4 pb-8">
+        <div className="max-w-6xl mx-auto pb-8">
+          {/* Desktop: Two column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            {/* Left Column - Profile & Stats */}
+            <div className="space-y-4">
           {/* Profile Header */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -75,17 +79,17 @@ export default function Profile() {
             className="bg-card rounded-2xl border border-border overflow-hidden"
           >
             {/* Cover gradient */}
-            <div className="h-20 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
+            <div className="h-24 lg:h-32 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
             
             {/* Profile info */}
-            <div className="px-4 pb-4 -mt-10">
-              <div className="w-20 h-20 rounded-full bg-card border-4 border-card flex items-center justify-center shadow-lg">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-                  <Code className="w-8 h-8 text-primary-foreground" />
+            <div className="px-4 pb-4 -mt-12">
+              <div className="w-24 h-24 rounded-full bg-card border-4 border-card flex items-center justify-center shadow-lg">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+                  <Code className="w-10 h-10 text-primary-foreground" />
                 </div>
               </div>
               
-              <h1 className="text-xl font-bold mt-3">Interview Prep</h1>
+              <h1 className="text-xl lg:text-2xl font-bold mt-3">Interview Prep</h1>
               <p className="text-sm text-muted-foreground">
                 Mastering technical interviews
               </p>
@@ -145,6 +149,73 @@ export default function Profile() {
             />
           </motion.section>
 
+          {/* Achievements - in left column on desktop */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card rounded-2xl border border-border overflow-hidden"
+          >
+            <button
+              onClick={() => setLocation('/badges')}
+              className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-yellow-500" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold">Achievements</h3>
+                  <p className="text-sm text-muted-foreground">View your badges</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </motion.section>
+
+          {/* Settings - in left column on desktop */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="bg-card rounded-2xl border border-border overflow-hidden"
+          >
+            <div className="px-4 py-3 border-b border-border/50">
+              <h3 className="text-sm font-semibold text-muted-foreground">Settings</h3>
+            </div>
+            <div className="divide-y divide-border/50">
+              <ToggleItem
+                icon={<Shuffle className="w-5 h-5" />}
+                label="Shuffle Questions"
+                sublabel="Randomize question order"
+                enabled={preferences.shuffleQuestions !== false}
+                onToggle={toggleShuffleQuestions}
+              />
+              <ToggleItem
+                icon={<Eye className="w-5 h-5" />}
+                label="Unvisited First"
+                sublabel="Show new questions first"
+                enabled={preferences.prioritizeUnvisited !== false}
+                onToggle={togglePrioritizeUnvisited}
+              />
+              <MenuItem
+                icon={<Bell className="w-5 h-5" />}
+                label="Notifications"
+                sublabel="View all alerts"
+                onClick={() => setLocation('/notifications')}
+              />
+              <MenuItem
+                icon={<HelpCircle className="w-5 h-5" />}
+                label="About"
+                sublabel="App information"
+                onClick={() => setLocation('/about')}
+              />
+            </div>
+          </motion.section>
+            </div>
+
+            {/* Right Column - Credits & Menu */}
+            <div className="space-y-4">
           {/* Credits Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -243,30 +314,6 @@ export default function Profile() {
             )}
           </motion.section>
 
-          {/* Achievements */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-card rounded-2xl border border-border overflow-hidden"
-          >
-            <button
-              onClick={() => setLocation('/badges')}
-              className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
-                </div>
-                <div className="text-left">
-                  <h3 className="font-semibold">Achievements</h3>
-                  <p className="text-sm text-muted-foreground">View your badges</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </button>
-          </motion.section>
-
           {/* Menu Items */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -306,46 +353,6 @@ export default function Profile() {
             />
           </motion.section>
 
-          {/* Settings */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-card rounded-2xl border border-border overflow-hidden relative"
-          >
-            <div className="px-4 py-3 border-b border-border/50">
-              <h3 className="text-sm font-semibold text-muted-foreground">Settings</h3>
-            </div>
-            <div className="divide-y divide-border/50">
-              <ToggleItem
-                icon={<Shuffle className="w-5 h-5" />}
-                label="Shuffle Questions"
-                sublabel="Randomize question order"
-                enabled={preferences.shuffleQuestions !== false}
-                onToggle={toggleShuffleQuestions}
-              />
-              <ToggleItem
-                icon={<Eye className="w-5 h-5" />}
-                label="Unvisited First"
-                sublabel="Show new questions first"
-                enabled={preferences.prioritizeUnvisited !== false}
-                onToggle={togglePrioritizeUnvisited}
-              />
-              <MenuItem
-                icon={<Bell className="w-5 h-5" />}
-                label="Notifications"
-                sublabel="View all alerts"
-                onClick={() => setLocation('/notifications')}
-              />
-              <MenuItem
-                icon={<HelpCircle className="w-5 h-5" />}
-                label="About"
-                sublabel="App information"
-                onClick={() => setLocation('/about')}
-              />
-            </div>
-          </motion.section>
-
           {/* Voice Settings */}
           {isTTSSupported() && (
             <motion.section
@@ -361,6 +368,8 @@ export default function Profile() {
               <VoiceSettings />
             </motion.section>
           )}
+            </div>
+          </div>
         </div>
       </AppLayout>
     </>

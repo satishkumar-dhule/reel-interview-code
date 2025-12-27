@@ -6,10 +6,11 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import {
-  ArrowLeft, Trophy, Target, Clock, CheckCircle, Lock,
+  Trophy, Target, Clock, CheckCircle, Lock,
   ChevronRight, Star, BarChart2, Mic, Coins
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
+import { AppLayout } from '../components/layout/AppLayout';
 import { 
   Test, loadTests, getAllTestProgress, TestProgress, getTestStats 
 } from '../lib/tests';
@@ -30,14 +31,6 @@ export default function Tests() {
     });
   }, []);
 
-  const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      setLocation('/');
-    }
-  };
-
   return (
     <>
       <SEOHead
@@ -46,21 +39,8 @@ export default function Tests() {
         canonical="https://open-interview.github.io/tests"
       />
 
-      <div className="min-h-screen bg-background text-foreground p-3 sm:p-4 font-mono">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <header className="flex items-center justify-between mb-6">
-            <button
-              onClick={goBack}
-              className="flex items-center gap-1.5 hover:text-primary text-[10px] uppercase tracking-widest font-bold"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </button>
-            <h1 className="text-base sm:text-xl font-bold uppercase">
-              <span className="text-primary">&gt;</span> Tests
-            </h1>
-            <div className="w-16" />
-          </header>
+      <AppLayout title="Tests" showBackOnMobile>
+        <div className="max-w-4xl mx-auto font-mono">
 
           {/* Stats Overview */}
           <motion.div
@@ -208,7 +188,7 @@ export default function Tests() {
             </div>
           )}
         </div>
-      </div>
+      </AppLayout>
     </>
   );
 }

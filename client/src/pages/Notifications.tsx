@@ -128,7 +128,7 @@ export default function Notifications() {
       />
       
       <AppLayout title="Notifications" showBackOnMobile>
-        <div className="max-w-lg mx-auto pb-8">
+        <div className="max-w-4xl mx-auto pb-8">
           {/* Header Actions */}
           {notifications.length > 0 && (
             <motion.div

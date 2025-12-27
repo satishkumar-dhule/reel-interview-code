@@ -9,13 +9,13 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "wouter";
 import { 
-  ArrowLeft, Bot, Sparkles, CheckCircle, RefreshCw,
+  Bot, Sparkles, CheckCircle, RefreshCw,
   Activity, Clock, Trash2, FileText, ListTodo, History, Zap, Eye, Wrench
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SEOHead } from "../components/SEOHead";
+import { AppLayout } from "../components/layout/AppLayout";
 import { cn } from "../lib/utils";
 
 // Types
@@ -147,7 +147,6 @@ function Tab({ active, onClick, children, icon: Icon }: {
 
 
 export default function BotActivity() {
-  const [_, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<'overview' | 'queue' | 'ledger'>('overview');
   const [botStats, setBotStats] = useState<BotStats[]>([]);
   const [recentRuns, setRecentRuns] = useState<BotRun[]>([]);
@@ -190,14 +189,6 @@ export default function BotActivity() {
     fetchData();
   };
 
-  const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      setLocation('/');
-    }
-  };
-
   // Calculate totals
   const totalCreated = botStats.reduce((sum, s) => sum + (s.totalCreated || 0), 0);
   const totalUpdated = botStats.reduce((sum, s) => sum + (s.totalUpdated || 0), 0);
@@ -211,14 +202,10 @@ export default function BotActivity() {
         description="Monitor the 3-bot AI pipeline: Creator, Verifier, and Processor bots working together to maintain high-quality interview content."
         canonical="https://open-interview.github.io/bot-activity"
       />
-      <div className="min-h-screen bg-background text-foreground p-4 sm:p-6">
+      <AppLayout title="Bot Monitor" showBackOnMobile>
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <header className="flex items-center justify-between mb-6">
-            <button onClick={goBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">Back</span>
-            </button>
+          {/* Header - Desktop only since AppLayout handles mobile */}
+          <header className="hidden lg:flex items-center justify-between mb-6">
             <h1 className="text-xl font-bold flex items-center gap-2">
               <Bot className="w-5 h-5 text-primary" />
               Bot Monitor
@@ -231,6 +218,17 @@ export default function BotActivity() {
               <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
             </button>
           </header>
+          
+          {/* Mobile refresh button */}
+          <div className="lg:hidden flex justify-end mb-4">
+            <button 
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="p-2 hover:bg-muted rounded-lg disabled:opacity-50 transition-colors"
+            >
+              <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
+            </button>
+          </div>
 
           {/* Bot Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -604,7 +602,7 @@ export default function BotActivity() {
             </p>
           </motion.div>
         </div>
-      </div>
+      </AppLayout>
     </>
   );
 }

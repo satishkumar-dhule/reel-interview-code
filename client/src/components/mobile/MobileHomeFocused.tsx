@@ -79,6 +79,11 @@ export function MobileHomeFocused() {
     return s;
   })();
 
+  // Memoize the onViewChannel callback to prevent QuickQuizCard re-renders
+  const handleViewChannel = useCallback((channelId: string) => {
+    setLocation(`/channel/${channelId}`);
+  }, [setLocation]);
+
   return (
     <div className="pb-20 sm:pb-8 max-w-4xl mx-auto">
       {/* Credits Banner - Always visible */}
@@ -107,7 +112,7 @@ export function MobileHomeFocused() {
       {hasChannels ? (
         <QuickQuizCard 
           channels={subscribedChannels}
-          onViewChannel={(channelId) => setLocation(`/channel/${channelId}`)}
+          onViewChannel={handleViewChannel}
         />
       ) : (
         <WelcomeCard onGetStarted={() => setLocation('/channels')} />
