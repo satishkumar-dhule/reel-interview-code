@@ -171,6 +171,7 @@ function QuickQuizCard({
   const [correctCount, setCorrectCount] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [creditChange, setCreditChange] = useState<number | null>(null);
   const { onQuizAnswer, config } = useCredits();
 
@@ -206,13 +207,7 @@ function QuickQuizCard({
   }, [channels]);
 
   const handleRefresh = useCallback(() => {
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setShowFeedback(null);
-    setCorrectCount(0);
-    setTotalAnswered(0);
-    
-    // Re-shuffle questions
+    // Re-shuffle questions first, then reset state
     if (tests.length > 0) {
       const allQuestions: TestQuestion[] = [];
       tests.forEach(test => {
@@ -220,12 +215,20 @@ function QuickQuizCard({
         allQuestions.push(...sessionQuestions);
       });
       const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-      setQuestions(shuffled.slice(0, 10));
+      const newQuestions = shuffled.slice(0, 10);
+      
+      // Batch all state updates together
+      setQuestions(newQuestions);
+      setCurrentIndex(0);
+      setSelectedAnswer(null);
+      setShowFeedback(null);
+      setCorrectCount(0);
+      setTotalAnswered(0);
     }
   }, [tests]);
 
   const handleOptionSelect = (optionId: string) => {
-    if (showFeedback || !currentQuestion) return;
+    if (showFeedback || !currentQuestion || isTransitioning) return;
     
     setSelectedAnswer(optionId);
     const correctOption = currentQuestion.options.find(o => o.isCorrect);
@@ -253,17 +256,28 @@ function QuickQuizCard({
       }
     }
     
-    // Auto-advance after feedback
+    // Auto-advance after feedback - use longer delay and single state update
+    const advanceDelay = isCorrect ? 800 : 1500;
+    setIsTransitioning(true);
+    
     setTimeout(() => {
-      setShowFeedback(null);
-      setSelectedAnswer(null);
       if (currentIndex < questions.length - 1) {
+        // Move to next question - batch state updates
+        setShowFeedback(null);
+        setSelectedAnswer(null);
         setCurrentIndex(prev => prev + 1);
+        setIsTransitioning(false);
       } else {
-        // Quiz complete - refresh with new questions
-        handleRefresh();
+        // Quiz complete - show brief completion state then refresh
+        setShowFeedback(null);
+        setSelectedAnswer(null);
+        // Small delay before refreshing to prevent flicker
+        setTimeout(() => {
+          handleRefresh();
+          setIsTransitioning(false);
+        }, 100);
       }
-    }, isCorrect ? 800 : 1500);
+    }, advanceDelay);
   };
 
   const currentQuestion = questions[currentIndex];
