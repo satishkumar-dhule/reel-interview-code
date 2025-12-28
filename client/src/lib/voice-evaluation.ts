@@ -192,6 +192,78 @@ const CONCEPT_KNOWLEDGE: Record<string, {
     weight: 2
   },
   
+  // Configuration Management
+  'ansible': {
+    synonyms: ['ansible playbook', 'playbooks'],
+    related: ['configuration management', 'automation', 'yaml', 'tasks', 'roles', 'inventory', 'agentless'],
+    weight: 3
+  },
+  'puppet': {
+    synonyms: ['puppet manifest', 'manifests'],
+    related: ['configuration management', 'catalog', 'agent', 'master', 'declarative', 'dsl'],
+    weight: 3
+  },
+  'chef': {
+    synonyms: ['chef cookbook', 'cookbooks'],
+    related: ['configuration management', 'recipes', 'ruby', 'knife'],
+    weight: 2
+  },
+  'idempotency': {
+    synonyms: ['idempotent', 'idempotence'],
+    related: ['repeatable', 'same result', 'safe to run', 'convergent', 'desired state'],
+    weight: 3
+  },
+  'declarative': {
+    synonyms: ['declarative state', 'desired state'],
+    related: ['what not how', 'state', 'configuration', 'manifest', 'spec'],
+    weight: 2
+  },
+  'procedural': {
+    synonyms: ['imperative', 'procedural approach'],
+    related: ['step by step', 'how', 'scripts', 'sequence'],
+    weight: 2
+  },
+  'zero downtime': {
+    synonyms: ['zero-downtime', 'no downtime'],
+    related: ['rolling update', 'blue-green', 'canary', 'seamless', 'continuous'],
+    weight: 3
+  },
+  'rolling update': {
+    synonyms: ['rolling deployment', 'rolling upgrade'],
+    related: ['gradual', 'incremental', 'one at a time', 'batch'],
+    weight: 2
+  },
+  'blue-green deployment': {
+    synonyms: ['blue green', 'blue-green'],
+    related: ['switch', 'cutover', 'parallel', 'instant rollback'],
+    weight: 2
+  },
+  'canary deployment': {
+    synonyms: ['canary release', 'canary'],
+    related: ['gradual rollout', 'percentage', 'traffic splitting', 'testing in production'],
+    weight: 2
+  },
+  'migration': {
+    synonyms: ['migrate', 'migrating', 'transition'],
+    related: ['move', 'transfer', 'upgrade', 'convert', 'switch'],
+    weight: 2
+  },
+  'check mode': {
+    synonyms: ['dry run', 'dry-run', 'noop'],
+    related: ['preview', 'test', 'simulation', 'what-if', 'safe'],
+    weight: 2
+  },
+  'modules': {
+    synonyms: ['module', 'reusable'],
+    related: ['components', 'library', 'package', 'abstraction'],
+    weight: 2
+  },
+  'catalog': {
+    synonyms: ['catalog compilation'],
+    related: ['puppet', 'manifest', 'resources', 'dependency graph'],
+    weight: 2
+  },
+  
   // Security
   'authentication': {
     synonyms: ['auth', 'authn', 'login'],
@@ -243,6 +315,74 @@ const CONCEPT_KNOWLEDGE: Record<string, {
   'feedback': {
     synonyms: ['review', 'critique'],
     related: ['constructive', 'improve', 'learn', 'growth'],
+    weight: 2
+  },
+  
+  // Algorithms & Data Structures
+  'algorithm': {
+    synonyms: ['algorithms', 'algo'],
+    related: ['complexity', 'big o', 'time complexity', 'space complexity', 'optimization'],
+    weight: 2
+  },
+  'data structure': {
+    synonyms: ['data structures'],
+    related: ['array', 'list', 'tree', 'graph', 'hash', 'stack', 'queue'],
+    weight: 2
+  },
+  'complexity': {
+    synonyms: ['time complexity', 'space complexity', 'big o'],
+    related: ['o(n)', 'o(log n)', 'o(1)', 'efficient', 'performance'],
+    weight: 2
+  },
+  
+  // Testing
+  'testing': {
+    synonyms: ['test', 'tests', 'tested'],
+    related: ['unit test', 'integration test', 'e2e', 'qa', 'quality'],
+    weight: 2
+  },
+  'unit testing': {
+    synonyms: ['unit test', 'unit tests'],
+    related: ['jest', 'pytest', 'junit', 'mock', 'stub', 'isolated'],
+    weight: 2
+  },
+  'integration testing': {
+    synonyms: ['integration test', 'integration tests'],
+    related: ['api testing', 'contract testing', 'end to end'],
+    weight: 2
+  },
+  
+  // Frontend
+  'react': {
+    synonyms: ['reactjs', 'react.js'],
+    related: ['component', 'hooks', 'state', 'props', 'jsx', 'virtual dom'],
+    weight: 2
+  },
+  'state management': {
+    synonyms: ['state', 'global state'],
+    related: ['redux', 'context', 'zustand', 'mobx', 'store'],
+    weight: 2
+  },
+  'component': {
+    synonyms: ['components', 'ui component'],
+    related: ['reusable', 'props', 'render', 'lifecycle'],
+    weight: 2
+  },
+  
+  // Backend
+  'rest api': {
+    synonyms: ['rest', 'restful', 'rest apis'],
+    related: ['http', 'endpoint', 'crud', 'json', 'status code'],
+    weight: 2
+  },
+  'graphql': {
+    synonyms: ['graph ql'],
+    related: ['query', 'mutation', 'schema', 'resolver', 'apollo'],
+    weight: 2
+  },
+  'orm': {
+    synonyms: ['object relational mapping'],
+    related: ['sequelize', 'prisma', 'typeorm', 'hibernate', 'active record'],
     weight: 2
   },
 };
@@ -354,15 +494,25 @@ function analyzeConceptCoverage(
   voiceKeywords?: string[]
 ): ConceptAnalysisResult {
   // Get required concepts from voiceKeywords or extract from ideal answer
-  const requiredConcepts = voiceKeywords && voiceKeywords.length > 0
+  let requiredConcepts = voiceKeywords && voiceKeywords.length > 0
     ? voiceKeywords
     : extractConceptsFromText(idealText);
+  
+  // If no concepts found in ideal answer, extract from user's answer
+  // This handles cases where the ideal answer is incomplete
+  if (requiredConcepts.length === 0) {
+    requiredConcepts = extractConceptsFromText(userText);
+  }
+  
+  // Also find concepts the user mentioned that are in our knowledge base
+  const userMentionedConcepts = findKnownConceptsInText(userText);
   
   const covered: ConceptMatch[] = [];
   const missed: string[] = [];
   let totalWeight = 0;
   let coveredWeight = 0;
   
+  // First, check coverage of required concepts
   for (const concept of requiredConcepts) {
     const conceptLower = concept.toLowerCase();
     const knowledgeEntry = CONCEPT_KNOWLEDGE[conceptLower];
@@ -407,11 +557,32 @@ function analyzeConceptCoverage(
     missed.push(concept);
   }
   
+  // Add bonus for additional relevant concepts the user mentioned
+  // that weren't in the required list but are in our knowledge base
+  const coveredConceptNames = covered.map(c => c.concept.toLowerCase());
+  const bonusConcepts = userMentionedConcepts.filter(c => 
+    !coveredConceptNames.includes(c.toLowerCase()) &&
+    !requiredConcepts.map(r => r.toLowerCase()).includes(c.toLowerCase())
+  );
+  
+  for (const bonusConcept of bonusConcepts.slice(0, 5)) {
+    const knowledgeEntry = CONCEPT_KNOWLEDGE[bonusConcept.toLowerCase()];
+    const weight = knowledgeEntry?.weight || 1;
+    covered.push({ concept: bonusConcept, matchedAs: bonusConcept, confidence: 'exact' });
+    coveredWeight += weight * 0.5; // Half credit for bonus concepts
+    totalWeight += weight * 0.5;
+  }
+  
+  // Ensure we have a reasonable baseline if no concepts were required
+  if (totalWeight === 0 && covered.length > 0) {
+    totalWeight = covered.length;
+    coveredWeight = covered.length;
+  }
+  
   const coverageScore = totalWeight > 0 ? (coveredWeight / totalWeight) * 100 : 0;
   
-  // Calculate technical depth based on additional concepts mentioned
-  const additionalConcepts = findAdditionalConcepts(userText, requiredConcepts);
-  const technicalDepth = Math.min(100, coverageScore + (additionalConcepts.length * 5));
+  // Calculate technical depth based on total concepts mentioned
+  const technicalDepth = Math.min(100, (covered.length * 15) + (coverageScore * 0.4));
   
   return {
     covered,
@@ -419,6 +590,27 @@ function analyzeConceptCoverage(
     coverageScore: Math.round(coverageScore),
     technicalDepth: Math.round(technicalDepth)
   };
+}
+
+// Find concepts from our knowledge base that appear in the text
+function findKnownConceptsInText(text: string): string[] {
+  const found: string[] = [];
+  const textLower = text.toLowerCase();
+  
+  for (const [concept, data] of Object.entries(CONCEPT_KNOWLEDGE)) {
+    // Check exact match
+    if (textLower.includes(concept)) {
+      found.push(concept);
+      continue;
+    }
+    
+    // Check synonyms
+    if (data.synonyms.some(s => textLower.includes(s))) {
+      found.push(concept);
+    }
+  }
+  
+  return found;
 }
 
 function extractConceptsFromText(text: string): string[] {

@@ -321,20 +321,33 @@ async function generateTest(_input, _channel) {
 }
 
 async function generateVoiceKeywords(content) {
-  const prompt = `Analyze this interview question for voice interview suitability.
+  const prompt = `Analyze this interview question for voice interview practice.
 
 Question: "${content.question}"
-Answer: "${content.explanation?.substring(0, 1000) || content.answer}"
+Channel: ${content.channel || 'general'}
+Answer/Explanation: "${(content.explanation || content.answer || '').substring(0, 1500)}"
 
-Determine:
-1. Is it suitable for voice interview? (can be answered verbally, not code-based)
-2. If suitable, extract 5-8 mandatory keywords a candidate must mention
+Your task:
+1. Determine if this question is suitable for VOICE interview practice (can be answered verbally without writing code)
+2. If suitable, extract 8-15 MANDATORY keywords/concepts that a good answer MUST include
 
-Return ONLY JSON:
+Guidelines for keywords:
+- Include specific technical terms (e.g., "load balancer", "idempotency", "eventual consistency")
+- Include related concepts and synonyms (e.g., both "kubernetes" and "k8s")
+- Include action words for behavioral questions (e.g., "communicated", "prioritized", "resolved")
+- Include metrics/outcomes if relevant (e.g., "latency", "availability", "99.9%")
+- Be comprehensive - a candidate mentioning these keywords demonstrates understanding
+
+Return ONLY valid JSON (no markdown, no explanation):
 {
-  "suitable": true/false,
-  "reason": "brief reason",
-  "keywords": ["keyword1", "keyword2", "keyword3"]
+  "suitable": true,
+  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5", "keyword6", "keyword7", "keyword8"]
+}
+
+OR if not suitable for voice interview:
+{
+  "suitable": false,
+  "keywords": []
 }`;
 
   const response = await runWithRetries(prompt);
@@ -345,7 +358,7 @@ Return ONLY JSON:
   return {
     suitable: result.suitable === true,
     keywords: result.suitable && Array.isArray(result.keywords) 
-      ? result.keywords.map(k => String(k).toLowerCase().trim()).filter(k => k.length > 2)
+      ? result.keywords.map(k => String(k).toLowerCase().trim()).filter(k => k.length > 2).slice(0, 15)
       : []
   };
 }
