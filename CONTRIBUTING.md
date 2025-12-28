@@ -14,8 +14,8 @@ We are committed to providing a welcoming and inclusive environment for all cont
 - **Review questions** - Help identify questions that need improvement
 
 ### 2. Report Issues
-- Found a bug? [Open an issue](https://github.com/satishkumar-dhule/code-reels/issues/new)
-- Have a suggestion? [Start a discussion](https://github.com/satishkumar-dhule/code-reels/discussions)
+- Found a bug? [Open an issue](https://github.com/open-interview/open-interview/issues/new)
+- Have a suggestion? [Start a discussion](https://github.com/open-interview/open-interview/discussions)
 
 ### 3. Code Contributions
 - Fix bugs

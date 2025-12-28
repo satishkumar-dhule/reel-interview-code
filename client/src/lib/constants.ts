@@ -168,9 +168,9 @@ export const ROUTES = {
 // EXTERNAL LINKS
 // ============================================
 export const EXTERNAL_LINKS = {
-  GITHUB_REPO: 'https://github.com/satishkumar-dhule/code-reels',
-  GITHUB_ISSUES: 'https://github.com/satishkumar-dhule/code-reels/issues/new',
-  GITHUB_DISCUSSIONS: 'https://github.com/satishkumar-dhule/code-reels/discussions',
+  GITHUB_REPO: 'https://github.com/open-interview/open-interview',
+  GITHUB_ISSUES: 'https://github.com/open-interview/open-interview/issues/new',
+  GITHUB_DISCUSSIONS: 'https://github.com/open-interview/open-interview/discussions',
   GITHUB_SPONSOR: 'https://github.com/sponsors/satishkumar-dhule',
 } as const;
 

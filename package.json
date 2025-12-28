@@ -31,10 +31,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/satishkumar-dhule/code-reels.git"
+    "url": "https://github.com/open-interview/open-interview.git"
   },
   "bugs": {
-    "url": "https://github.com/satishkumar-dhule/code-reels/issues"
+    "url": "https://github.com/open-interview/open-interview/issues"
   },
   "homepage": "https://open-interview.github.io/",
   "funding": {

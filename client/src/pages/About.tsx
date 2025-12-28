@@ -244,15 +244,15 @@ export default function About() {
                     Code Reels is open source and community-driven. Contribute questions, report bugs, or suggest features!
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <a href="https://github.com/satishkumar-dhule/code-reels" target="_blank" rel="noopener noreferrer"
+                    <a href="https://github.com/open-interview/open-interview" target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded font-bold text-xs uppercase hover:opacity-90 transition-opacity">
                       <Github className="w-4 h-4" /> Star on GitHub
                     </a>
-                    <a href="https://github.com/satishkumar-dhule/code-reels/issues/new" target="_blank" rel="noopener noreferrer"
+                    <a href="https://github.com/open-interview/open-interview/issues/new" target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 border border-border rounded font-bold text-xs uppercase hover:border-primary transition-colors">
                       <Bug className="w-4 h-4" /> Report Bug
                     </a>
-                    <a href="https://github.com/satishkumar-dhule/code-reels/discussions" target="_blank" rel="noopener noreferrer"
+                    <a href="https://github.com/open-interview/open-interview/discussions" target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 border border-border rounded font-bold text-xs uppercase hover:border-primary transition-colors">
                       <MessageSquare className="w-4 h-4" /> Discuss
                     </a>

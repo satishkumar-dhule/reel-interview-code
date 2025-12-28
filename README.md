@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/satishkumar-dhule/code-reels?style=for-the-badge&logo=github&color=yellow" alt="Stars" />
+  <img src="https://img.shields.io/github/stars/open-interview/open-interview?style=for-the-badge&logo=github&color=yellow" alt="Stars" />
   <img src="https://img.shields.io/badge/questions-1000+-blue?style=for-the-badge" alt="Questions" />
   <img src="https://img.shields.io/badge/topics-30+-purple?style=for-the-badge" alt="Topics" />
   <img src="https://img.shields.io/badge/vibe-immaculate-ff69b4?style=for-the-badge" alt="Vibe" />
@@ -175,8 +175,8 @@ Just go to **[open-interview.github.io](https://open-interview.github.io/)** and
 
 ```bash
 # Clone it
-git clone https://github.com/satishkumar-dhule/code-reels.git
-cd code-reels
+git clone https://github.com/open-interview/open-interview.git
+cd open-interview
 
 # Install deps
 pnpm install
@@ -256,7 +256,7 @@ MIT — do whatever you want with it.
 </p>
 
 <p align="center">
-  <a href="https://github.com/satishkumar-dhule/code-reels">
-    <img src="https://img.shields.io/github/stars/satishkumar-dhule/code-reels?style=social" alt="GitHub Stars" />
+  <a href="https://github.com/open-interview/open-interview">
+    <img src="https://img.shields.io/github/stars/open-interview/open-interview?style=social" alt="GitHub Stars" />
   </a>
 </p>

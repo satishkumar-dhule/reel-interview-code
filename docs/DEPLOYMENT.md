@@ -38,7 +38,7 @@ Code Reels uses a staged deployment process with manual approval for production 
 
 ### 2. Configure GitHub Environments
 
-In your main repository (`satishkumar-dhule/code-reels`):
+In your main repository (`open-interview/open-interview`):
 
 1. Go to **Settings** → **Environments**
 

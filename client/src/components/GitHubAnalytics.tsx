@@ -64,7 +64,7 @@ export function GitHubAnalytics() {
           </span>
         </div>
         <a
-          href="https://github.com/satishkumar-dhule/code-reels"
+          href="https://github.com/open-interview/open-interview"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[9px] text-muted-foreground hover:text-primary flex items-center gap-0.5"

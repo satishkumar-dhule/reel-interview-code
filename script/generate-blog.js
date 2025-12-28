@@ -896,7 +896,7 @@ function generateFooter(articles = []) {
     </div>
   </div>
   <div class="footer-copy">
-    <p>© ${new Date().getFullYear()} DevInsights · Built for developers who ship · <a href="https://open-interview.github.io">Reel Interview</a></p>
+    <p>© ${new Date().getFullYear()} DevInsights · Built for developers who ship · <a href="https://open-interview.github.io">Code Reels</a></p>
   </div>
 </div></footer>
 
