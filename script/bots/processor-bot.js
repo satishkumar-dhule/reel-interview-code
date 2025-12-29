@@ -578,7 +578,7 @@ async function main() {
   const stats = { processed: 0, created: 0, updated: 0, deleted: 0 };
   
   try {
-    const maxItems = parseInt(process.env.MAX_ITEMS || '10');
+    const maxItems = parseInt(process.env.MAX_ITEMS || '50');
     
     console.log(`\nProcessing up to ${maxItems} items...\n`);
     

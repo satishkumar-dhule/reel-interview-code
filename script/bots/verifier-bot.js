@@ -424,7 +424,7 @@ async function main() {
   
   try {
     const mode = process.env.MODE || 'scan';
-    const limit = parseInt(process.env.LIMIT || '10');
+    const limit = parseInt(process.env.LIMIT || '100');
     
     console.log(`Mode: ${mode}, Limit: ${limit}`);
     
