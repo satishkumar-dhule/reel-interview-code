@@ -20,15 +20,30 @@
     },
     {
       "botName": "verifier",
-      "totalRuns": 4,
-      "successfulRuns": 4,
-      "totalCreated": 33,
+      "totalRuns": 5,
+      "successfulRuns": 5,
+      "totalCreated": 37,
       "totalUpdated": 0,
       "totalDeleted": 0,
-      "lastRun": "2025-12-28T04:44:52.233Z"
+      "lastRun": "2025-12-29T04:50:09.680Z"
     }
   ],
   "runs": [
+    {
+      "id": 15,
+      "botName": "verifier",
+      "startedAt": "2025-12-29T04:50:09.680Z",
+      "completedAt": "2025-12-29T04:50:47.786Z",
+      "status": "completed",
+      "itemsProcessed": 10,
+      "itemsCreated": 4,
+      "itemsUpdated": 0,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Verifier Bot completed",
+        "flagged": 4
+      }
+    },
     {
       "id": 14,
       "botName": "creator",
@@ -237,6 +252,50 @@
     }
   ],
   "queue": [
+    {
+      "id": 45,
+      "itemType": "question",
+      "itemId": "q-375",
+      "action": "improve",
+      "priority": 2,
+      "status": "pending",
+      "reason": "placeholder_content | Feedback: Add specific technical details about the migration process and risk mitigation steps.",
+      "createdBy": "verifier",
+      "createdAt": "2025-12-29T04:50:43.883Z"
+    },
+    {
+      "id": 44,
+      "itemType": "question",
+      "itemId": "q-244",
+      "action": "improve",
+      "priority": 2,
+      "status": "pending",
+      "reason": "placeholder_content | Feedback: Expand on OpenTelemetry correlation mechanisms and add concrete examples of collector configuration.",
+      "createdBy": "verifier",
+      "createdAt": "2025-12-29T04:50:39.895Z"
+    },
+    {
+      "id": 43,
+      "itemType": "question",
+      "itemId": "q-557",
+      "action": "improve",
+      "priority": 2,
+      "status": "pending",
+      "reason": "placeholder_content | Feedback: Complete the truncated explanation and add specific tool recommendations (e.g., k6, JMeter, wrk) for better practical guidance.",
+      "createdBy": "verifier",
+      "createdAt": "2025-12-29T04:50:25.464Z"
+    },
+    {
+      "id": 42,
+      "itemType": "question",
+      "itemId": "gh-95",
+      "action": "improve",
+      "priority": 2,
+      "status": "pending",
+      "reason": "placeholder_content | Feedback: Add SLO/SLM relationship context and complete the availability example cutoff",
+      "createdBy": "verifier",
+      "createdAt": "2025-12-29T04:50:17.938Z"
+    },
     {
       "id": 38,
       "itemType": "question",
@@ -690,6 +749,96 @@
     }
   ],
   "ledger": [
+    {
+      "id": 123,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-466",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:47.477Z"
+    },
+    {
+      "id": 122,
+      "botName": "verifier",
+      "action": "flag",
+      "itemType": "question",
+      "itemId": "q-375",
+      "reason": "Flagged for improve: 1 issues found",
+      "createdAt": "2025-12-29T04:50:44.039Z"
+    },
+    {
+      "id": 121,
+      "botName": "verifier",
+      "action": "flag",
+      "itemType": "question",
+      "itemId": "q-244",
+      "reason": "Flagged for improve: 1 issues found",
+      "createdAt": "2025-12-29T04:50:40.348Z"
+    },
+    {
+      "id": 120,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-489",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:36.093Z"
+    },
+    {
+      "id": 119,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-544",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:32.883Z"
+    },
+    {
+      "id": 118,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-438",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:29.328Z"
+    },
+    {
+      "id": 117,
+      "botName": "verifier",
+      "action": "flag",
+      "itemType": "question",
+      "itemId": "q-557",
+      "reason": "Flagged for improve: 1 issues found",
+      "createdAt": "2025-12-29T04:50:26.040Z"
+    },
+    {
+      "id": 116,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-419",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:21.726Z"
+    },
+    {
+      "id": 115,
+      "botName": "verifier",
+      "action": "flag",
+      "itemType": "question",
+      "itemId": "gh-95",
+      "reason": "Flagged for improve: 1 issues found",
+      "createdAt": "2025-12-29T04:50:18.511Z"
+    },
+    {
+      "id": 114,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-616",
+      "reason": "Passed verification",
+      "createdAt": "2025-12-29T04:50:14.312Z"
+    },
     {
       "id": 113,
       "botName": "creator",
@@ -1499,97 +1648,7 @@
       "itemId": "q-308",
       "reason": "Flagged for improve: 1 issues found",
       "createdAt": "2025-12-28T01:55:24.961Z"
-    },
-    {
-      "id": 23,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-612",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2025-12-28T01:54:14.321Z"
-    },
-    {
-      "id": 22,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "gh-95",
-      "reason": "Processed: placeholder_content | Feedback: Add concrete examples of common SLIs (latency, error rate, availability) and mention how they differ from SLOs and SLAs.",
-      "createdAt": "2025-12-27T13:01:55.393Z"
-    },
-    {
-      "id": 21,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-594",
-      "reason": "Processed: placeholder_content | Feedback: Add specific examples of scheduling predicates and priorities, and mention priority classes and resource quotas for comprehensive coverage.",
-      "createdAt": "2025-12-27T13:01:02.677Z"
-    },
-    {
-      "id": 20,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-255",
-      "reason": "Processed: placeholder_content",
-      "createdAt": "2025-12-27T13:00:54.954Z"
-    },
-    {
-      "id": 19,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-203",
-      "reason": "Processed: placeholder_content",
-      "createdAt": "2025-12-27T13:00:45.751Z"
-    },
-    {
-      "id": 18,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-414",
-      "reason": "Processed: placeholder_content",
-      "createdAt": "2025-12-27T13:00:30.319Z"
-    },
-    {
-      "id": 17,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "gh-95",
-      "reason": "Flagged for improve: 1 issues found",
-      "createdAt": "2025-12-27T12:59:49.770Z"
-    },
-    {
-      "id": 16,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-493",
-      "reason": "Passed verification",
-      "createdAt": "2025-12-27T12:59:45.660Z"
-    },
-    {
-      "id": 15,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-274",
-      "reason": "Passed verification",
-      "createdAt": "2025-12-27T12:59:42.213Z"
-    },
-    {
-      "id": 14,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-513",
-      "reason": "Passed verification",
-      "createdAt": "2025-12-27T12:59:38.587Z"
     }
   ],
-  "generatedAt": "2025-12-29T03:52:09.664Z"
+  "generatedAt": "2025-12-29T04:51:08.128Z"
 }
