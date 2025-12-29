@@ -1,0 +1,4 @@
+{
+  "answer": "TLS 1.3 utilizes a Diffie-Hellman key exchange combined with digital signatures for authentication, establishing symmetric encryption keys that provide perfect forward secrecy.",
+  "explanation": "## Interview Context\nThis question assesses understanding of modern TLS security, cryptographic protocols, and secure communication establishment—essential knowledge for security engineers and backend developers.\n\n## Technical Details\nTLS 1.3 handshake process:\n- ClientHello with supported groups and key shares\n- ServerHello with selected cipher suite and server key share\n- (EC)DHE key exchange ensuring forward secrecy\n- Certificate verification using digital signatures\n- Finished messages with HMAC verification\n\n## Code Example\n```bash\n# OpenSSL TLS 1.3 handshake simulation\nopenssl s_client -connect example.com:443 -tls1_3\n```"
+}

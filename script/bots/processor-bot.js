@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 /**
- * Processor Bot - LangGraph Architecture
+ * Processor Bot - Advanced Content Improvement Engine
  * 
- * Takes corrective actions on flagged content:
- * - Improves flagged content
- * - Deletes low-quality items
- * - Maintains audit ledger
- * - Processes work queue
+ * Takes intelligent corrective actions based on verifier analysis:
+ * - Parses detailed issue reports from verifier
+ * - Applies targeted fixes based on issue types
+ * - Handles multi-dimensional quality improvements
+ * - Enriches content with diagrams, videos, companies
+ * - Improves voice interview readiness
+ * - Maintains comprehensive audit trail
  * 
  * LangGraph Pipeline:
- * Get Work Item → Decide Action → Execute → Log to Ledger → Update Status
+ * Get Work → Parse Issues → Plan Actions → Execute → Validate → Log → Update
  */
 
 import 'dotenv/config';
@@ -23,12 +25,53 @@ const BOT_NAME = 'processor';
 const db = getDb();
 
 // ============================================
+// ISSUE TYPE TO ACTION MAPPING
+// ============================================
+
+const ISSUE_ACTIONS = {
+  // Critical - Delete
+  'irrelevant_behavioral': { action: 'delete', priority: 1 },
+  'missing_question': { action: 'delete', priority: 1 },
+  'missing_answer': { action: 'delete', priority: 1 },
+  
+  // High - Major Rewrite
+  'truncated_answer': { action: 'complete_content', priority: 2 },
+  'truncated_explanation': { action: 'complete_content', priority: 2 },
+  'short_answer': { action: 'expand_answer', priority: 2 },
+  'placeholder_content': { action: 'rewrite', priority: 2 },
+  'likely_duplicate': { action: 'deduplicate', priority: 2 },
+  'low_technical_accuracy': { action: 'fix_accuracy', priority: 2 },
+  
+  // Medium - Targeted Improvements
+  'short_explanation': { action: 'expand_explanation', priority: 3 },
+  'low_completeness': { action: 'add_details', priority: 3 },
+  'low_clarity': { action: 'improve_clarity', priority: 3 },
+  'answer_mismatch': { action: 'align_answer', priority: 3 },
+  'potential_duplicate': { action: 'differentiate', priority: 3 },
+  'missing_voice_keywords': { action: 'add_voice_keywords', priority: 3 },
+  'low_channel_relevance': { action: 'add_channel_terms', priority: 3 },
+  
+  // Low - Minor Fixes
+  'missing_question_mark': { action: 'fix_formatting', priority: 4 },
+  'vague_question': { action: 'clarify_question', priority: 4 },
+  'difficulty_mismatch': { action: 'adjust_difficulty', priority: 4 },
+  'missing_code_example': { action: 'add_code', priority: 4 },
+  'insufficient_voice_keywords': { action: 'add_voice_keywords', priority: 4 },
+  'weak_voice_keywords': { action: 'improve_voice_keywords', priority: 4 },
+  'repetitive_content': { action: 'diversify_content', priority: 4 },
+  
+  // Info - Enrichment
+  'missing_tags': { action: 'add_tags', priority: 5 },
+  'insufficient_tags': { action: 'add_tags', priority: 5 },
+  'verbose_for_voice': { action: 'condense_answer', priority: 5 }
+};
+
+// ============================================
 // LANGGRAPH NODE DEFINITIONS
 // ============================================
 
 /**
  * Node 1: Get Work Item
- * Fetches next item from work queue
  */
 async function getWorkNode(state) {
   console.log('\n📥 [Get Work] Fetching next work item...');
@@ -40,10 +83,8 @@ async function getWorkNode(state) {
     return { ...state, done: true };
   }
   
-  console.log(`   Found: ${workItem.action} ${workItem.itemType} ${workItem.itemId}`);
-  console.log(`   Reason: ${workItem.reason}`);
+  console.log(`   Found: ${workItem.action} ${workItem.itemType} ${workItem.itemId} (priority ${workItem.priority})`);
   
-  // Fetch the actual item
   const item = await fetchItem(workItem.itemType, workItem.itemId);
   
   if (!item) {
@@ -55,133 +96,286 @@ async function getWorkNode(state) {
 }
 
 /**
- * Node 2: Decide Action
- * Determines specific action to take
+ * Node 2: Parse Issues & Extract Context
  */
-async function decideNode(state) {
+async function parseIssuesNode(state) {
   const { workItem, item } = state;
   if (!workItem || !item) return state;
   
-  console.log('\n🤔 [Decide] Determining action...');
+  console.log('\n🔍 [Parse] Analyzing work item reason...');
   
-  const action = workItem.action;
-  let subActions = [];
+  const reason = workItem.reason || '';
+  const parsed = {
+    issues: [],
+    aiFeedback: '',
+    improvements: [],
+    score: null
+  };
   
-  switch (action) {
-    case 'delete':
-      subActions = ['backup', 'delete', 'log'];
-      break;
-      
-    case 'improve':
-      // Analyze what needs improvement
-      const issues = workItem.reason?.split(', ') || [];
-      
-      if (issues.includes('short_answer') || issues.includes('short_explanation')) {
-        subActions.push('improve_content');
-      }
-      if (issues.includes('missing_question_mark')) {
-        subActions.push('fix_formatting');
-      }
-      if (issues.includes('low_quality')) {
-        subActions.push('rewrite');
-      }
-      if (issues.includes('potential_duplicate')) {
-        subActions.push('deduplicate');
-      }
-      
-      if (subActions.length === 0) {
-        subActions = ['improve_content'];
-      }
-      break;
-      
-    case 'enrich':
-      subActions = ['add_diagram', 'add_videos', 'add_companies', 'add_voice_keywords'];
-      break;
-      
-    default:
-      subActions = ['improve_content'];
+  // Extract issues (format: "Issues: issue1, issue2, issue3")
+  const issuesMatch = reason.match(/Issues:\s*([^|]+)/);
+  if (issuesMatch) {
+    parsed.issues = issuesMatch[1].split(',').map(i => i.trim()).filter(Boolean);
   }
   
-  console.log(`   Actions: ${subActions.join(', ')}`);
-  return { ...state, subActions };
+  // Extract AI feedback (format: "AI: feedback text")
+  const aiMatch = reason.match(/AI:\s*([^|]+)/);
+  if (aiMatch) {
+    parsed.aiFeedback = aiMatch[1].trim();
+  }
+  
+  // Extract improvements (format: "Fix: improvement1; improvement2")
+  const fixMatch = reason.match(/Fix:\s*([^|]+)/);
+  if (fixMatch) {
+    parsed.improvements = fixMatch[1].split(';').map(i => i.trim()).filter(Boolean);
+  }
+  
+  // Extract score (format: "Score: 65/100")
+  const scoreMatch = reason.match(/Score:\s*(\d+)/);
+  if (scoreMatch) {
+    parsed.score = parseInt(scoreMatch[1]);
+  }
+  
+  console.log(`   Issues: ${parsed.issues.length > 0 ? parsed.issues.join(', ') : 'none parsed'}`);
+  console.log(`   Score: ${parsed.score || 'unknown'}/100`);
+  
+  return { ...state, parsed };
 }
 
 /**
- * Node 3: Execute Actions
- * Performs the corrective actions
+ * Node 3: Plan Actions
+ */
+async function planActionsNode(state) {
+  const { workItem, item, parsed } = state;
+  if (!workItem || !item) return state;
+  
+  console.log('\n📋 [Plan] Determining actions...');
+  
+  const actions = new Set();
+  
+  // If delete action, just delete
+  if (workItem.action === 'delete') {
+    actions.add('delete');
+    return { ...state, plannedActions: ['delete'] };
+  }
+  
+  // Map issues to actions
+  for (const issue of parsed.issues) {
+    const mapping = ISSUE_ACTIONS[issue];
+    if (mapping) {
+      actions.add(mapping.action);
+    }
+  }
+  
+  // If no specific actions mapped, use general improvement based on score
+  if (actions.size === 0) {
+    if (parsed.score && parsed.score < 50) {
+      actions.add('rewrite');
+    } else if (parsed.score && parsed.score < 70) {
+      actions.add('improve_content');
+    } else {
+      actions.add('polish');
+    }
+  }
+  
+  // Add enrichment if score is decent but could be better
+  if (parsed.score && parsed.score >= 60 && parsed.score < 85) {
+    if (!item.diagram) actions.add('add_diagram');
+    if (!item.voiceKeywords || item.voiceKeywords.length < 5) actions.add('add_voice_keywords');
+  }
+  
+  const plannedActions = Array.from(actions);
+  console.log(`   Planned: ${plannedActions.join(', ')}`);
+  
+  return { ...state, plannedActions };
+}
+
+/**
+ * Node 4: Execute Actions
  */
 async function executeNode(state) {
-  const { workItem, item, subActions } = state;
-  if (!workItem || !item || !subActions) return state;
+  const { workItem, item, parsed, plannedActions } = state;
+  if (!workItem || !item || !plannedActions) return state;
   
-  console.log('\n⚡ [Execute] Processing...');
+  console.log('\n⚡ [Execute] Processing actions...');
   
   const beforeState = { ...item };
   let updatedItem = { ...item };
   let deleted = false;
+  const actionsPerformed = [];
   
-  // Extract feedback from reason if present
-  let feedback = '';
-  if (workItem.reason) {
-    const feedbackMatch = workItem.reason.match(/Feedback:\s*([^|]+)/);
-    if (feedbackMatch) {
-      feedback = feedbackMatch[1].trim();
-    }
-  }
+  // Build context for AI prompts
+  const context = {
+    aiFeedback: parsed.aiFeedback,
+    improvements: parsed.improvements,
+    issues: parsed.issues
+  };
   
-  for (const action of subActions) {
+  for (const action of plannedActions) {
     console.log(`   → ${action}`);
     
-    switch (action) {
-      case 'delete':
-        await deleteItem(workItem.itemType, workItem.itemId);
-        deleted = true;
-        break;
-        
-      case 'improve_content':
-        updatedItem = await improveContent(updatedItem, feedback);
-        break;
-        
-      case 'rewrite':
-        updatedItem = await rewriteContent(updatedItem, feedback);
-        break;
-        
-      case 'fix_formatting':
-        updatedItem = fixFormatting(updatedItem);
-        break;
-        
-      case 'deduplicate':
-        // Keep the better version, mark for review
-        updatedItem.status = 'needs_review';
-        break;
-        
-      case 'add_diagram':
-        updatedItem = await addDiagram(updatedItem);
-        break;
-        
-      case 'add_videos':
-        updatedItem = await addVideos(updatedItem);
-        break;
-        
-      case 'add_companies':
-        updatedItem = await addCompanies(updatedItem);
-        break;
-        
-      case 'add_voice_keywords':
-        updatedItem = await addVoiceKeywords(updatedItem);
-        break;
+    try {
+      switch (action) {
+        case 'delete':
+          await deleteItem(workItem.itemType, workItem.itemId);
+          deleted = true;
+          actionsPerformed.push('deleted');
+          break;
+          
+        case 'rewrite':
+          updatedItem = await rewriteContent(updatedItem, context);
+          actionsPerformed.push('rewritten');
+          break;
+          
+        case 'complete_content':
+          updatedItem = await completeContent(updatedItem, context);
+          actionsPerformed.push('completed');
+          break;
+          
+        case 'expand_answer':
+          updatedItem = await expandAnswer(updatedItem, context);
+          actionsPerformed.push('answer_expanded');
+          break;
+          
+        case 'expand_explanation':
+          updatedItem = await expandExplanation(updatedItem, context);
+          actionsPerformed.push('explanation_expanded');
+          break;
+          
+        case 'improve_content':
+        case 'add_details':
+          updatedItem = await improveContent(updatedItem, context);
+          actionsPerformed.push('improved');
+          break;
+          
+        case 'improve_clarity':
+          updatedItem = await improveClarity(updatedItem, context);
+          actionsPerformed.push('clarity_improved');
+          break;
+          
+        case 'fix_accuracy':
+          updatedItem = await fixAccuracy(updatedItem, context);
+          actionsPerformed.push('accuracy_fixed');
+          break;
+          
+        case 'align_answer':
+          updatedItem = await alignAnswer(updatedItem, context);
+          actionsPerformed.push('answer_aligned');
+          break;
+          
+        case 'clarify_question':
+          updatedItem = await clarifyQuestion(updatedItem, context);
+          actionsPerformed.push('question_clarified');
+          break;
+          
+        case 'fix_formatting':
+          updatedItem = fixFormatting(updatedItem);
+          actionsPerformed.push('formatted');
+          break;
+          
+        case 'add_code':
+          updatedItem = await addCodeExample(updatedItem, context);
+          actionsPerformed.push('code_added');
+          break;
+          
+        case 'add_channel_terms':
+          updatedItem = await addChannelTerms(updatedItem, context);
+          actionsPerformed.push('terms_added');
+          break;
+          
+        case 'add_voice_keywords':
+        case 'improve_voice_keywords':
+          updatedItem = await addVoiceKeywords(updatedItem, context);
+          actionsPerformed.push('voice_keywords_added');
+          break;
+          
+        case 'condense_answer':
+          updatedItem = await condenseAnswer(updatedItem, context);
+          actionsPerformed.push('answer_condensed');
+          break;
+          
+        case 'add_tags':
+          updatedItem = await addTags(updatedItem, context);
+          actionsPerformed.push('tags_added');
+          break;
+          
+        case 'add_diagram':
+          updatedItem = await addDiagram(updatedItem, context);
+          actionsPerformed.push('diagram_added');
+          break;
+          
+        case 'deduplicate':
+        case 'differentiate':
+          updatedItem = await differentiateContent(updatedItem, context);
+          actionsPerformed.push('differentiated');
+          break;
+          
+        case 'diversify_content':
+          updatedItem = await diversifyContent(updatedItem, context);
+          actionsPerformed.push('diversified');
+          break;
+          
+        case 'polish':
+          updatedItem = await polishContent(updatedItem, context);
+          actionsPerformed.push('polished');
+          break;
+          
+        default:
+          console.log(`      ⚠️ Unknown action: ${action}`);
+      }
+    } catch (error) {
+      console.error(`      ❌ Action failed: ${error.message}`);
     }
   }
   
-  return { ...state, beforeState, updatedItem, deleted };
+  return { ...state, beforeState, updatedItem, deleted, actionsPerformed };
 }
 
 /**
- * Node 4: Log to Ledger
- * Records all actions for audit trail
+ * Node 5: Validate Changes
+ */
+async function validateNode(state) {
+  const { updatedItem, deleted, beforeState } = state;
+  if (deleted) return { ...state, validated: true };
+  if (!updatedItem) return { ...state, validated: false };
+  
+  console.log('\n✓ [Validate] Checking changes...');
+  
+  const issues = [];
+  
+  // Check required fields
+  if (!updatedItem.question || updatedItem.question.length < 20) {
+    issues.push('Question too short or missing');
+  }
+  if (!updatedItem.answer || updatedItem.answer.length < 30) {
+    issues.push('Answer too short or missing');
+  }
+  if (!updatedItem.explanation || updatedItem.explanation.length < 100) {
+    issues.push('Explanation too short or missing');
+  }
+  
+  // Check for improvement
+  const beforeLength = (beforeState.answer?.length || 0) + (beforeState.explanation?.length || 0);
+  const afterLength = (updatedItem.answer?.length || 0) + (updatedItem.explanation?.length || 0);
+  
+  if (afterLength < beforeLength * 0.8) {
+    issues.push('Content significantly shortened');
+  }
+  
+  if (issues.length > 0) {
+    console.log(`   ⚠️ Validation issues: ${issues.join(', ')}`);
+  } else {
+    console.log('   ✅ Changes validated');
+  }
+  
+  return { ...state, validated: issues.length === 0, validationIssues: issues };
+}
+
+/**
+ * Node 6: Log to Ledger
  */
 async function logNode(state) {
-  const { workItem, beforeState, updatedItem, deleted } = state;
+  const { workItem, beforeState, updatedItem, deleted, actionsPerformed } = state;
   if (!workItem) return state;
   
   console.log('\n📝 [Log] Recording to ledger...');
@@ -191,82 +385,78 @@ async function logNode(state) {
     action: deleted ? 'delete' : 'update',
     itemType: workItem.itemType,
     itemId: workItem.itemId,
-    beforeState,
-    afterState: deleted ? null : updatedItem,
-    reason: `Processed: ${workItem.reason}`
+    beforeState: {
+      questionLength: beforeState.question?.length,
+      answerLength: beforeState.answer?.length,
+      explanationLength: beforeState.explanation?.length
+    },
+    afterState: deleted ? null : {
+      questionLength: updatedItem.question?.length,
+      answerLength: updatedItem.answer?.length,
+      explanationLength: updatedItem.explanation?.length,
+      actionsPerformed
+    },
+    reason: `Processed: ${actionsPerformed.join(', ')}`
   });
   
   return state;
 }
 
 /**
- * Node 5: Update Status
- * Saves changes and completes work item
+ * Node 7: Update Status
  */
 async function updateStatusNode(state) {
-  const { workItem, updatedItem, deleted } = state;
+  const { workItem, updatedItem, deleted, validated, actionsPerformed } = state;
   if (!workItem) return state;
   
-  console.log('\n✅ [Update] Saving changes...');
+  console.log('\n💾 [Save] Updating database...');
   
-  if (!deleted && updatedItem) {
+  if (!deleted && updatedItem && validated) {
     await saveItem(workItem.itemType, updatedItem);
+    console.log('   ✅ Changes saved');
+  } else if (!deleted && !validated) {
+    console.log('   ⚠️ Changes not saved due to validation issues');
   }
   
   await completeWorkItem(workItem.id, {
-    action: deleted ? 'deleted' : 'updated',
-    success: true
+    action: deleted ? 'deleted' : validated ? 'updated' : 'skipped',
+    actionsPerformed,
+    success: deleted || validated
   });
   
-  console.log('   Work item completed');
-  return { ...state, success: true };
+  return { ...state, success: deleted || validated };
 }
 
 // ============================================
 // ACTION IMPLEMENTATIONS
 // ============================================
 
-async function improveContent(item, feedback = '') {
-  const feedbackInstruction = feedback ? `\nImprovement suggestions: ${feedback}` : '';
-  
-  const prompt = `Improve this interview question content. Keep the same topic but enhance quality.${feedbackInstruction}
+async function rewriteContent(item, context) {
+  const prompt = `Completely rewrite this interview question to be high-quality and interview-ready.
 
-Current Question: "${item.question}"
-Current Answer: "${item.answer}"
-Current Explanation: "${item.explanation?.substring(0, 500)}"
+CURRENT CONTENT:
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 600)}"
 Channel: ${item.channel}
+Difficulty: ${item.difficulty}
+
+ISSUES TO FIX: ${context.issues.join(', ')}
+AI FEEDBACK: ${context.aiFeedback}
+IMPROVEMENTS NEEDED: ${context.improvements.join('; ')}
+
+Requirements:
+- Question should be clear, specific, and end with ?
+- Answer should be 2-3 concise sentences
+- Explanation should be 300-500 words with examples
+- Match the ${item.difficulty} difficulty level
+- Be relevant to ${item.channel} interviews
 
 Return ONLY JSON:
 {
-  "answer": "improved concise answer (1-2 sentences)",
-  "explanation": "improved detailed explanation (200-400 words) with examples"
-}`;
-
-  const response = await runWithRetries(prompt);
-  const result = parseJson(response);
-  
-  if (result) {
-    if (result.answer) item.answer = result.answer;
-    if (result.explanation) item.explanation = result.explanation;
-    item.lastUpdated = new Date().toISOString();
-  }
-  
-  return item;
-}
-
-async function rewriteContent(item, feedback = '') {
-  const feedbackInstruction = feedback ? `\nImprovement suggestions: ${feedback}` : '';
-  
-  const prompt = `Completely rewrite this interview question to be clearer and more relevant.${feedbackInstruction}
-
-Original Question: "${item.question}"
-Channel: ${item.channel}
-
-Return ONLY JSON:
-{
-  "question": "rewritten clear question ending with ?",
-  "answer": "concise answer (1-2 sentences)",
-  "explanation": "detailed explanation (200-400 words)"
+  "question": "rewritten question?",
+  "answer": "concise 2-3 sentence answer",
+  "explanation": "detailed explanation with examples"
 }`;
 
   const response = await runWithRetries(prompt);
@@ -282,27 +472,408 @@ Return ONLY JSON:
   return item;
 }
 
+async function completeContent(item, context) {
+  const prompt = `The following content appears truncated. Complete it properly.
+
+Question: "${item.question}"
+Current Answer: "${item.answer}"
+Current Explanation: "${item.explanation}"
+Channel: ${item.channel}
+
+The content seems cut off. Please:
+1. Complete the answer if it ends abruptly
+2. Complete the explanation with proper conclusion
+3. Ensure all concepts are fully explained
+
+Return ONLY JSON:
+{
+  "answer": "complete answer (keep existing good parts, complete what's missing)",
+  "explanation": "complete explanation (keep existing good parts, add missing conclusion/details)"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function expandAnswer(item, context) {
+  const prompt = `Expand this interview answer to be more comprehensive.
+
+Question: "${item.question}"
+Current Answer: "${item.answer}"
+Channel: ${item.channel}
+
+The answer is too brief. Expand it to 2-3 sentences that:
+- Directly answer the question
+- Include key technical terms
+- Are suitable for verbal delivery
+
+Return ONLY JSON:
+{
+  "answer": "expanded 2-3 sentence answer"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.answer) {
+    item.answer = result.answer;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function expandExplanation(item, context) {
+  const prompt = `Expand this explanation to be more detailed and educational.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Current Explanation: "${item.explanation}"
+Channel: ${item.channel}
+
+Expand to 300-500 words including:
+- Detailed technical explanation
+- Real-world examples or use cases
+- Common pitfalls or best practices
+- Code snippet if applicable
+
+Return ONLY JSON:
+{
+  "explanation": "expanded detailed explanation"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.explanation) {
+    item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function improveContent(item, context) {
+  const prompt = `Improve this interview content based on feedback.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 800)}"
+Channel: ${item.channel}
+
+FEEDBACK: ${context.aiFeedback}
+IMPROVEMENTS: ${context.improvements.join('; ')}
+
+Enhance the content while keeping the core topic. Focus on:
+- Technical accuracy
+- Clarity and readability
+- Practical relevance
+
+Return ONLY JSON:
+{
+  "answer": "improved answer",
+  "explanation": "improved explanation"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function improveClarity(item, context) {
+  const prompt = `Rewrite this content to be clearer and easier to understand.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 600)}"
+
+Issues: The content lacks clarity.
+
+Rewrite to be:
+- Simple and direct language
+- Well-structured with clear flow
+- Easy to understand for the target difficulty level
+
+Return ONLY JSON:
+{
+  "answer": "clearer answer",
+  "explanation": "clearer explanation with better structure"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function fixAccuracy(item, context) {
+  const prompt = `Review and fix any technical inaccuracies in this content.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation}"
+Channel: ${item.channel}
+
+FEEDBACK: ${context.aiFeedback}
+
+Ensure:
+- All technical facts are correct
+- Best practices are current
+- No outdated information
+
+Return ONLY JSON:
+{
+  "answer": "technically accurate answer",
+  "explanation": "technically accurate explanation"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function alignAnswer(item, context) {
+  const prompt = `The answer doesn't directly address the question. Fix this.
+
+Question: "${item.question}"
+Current Answer: "${item.answer}"
+
+Rewrite the answer to:
+- Directly address what's being asked
+- Use terms from the question
+- Be concise (2-3 sentences)
+
+Return ONLY JSON:
+{
+  "answer": "answer that directly addresses the question"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.answer) {
+    item.answer = result.answer;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function clarifyQuestion(item, context) {
+  const prompt = `Make this interview question more specific and clear.
+
+Current Question: "${item.question}"
+Channel: ${item.channel}
+Difficulty: ${item.difficulty}
+
+The question is vague. Rewrite to be:
+- Specific about what's being asked
+- Clear context if needed
+- Appropriate for ${item.difficulty} level
+
+Return ONLY JSON:
+{
+  "question": "clearer, more specific question?"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.question) {
+    item.question = result.question;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
 function fixFormatting(item) {
-  // Ensure question ends with ?
   if (item.question && !item.question.trim().endsWith('?')) {
     item.question = item.question.trim() + '?';
   }
-  
-  // Clean up whitespace
   if (item.answer) item.answer = item.answer.trim();
   if (item.explanation) item.explanation = item.explanation.trim();
-  
   item.lastUpdated = new Date().toISOString();
   return item;
 }
 
-async function addDiagram(item) {
-  const prompt = `Create a simple Mermaid diagram for this concept.
+async function addCodeExample(item, context) {
+  const prompt = `Add a relevant code example to this explanation.
 
 Question: "${item.question}"
-Topic: ${item.channel}
+Current Explanation: "${item.explanation}"
+Channel: ${item.channel}
 
-Return ONLY the Mermaid code (no markdown):
+Add a practical code example that illustrates the concept. Use appropriate language for ${item.channel}.
+
+Return ONLY JSON:
+{
+  "explanation": "explanation with code example added (use markdown code blocks)"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.explanation) {
+    item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function addChannelTerms(item, context) {
+  const prompt = `Enhance this content with more ${item.channel}-specific terminology.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 500)}"
+Channel: ${item.channel}
+
+Add relevant technical terms specific to ${item.channel} while keeping content accurate.
+
+Return ONLY JSON:
+{
+  "answer": "answer with channel-specific terms",
+  "explanation": "explanation with channel-specific terms"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function addVoiceKeywords(item, context) {
+  const prompt = `Extract voice interview keywords for this question.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 1000)}"
+Channel: ${item.channel}
+
+Extract 8-12 critical keywords/phrases that:
+- Are at least 2 words each (e.g., "load balancer" not just "load")
+- Represent key concepts a good answer must mention
+- Include technical terms and their alternatives
+- Are suitable for voice matching
+
+Return ONLY JSON:
+{
+  "suitable": true,
+  "keywords": ["two word phrase", "another phrase", "technical term"]
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    item.voiceSuitable = result.suitable === true;
+    if (result.suitable && Array.isArray(result.keywords)) {
+      item.voiceKeywords = result.keywords
+        .map(k => String(k).toLowerCase().trim())
+        .filter(k => k.length > 2)
+        .slice(0, 12);
+    }
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function condenseAnswer(item, context) {
+  const prompt = `Condense this answer for voice interview practice.
+
+Current Answer: "${item.answer}"
+
+Rewrite to be:
+- 1-2 sentences maximum
+- Contains key technical terms
+- Easy to say aloud
+
+Return ONLY JSON:
+{
+  "answer": "condensed 1-2 sentence answer"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.answer) {
+    item.answer = result.answer;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function addTags(item, context) {
+  const prompt = `Generate relevant tags for this interview question.
+
+Question: "${item.question}"
+Channel: ${item.channel}
+Sub-channel: ${item.subChannel}
+
+Generate 5-8 relevant tags for discoverability.
+
+Return ONLY JSON:
+{
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result?.tags && Array.isArray(result.tags)) {
+    item.tags = result.tags.map(t => t.toLowerCase().trim()).slice(0, 8);
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function addDiagram(item, context) {
+  const prompt = `Create a Mermaid diagram for this concept.
+
+Question: "${item.question}"
+Channel: ${item.channel}
+
+Create a simple, clear diagram. Return ONLY the Mermaid code:
+
 graph TD
     A[Start] --> B[Process]
     B --> C[End]`;
@@ -316,7 +887,7 @@ graph TD
       if (match) diagram = match[1].trim();
     }
     
-    if (diagram.startsWith('graph') || diagram.startsWith('flowchart')) {
+    if (diagram.startsWith('graph') || diagram.startsWith('flowchart') || diagram.startsWith('sequenceDiagram')) {
       item.diagram = diagram;
       item.lastUpdated = new Date().toISOString();
     }
@@ -325,101 +896,86 @@ graph TD
   return item;
 }
 
-async function addVideos(item) {
-  const prompt = `Find relevant YouTube educational videos for this topic.
+async function differentiateContent(item, context) {
+  const prompt = `This question may be similar to others. Make it more unique.
 
 Question: "${item.question}"
+Answer: "${item.answer}"
 Channel: ${item.channel}
+
+Rewrite to have a unique angle or focus while covering the same topic.
 
 Return ONLY JSON:
 {
-  "shortVideo": "YouTube URL for a short (<10 min) explanation or null",
-  "longVideo": "YouTube URL for a detailed (>10 min) tutorial or null"
-}
-
-Only include real, educational YouTube URLs. Return null if unsure.`;
-
-  const response = await runWithRetries(prompt);
-  const result = parseJson(response);
-  
-  if (result) {
-    const validated = await validateYouTubeVideos(result);
-    if (validated.shortVideo || validated.longVideo) {
-      item.videos = validated;
-      item.lastUpdated = new Date().toISOString();
-    }
-  }
-  
-  return item;
-}
-
-async function addCompanies(item) {
-  const prompt = `List tech companies that commonly ask about this topic in interviews.
-
-Question: "${item.question}"
-Channel: ${item.channel}
-
-Return ONLY JSON:
-{
-  "companies": ["Company1", "Company2", "Company3"]
-}
-
-Only include well-known tech companies. Max 5 companies.`;
-
-  const response = await runWithRetries(prompt);
-  const result = parseJson(response);
-  
-  if (result?.companies) {
-    item.companies = normalizeCompanies(result.companies);
-    item.lastUpdated = new Date().toISOString();
-  }
-  
-  return item;
-}
-
-async function addVoiceKeywords(item) {
-  const prompt = `Analyze this interview question for voice interview practice.
-
-Question: "${item.question}"
-Channel: ${item.channel || 'general'}
-Answer/Explanation: "${(item.explanation || item.answer || '').substring(0, 1500)}"
-
-Your task:
-1. Determine if this question is suitable for VOICE interview practice (can be answered verbally without writing code)
-2. If suitable, extract 8-15 MANDATORY keywords/concepts that a good answer MUST include
-
-Guidelines for keywords:
-- Include specific technical terms (e.g., "load balancer", "idempotency", "eventual consistency")
-- Include related concepts and synonyms (e.g., both "kubernetes" and "k8s")
-- Include action words for behavioral questions (e.g., "communicated", "prioritized", "resolved")
-- Include metrics/outcomes if relevant (e.g., "latency", "availability", "99.9%")
-- Be comprehensive - a candidate mentioning these keywords demonstrates understanding
-
-Return ONLY valid JSON (no markdown, no explanation):
-{
-  "suitable": true,
-  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5", "keyword6", "keyword7", "keyword8"]
-}
-
-OR if not suitable for voice interview:
-{
-  "suitable": false,
-  "keywords": []
+  "question": "differentiated question?",
+  "answer": "unique perspective answer"
 }`;
 
   const response = await runWithRetries(prompt);
   const result = parseJson(response);
   
   if (result) {
-    item.voiceSuitable = result.suitable === true;
-    if (result.suitable && Array.isArray(result.keywords)) {
-      item.voiceKeywords = result.keywords
-        .map(k => String(k).toLowerCase().trim())
-        .filter(k => k.length > 2)
-        .slice(0, 15); // Limit to 15 keywords
-    } else {
-      item.voiceKeywords = [];
-    }
+    if (result.question) item.question = result.question;
+    if (result.answer) item.answer = result.answer;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function diversifyContent(item, context) {
+  const prompt = `The answer and explanation are too similar. Diversify them.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 500)}"
+
+Rewrite so:
+- Answer is a concise direct response
+- Explanation adds NEW information, examples, and depth
+
+Return ONLY JSON:
+{
+  "answer": "concise direct answer",
+  "explanation": "explanation with additional details not in answer"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
+    item.lastUpdated = new Date().toISOString();
+  }
+  
+  return item;
+}
+
+async function polishContent(item, context) {
+  const prompt = `Polish this interview content for final quality.
+
+Question: "${item.question}"
+Answer: "${item.answer}"
+Explanation: "${item.explanation?.substring(0, 600)}"
+
+Minor improvements:
+- Fix any grammar/spelling
+- Improve flow and readability
+- Ensure professional tone
+
+Return ONLY JSON:
+{
+  "answer": "polished answer",
+  "explanation": "polished explanation"
+}`;
+
+  const response = await runWithRetries(prompt);
+  const result = parseJson(response);
+  
+  if (result) {
+    if (result.answer) item.answer = result.answer;
+    if (result.explanation) item.explanation = result.explanation;
     item.lastUpdated = new Date().toISOString();
   }
   
@@ -458,7 +1014,6 @@ async function fetchItem(type, id) {
       lastUpdated: row.last_updated
     };
   }
-  
   return null;
 }
 
@@ -491,13 +1046,10 @@ async function saveItem(type, item) {
 
 async function deleteItem(type, id) {
   if (type === 'question') {
-    // Soft delete - mark as deleted
     await db.execute({
       sql: `UPDATE questions SET status = 'deleted', last_updated = ? WHERE id = ?`,
       args: [new Date().toISOString(), id]
     });
-    
-    // Also remove from channel mappings
     await db.execute({
       sql: 'DELETE FROM channel_mappings WHERE question_id = ?',
       args: [id]
@@ -506,47 +1058,61 @@ async function deleteItem(type, id) {
 }
 
 // ============================================
-// LANGGRAPH EXECUTOR
+// PIPELINE EXECUTOR
 // ============================================
 
 async function runPipeline(options = {}) {
-  const { maxItems = 10 } = options;
+  const { maxItems = 50 } = options;
   
   const results = {
     processed: 0,
     updated: 0,
     deleted: 0,
-    failed: 0
+    skipped: 0,
+    failed: 0,
+    actionCounts: {}
   };
   
   for (let i = 0; i < maxItems; i++) {
     let state = {};
     
-    // Execute pipeline nodes
     state = await getWorkNode(state);
     if (state.done) break;
     if (!state.workItem) continue;
     
     try {
-      state = await decideNode(state);
+      state = await parseIssuesNode(state);
+      state = await planActionsNode(state);
       state = await executeNode(state);
+      state = await validateNode(state);
       state = await logNode(state);
       state = await updateStatusNode(state);
       
       results.processed++;
+      
       if (state.deleted) {
         results.deleted++;
-      } else {
+      } else if (state.success) {
         results.updated++;
+      } else {
+        results.skipped++;
       }
+      
+      // Track action counts
+      for (const action of state.actionsPerformed || []) {
+        results.actionCounts[action] = (results.actionCounts[action] || 0) + 1;
+      }
+      
     } catch (error) {
-      console.error(`Error processing ${state.workItem?.itemId}:`, error.message);
-      await failWorkItem(state.workItem.id, error.message);
+      console.error(`\n❌ Error processing ${state.workItem?.itemId}:`, error.message);
+      if (state.workItem) {
+        await failWorkItem(state.workItem.id, error.message);
+      }
       results.failed++;
     }
     
     // Rate limiting
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 1200));
   }
   
   return results;
@@ -557,20 +1123,20 @@ async function runPipeline(options = {}) {
 // ============================================
 
 async function main() {
-  console.log('=== ⚙️ Processor Bot (LangGraph) ===\n');
+  console.log('=== ⚙️ Processor Bot - Content Improvement Engine ===\n');
   
   await initBotTables();
   
   // Show queue stats
   const queueStats = await getQueueStats();
-  console.log('Queue Status:');
-  console.log(`  Pending: ${queueStats.pending}`);
-  console.log(`  Processing: ${queueStats.processing}`);
-  console.log(`  Completed: ${queueStats.completed}`);
-  console.log(`  Failed: ${queueStats.failed}`);
+  console.log('📊 Queue Status:');
+  console.log(`   Pending: ${queueStats.pending}`);
+  console.log(`   Processing: ${queueStats.processing}`);
+  console.log(`   Completed: ${queueStats.completed}`);
+  console.log(`   Failed: ${queueStats.failed}`);
   
   if (queueStats.pending === 0) {
-    console.log('\nNo pending work items. Exiting.');
+    console.log('\n✅ No pending work items. Exiting.');
     return;
   }
   
@@ -580,7 +1146,7 @@ async function main() {
   try {
     const maxItems = parseInt(process.env.MAX_ITEMS || '50');
     
-    console.log(`\nProcessing up to ${maxItems} items...\n`);
+    console.log(`\n🚀 Processing up to ${maxItems} items...\n`);
     
     const result = await runPipeline({ maxItems });
     
@@ -594,11 +1160,23 @@ async function main() {
       ...result
     });
     
-    console.log('\n=== Summary ===');
-    console.log(`Processed: ${result.processed}`);
-    console.log(`Updated: ${result.updated}`);
-    console.log(`Deleted: ${result.deleted}`);
-    console.log(`Failed: ${result.failed}`);
+    // Summary report
+    console.log('\n' + '='.repeat(50));
+    console.log('📊 PROCESSING SUMMARY');
+    console.log('='.repeat(50));
+    console.log(`   Total Processed: ${result.processed}`);
+    console.log(`   ✅ Updated: ${result.updated}`);
+    console.log(`   🗑️ Deleted: ${result.deleted}`);
+    console.log(`   ⏭️ Skipped: ${result.skipped}`);
+    console.log(`   ❌ Failed: ${result.failed}`);
+    
+    if (Object.keys(result.actionCounts).length > 0) {
+      console.log('\n📋 Actions Performed:');
+      for (const [action, count] of Object.entries(result.actionCounts)) {
+        console.log(`   • ${action}: ${count}`);
+      }
+    }
+    console.log('='.repeat(50));
     
   } catch (error) {
     console.error('Fatal error:', error);
@@ -613,5 +1191,5 @@ if (isMainModule) {
   main().catch(console.error);
 }
 
-export { runPipeline };
-export default { runPipeline };
+export { runPipeline, ISSUE_ACTIONS };
+export default { runPipeline, ISSUE_ACTIONS };
