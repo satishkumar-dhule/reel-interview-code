@@ -11,12 +11,12 @@
     },
     {
       "botName": "processor",
-      "totalRuns": 16,
-      "successfulRuns": 13,
+      "totalRuns": 17,
+      "successfulRuns": 14,
       "totalCreated": 0,
-      "totalUpdated": 147,
+      "totalUpdated": 154,
       "totalDeleted": 0,
-      "lastRun": "2026-01-03T06:37:29.945Z"
+      "lastRun": "2026-01-04T06:38:38.198Z"
     },
     {
       "botName": "verifier",
@@ -29,6 +29,29 @@
     }
   ],
   "runs": [
+    {
+      "id": 47,
+      "botName": "processor",
+      "startedAt": "2026-01-04T06:38:38.198Z",
+      "completedAt": "2026-01-04T06:43:27.721Z",
+      "status": "completed",
+      "itemsProcessed": 10,
+      "itemsCreated": 0,
+      "itemsUpdated": 7,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 10,
+        "updated": 7,
+        "deleted": 0,
+        "skipped": 3,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 9,
+          "completed": 1
+        }
+      }
+    },
     {
       "id": 46,
       "botName": "verifier",
@@ -1098,7 +1121,7 @@
       "itemId": "gh-101",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add practical implementation details and failure scenarios for complete understanding",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:54:49.092Z"
@@ -1109,7 +1132,7 @@
       "itemId": "q-201",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add comparison of gradient flow and mention peephole connections for completeness",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:54:02.045Z"
@@ -1120,7 +1143,7 @@
       "itemId": "gh-97",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add specific examples of human decision points and complete the YAML code example.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:34:49.957Z"
@@ -1131,7 +1154,7 @@
       "itemId": "q-330",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add more specific technical details about event sourcing, conflict resolution, and handling concurrent updates in collaborative scenarios.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:33:50.220Z"
@@ -1142,7 +1165,7 @@
       "itemId": "q-408",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add more specific technical details like grid-template-areas, container queries, and Intersection Observer for virtualization.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:33:39.201Z"
@@ -1153,7 +1176,7 @@
       "itemId": "gh-15",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add more detailed comparison criteria (cost, scalability, security) and specific use case scenarios for better completeness.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:32:41.083Z"
@@ -1164,7 +1187,7 @@
       "itemId": "q-211",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add specific examples of debt types and measurable success metrics to strengthen the answer.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:32:30.159Z"
@@ -1175,7 +1198,7 @@
       "itemId": "q-304",
       "action": "improve",
       "priority": 2,
-      "status": "pending",
+      "status": "completed",
       "reason": "placeholder_content | Feedback: Add more detail on environment isolation strategies and RBAC implementation examples.",
       "createdBy": "verifier",
       "createdAt": "2025-12-29T06:32:22.752Z"
@@ -2195,6 +2218,96 @@
   ],
   "ledger": [
     {
+      "id": 970,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-603",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:43:25.069Z"
+    },
+    {
+      "id": 969,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "gh-79",
+      "reason": "Processed: completed",
+      "createdAt": "2026-01-04T06:42:54.959Z"
+    },
+    {
+      "id": 968,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "gh-101",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:39:42.984Z"
+    },
+    {
+      "id": 967,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-201",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:39:31.493Z"
+    },
+    {
+      "id": 966,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "gh-97",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:39:20.532Z"
+    },
+    {
+      "id": 965,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-330",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:39:12.274Z"
+    },
+    {
+      "id": 964,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-408",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:39:04.052Z"
+    },
+    {
+      "id": 963,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "gh-15",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:38:58.405Z"
+    },
+    {
+      "id": 962,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-211",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:38:51.146Z"
+    },
+    {
+      "id": 961,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-304",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-04T06:38:45.063Z"
+    },
+    {
       "id": 960,
       "botName": "verifier",
       "action": "flag",
@@ -3003,97 +3116,7 @@
       "itemId": "q-622",
       "reason": "Created by Creator Bot",
       "createdAt": "2025-12-30T03:28:53.413Z"
-    },
-    {
-      "id": 870,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-621",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2025-12-30T03:28:38.565Z"
-    },
-    {
-      "id": 869,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "sr-169",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:52.549Z"
-    },
-    {
-      "id": 868,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-606",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:42.147Z"
-    },
-    {
-      "id": 867,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-255",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:33.086Z"
-    },
-    {
-      "id": 866,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "gh-36",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:20.397Z"
-    },
-    {
-      "id": 865,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-257",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:13.361Z"
-    },
-    {
-      "id": 864,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "gh-104",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:52:04.129Z"
-    },
-    {
-      "id": 863,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-192",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:51:53.954Z"
-    },
-    {
-      "id": 862,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-357",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:51:41.619Z"
-    },
-    {
-      "id": 861,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-327",
-      "reason": "Processed: polished",
-      "createdAt": "2025-12-30T01:51:39.384Z"
     }
   ],
-  "generatedAt": "2026-01-04T04:50:56.590Z"
+  "generatedAt": "2026-01-04T06:43:44.814Z"
 }
