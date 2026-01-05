@@ -256,6 +256,20 @@ function qualityCheck1Node(state) {
     cleanStory = cleanStory.replace(/https?:\/\/[^\s]+/g, '').trim();
   }
   
+  // Remove ASCII box characters that don't render well on LinkedIn
+  const hasAsciiBox = cleanStory.match(/[┌┐└┘│─├┤┬┴┼]/);
+  if (hasAsciiBox) {
+    issues.push('Removed ASCII box characters (they break on LinkedIn)');
+    // Replace box characters with simple alternatives
+    cleanStory = cleanStory
+      .replace(/[┌┐└┘├┤┬┴┼]/g, '')
+      .replace(/[│]/g, '|')
+      .replace(/[─]/g, '-')
+      .replace(/\|\s*\|/g, ' → ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+  
   // Check for cut-off text (ends with incomplete word or ellipsis)
   if (cleanStory.match(/\.\.\.$|…$|\w-$/)) {
     issues.push('Story appears to be cut off');
@@ -274,14 +288,14 @@ function qualityCheck1Node(state) {
     issues.push('Possible repeated content detected');
   }
   
-  // Length check - allow up to 800 chars for stories with diagrams
-  if (cleanStory.length > 800) {
+  // Length check - keep it concise for LinkedIn
+  if (cleanStory.length > 700) {
     issues.push(`Story too long (${cleanStory.length} chars), truncating`);
-    // Truncate to last complete sentence under 750 chars
+    // Truncate to last complete sentence under 650 chars
     const allSentences = cleanStory.match(/[^.!?]+[.!?]+/g) || [];
     let truncated = '';
     for (const sentence of allSentences) {
-      if ((truncated + sentence).length <= 750) {
+      if ((truncated + sentence).length <= 650) {
         truncated += sentence;
       } else {
         break;
@@ -296,11 +310,10 @@ function qualityCheck1Node(state) {
     issues.push('Story may be too short');
   }
   
-  // Check if story has ASCII diagram elements (good!)
-  const hasDiagram = cleanStory.match(/[┌┐└┘│─→←↓↑\[\]>-]{3,}/) || 
-                     cleanStory.match(/[❌✅⬇️➡️]{2,}/);
-  if (hasDiagram) {
-    console.log('   📊 ASCII diagram detected');
+  // Check if story has emoji flow (good!)
+  const hasEmojiFlow = cleanStory.match(/[→➡️⬇️]/) && cleanStory.match(/[✅❌🚀💡⚡🔥📈🔧📥📤⚙️]/);
+  if (hasEmojiFlow) {
+    console.log('   ✨ Emoji flow detected');
   }
   
   if (issues.length > 0) {
