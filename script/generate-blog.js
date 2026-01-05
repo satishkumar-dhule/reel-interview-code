@@ -1085,7 +1085,7 @@ function generateIndexPage(articles) {
 ${generateHeader()}
 <main>
   <section class="hero"><div class="container">
-    <div class="hero-badge"><span class="pulse"></span> New articles weekly</div>
+    <div class="hero-badge"><span class="pulse"></span> New articles daily</div>
     <h1>Deep dives into<br>real engineering</h1>
     <p>Battle-tested insights from production systems. Learn what actually works at scale.</p>
     <div class="hero-actions">
