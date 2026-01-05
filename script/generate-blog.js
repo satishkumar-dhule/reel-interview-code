@@ -25,7 +25,7 @@ const AUTHOR = {
 const OUTPUT_DIR = 'blog-output';
 const MIN_SOURCES = 8;
 const MAX_SKIP_ATTEMPTS = 5; // Max questions to try before giving up
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || 'G-XXXXXXXXXX'; // Replace with your GA4 ID
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || 'G-47MSM57H95'; // Same as main app
 
 // Database connection
 const url = process.env.TURSO_DATABASE_URL_RO || process.env.TURSO_DATABASE_URL;
@@ -898,7 +898,7 @@ function generateHead(title, description, includeMermaid = false) {
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>mermaid.initialize({startOnLoad:true,theme:'base',look:'handDrawn',themeVariables:{primaryColor:'#e8f4f8',primaryTextColor:'#1a1a1a',primaryBorderColor:'#2c3e50',lineColor:'#2c3e50',secondaryColor:'#ffeaa7',tertiaryColor:'#dfe6e9',background:'#ffffff',mainBkg:'#e8f4f8',nodeBorder:'#2c3e50',clusterBkg:'#f5f5f5',titleColor:'#1a1a1a',edgeLabelBackground:'#ffffff',nodeTextColor:'#1a1a1a',fontSize:'16px'},flowchart:{curve:'basis',padding:20,nodeSpacing:60,rankSpacing:60,htmlLabels:true,useMaxWidth:true}});</script>` : '';
   
-  const gaScript = GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX' ? `
+  const gaScript = GA_MEASUREMENT_ID ? `
   <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');</script>` : '';
   
