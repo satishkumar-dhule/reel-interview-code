@@ -2,7 +2,7 @@ name: 📝 Publish Blog
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 02:00 UTC
+    - cron: '0 4 * * *'  # Daily at 04:00 UTC (after bot pipeline completes)
   workflow_dispatch:
     inputs:
       use_ai:
