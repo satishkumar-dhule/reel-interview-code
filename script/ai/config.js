@@ -6,7 +6,7 @@
 export default {
   // Default provider and model
   defaultProvider: 'opencode',
-  defaultModel: process.env.OPENCODE_MODEL || 'opencode/big-pickle',
+  defaultModel: process.env.OPENCODE_MODEL || 'opencode/gpt-5-nano',
   
   // Retry settings
   retry: {

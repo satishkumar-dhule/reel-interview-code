@@ -73,6 +73,12 @@ function getChannelEmoji(channel) {
 async function generateStoryNode(state) {
   console.log('\n📝 [GENERATE_STORY] Creating engaging LinkedIn story...');
   
+  // Check if we should skip AI (for testing or when AI is unavailable)
+  if (process.env.SKIP_AI === 'true') {
+    console.log('   ⚠️ AI skipped (SKIP_AI=true)');
+    return generateFallbackStory(state);
+  }
+  
   try {
     const result = await ai.run('linkedinStory', {
       title: state.title,
@@ -93,18 +99,51 @@ async function generateStoryNode(state) {
     };
   } catch (error) {
     console.log(`   ❌ Failed: ${error.message}`);
-    
-    // Fallback to simple SHORT template
-    const emoji = getChannelEmoji(state.channel);
-    const shortExcerpt = (state.excerpt || '').substring(0, 200);
-    const fallbackStory = `${emoji} ${state.title}\n\n${shortExcerpt || 'A deep dive into this technical topic.'} Read the full breakdown below.`;
-    
-    console.log(`   Using fallback template (${fallbackStory.length} chars)`);
-    return {
-      story: fallbackStory,
-      qualityIssues: ['AI generation failed, using fallback']
-    };
+    return generateFallbackStory(state);
   }
+}
+
+/**
+ * Generate fallback story without AI
+ */
+function generateFallbackStory(state) {
+  const emoji = getChannelEmoji(state.channel);
+  
+  // Create a more engaging fallback using the excerpt
+  let story = '';
+  
+  if (state.excerpt && state.excerpt.length > 50) {
+    // Use excerpt but ensure it ends properly
+    let excerpt = state.excerpt;
+    
+    // Truncate to ~200 chars at sentence boundary
+    if (excerpt.length > 200) {
+      const sentences = excerpt.match(/[^.!?]+[.!?]+/g) || [];
+      excerpt = '';
+      for (const sentence of sentences) {
+        if ((excerpt + sentence).length <= 200) {
+          excerpt += sentence;
+        } else {
+          break;
+        }
+      }
+    }
+    
+    // Ensure it ends with punctuation
+    if (!excerpt.match(/[.!?]$/)) {
+      excerpt = excerpt.trim() + '.';
+    }
+    
+    story = `${emoji} ${state.title}\n\n${excerpt} Read the full breakdown below.`;
+  } else {
+    story = `${emoji} ${state.title}\n\nA deep dive into this technical topic with practical insights. Read the full breakdown below.`;
+  }
+  
+  console.log(`   Using fallback template (${story.length} chars)`);
+  return {
+    story,
+    qualityIssues: ['AI generation skipped, using fallback']
+  };
 }
 
 /**
@@ -141,20 +180,6 @@ function qualityCheck1Node(state) {
     }
   }
   
-  // Ensure story ends with proper punctuation
-  if (!cleanStory.match(/[.!?]$/)) {
-    // Find last complete sentence
-    const lastPunctuation = Math.max(
-      cleanStory.lastIndexOf('.'),
-      cleanStory.lastIndexOf('!'),
-      cleanStory.lastIndexOf('?')
-    );
-    if (lastPunctuation > cleanStory.length * 0.5) {
-      cleanStory = cleanStory.substring(0, lastPunctuation + 1).trim();
-      issues.push('Truncated to last complete sentence');
-    }
-  }
-  
   // Check for repeated sentences
   const sentences = cleanStory.split(/[.!?]+/).filter(s => s.trim().length > 20);
   const uniqueSentences = [...new Set(sentences.map(s => s.trim().toLowerCase()))];
@@ -162,14 +187,14 @@ function qualityCheck1Node(state) {
     issues.push('Possible repeated content detected');
   }
   
-  // STRICT length check - story should be under 500 chars for good LinkedIn preview
-  if (cleanStory.length > 500) {
+  // Length check - allow up to 800 chars for stories with diagrams
+  if (cleanStory.length > 800) {
     issues.push(`Story too long (${cleanStory.length} chars), truncating`);
-    // Truncate to last complete sentence under 500 chars
+    // Truncate to last complete sentence under 750 chars
     const allSentences = cleanStory.match(/[^.!?]+[.!?]+/g) || [];
     let truncated = '';
     for (const sentence of allSentences) {
-      if ((truncated + sentence).length <= 480) {
+      if ((truncated + sentence).length <= 750) {
         truncated += sentence;
       } else {
         break;
@@ -182,6 +207,13 @@ function qualityCheck1Node(state) {
   
   if (cleanStory.length < 100) {
     issues.push('Story may be too short');
+  }
+  
+  // Check if story has ASCII diagram elements (good!)
+  const hasDiagram = cleanStory.match(/[┌┐└┘│─→←↓↑\[\]>-]{3,}/) || 
+                     cleanStory.match(/[❌✅⬇️➡️]{2,}/);
+  if (hasDiagram) {
+    console.log('   📊 ASCII diagram detected');
   }
   
   if (issues.length > 0) {
