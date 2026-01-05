@@ -162,7 +162,7 @@ The site includes WebApplication schema with:
 - Application name: Code Reels
 - Category: EducationalApplication
 - Offer: Free (price: 0)
-- Author: Satish Kumar Dhule
+- Author: Satishkumar Dhule
 - Aggregate Rating: 4.8/5 (500 reviews)
 
 ## Best Practices Implemented

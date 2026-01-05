@@ -110,16 +110,21 @@ export const guidelines = [
   'Aim for at least 5-8 inline citations spread throughout the article',
   'Citations should feel natural, not forced - cite when making factual claims',
   
-  // IMAGES - VISUAL ENGAGEMENT
-  'Include 2-3 relevant images to break up text and add visual interest',
-  'USE ONLY these free image sources with stable URLs:',
-  '  - Unsplash: https://images.unsplash.com/photo-[id]?w=800&q=80',
-  '  - Pexels: https://images.pexels.com/photos/[id]/pexels-photo-[id].jpeg?w=800',
-  '  - Wikimedia Commons: https://upload.wikimedia.org/wikipedia/commons/...',
-  'Choose images that relate to the topic: servers, code, architecture, teamwork, etc.',
+  // IMAGES - ILLUSTRATED CHARACTERS
+  'Include 2-3 illustrated character images (NOT stock photos)',
+  'USE illustrated character images from these free sources:',
+  '  - Popsy: https://illustrations.popsy.co/amber/[name].svg',
+  '  - Available illustrations: engineer, designer, remote-work, team-work, collaboration,',
+  '    success, product-launch, app-launch, home-office, working, creative-work,',
+  '    data-analysis, security, artificial-intelligence, qa-engineers',
+  '  - Example: https://illustrations.popsy.co/amber/engineer.svg',
+  '  - Example: https://illustrations.popsy.co/amber/team-work.svg',
+  'Choose illustrations that match the topic - engineers for technical, teamwork for collaboration',
+  'These colorful character illustrations make content more engaging and friendly',
   'Provide descriptive alt text for accessibility',
-  'Add captions that connect the image to the content',
+  'Add captions that connect the illustration to the content',
   'Placement options: after-intro, after-section-1, after-section-2, before-conclusion',
+  'Images will be downloaded and stored locally for better performance',
   
   // ENDING
   'Conclude with the "so what?" - what should they do differently tomorrow?',

@@ -31,7 +31,7 @@ const defaultStructuredData = {
   },
   "author": {
     "@type": "Person",
-    "name": "Satish Kumar Dhule",
+    "name": "Satishkumar Dhule",
     "url": "https://github.com/satishkumar-dhule"
   },
   "publisher": {
@@ -107,7 +107,7 @@ export function SEOHead({
     updateMeta('apple-mobile-web-app-status-bar-style', 'black-translucent');
     
     // Additional SEO meta tags
-    updateMeta('author', 'Satish Kumar Dhule');
+    updateMeta('author', 'Satishkumar Dhule');
     updateMeta('generator', 'Code Reels v2.3.0');
     updateMeta('rating', 'General');
     updateMeta('revisit-after', '1 days');
