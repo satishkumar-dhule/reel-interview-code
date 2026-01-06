@@ -736,199 +736,99 @@ export function generateIllustration(options, retryCount = 0) {
   }
 }
 
-// Generate multiple illustrations for blog - ensures variety
+// Generate single illustration for blog - one hero image after intro
 export function generateBlogIllustrations(blogContent, postId) {
-  const images = [];
-  const { title, sections, introduction, realWorldExample, channel } = blogContent;
-  const usedScenes = new Set();
+  const { title, introduction, channel } = blogContent;
   
-  // All available scenes for variety
-  const allScenes = ['mobile', 'frontend', 'api', 'monitoring', 'architecture', 'debugging', 'deployment', 'scaling', 'database', 'security', 'performance', 'testing', 'success', 'error', 'default'];
-  
-  // Helper to get a unique scene with smart fallbacks based on channel
-  const getUniqueScene = (context, preferredFallbacks = []) => {
-    let scene = detectScene(context);
-    
-    // If scene already used, try preferred fallbacks first, then any unused
-    if (usedScenes.has(scene)) {
-      // Try preferred fallbacks
-      for (const fallback of preferredFallbacks) {
-        if (!usedScenes.has(fallback) && SCENES[fallback]) {
-          scene = fallback;
-          break;
-        }
-      }
-      // If still used, try any unused scene
-      if (usedScenes.has(scene)) {
-        for (const s of allScenes) {
-          if (!usedScenes.has(s) && SCENES[s]) {
-            scene = s;
-            break;
-          }
-        }
-      }
-    }
-    usedScenes.add(scene);
-    return scene;
+  // Channel-specific scene preferences
+  const channelScenes = {
+    'ios': 'mobile',
+    'android': 'mobile',
+    'react-native': 'mobile',
+    'frontend': 'frontend',
+    'backend': 'api',
+    'system-design': 'architecture',
+    'devops': 'deployment',
+    'database': 'database',
+    'security': 'security',
+    'sre': 'monitoring',
+    'testing': 'testing',
+    'algorithms': 'performance',
+    'data-engineering': 'database',
   };
   
-  // Channel-specific fallback preferences
-  const channelFallbacks = {
-    'ios': ['mobile', 'performance', 'frontend', 'success'],
-    'android': ['mobile', 'performance', 'frontend', 'success'],
-    'react-native': ['mobile', 'frontend', 'performance', 'success'],
-    'frontend': ['frontend', 'performance', 'api', 'testing'],
-    'backend': ['api', 'database', 'scaling', 'deployment'],
-    'system-design': ['architecture', 'scaling', 'database', 'monitoring'],
-    'devops': ['deployment', 'monitoring', 'scaling', 'architecture'],
-    'database': ['database', 'scaling', 'performance', 'architecture'],
-    'security': ['security', 'api', 'architecture', 'monitoring'],
-    'sre': ['monitoring', 'scaling', 'deployment', 'error'],
-    'testing': ['testing', 'deployment', 'debugging', 'success'],
-  };
+  // Detect scene from content, with channel-specific fallback
+  let scene = detectScene(introduction || title);
   
-  const fallbacks = channelFallbacks[channel] || ['performance', 'architecture', 'deployment', 'success'];
-  
-  // Image 1: After intro - prefer channel-specific scene
-  // For intro, we want to show the main topic, so prioritize channel-specific scenes
-  let introScene = detectScene(introduction || title);
-  // If detected scene is success/error (conclusion-type), use channel fallback instead
-  if (['success', 'error'].includes(introScene)) {
-    introScene = fallbacks[0]; // Use first channel-specific fallback
+  // If detected scene is generic (success/error/default), use channel-specific scene
+  if (['success', 'error', 'default'].includes(scene)) {
+    scene = channelScenes[channel] || 'architecture';
   }
-  if (usedScenes.has(introScene)) {
-    for (const fb of fallbacks) {
-      if (!usedScenes.has(fb) && SCENES[fb]) {
-        introScene = fb;
-        break;
-      }
-    }
-  }
-  usedScenes.add(introScene);
   
-  images.push(generateIllustration({ 
+  // Generate single hero image
+  const image = generateIllustration({ 
     title, 
     context: introduction || title,
-    scene: introScene,
+    scene,
     postId, 
     placement: 'after-intro' 
-  }));
+  });
   
-  // Image 2: Mid-article - use different scene based on section content
-  if (sections && sections.length > 2) {
-    const midIdx = Math.floor(sections.length / 2);
-    const mid = sections[midIdx];
-    // Rotate fallbacks for variety
-    const midFallbacks = [...fallbacks.slice(1), fallbacks[0]];
-    const midScene = getUniqueScene(mid.content || mid.heading, midFallbacks);
-    images.push(generateIllustration({ 
-      title: mid.heading || title, 
-      context: mid.content || mid.heading,
-      scene: midScene,
-      postId, 
-      placement: `after-section-${midIdx}` 
-    }));
-  }
-  
-  // Image 3: Before conclusion - success/case study scene
-  if (realWorldExample) {
-    // Prefer success-oriented scenes for conclusion
-    const conclusionFallbacks = ['success', 'deployment', 'monitoring', 'architecture'];
-    const conclusionScene = getUniqueScene('success complete milestone shipped', conclusionFallbacks);
-    images.push(generateIllustration({
-      title: `${realWorldExample.company}: ${(realWorldExample.lesson || '').substring(0, 40)}`,
-      context: realWorldExample.scenario || realWorldExample.lesson,
-      scene: conclusionScene,
-      postId, 
-      placement: 'before-conclusion'
-    }));
-  }
-  
-  console.log(`   📊 Scenes used: ${Array.from(usedScenes).join(', ')}`);
-  return images;
+  console.log(`   📊 Scene: ${scene}`);
+  return [image];
 }
 
 /**
- * AI-powered blog cartoon generation
- * Uses opencode AI to analyze content and select optimal scenes
+ * AI-powered blog illustration generation
+ * Uses opencode AI to select optimal scene for single hero image
  */
 export async function generateBlogIllustrationsWithAI(blogContent, postId) {
-  const { title, sections, introduction, realWorldExample, channel } = blogContent;
-  const images = [];
-  const usedScenes = new Set();
+  const { title, introduction, channel } = blogContent;
   
-  console.log(`   🤖 Using AI to analyze content for optimal scene selection...`);
+  console.log(`   🤖 Using AI to select optimal scene...`);
   
-  // Prepare content excerpts for AI analysis
-  const placements = [
-    { 
-      placement: 'after-intro', 
-      content: introduction || title,
-      hint: 'Opening image - set up the problem or main topic'
-    }
-  ];
+  let selectedScene = null;
   
-  if (sections && sections.length > 2) {
-    const midIdx = Math.floor(sections.length / 2);
-    placements.push({
-      placement: `after-section-${midIdx}`,
-      content: sections[midIdx]?.content || sections[midIdx]?.heading || '',
-      hint: 'Mid-article - show technical details or solution'
-    });
-  }
-  
-  if (realWorldExample) {
-    placements.push({
-      placement: 'before-conclusion',
-      content: `${realWorldExample.company}: ${realWorldExample.scenario} - ${realWorldExample.lesson}`,
-      hint: 'Conclusion - show success or key takeaway'
-    });
-  }
-  
-  // Generate images for each placement
-  for (const { placement, content, hint } of placements) {
-    let selectedScene = null;
-    
-    try {
-      // Try AI-powered scene selection
-      const aiResult = await ai.run('illustrationScene', {
-        title,
-        content,
-        placement,
-        channel,
-        realWorldExample
-      }, { cache: false });
-      
-      if (aiResult?.sceneType && SCENES[aiResult.sceneType] && !usedScenes.has(aiResult.sceneType)) {
-        selectedScene = aiResult.sceneType;
-        console.log(`   🎯 AI selected scene: ${selectedScene} for ${placement}`);
-      }
-    } catch (error) {
-      console.log(`   ⚠️ AI scene selection failed: ${error.message}, using fallback`);
-    }
-    
-    // Fallback to keyword-based detection if AI didn't select a scene
-    if (!selectedScene) {
-      selectedScene = detectScene(content);
-      if (usedScenes.has(selectedScene)) {
-        const allScenes = Object.keys(SCENES);
-        selectedScene = allScenes.find(s => !usedScenes.has(s)) || 'default';
-      }
-    }
-    
-    usedScenes.add(selectedScene);
-    
-    images.push(generateIllustration({
+  try {
+    // Try AI-powered scene selection
+    const aiResult = await ai.run('illustrationScene', {
       title,
-      context: content,
-      scene: selectedScene,
-      postId,
-      placement
-    }));
+      content: introduction || title,
+      placement: 'after-intro',
+      channel
+    }, { cache: false });
+    
+    if (aiResult?.sceneType && SCENES[aiResult.sceneType]) {
+      selectedScene = aiResult.sceneType;
+      console.log(`   🎯 AI selected scene: ${selectedScene}`);
+    }
+  } catch (error) {
+    console.log(`   ⚠️ AI scene selection failed: ${error.message}, using fallback`);
   }
   
-  console.log(`   📊 Final scenes: ${Array.from(usedScenes).join(', ')}`);
-  return images;
+  // Fallback to keyword-based detection
+  if (!selectedScene) {
+    selectedScene = detectScene(introduction || title);
+    if (['success', 'error', 'default'].includes(selectedScene)) {
+      const channelScenes = {
+        'ios': 'mobile', 'android': 'mobile', 'frontend': 'frontend',
+        'backend': 'api', 'system-design': 'architecture', 'devops': 'deployment',
+        'database': 'database', 'security': 'security', 'sre': 'monitoring'
+      };
+      selectedScene = channelScenes[channel] || 'architecture';
+    }
+  }
+  
+  const image = generateIllustration({
+    title,
+    context: introduction || title,
+    scene: selectedScene,
+    postId,
+    placement: 'after-intro'
+  });
+  
+  console.log(`   📊 Scene: ${selectedScene}`);
+  return [image];
 }
 
 export default { generateIllustration, generateBlogIllustrations, generateBlogIllustrationsWithAI, detectScene, SCENES };
