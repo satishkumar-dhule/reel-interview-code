@@ -46,3 +46,14 @@ export { useSearchProvider } from './use-search-provider';
 
 // User preferences hook
 export { useUserPreferences } from './use-user-preferences';
+
+// Adaptive learning hook
+export { useAdaptiveLearning } from './use-adaptive-learning';
+export type {
+  TopicMastery,
+  KnowledgeGap,
+  LearningPhase,
+  LearningPath,
+  AnswerRecord,
+  AdaptiveLearningState
+} from './use-adaptive-learning';

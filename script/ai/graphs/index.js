@@ -21,3 +21,18 @@ export { createQuestionGraph, generateQuestion } from './question-graph.js';
 
 // Coding challenge generation
 export { createCodingChallengeGraph, generateCodingChallenge } from './coding-challenge-graph.js';
+
+// 🆕 Adaptive Learning System
+export { createAdaptiveLearningGraph, generateLearningPath } from './adaptive-learning-graph.js';
+
+// 🆕 Semantic Duplicate Detection
+export { createSemanticDuplicateGraph, detectDuplicates } from './semantic-duplicate-graph.js';
+
+// 🆕 Parallel Bot Execution
+export { 
+  WorkerPool,
+  generateQuestionsParallel,
+  generateBlogsParallel,
+  generateLinkedInPostsParallel,
+  generateChallengesParallel
+} from './parallel-bot-executor.js';
