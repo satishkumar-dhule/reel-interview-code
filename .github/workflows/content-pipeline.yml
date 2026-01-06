@@ -1,0 +1,133 @@
+name: 🤖 Content Pipeline
+
+# Unified content generation pipeline
+# Runs: Creator → Verifier → Processor → Blog Generator
+# Schedule: Daily at 2:00 AM UTC
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Which stage to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - creator
+          - verifier
+          - processor
+          - blog-generator
+      count:
+        description: 'Number of items to process'
+        required: false
+        default: '5'
+
+jobs:
+  creator:
+    name: 📝 Creator Bot
+    if: github.event_name == 'schedule' || inputs.stage == 'all' || inputs.stage == 'creator'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+      - name: Run Creator Bot
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          COUNT: ${{ inputs.count || '5' }}
+        run: node script/bots/creator-bot.js
+
+  verifier:
+    name: ✅ Verifier Bot
+    if: always() && (github.event_name == 'schedule' || inputs.stage == 'all' || inputs.stage == 'verifier')
+    needs: [creator]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+      - name: Run Verifier Bot
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          MODE: scan
+          LIMIT: ${{ inputs.count || '10' }}
+        run: node script/bots/verifier-bot.js
+
+  processor:
+    name: ⚙️ Processor Bot
+    if: always() && (github.event_name == 'schedule' || inputs.stage == 'all' || inputs.stage == 'processor')
+    needs: [verifier]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+      - name: Run Processor Bot
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          MAX_ITEMS: ${{ inputs.count || '10' }}
+        run: node script/bots/processor-bot.js
+
+  blog-generator:
+    name: 📰 Blog Generator
+    if: always() && (github.event_name == 'schedule' || inputs.stage == 'all' || inputs.stage == 'blog-generator')
+    needs: [processor]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+      - name: Generate Blog Content
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: node script/generate-blog.js
+
+  update-monitor:
+    name: 📊 Update Monitor
+    needs: [blog-generator]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-pnpm
+      - name: Generate monitor data
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: node script/fetch-bot-monitor-data.js
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -f client/public/data/bot-monitor.json
+          git diff --staged --quiet || git commit -m "Update bot monitor data [skip ci]"
+          git push
+
+  summary:
+    name: 📋 Summary
+    needs: [creator, verifier, processor, blog-generator, update-monitor]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## 🤖 Content Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 📝 Creator | ${{ needs.creator.result == 'success' && '✅' || needs.creator.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Verifier | ${{ needs.verifier.result == 'success' && '✅' || needs.verifier.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚙️ Processor | ${{ needs.processor.result == 'success' && '✅' || needs.processor.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📰 Blog Generator | ${{ needs.blog-generator.result == 'success' && '✅' || needs.blog-generator.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 Monitor | ${{ needs.update-monitor.result == 'success' && '✅' || needs.update-monitor.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

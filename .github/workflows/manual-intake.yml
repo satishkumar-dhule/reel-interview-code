@@ -1,4 +1,6 @@
-name: 🎲 Intake Bot
+name: 🎲 Manual Intake
+
+# Manually add a question to the database
 
 on:
   workflow_dispatch:
@@ -9,31 +11,18 @@ on:
         type: string
 
 jobs:
-  add-question:
+  intake:
+    name: 📥 Process Question
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install dotenv @libsql/client
-
-      - name: Install OpenCode CLI
-        run: npm install -g opencode-ai
+      - uses: ./.github/actions/setup-bot
 
       - name: Process and add question
-        id: process
         run: node script/add-random-question.js
         env:
           INPUT_QUESTION: ${{ inputs.question }}
@@ -49,7 +38,6 @@ jobs:
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
 
       - name: Trigger deploy
-        if: success()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_TOKEN }}
@@ -57,22 +45,16 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'deploy-pages.yml',
+              workflow_id: 'deploy-app.yml',
               ref: 'main'
             });
-            console.log('Triggered deploy workflow');
 
       - name: Summary
-        if: always()
         run: |
-          echo "## 🎲 Intake Bot" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎲 Question Added" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Input Question:** ${{ inputs.question }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Input:** ${{ inputs.question }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ✅ Processing New Questions" >> $GITHUB_STEP_SUMMARY
-          echo "- Mapped to appropriate channel/subchannel" >> $GITHUB_STEP_SUMMARY
-          echo "- Refined into professional interview question" >> $GITHUB_STEP_SUMMARY
-          echo "- Data saved directly to Turso database" >> $GITHUB_STEP_SUMMARY
-          echo "- Deploy workflow triggered" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Question processed and added" >> $GITHUB_STEP_SUMMARY
+          echo "✅ RSS feed regenerated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Deploy triggered" >> $GITHUB_STEP_SUMMARY

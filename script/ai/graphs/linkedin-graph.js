@@ -191,12 +191,29 @@ async function generateStoryNode(state) {
 }
 
 /**
+ * Fallback hook patterns for when AI is unavailable
+ */
+const FALLBACK_HOOKS = [
+  (title, emoji) => `${emoji} ${title}\n\nEver wondered why this matters? Here's the breakdown.`,
+  (title, emoji) => `${emoji} What if I told you this one concept could change how you approach ${title.toLowerCase().split(' ').slice(0, 3).join(' ')}?`,
+  (title, emoji) => `${emoji} The hidden truth about ${title.toLowerCase().split(' ').slice(0, 3).join(' ')} nobody talks about.`,
+  (title, emoji) => `${emoji} ${title}\n\nThis single insight separates good engineers from great ones.`,
+  (title, emoji) => `${emoji} Stop making this mistake with ${title.toLowerCase().split(' ').slice(0, 3).join(' ')}.`,
+  (title, emoji) => `${emoji} ${title}\n\nHere's what top engineers know that you don't.`,
+  (title, emoji) => `${emoji} Why do senior devs approach ${title.toLowerCase().split(' ').slice(0, 3).join(' ')} differently?`,
+  (title, emoji) => `${emoji} ${title}\n\nThe counterintuitive approach that actually works.`
+];
+
+/**
  * Generate fallback story without AI
  */
 function generateFallbackStory(state) {
   const emoji = getChannelEmoji(state.channel);
   
-  // Create a more engaging fallback using the excerpt
+  // Pick a random hook pattern for variety
+  const hookIndex = Math.floor(Math.random() * FALLBACK_HOOKS.length);
+  const hookFn = FALLBACK_HOOKS[hookIndex];
+  
   let story = '';
   
   if (state.excerpt && state.excerpt.length > 50) {
@@ -221,12 +238,15 @@ function generateFallbackStory(state) {
       excerpt = excerpt.trim() + '.';
     }
     
-    story = `${emoji} ${state.title}\n\n${excerpt} Read the full breakdown below.`;
+    // Use varied hook + excerpt
+    const hook = hookFn(state.title, emoji);
+    story = `${hook}\n\n${excerpt}`;
   } else {
-    story = `${emoji} ${state.title}\n\nA deep dive into this technical topic with practical insights. Read the full breakdown below.`;
+    // Use varied hook only
+    story = hookFn(state.title, emoji);
   }
   
-  console.log(`   Using fallback template (${story.length} chars)`);
+  console.log(`   Using fallback template #${hookIndex + 1} (${story.length} chars)`);
   return {
     story,
     qualityIssues: ['AI generation skipped, using fallback']

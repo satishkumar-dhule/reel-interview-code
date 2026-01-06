@@ -132,11 +132,18 @@ export const guidelines = [
   
   // SOCIAL SNIPPET (for sharing)
   'Create a socialSnippet that is ready to copy-paste to LinkedIn/Twitter',
-  'Hook: Start with a provocative statement or surprising stat with emoji (🔥💡🚀)',
+  'Hook: Use ONE of these varied patterns (DO NOT always use "Picture this"):',
+  '  - Question: "Ever wondered why...?" or "What if I told you...?"',
+  '  - Stat: "90% of engineers miss this..." or "This reduced latency by 50%..."',
+  '  - Story: "It was 3am when..." or "The deploy looked fine. Then..."',
+  '  - Contrarian: "Everyone says X. They\'re wrong." or "Stop doing X."',
+  '  - Curiosity: "The hidden cost of..." or "What Netflix learned about..."',
+  '  - Direct value: "How to X in Y time" or "5 lessons from debugging..."',
   'Body: 3-4 bullet points that create urgency/FOMO - use numbers, percentages, bold claims',
   'CTA: End with curiosity gap - hint at what they will learn without giving it away',
   'Use line breaks for readability, keep it under 300 words total',
   'Make it feel like insider knowledge being shared',
+  'IMPORTANT: Vary your hooks! Do not start every post the same way.',
   'Hashtags: Include 5-8 relevant LinkedIn hashtags based on the topic, channel, and tags',
   'Common hashtags to consider: #SoftwareEngineering #SystemDesign #TechCareers #CodingInterview #BackendDevelopment #Frontend #DevOps #CloudComputing #DataEngineering #MachineLearning #AI #WebDevelopment #Programming #TechTips #CareerGrowth',
   
