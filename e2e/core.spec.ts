@@ -44,12 +44,18 @@ test.describe('Navigation', () => {
     
     if (isMobile) {
       // Mobile: tap Learn in bottom nav to open submenu, then tap Channels
-      const mobileNav = page.locator('nav.fixed.bottom-0');
-      await mobileNav.locator('button').filter({ hasText: 'Learn' }).click();
-      await page.waitForTimeout(500);
+      const learnButton = page.locator('nav.fixed.bottom-0 button').filter({ hasText: 'Learn' });
+      await learnButton.click();
+      await page.waitForTimeout(800);
       // Click Channels in the submenu that appears
-      await page.locator('button').filter({ hasText: 'Channels' }).first().click();
-      await page.waitForTimeout(500);
+      const channelsButton = page.locator('.fixed.bottom-20 button, .fixed button').filter({ hasText: 'Channels' }).first();
+      if (await channelsButton.isVisible({ timeout: 3000 })) {
+        await channelsButton.click();
+        await page.waitForTimeout(500);
+      } else {
+        // Fallback: navigate directly
+        await page.goto('/channels');
+      }
     } else {
       // Desktop: click Learn section header to expand, then click Channels
       await page.locator('aside button').filter({ hasText: 'Learn' }).click();

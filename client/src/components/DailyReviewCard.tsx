@@ -1,6 +1,7 @@
 /**
  * Daily Review Card Component
  * Shows SRS review queue status and quick access to reviews
+ * Compact version for sidebar layout
  */
 
 import { useState, useEffect } from 'react';
@@ -54,27 +55,24 @@ export function DailyReviewCard() {
   const todayProgress = Math.min(100, ((stats.newToday + (dailyGoal - stats.dueToday)) / dailyGoal) * 100);
 
   return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
+    <section className="mb-3">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`rounded-xl sm:rounded-2xl border overflow-hidden ${
+        className={`rounded-xl border overflow-hidden ${
           hasDueCards 
             ? 'bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-cyan-500/10 border-purple-500/20' 
             : 'bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/20'
         }`}
       >
-        {/* Header with Level & Streak */}
-        <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between border-b border-border/30">
+        {/* Header with Level & Streak - Compact */}
+        <div className="px-3 py-2 flex items-center justify-between border-b border-border/30">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-purple-500/20 rounded-full">
-              <Zap className="w-3 h-3 text-purple-400" />
-              <span className="text-xs font-bold text-purple-400">Lv.{userXP.level}</span>
+            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-purple-500/20 rounded-full">
+              <Zap className="w-2.5 h-2.5 text-purple-400" />
+              <span className="text-[10px] font-bold text-purple-400">Lv.{userXP.level}</span>
             </div>
-            <span className="text-xs text-muted-foreground">{userXP.totalXP} XP</span>
-            <span className="text-[9px] text-amber-400 flex items-center gap-0.5">
-              <Coins className="w-2.5 h-2.5" />Free
-            </span>
+            <span className="text-[10px] text-muted-foreground">{userXP.totalXP} XP</span>
           </div>
           {stats.reviewStreak > 0 && (
             <motion.div 
@@ -82,97 +80,92 @@ export function DailyReviewCard() {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
             >
-              <Flame className="w-4 h-4" />
-              <span className="text-xs font-bold">{stats.reviewStreak}🔥</span>
+              <Flame className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold">{stats.reviewStreak}🔥</span>
             </motion.div>
           )}
         </div>
 
-        {/* Main Content */}
+        {/* Main Content - Compact */}
         <button
           onClick={() => setLocation('/review')}
-          className="w-full p-3 sm:p-4 text-left hover:bg-white/5 transition-colors"
+          className="w-full p-3 text-left hover:bg-white/5 transition-colors"
         >
-          <div className="flex items-center gap-4">
-            {/* Progress Ring */}
+          <div className="flex items-center gap-3">
+            {/* Progress Ring - Smaller */}
             <ProgressRing 
               progress={hasDueCards ? todayProgress : 100} 
-              size={70}
-              strokeWidth={6}
+              size={56}
+              strokeWidth={5}
               color={hasDueCards ? '#a855f7' : '#22c55e'}
               bgColor={hasDueCards ? 'rgba(168, 85, 247, 0.15)' : 'rgba(34, 197, 94, 0.15)'}
             >
               {hasDueCards ? (
                 <div className="text-center">
-                  <div className="text-xl font-bold text-purple-500">{stats.dueToday}</div>
-                  <div className="text-[9px] text-muted-foreground">due</div>
+                  <div className="text-lg font-bold text-purple-500">{stats.dueToday}</div>
+                  <div className="text-[8px] text-muted-foreground">due</div>
                 </div>
               ) : (
-                <Trophy className="w-6 h-6 text-green-500" />
+                <Trophy className="w-5 h-5 text-green-500" />
               )}
             </ProgressRing>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Brain className={`w-4 h-4 ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`} />
-                <span className={`text-sm font-semibold ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`}>
+                <Brain className={`w-3.5 h-3.5 ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`} />
+                <span className={`text-xs font-semibold ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`}>
                   {hasDueCards ? 'Ready to Review' : 'All Caught Up!'}
                 </span>
               </div>
               
               {hasDueCards ? (
                 <div className="flex flex-wrap gap-1">
-                  {dueCards.slice(0, 4).map((card) => (
+                  {dueCards.slice(0, 3).map((card) => (
                     <span
                       key={card.questionId}
-                      className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${getMasteryColor(card.masteryLevel)} bg-muted/50`}
+                      className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${getMasteryColor(card.masteryLevel)} bg-muted/50`}
                     >
                       <span>{getMasteryEmoji(card.masteryLevel)}</span>
-                      {card.channel.slice(0, 8)}
+                      {card.channel.slice(0, 6)}
                     </span>
                   ))}
-                  {dueCards.length > 4 && (
-                    <span className="px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                      +{dueCards.length - 4}
+                  {dueCards.length > 3 && (
+                    <span className="px-1 py-0.5 text-[9px] text-muted-foreground">
+                      +{dueCards.length - 3}
                     </span>
                   )}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   {stats.dueTomorrow > 0 
-                    ? `${stats.dueTomorrow} cards due tomorrow`
-                    : 'Great job! Keep the streak going'}
+                    ? `${stats.dueTomorrow} due tomorrow`
+                    : 'Keep the streak going!'}
                 </p>
               )}
             </div>
 
-            {/* Arrow */}
-            <ChevronRight className={`w-5 h-5 ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`} />
+            <ChevronRight className={`w-4 h-4 ${hasDueCards ? 'text-purple-500' : 'text-green-500'}`} />
           </div>
         </button>
 
-        {/* Stats Footer */}
-        <div className="px-3 sm:px-4 py-2 border-t border-border/30 grid grid-cols-4 gap-2 text-center">
+        {/* Stats Footer - Compact 2x2 grid */}
+        <div className="px-3 py-2 border-t border-border/30 grid grid-cols-4 gap-1 text-center">
           <div>
-            <div className="text-sm font-bold">{stats.totalCards}</div>
-            <div className="text-[9px] text-muted-foreground">Cards</div>
+            <div className="text-xs font-bold">{stats.totalCards}</div>
+            <div className="text-[8px] text-muted-foreground">Cards</div>
           </div>
           <div>
-            <div className="text-sm font-bold text-yellow-500 flex items-center justify-center gap-0.5">
-              👑 {stats.mastered}
-            </div>
-            <div className="text-[9px] text-muted-foreground">Mastered</div>
+            <div className="text-xs font-bold text-yellow-500">👑{stats.mastered}</div>
+            <div className="text-[8px] text-muted-foreground">Master</div>
           </div>
           <div>
-            <div className="text-sm font-bold text-blue-500 flex items-center justify-center gap-0.5">
-              📚 {stats.learning}
-            </div>
-            <div className="text-[9px] text-muted-foreground">Learning</div>
+            <div className="text-xs font-bold text-blue-500">📚{stats.learning}</div>
+            <div className="text-[8px] text-muted-foreground">Learn</div>
           </div>
           <div>
-            <div className="text-sm font-bold text-green-500">{stats.dueThisWeek}</div>
-            <div className="text-[9px] text-muted-foreground">This Week</div>
+            <div className="text-xs font-bold text-green-500">{stats.dueThisWeek}</div>
+            <div className="text-[8px] text-muted-foreground">Week</div>
           </div>
         </div>
       </motion.div>

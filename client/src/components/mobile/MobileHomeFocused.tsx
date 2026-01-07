@@ -85,77 +85,108 @@ export function MobileHomeFocused() {
   }, [setLocation]);
 
   return (
-    <div className="pb-20 sm:pb-8 max-w-4xl mx-auto">
-      {/* Credits Banner - Always visible */}
-      <section className="mx-3 sm:mx-0 mb-3">
-        <button
-          onClick={() => setLocation('/profile')}
-          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 rounded-xl hover:from-amber-500/15 hover:to-yellow-500/15 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
-              <Coins className="w-5 h-5 text-amber-500" />
-            </div>
-            <div className="text-left">
-              <div className="text-lg font-bold text-amber-400">{formatCredits(balance)}</div>
-              <div className="text-[10px] text-muted-foreground">Credits Available</div>
-            </div>
+    <div className="pb-20 sm:pb-8 max-w-6xl mx-auto px-3 sm:px-4">
+      {/* Desktop: Two-column layout, Mobile: Single column */}
+      <div className="lg:grid lg:grid-cols-12 lg:gap-4">
+        {/* Main Column - Quiz & Learning */}
+        <div className="lg:col-span-8">
+          {/* Hero: Quick Quiz or Welcome */}
+          {hasChannels ? (
+            <QuickQuizCard 
+              channels={subscribedChannels}
+              onViewChannel={handleViewChannel}
+            />
+          ) : (
+            <WelcomeCard onGetStarted={() => setLocation('/channels')} />
+          )}
+
+          {/* Continue Learning - show more channels */}
+          {hasChannels && (
+            <ContinueLearningSection 
+              channels={subscribedChannels}
+              questionCounts={questionCounts}
+              onChannelClick={(id) => setLocation(`/channel/${id}`)}
+              onUnsubscribe={unsubscribeChannel}
+              onSeeAll={() => setLocation('/channels')}
+            />
+          )}
+        </div>
+
+        {/* Sidebar Column - Stats, Actions & Review */}
+        <div className="lg:col-span-4 mt-3 lg:mt-0">
+          {/* Credits + Stats Combined Card */}
+          <div className="bg-card rounded-xl border border-border overflow-hidden mb-3">
+            {/* Credits Row */}
+            <button
+              onClick={() => setLocation('/profile')}
+              className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 hover:from-amber-500/15 hover:to-yellow-500/15 transition-colors border-b border-border/50"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                  <Coins className="w-5 h-5 text-amber-500" />
+                </div>
+                <div className="text-left">
+                  <div className="text-lg font-bold text-amber-400">{formatCredits(balance)}</div>
+                  <div className="text-[10px] text-muted-foreground">Credits</div>
+                </div>
+              </div>
+              <div className="text-right text-[10px] text-muted-foreground">
+                <div className="text-green-400">+{config.VOICE_ATTEMPT} voice</div>
+                <div className="text-red-400">-{config.QUESTION_VIEW_COST}/q</div>
+              </div>
+            </button>
+
+            {/* Quick Stats Row */}
+            {hasChannels && (
+              <button 
+                onClick={() => setLocation('/stats')}
+                className="w-full p-3 flex items-center justify-around hover:bg-muted/30 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-primary" />
+                  <div className="text-left">
+                    <div className="font-bold text-sm">{totalCompleted}</div>
+                    <div className="text-[9px] text-muted-foreground">Done</div>
+                  </div>
+                </div>
+                <div className="w-px h-8 bg-border" />
+                <div className="flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  <div className="text-left">
+                    <div className="font-bold text-sm">{streak}</div>
+                    <div className="text-[9px] text-muted-foreground">Streak</div>
+                  </div>
+                </div>
+                <div className="w-px h-8 bg-border" />
+                <div className="flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-blue-500" />
+                  <div className="text-left">
+                    <div className="font-bold text-sm">{subscribedChannels.length}</div>
+                    <div className="text-[9px] text-muted-foreground">Topics</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </button>
+            )}
           </div>
-          <div className="text-right text-[10px] text-muted-foreground">
-            <div className="text-green-400">+{config.VOICE_ATTEMPT} voice practice</div>
-            <div className="text-red-400">-{config.QUESTION_VIEW_COST} per question</div>
-          </div>
-        </button>
-      </section>
 
-      {/* Hero: Quick Quiz or Welcome */}
-      {hasChannels ? (
-        <QuickQuizCard 
-          channels={subscribedChannels}
-          onViewChannel={handleViewChannel}
-        />
-      ) : (
-        <WelcomeCard onGetStarted={() => setLocation('/channels')} />
-      )}
+          {/* Daily Review - Spaced Repetition */}
+          {hasChannels && <DailyReviewCard />}
 
-      {/* Quick Stats Row - compact */}
-      {hasChannels && (
-        <QuickStatsRow 
-          completed={totalCompleted}
-          streak={streak}
-          channels={subscribedChannels.length}
-          onStatsClick={() => setLocation('/stats')}
-        />
-      )}
+          {/* Voice Interview CTA - Primary feature */}
+          {hasChannels && (
+            <VoiceInterviewCard onStart={() => setLocation('/voice-interview')} />
+          )}
 
-      {/* Daily Review - Spaced Repetition */}
-      {hasChannels && <DailyReviewCard />}
-
-      {/* Voice Interview CTA - Primary feature for earning credits */}
-      {hasChannels && (
-        <VoiceInterviewCard onStart={() => setLocation('/voice-interview')} />
-      )}
-
-      {/* Continue Learning - show more channels */}
-      {hasChannels && (
-        <ContinueLearningSection 
-          channels={subscribedChannels}
-          questionCounts={questionCounts}
-          onChannelClick={(id) => setLocation(`/channel/${id}`)}
-          onUnsubscribe={unsubscribeChannel}
-          onSeeAll={() => setLocation('/channels')}
-        />
-      )}
-
-      {/* Coding Challenge CTA */}
-      {hasChannels && (
-        <CodingChallengeCard onStart={() => setLocation('/coding')} />
-      )}
-
-      {/* Certification Tracks CTA */}
-      {hasChannels && (
-        <CertificationCard onStart={() => setLocation('/certifications')} />
-      )}
+          {/* Practice CTAs - Combined row */}
+          {hasChannels && (
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <CodingChallengeCardCompact onStart={() => setLocation('/coding')} />
+              <CertificationCardCompact onStart={() => setLocation('/certifications')} />
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Quick Start Topics for new users */}
       {!hasChannels && (
@@ -303,8 +334,8 @@ function QuickQuizCard({
 
   if (isLoading) {
     return (
-      <section className="mx-3 sm:mx-0 mt-3 sm:mt-4 mb-2 sm:mb-4">
-        <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-primary/20">
+      <section className="mb-3">
+        <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl p-4 border border-primary/20">
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-primary/20 flex items-center justify-center">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary animate-pulse" />
@@ -321,8 +352,8 @@ function QuickQuizCard({
 
   if (!currentQuestion || questions.length === 0) {
     return (
-      <section className="mx-3 sm:mx-0 mt-3 sm:mt-4 mb-2 sm:mb-4">
-        <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-primary/20">
+      <section className="mb-3">
+        <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl p-4 border border-primary/20">
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-primary/20 flex items-center justify-center">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
@@ -338,8 +369,8 @@ function QuickQuizCard({
   }
 
   return (
-    <section className="mx-3 sm:mx-0 mt-3 sm:mt-4 mb-2 sm:mb-4">
-      <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl sm:rounded-2xl overflow-hidden border border-primary/20">
+    <section className="mb-3">
+      <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl overflow-hidden border border-primary/20">
         {/* Header */}
         <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between border-b border-border/30 bg-primary/5">
           <div className="flex items-center gap-2">
@@ -386,7 +417,7 @@ function QuickQuizCard({
         </div>
 
         {/* Question */}
-        <div className="p-3 sm:p-5">
+        <div className="p-3 sm:p-4">
           <AnimatePresence mode="wait">
             <motion.div
               key={`question-${currentIndex}`}
@@ -396,22 +427,22 @@ function QuickQuizCard({
               transition={{ duration: 0.15 }}
             >
               {/* Channel & Difficulty badges */}
-              <div className="flex items-center gap-2 mb-2 sm:mb-3 flex-wrap">
+              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                 <button
                   onClick={() => currentTest && onViewChannel(currentTest.channelId)}
-                  className="px-2 sm:px-3 py-0.5 sm:py-1 bg-primary/10 rounded sm:rounded-lg flex items-center gap-1 sm:gap-2 hover:bg-primary/20 transition-colors"
+                  className="px-2 py-0.5 bg-primary/10 rounded flex items-center gap-1.5 hover:bg-primary/20 transition-colors"
                 >
                   <span className="text-primary">{channelConfig && iconMap[channelConfig.icon]}</span>
-                  <span className="text-[11px] sm:text-sm font-medium">{channelConfig?.name || currentTest?.channelName}</span>
+                  <span className="text-[11px] sm:text-xs font-medium">{channelConfig?.name || currentTest?.channelName}</span>
                 </button>
-                <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded ${
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                   currentQuestion.difficulty === 'beginner' ? 'bg-green-500/10 text-green-600' :
                   currentQuestion.difficulty === 'intermediate' ? 'bg-yellow-500/10 text-yellow-600' :
                   'bg-red-500/10 text-red-600'
                 }`}>
                   {currentQuestion.difficulty}
                 </span>
-                <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded ${
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                   currentQuestion.type === 'multiple' 
                     ? 'bg-purple-500/10 text-purple-500' 
                     : 'bg-blue-500/10 text-blue-500'
@@ -421,12 +452,12 @@ function QuickQuizCard({
               </div>
 
               {/* Question text */}
-              <h3 className="font-medium text-sm sm:text-lg leading-snug mb-3 sm:mb-4">
+              <h3 className="font-medium text-sm sm:text-base leading-snug mb-2.5">
                 {currentQuestion.question}
               </h3>
 
-              {/* Options */}
-              <div className="space-y-2">
+              {/* Options - More compact */}
+              <div className="space-y-1.5">
                 {currentQuestion.options.map((option) => {
                   const isSelected = selectedAnswer === option.id;
                   const showCorrect = showFeedback && option.isCorrect;
@@ -437,7 +468,7 @@ function QuickQuizCard({
                       key={option.id}
                       onClick={() => handleOptionSelect(option.id)}
                       disabled={showFeedback !== null}
-                      className={`w-full p-3 sm:p-4 text-left border rounded-lg transition-all text-sm ${
+                      className={`w-full p-2.5 sm:p-3 text-left border rounded-lg transition-all text-sm ${
                         showCorrect
                           ? 'border-green-500 bg-green-500/20'
                           : showWrong
@@ -447,8 +478,8 @@ function QuickQuizCard({
                           : 'border-border hover:border-primary/50'
                       } ${showFeedback ? 'cursor-default' : ''}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                           showCorrect
                             ? 'border-green-500 bg-green-500'
                             : showWrong
@@ -457,9 +488,9 @@ function QuickQuizCard({
                             ? 'border-primary bg-primary' 
                             : 'border-muted-foreground/30'
                         }`}>
-                          {showCorrect && <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />}
-                          {showWrong && <X className="w-3 h-3 sm:w-4 sm:h-4 text-white" />}
-                          {!showFeedback && isSelected && <Check className="w-3 h-3 sm:w-4 sm:h-4 text-primary-foreground" />}
+                          {showCorrect && <Check className="w-3 h-3 text-white" />}
+                          {showWrong && <X className="w-3 h-3 text-white" />}
+                          {!showFeedback && isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
                         </div>
                         <span className="text-xs sm:text-sm">{option.text}</span>
                       </div>
@@ -504,53 +535,6 @@ function QuickQuizCard({
   );
 }
 
-// Quick Stats Row - compact horizontal stats
-function QuickStatsRow({ 
-  completed, 
-  streak, 
-  channels,
-  onStatsClick 
-}: { 
-  completed: number;
-  streak: number;
-  channels: number;
-  onStatsClick: () => void;
-}) {
-  return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
-      <button 
-        onClick={onStatsClick}
-        className="w-full bg-card rounded-xl sm:rounded-2xl border border-border p-2 sm:p-4 flex items-center justify-around hover:bg-muted/30 transition-colors"
-      >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Target className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <div className="text-left">
-            <div className="font-bold text-sm sm:text-lg">{completed}</div>
-            <div className="text-[10px] sm:text-xs text-muted-foreground">Done</div>
-          </div>
-        </div>
-        <div className="w-px h-8 sm:h-10 bg-border" />
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-          <div className="text-left">
-            <div className="font-bold text-sm sm:text-lg">{streak}</div>
-            <div className="text-[10px] sm:text-xs text-muted-foreground">Streak</div>
-          </div>
-        </div>
-        <div className="w-px h-8 sm:h-10 bg-border" />
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-          <div className="text-left">
-            <div className="font-bold text-sm sm:text-lg">{channels}</div>
-            <div className="text-[10px] sm:text-xs text-muted-foreground">Topics</div>
-          </div>
-        </div>
-        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-      </button>
-    </section>
-  );
-}
-
 // Continue Learning Section - shows all subscribed channels
 function ContinueLearningSection({ 
   channels, 
@@ -577,8 +561,8 @@ function ContinueLearningSection({
   const hiddenCount = channels.length - limit;
 
   return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
-      <div className="bg-card rounded-xl sm:rounded-2xl border border-border overflow-hidden">
+    <section className="mb-3">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <button 
           onClick={onSeeAll}
           className="w-full px-3 sm:px-4 py-2 sm:py-3 border-b border-border/50 flex items-center justify-between hover:bg-muted/30 transition-colors"
@@ -855,110 +839,90 @@ function ChannelRow({
   );
 }
 
-// Coding Challenge CTA
-function CodingChallengeCard({ onStart }: { onStart: () => void }) {
+// Coding Challenge CTA - Compact version for sidebar
+function CodingChallengeCardCompact({ onStart }: { onStart: () => void }) {
   return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
-      <button
-        onClick={onStart}
-        className="w-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl sm:rounded-2xl border border-purple-500/20 p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:from-purple-500/15 hover:to-blue-500/15 transition-colors"
-      >
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-purple-500/20 flex items-center justify-center">
-          <Code className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-        </div>
-        <div className="flex-1 text-left">
-          <h3 className="font-semibold text-sm sm:text-base">Practice Coding</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">Solve real interview challenges</p>
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
-        </div>
-      </button>
-    </section>
+    <button
+      onClick={onStart}
+      className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl border border-purple-500/20 p-3 flex flex-col items-center gap-2 hover:from-purple-500/15 hover:to-blue-500/15 transition-colors text-center"
+    >
+      <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+        <Code className="w-5 h-5 text-purple-500" />
+      </div>
+      <div>
+        <h3 className="font-semibold text-xs sm:text-sm">Coding</h3>
+        <p className="text-[10px] text-muted-foreground">Practice</p>
+      </div>
+    </button>
   );
 }
 
-// Certification Tracks CTA
-function CertificationCard({ onStart }: { onStart: () => void }) {
+// Certification CTA - Compact version for sidebar
+function CertificationCardCompact({ onStart }: { onStart: () => void }) {
   return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
-      <button
-        onClick={onStart}
-        className="w-full bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl sm:rounded-2xl border border-amber-500/20 p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:from-amber-500/15 hover:to-orange-500/15 transition-colors"
-      >
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-500/20 flex items-center justify-center">
-          <Award className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
-        </div>
-        <div className="flex-1 text-left">
-          <h3 className="font-semibold text-sm sm:text-base">Certification Tracks</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">AWS, Kubernetes, Terraform & more</p>
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
-        </div>
-      </button>
-    </section>
+    <button
+      onClick={onStart}
+      className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20 p-3 flex flex-col items-center gap-2 hover:from-amber-500/15 hover:to-orange-500/15 transition-colors text-center"
+    >
+      <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+        <Award className="w-5 h-5 text-amber-500" />
+      </div>
+      <div>
+        <h3 className="font-semibold text-xs sm:text-sm">Certs</h3>
+        <p className="text-[10px] text-muted-foreground">AWS, K8s</p>
+      </div>
+    </button>
   );
 }
 
-// Voice Interview CTA - Primary feature for earning credits
+// Voice Interview CTA - Compact for sidebar
 function VoiceInterviewCard({ onStart }: { onStart: () => void }) {
   const [, setLocation] = useLocation();
   
   return (
-    <section className="mx-3 sm:mx-0 mb-3 sm:mb-4">
-      <div className="bg-gradient-to-r from-primary/20 via-primary/15 to-emerald-500/20 rounded-xl sm:rounded-2xl border-2 border-primary/30 p-4 sm:p-5">
+    <section className="mb-3">
+      <div className="bg-gradient-to-r from-primary/20 via-primary/15 to-emerald-500/20 rounded-xl border border-primary/30 p-3">
         <button
           onClick={onStart}
-          className="w-full flex items-center gap-4 hover:opacity-90 transition-all group"
+          className="w-full flex items-center gap-3 hover:opacity-90 transition-all group"
         >
           {/* Animated mic icon */}
-          <div className="relative">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
-              <Mic className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+          <div className="relative flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
+              <Mic className="w-6 h-6 text-white" />
             </div>
-            {/* Pulse animation */}
-            <div className="absolute inset-0 rounded-2xl bg-primary/30 animate-ping opacity-30" />
+            <div className="absolute inset-0 rounded-xl bg-primary/30 animate-ping opacity-30" />
           </div>
           
-          <div className="flex-1 text-left">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-bold text-base sm:text-lg">Voice Interview</h3>
-              <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] font-bold rounded-full">
-                EARN CREDITS
+          <div className="flex-1 text-left min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <h3 className="font-bold text-sm">Voice Interview</h3>
+              <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 text-[9px] font-bold rounded-full">
+                EARN
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-              Practice answering questions out loud with AI feedback
-            </p>
-            <div className="flex items-center gap-3 text-xs">
-              <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                <Coins className="w-3.5 h-3.5" />+5 per attempt
+            <div className="flex items-center gap-2 text-[10px]">
+              <span className="flex items-center gap-0.5 text-amber-400 font-semibold">
+                <Coins className="w-3 h-3" />+5
               </span>
-              <span className="flex items-center gap-1 text-green-400 font-semibold">
-                +15 bonus on success
+              <span className="flex items-center gap-0.5 text-green-400 font-semibold">
+                +15 bonus
               </span>
             </div>
           </div>
           
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-              <ArrowRight className="w-5 h-5 text-primary" />
-            </div>
-          </div>
+          <ArrowRight className="w-5 h-5 text-primary flex-shrink-0" />
         </button>
         
         {/* Session mode link */}
-        <div className="mt-3 pt-3 border-t border-primary/20 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">
-            Want focused practice?
-          </span>
+        <div className="mt-2 pt-2 border-t border-primary/20 flex items-center justify-between">
+          <span className="text-[10px] text-muted-foreground">Focused practice?</span>
           <button
             onClick={() => setLocation('/voice-session')}
-            className="text-xs text-primary hover:underline flex items-center gap-1"
+            className="text-[10px] text-primary hover:underline flex items-center gap-1"
           >
-            <Target className="w-3 h-3" />
-            Try Micro-Question Sessions
+            <Target className="w-2.5 h-2.5" />
+            Micro Sessions
           </button>
         </div>
       </div>
@@ -969,8 +933,8 @@ function VoiceInterviewCard({ onStart }: { onStart: () => void }) {
 // Welcome Card for new users
 function WelcomeCard({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <section className="mx-3 sm:mx-0 mt-3 sm:mt-4 mb-2 sm:mb-4">
-      <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-primary/20">
+    <section className="mb-3">
+      <div className="bg-gradient-to-br from-primary/15 to-card rounded-xl p-5 sm:p-8 border border-primary/20">
         <div className="text-center">
           <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Code className="w-7 h-7 sm:w-10 sm:h-10 text-primary" />
@@ -1006,15 +970,15 @@ function QuickStartTopics({ onSelect }: { onSelect: (id: string) => void }) {
   ];
 
   return (
-    <section className="mx-3 sm:mx-0 mb-2 sm:mb-4">
-      <h3 className="font-semibold text-sm sm:text-base mb-2 sm:mb-3 px-1">Popular Topics</h3>
+    <section className="mb-3">
+      <h3 className="font-semibold text-sm sm:text-base mb-2 sm:mb-3">Popular Topics</h3>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
         {popularTopics.map((topic) => (
           <button
             key={topic.id}
             onClick={() => onSelect(topic.id)}
-            className="p-3 sm:p-4 bg-card rounded-xl sm:rounded-2xl border border-border hover:border-primary/30 transition-colors text-left flex items-center gap-3"
+            className="p-3 sm:p-4 bg-card rounded-xl border border-border hover:border-primary/30 transition-colors text-left flex items-center gap-3"
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
               {iconMap[topic.icon]}

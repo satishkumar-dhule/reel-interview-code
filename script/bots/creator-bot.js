@@ -11,6 +11,8 @@
  * 
  * LangGraph Pipeline:
  * Input → Classify → Generate → Enrich → Validate → Save
+ * 
+ * Now with RAG-enhanced generation for better quality and consistency.
  */
 
 import 'dotenv/config';
@@ -19,6 +21,7 @@ import { logAction } from './shared/ledger.js';
 import { addToQueue } from './shared/queue.js';
 import { startRun, completeRun, failRun, updateRunStats } from './shared/runs.js';
 import { runWithRetries, parseJson, generateUnifiedId, isDuplicateUnified } from '../utils.js';
+import ragService from '../ai/services/rag-enhanced-generation.js';
 
 const BOT_NAME = 'creator';
 const db = getDb();
@@ -230,6 +233,35 @@ async function saveNode(state) {
 // ============================================
 
 async function generateQuestion(input, channel, difficulty) {
+  // Try RAG-enhanced generation first
+  try {
+    console.log('   Using RAG-enhanced generation...');
+    const ragResult = await ragService.generateQuestionWithRAG(input, channel, { difficulty });
+    
+    if (ragResult.success) {
+      console.log(`   RAG context used: ${ragResult.question.contextUsed} related questions`);
+      return {
+        id: await generateUnifiedId(),
+        question: ragResult.question.question,
+        answer: ragResult.question.tldr?.substring(0, 200) || '',
+        explanation: ragResult.question.answer || '',
+        tags: ragResult.question.tags || [channel],
+        channel,
+        subChannel: channel,
+        difficulty,
+        companies: [],
+        status: 'active',
+        lastUpdated: new Date().toISOString(),
+        generatedWithRAG: true
+      };
+    } else {
+      console.log(`   RAG generation failed: ${ragResult.error}, falling back to standard`);
+    }
+  } catch (e) {
+    console.log(`   RAG unavailable: ${e.message}, using standard generation`);
+  }
+
+  // Fallback to standard generation
   const prompt = `Create a high-quality technical interview question.
 
 Topic/Input: "${input}"

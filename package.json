@@ -65,6 +65,8 @@
     "vector:stats": "node script/vector-db-cli.js stats",
     "vector:test": "node script/test-vector-db-integration.js",
     "vector:similar": "node script/generate-similar-questions.js",
+    "rag:graph": "node script/generate-knowledge-graph.js",
+    "rag:intelligence": "node script/generate-interview-intelligence.js",
     "bot:unified": "node script/bots/unified-content-bot.js",
     "bot:question": "node script/bots/unified-content-bot.js --type=question",
     "bot:challenge": "node script/bots/unified-content-bot.js --type=challenge",
