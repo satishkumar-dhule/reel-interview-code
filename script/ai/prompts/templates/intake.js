@@ -3,14 +3,14 @@
  * Maps input questions to channels and generates complete Q&A content
  */
 
-import { jsonOutputRule } from './base.js';
+import { jsonOutputRule, markdownFormattingRules } from './base.js';
 
 export const schema = {
   channel: "channel-id",
   subChannel: "subchannel-id",
   question: "refined professional interview question ending with ?",
-  answer: "concise answer under 150 chars",
-  explanation: "## Why Asked\nInterview context\n## Key Concepts\nCore knowledge\n## Code Example\n```\nImplementation if applicable\n```\n## Follow-up Questions\nCommon follow-ups",
+  answer: "concise answer under 150 chars, plain text, no markdown",
+  explanation: "## Why Asked\nInterview context\n\n## Key Concepts\n\n- Point 1\n- Point 2\n\n## Code Example\n\n```javascript\n// code here\n```\n\n## Follow-up Questions\n\n- Follow-up 1\n- Follow-up 2",
   diagram: "flowchart TD\n  A[Start] --> B[End]",
   companies: ["Google", "Amazon", "Meta"],
   difficulty: "beginner|intermediate|advanced",
@@ -56,6 +56,14 @@ Input Question: "${inputQuestion}"
 
 Available channels and subchannels (with current question counts):
 ${channelList}${priorityChannels}
+
+${markdownFormattingRules}
+
+FIELD-SPECIFIC RULES:
+- "answer": Plain text only, NO markdown, NO bold, under 150 characters
+- "explanation": Well-formatted markdown with proper headings (##), lists (- ), and code blocks (\`\`\`)
+- Each section in explanation must be separated by blank lines
+- Code blocks must specify language and be on their own lines
 
 Output this exact JSON structure:
 ${JSON.stringify(schema, null, 2).replace(/\\n/g, '\\n')}

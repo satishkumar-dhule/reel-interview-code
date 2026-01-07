@@ -31,6 +31,20 @@ function preprocessMarkdown(text: string): string {
   // Matches O(n), O(n²), O(n log n), O(1), O(n^2), Θ(n), Ω(n), etc.
   processed = processed.replace(/([OΘΩ])\(([^)]+)\)/g, '`$1($2)`');
   
+  // Fix bold markers right before code fences: "text**```" -> "text**\n```"
+  processed = processed.replace(/\*\*\s*```/g, '**\n\n```');
+  
+  // Fix bold markers right after code fences: "```**text" -> "```\n**text"
+  processed = processed.replace(/```\s*\*\*/g, '```\n\n**');
+  
+  // Remove ** markers inside code blocks (they shouldn't be there)
+  // Match code blocks and clean their content
+  processed = processed.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, content) => {
+    // Remove ** markers from inside code blocks
+    const cleanedContent = content.replace(/\*\*/g, '');
+    return '```' + lang + '\n' + cleanedContent + '```';
+  });
+  
   // Fix code fences that are not on their own line
   // Pattern: text followed by ``` on same line (but not at start of line)
   // This handles cases like "Example: ```yaml" -> "Example:\n```yaml"
@@ -45,6 +59,23 @@ function preprocessMarkdown(text: string): string {
   
   // Fix bold markers that are split across lines (e.g., "**\nSome text**")
   processed = processed.replace(/\*\*\s*\n\s*([^*]+)\*\*/g, '**$1**');
+  
+  // Fix pattern like "**\n1. Title**" or "**\n- Item**" -> "**1. Title**" or "**- Item**"
+  processed = processed.replace(/\*\*\s*\n\s*(\d+\.\s+[^*\n]+)\*\*/g, '**$1**');
+  processed = processed.replace(/\*\*\s*\n\s*(-\s+[^*\n]+)\*\*/g, '**$1**');
+  
+  // Fix "Text**- " pattern (missing space/newline before dash) -> "Text**\n- "
+  processed = processed.replace(/\*\*-\s+/g, '**\n- ');
+  
+  // Fix "Text**1. " pattern (missing newline before numbered list) -> "Text**\n1. "
+  processed = processed.replace(/\*\*(\d+)\.\s+/g, '**\n$1. ');
+  
+  // Fix patterns like "title**- **subtitle" -> "title**\n- **subtitle**"
+  processed = processed.replace(/\*\*-\s*\*\*([^*]+)\*\*/g, '**\n- **$1**');
+  processed = processed.replace(/\*\*-\s*\*\*([^*\n]+)/g, '**\n- **$1**');
+  
+  // Fix "- **Text**- " pattern (list item followed by another without newline)
+  processed = processed.replace(/-\s*\*\*([^*]+)\*\*-\s+/g, '- **$1**\n- ');
   
   // Fix unclosed bold markers at start of lines followed by content
   // Pattern: line starting with ** but no closing ** on same line

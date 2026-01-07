@@ -3,7 +3,7 @@
  * Generates exam-aligned MCQ questions for specific certifications
  */
 
-import { jsonOutputRule } from './base.js';
+import { jsonOutputRule, markdownFormattingRules } from './base.js';
 
 export const schema = {
   id: "cert-xxx-001",
@@ -11,12 +11,12 @@ export const schema = {
   domain: "design-secure",
   question: "Question text ending with ?",
   options: [
-    { id: "a", text: "Option A", isCorrect: false },
-    { id: "b", text: "Option B", isCorrect: true },
-    { id: "c", text: "Option C", isCorrect: false },
-    { id: "d", text: "Option D", isCorrect: false }
+    { id: "a", text: "Option A (plain text, no markdown)", isCorrect: false },
+    { id: "b", text: "Option B (plain text, no markdown)", isCorrect: true },
+    { id: "c", text: "Option C (plain text, no markdown)", isCorrect: false },
+    { id: "d", text: "Option D (plain text, no markdown)", isCorrect: false }
   ],
-  explanation: "Detailed explanation with reasoning",
+  explanation: "Detailed explanation with proper markdown formatting. Use ## for headings, - for lists, and proper code blocks.",
   difficulty: "intermediate",
   tags: ["tag1", "tag2"]
 };
@@ -56,6 +56,25 @@ export const guidelines = [
   'Questions should test practical knowledge, not memorization'
 ];
 
+export const explanationFormat = `## Correct Answer
+
+Brief statement of the correct answer and why.
+
+## Why Other Options Are Wrong
+
+- Option A: Why it's incorrect
+- Option C: Why it's incorrect
+- Option D: Why it's incorrect
+
+## Key Concepts
+
+- Concept 1
+- Concept 2
+
+## Real-World Application
+
+How this applies in practice.`;
+
 export function build(context) {
   const { certificationId, domain, difficulty, count = 5 } = context;
   
@@ -74,6 +93,15 @@ Generate questions that:
 - Have exactly 4 options with ONE correct answer
 - Include detailed explanations
 
+${markdownFormattingRules}
+
+FIELD-SPECIFIC RULES:
+- "question": Plain text, ends with ?
+- "options[].text": Plain text ONLY, NO markdown, NO bold (**)
+- "explanation": Well-formatted markdown following this structure:
+
+${explanationFormat}
+
 Return a JSON array:
 ${JSON.stringify([schema], null, 2)}
 
@@ -83,4 +111,4 @@ ${guidelines.map(g => `- ${g}`).join('\n')}
 ${jsonOutputRule}`;
 }
 
-export default { schema, certificationDomains, guidelines, build };
+export default { schema, certificationDomains, guidelines, explanationFormat, build };

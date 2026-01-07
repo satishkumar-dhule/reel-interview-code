@@ -2,12 +2,12 @@
  * Question Generation Prompt Template
  */
 
-import { jsonOutputRule, buildSystemContext } from './base.js';
+import { jsonOutputRule, buildSystemContext, markdownFormattingRules } from './base.js';
 import config from '../../config.js';
 
 export const schema = {
   question: "Specific, practical interview question ending with ?",
-  answer: "Comprehensive interview answer (200-400 chars) demonstrating expertise with specific details",
+  answer: "Comprehensive interview answer (200-400 chars) demonstrating expertise with specific details. Plain text only, NO markdown.",
   explanation: "Detailed explanation with sections",
   diagram: "flowchart TD\\n  A[Step] --> B[Step]",
   companies: ["Company1", "Company2"],
@@ -97,52 +97,69 @@ export const realScenarios = {
 };
 
 export const systemDesignFormat = `## Functional Requirements
-- [Requirement 1]
-- [Requirement 2]
+
+- Requirement 1
+- Requirement 2
 
 ## Non-Functional Requirements (NFRs)
-- **Availability**: [Target]
-- **Latency**: [Target]
-- **Scalability**: [Target]
-- **Consistency**: [Type]
+
+- Availability: Target
+- Latency: Target
+- Scalability: Target
+- Consistency: Type
 
 ## Back-of-Envelope Calculations
+
 ### Users & Traffic
-- DAU: [Number]
-- Peak QPS: [Number]
+
+- DAU: Number
+- Peak QPS: Number
 
 ### Storage
-- Per user: [Size]
-- Total: [Size]
+
+- Per user: Size
+- Total: Size
 
 ## High-Level Design
-[Description]
+
+Description of the architecture.
 
 ## Deep Dive: Key Components
-### [Component 1]
-[Details]
+
+### Component 1
+
+Details about the component.
 
 ## Trade-offs & Considerations
-- [Trade-off 1]
+
+- Trade-off 1
+- Trade-off 2
 
 ## Failure Scenarios & Mitigations
-- [Scenario]: [Mitigation]`;
+
+- Scenario 1: Mitigation
+- Scenario 2: Mitigation`;
 
 export const standardFormat = `## Why This Is Asked
-[Interview context]
+
+Interview context explanation.
 
 ## Key Concepts
+
 - Concept 1
 - Concept 2
+- Concept 3
 
 ## Code Example
-\`\`\`
-[Implementation]
+
+\`\`\`javascript
+// Implementation code here
 \`\`\`
 
 ## Follow-up Questions
-- Follow-up 1
-- Follow-up 2`;
+
+- Follow-up question 1
+- Follow-up question 2`;
 
 // Use centralized guidelines from config, plus generate-specific rules
 const { answer: answerThresholds } = config.qualityThresholds;
@@ -179,7 +196,13 @@ For ${difficulty} level:
 - intermediate: Real-world scenarios, trade-offs, debugging
 - advanced: System design at scale, complex algorithms, production issues
 
-${isSystemDesign ? 'SYSTEM DESIGN EXPLANATION FORMAT (MANDATORY):\n' + systemDesignFormat : ''}
+${markdownFormattingRules}
+
+FIELD-SPECIFIC RULES:
+- "answer": Plain text ONLY. NO markdown, NO bold (**), NO code blocks. Just plain sentences.
+- "explanation": Well-formatted markdown following the format below. Each section separated by blank lines.
+
+${isSystemDesign ? 'SYSTEM DESIGN EXPLANATION FORMAT (MANDATORY):\n' + systemDesignFormat : 'EXPLANATION FORMAT:\n' + standardFormat}
 
 Output this exact JSON structure:
 ${JSON.stringify(schema, null, 2)}
