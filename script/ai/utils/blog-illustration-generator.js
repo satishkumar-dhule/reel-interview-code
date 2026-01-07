@@ -156,6 +156,259 @@ const gear = (x, y, size, color) => `
     <g>${icon('cog', 0, 0, size, color)}<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/></g>
   </g>`;
 
+// ============== GEOMETRIC PEOPLE ==============
+
+/**
+ * Geometric person - minimalist stick figure with circle head
+ * @param {number} x - center x position
+ * @param {number} y - bottom y position (feet)
+ * @param {number} scale - size multiplier (1 = 60px tall)
+ * @param {string} color - primary color
+ * @param {object} options - pose, expression, accessories
+ */
+const person = (x, y, scale = 1, color = COLORS.blue, options = {}) => {
+  const s = scale;
+  const headR = 12 * s;
+  const bodyH = 25 * s;
+  const legH = 20 * s;
+  const armL = 18 * s;
+  
+  const headY = y - legH - bodyH - headR;
+  const shoulderY = y - legH - bodyH + 5 * s;
+  const hipY = y - legH;
+  
+  // Pose variations
+  const pose = options.pose || 'standing';
+  let armPath = '';
+  let legPath = '';
+  
+  switch (pose) {
+    case 'waving':
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 20*s} ${shoulderY - 15*s} M${x + 8*s} ${shoulderY} L${x + 18*s} ${shoulderY + 10*s}`;
+      legPath = `M${x} ${hipY} L${x - 8*s} ${y} M${x} ${hipY} L${x + 8*s} ${y}`;
+      break;
+    case 'thinking':
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 18*s} ${shoulderY + 10*s} M${x + 8*s} ${shoulderY} L${x + 5*s} ${headY}`;
+      legPath = `M${x} ${hipY} L${x - 8*s} ${y} M${x} ${hipY} L${x + 8*s} ${y}`;
+      break;
+    case 'pointing':
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 18*s} ${shoulderY + 10*s} M${x + 8*s} ${shoulderY} L${x + 30*s} ${shoulderY - 5*s}`;
+      legPath = `M${x} ${hipY} L${x - 8*s} ${y} M${x} ${hipY} L${x + 8*s} ${y}`;
+      break;
+    case 'sitting':
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 15*s} ${shoulderY + 15*s} M${x + 8*s} ${shoulderY} L${x + 15*s} ${shoulderY + 15*s}`;
+      legPath = `M${x} ${hipY} L${x - 15*s} ${hipY} L${x - 15*s} ${y} M${x} ${hipY} L${x + 15*s} ${hipY} L${x + 15*s} ${y}`;
+      break;
+    case 'working':
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 5*s} ${shoulderY + 20*s} M${x + 8*s} ${shoulderY} L${x + 5*s} ${shoulderY + 20*s}`;
+      legPath = `M${x} ${hipY} L${x - 8*s} ${y} M${x} ${hipY} L${x + 8*s} ${y}`;
+      break;
+    default: // standing
+      armPath = `M${x - 8*s} ${shoulderY} L${x - 18*s} ${shoulderY + 15*s} M${x + 8*s} ${shoulderY} L${x + 18*s} ${shoulderY + 15*s}`;
+      legPath = `M${x} ${hipY} L${x - 8*s} ${y} M${x} ${hipY} L${x + 8*s} ${y}`;
+  }
+  
+  // Expression (simple face)
+  let face = '';
+  const expr = options.expression || 'neutral';
+  switch (expr) {
+    case 'happy':
+      face = `<circle cx="${x - 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <circle cx="${x + 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <path d="M${x - 5*s} ${headY + 4*s} Q${x} ${headY + 8*s} ${x + 5*s} ${headY + 4*s}" fill="none" stroke="${COLORS.bg}" stroke-width="${1.5*s}"/>`;
+      break;
+    case 'surprised':
+      face = `<circle cx="${x - 4*s}" cy="${headY - 2*s}" r="${2.5*s}" fill="${COLORS.bg}"/>
+              <circle cx="${x + 4*s}" cy="${headY - 2*s}" r="${2.5*s}" fill="${COLORS.bg}"/>
+              <circle cx="${x}" cy="${headY + 5*s}" r="${3*s}" fill="${COLORS.bg}"/>`;
+      break;
+    case 'thinking':
+      face = `<circle cx="${x - 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <circle cx="${x + 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <path d="M${x - 4*s} ${headY + 5*s} L${x + 4*s} ${headY + 5*s}" stroke="${COLORS.bg}" stroke-width="${1.5*s}"/>`;
+      break;
+    default: // neutral
+      face = `<circle cx="${x - 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <circle cx="${x + 4*s}" cy="${headY - 2*s}" r="${2*s}" fill="${COLORS.bg}"/>
+              <path d="M${x - 4*s} ${headY + 5*s} L${x + 4*s} ${headY + 5*s}" stroke="${COLORS.bg}" stroke-width="${1.5*s}"/>`;
+  }
+  
+  // Accessories
+  let accessories = '';
+  if (options.laptop) {
+    accessories += `<rect x="${x - 15*s}" y="${shoulderY + 15*s}" width="${30*s}" height="${20*s}" rx="${2*s}" fill="${COLORS.bgCard}" stroke="${COLORS.cyan}"/>
+                    <rect x="${x - 12*s}" y="${shoulderY + 18*s}" width="${24*s}" height="${14*s}" fill="${COLORS.cyan}" opacity="0.3"/>`;
+  }
+  if (options.phone) {
+    accessories += `<rect x="${x + 15*s}" y="${shoulderY + 5*s}" width="${8*s}" height="${14*s}" rx="${1*s}" fill="${COLORS.bgCard}" stroke="${COLORS.cyan}"/>`;
+  }
+  if (options.coffee) {
+    accessories += `<rect x="${x + 20*s}" y="${shoulderY + 10*s}" width="${8*s}" height="${12*s}" rx="${1*s}" fill="${COLORS.orange}" opacity="0.8"/>
+                    <ellipse cx="${x + 24*s}" cy="${shoulderY + 10*s}" rx="${4*s}" ry="${2*s}" fill="${COLORS.orange}"/>`;
+  }
+  
+  return `
+  <g class="person" data-pose="${pose}">
+    <!-- Head -->
+    <circle cx="${x}" cy="${headY}" r="${headR}" fill="${color}"/>
+    ${face}
+    <!-- Body -->
+    <line x1="${x}" y1="${headY + headR}" x2="${x}" y2="${hipY}" stroke="${color}" stroke-width="${3*s}" stroke-linecap="round"/>
+    <!-- Arms -->
+    <path d="${armPath}" fill="none" stroke="${color}" stroke-width="${2.5*s}" stroke-linecap="round"/>
+    <!-- Legs -->
+    <path d="${legPath}" fill="none" stroke="${color}" stroke-width="${2.5*s}" stroke-linecap="round"/>
+    ${accessories}
+  </g>`;
+};
+
+/**
+ * Speech bubble with text
+ */
+const speechBubble = (x, y, text, options = {}) => {
+  const maxChars = options.maxChars || 25;
+  const lines = [];
+  const words = text.split(' ');
+  let currentLine = '';
+  
+  for (const word of words) {
+    if ((currentLine + ' ' + word).trim().length <= maxChars) {
+      currentLine = (currentLine + ' ' + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  
+  const lineHeight = 14;
+  const padding = 12;
+  const w = Math.min(Math.max(...lines.map(l => l.length * 7), 60) + padding * 2, 200);
+  const h = lines.length * lineHeight + padding * 2;
+  
+  const tailDir = options.tailDirection || 'bottom-left';
+  let tailPath = '';
+  switch (tailDir) {
+    case 'bottom-left':
+      tailPath = `M${x + 15} ${y + h} L${x} ${y + h + 15} L${x + 30} ${y + h}`;
+      break;
+    case 'bottom-right':
+      tailPath = `M${x + w - 30} ${y + h} L${x + w} ${y + h + 15} L${x + w - 15} ${y + h}`;
+      break;
+    case 'left':
+      tailPath = `M${x} ${y + h/2 - 8} L${x - 12} ${y + h/2} L${x} ${y + h/2 + 8}`;
+      break;
+    case 'right':
+      tailPath = `M${x + w} ${y + h/2 - 8} L${x + w + 12} ${y + h/2} L${x + w} ${y + h/2 + 8}`;
+      break;
+  }
+  
+  const bgColor = options.bgColor || COLORS.bgCard;
+  const borderColor = options.borderColor || COLORS.border;
+  const textColor = options.textColor || COLORS.text;
+  
+  return `
+  <g class="speech-bubble">
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="1.5"/>
+    <path d="${tailPath}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1.5"/>
+    <rect x="${x}" y="${y + h - 2}" width="${w}" height="4" fill="${bgColor}"/>
+    ${lines.map((line, i) => 
+      `<text x="${x + padding}" y="${y + padding + 10 + i * lineHeight}" fill="${textColor}" font-size="11" font-family="${FONT}">${esc(line)}</text>`
+    ).join('')}
+  </g>`;
+};
+
+/**
+ * Thought bubble (cloud-like)
+ */
+const thoughtBubble = (x, y, text, options = {}) => {
+  const maxChars = options.maxChars || 20;
+  const lines = [];
+  const words = text.split(' ');
+  let currentLine = '';
+  
+  for (const word of words) {
+    if ((currentLine + ' ' + word).trim().length <= maxChars) {
+      currentLine = (currentLine + ' ' + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  
+  const w = Math.min(Math.max(...lines.map(l => l.length * 7), 50) + 24, 180);
+  const h = lines.length * 14 + 20;
+  
+  const bgColor = options.bgColor || COLORS.bgCard;
+  const borderColor = options.borderColor || COLORS.purple;
+  
+  return `
+  <g class="thought-bubble">
+    <ellipse cx="${x + w/2}" cy="${y + h/2}" rx="${w/2 + 5}" ry="${h/2 + 5}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1.5"/>
+    <circle cx="${x + 10}" cy="${y + h + 10}" r="6" fill="${bgColor}" stroke="${borderColor}"/>
+    <circle cx="${x}" cy="${y + h + 20}" r="4" fill="${bgColor}" stroke="${borderColor}"/>
+    ${lines.map((line, i) => 
+      `<text x="${x + 12}" y="${y + 18 + i * 14}" fill="${COLORS.text}" font-size="11" font-family="${FONT}">${esc(line)}</text>`
+    ).join('')}
+  </g>`;
+};
+
+/**
+ * Conversation scene with multiple people and dialogues
+ */
+const conversationScene = (people, dialogues, options = {}) => {
+  const parts = [];
+  
+  // Render people
+  people.forEach((p, i) => {
+    const defaultX = 100 + i * 180;
+    parts.push(person(
+      p.x || defaultX,
+      p.y || 280,
+      p.scale || 0.9,
+      COLORS[p.color] || COLORS.blue,
+      { pose: p.pose, expression: p.expression, laptop: p.laptop, phone: p.phone, coffee: p.coffee }
+    ));
+    
+    // Label under person
+    if (p.label) {
+      parts.push(`<text x="${p.x || defaultX}" y="${(p.y || 280) + 15}" text-anchor="middle" fill="${COLORS.textMuted}" font-size="10" font-family="${FONT}">${esc(p.label)}</text>`);
+    }
+  });
+  
+  // Render dialogues
+  dialogues.forEach(d => {
+    if (d.type === 'thought') {
+      parts.push(thoughtBubble(d.x, d.y, d.text, d.options));
+    } else {
+      parts.push(speechBubble(d.x, d.y, d.text, { tailDirection: d.tailDirection, ...d.options }));
+    }
+  });
+  
+  return parts.join('\n');
+};
+
+/**
+ * Team/group scene - multiple people in a row
+ */
+const teamScene = (count = 3, options = {}) => {
+  const parts = [];
+  const colors = [COLORS.blue, COLORS.purple, COLORS.cyan, COLORS.green, COLORS.orange];
+  const poses = ['standing', 'waving', 'thinking', 'pointing', 'working'];
+  const startX = options.startX || 120;
+  const spacing = options.spacing || 140;
+  const y = options.y || 260;
+  
+  for (let i = 0; i < Math.min(count, 5); i++) {
+    const color = colors[i % colors.length];
+    const pose = options.samePose ? (options.pose || 'standing') : poses[i % poses.length];
+    parts.push(person(startX + i * spacing, y, 0.85, color, { pose }));
+  }
+  
+  return parts.join('\n');
+};
+
 const bottomLabel = (text, color = COLORS.textMuted) => {
   const w = text.length * 7.5 + 24;
   return `
@@ -320,6 +573,57 @@ function renderScene(spec) {
     parts.push(gear(GRID.gear.x, GRID.gear.y, 28, color));
   }
   
+  // === PEOPLE & DIALOGUE RENDERING ===
+  
+  // Render team (multiple people in a row)
+  if (el.team) {
+    parts.push(teamScene(el.team.count || 3, {
+      startX: el.team.startX,
+      spacing: el.team.spacing,
+      y: el.team.y,
+      samePose: el.team.samePose,
+      pose: el.team.pose
+    }));
+  }
+  
+  // Render individual people
+  if (el.people?.length) {
+    el.people.forEach(p => {
+      parts.push(person(
+        p.x || 200,
+        p.y || 280,
+        p.scale || 0.9,
+        COLORS[p.color] || color,
+        { 
+          pose: p.pose || 'standing', 
+          expression: p.expression || 'neutral',
+          laptop: p.laptop,
+          phone: p.phone,
+          coffee: p.coffee
+        }
+      ));
+      
+      // Label under person
+      if (p.label) {
+        parts.push(`<text x="${p.x || 200}" y="${(p.y || 280) + 15}" text-anchor="middle" fill="${COLORS.textMuted}" font-size="10" font-family="${FONT}">${esc(p.label)}</text>`);
+      }
+    });
+  }
+  
+  // Render dialogues (speech bubbles and thought bubbles)
+  if (el.dialogues?.length) {
+    el.dialogues.forEach(d => {
+      if (d.type === 'thought') {
+        parts.push(thoughtBubble(d.x || 100, d.y || 50, d.text || '', d.options || {}));
+      } else {
+        parts.push(speechBubble(d.x || 100, d.y || 50, d.text || '', { 
+          tailDirection: d.tailDirection || 'bottom-left',
+          ...(d.options || {})
+        }));
+      }
+    });
+  }
+  
   // Bottom label
   const labelText = String(spec.bottomLabel || spec.title || 'System Overview').substring(0, 35);
   parts.push(bottomLabel(labelText, color));
@@ -410,6 +714,98 @@ const FALLBACK_SCENES = {
       servers: [{ label: 'prod-1', position: 'left', status: 'error' }, { label: 'prod-2', position: 'right', status: 'warn' }],
       statusItems: [{ state: 'error', text: 'Service down' }, { state: 'error', text: 'OOM killed' }], icons: [{ type: 'xmark' }] }},
   
+  // === PEOPLE & DIALOGUE SCENES ===
+  
+  interview: { sceneType: 'interview', title: 'Technical Interview', primaryColor: 'blue', bottomLabel: 'Technical Interview',
+    elements: { 
+      people: [
+        { x: 150, y: 270, color: 'blue', pose: 'sitting', label: 'Candidate', laptop: true },
+        { x: 450, y: 270, color: 'purple', pose: 'thinking', label: 'Interviewer' }
+      ],
+      dialogues: [
+        { x: 280, y: 80, text: 'Can you explain how you would design a rate limiter?', tailDirection: 'right' },
+        { x: 50, y: 140, text: 'I would use a token bucket algorithm...', tailDirection: 'bottom-left' }
+      ]
+    }},
+  
+  codeReview: { sceneType: 'codeReview', title: 'Code Review', primaryColor: 'cyan', bottomLabel: 'Code Review Session',
+    elements: {
+      people: [
+        { x: 120, y: 280, color: 'cyan', pose: 'pointing', label: 'Reviewer' },
+        { x: 320, y: 280, color: 'green', pose: 'working', label: 'Author', laptop: true }
+      ],
+      dialogues: [
+        { x: 180, y: 60, text: 'This could be simplified using reduce()', tailDirection: 'bottom-left' }
+      ],
+      codePanel: { show: true, lines: [{ text: 'for (let i = 0; i < arr.length; i++)' }, { text: '  sum += arr[i];', highlight: true }], title: 'review.ts' }
+    }},
+  
+  pairProgramming: { sceneType: 'pairProgramming', title: 'Pair Programming', primaryColor: 'green', bottomLabel: 'Pair Programming',
+    elements: {
+      people: [
+        { x: 180, y: 280, color: 'green', pose: 'working', label: 'Driver', laptop: true },
+        { x: 380, y: 280, color: 'blue', pose: 'thinking', label: 'Navigator', coffee: true }
+      ],
+      dialogues: [
+        { x: 400, y: 80, text: 'Try extracting that into a helper function', type: 'thought' }
+      ]
+    }},
+  
+  standup: { sceneType: 'standup', title: 'Daily Standup', primaryColor: 'purple', bottomLabel: 'Daily Standup Meeting',
+    elements: {
+      team: { count: 4, startX: 100, spacing: 150, y: 270 },
+      dialogues: [
+        { x: 200, y: 50, text: 'Yesterday I fixed the auth bug', tailDirection: 'bottom-left' },
+        { x: 400, y: 100, text: 'I\'ll review the PR today', tailDirection: 'bottom-right' }
+      ]
+    }},
+  
+  mentoring: { sceneType: 'mentoring', title: 'Mentoring Session', primaryColor: 'orange', bottomLabel: 'Mentoring & Learning',
+    elements: {
+      people: [
+        { x: 200, y: 280, color: 'orange', pose: 'pointing', label: 'Mentor' },
+        { x: 450, y: 280, color: 'cyan', pose: 'thinking', label: 'Mentee', expression: 'thinking' }
+      ],
+      dialogues: [
+        { x: 100, y: 60, text: 'Always consider edge cases first', tailDirection: 'bottom-left' },
+        { x: 380, y: 130, text: 'What about null inputs?', type: 'thought' }
+      ]
+    }},
+  
+  collaboration: { sceneType: 'collaboration', title: 'Team Collaboration', primaryColor: 'cyan', bottomLabel: 'Team Collaboration',
+    elements: {
+      team: { count: 3, startX: 150, spacing: 180, y: 270, samePose: false },
+      dialogues: [
+        { x: 250, y: 50, text: 'Let\'s split this into microservices', tailDirection: 'bottom-left' },
+        { x: 450, y: 100, text: 'Good idea!', tailDirection: 'bottom-right' }
+      ],
+      statusItems: [{ state: 'ok', text: 'Sprint 12' }, { state: 'info', text: '3 days left' }]
+    }},
+  
+  debugging_pair: { sceneType: 'debugging_pair', title: 'Debugging Together', primaryColor: 'red', bottomLabel: 'Collaborative Debugging',
+    elements: {
+      people: [
+        { x: 150, y: 280, color: 'red', pose: 'working', label: 'Dev 1', laptop: true, expression: 'surprised' },
+        { x: 400, y: 280, color: 'orange', pose: 'pointing', label: 'Dev 2' }
+      ],
+      dialogues: [
+        { x: 50, y: 60, text: 'Found it! Missing await', tailDirection: 'bottom-left' },
+        { x: 350, y: 120, text: 'That explains the race condition!', tailDirection: 'bottom-right' }
+      ],
+      terminal: { show: true, lines: [{ text: 'TypeError: undefined', type: 'error' }] }
+    }},
+  
+  presentation: { sceneType: 'presentation', title: 'Tech Talk', primaryColor: 'blue', bottomLabel: 'Technical Presentation',
+    elements: {
+      people: [
+        { x: 550, y: 280, color: 'blue', pose: 'pointing', label: 'Speaker' }
+      ],
+      dialogues: [
+        { x: 400, y: 50, text: 'Event-driven architecture enables loose coupling', tailDirection: 'bottom-right' }
+      ],
+      codePanel: { show: true, lines: [{ text: 'eventBus.emit("order.created")' }, { text: 'eventBus.on("order.created", handler)' }], title: 'events.ts' }
+    }},
+  
   default: { sceneType: 'default', title: 'System Overview', primaryColor: 'cyan', bottomLabel: 'System Overview',
     elements: { metrics: [{ label: 'Requests', value: '8.2', unit: 'K/s' }, { label: 'Latency', value: '12', unit: 'ms' }],
       servers: [{ label: 'API', position: 'left', status: 'ok' }], databases: [{ label: 'Database', position: 'right' }],
@@ -464,6 +860,15 @@ const KEYWORDS = {
   api: ['api', 'rest', 'graphql', 'endpoint', 'gateway', 'microservice', 'grpc', 'webhook'],
   monitoring: ['monitor', 'observ', 'metric', 'log', 'alert', 'grafana', 'datadog', 'prometheus'],
   architecture: ['architecture', 'design', 'pattern', 'system', 'infrastructure', 'diagram', 'flow'],
+  // People & dialogue scenes
+  interview: ['interview', 'hiring', 'candidate', 'recruiter', 'behavioral', 'technical interview', 'whiteboard'],
+  codeReview: ['code review', 'pr review', 'pull request', 'review comment', 'feedback', 'approve'],
+  pairProgramming: ['pair programming', 'pairing', 'mob programming', 'driver', 'navigator', 'xp'],
+  standup: ['standup', 'daily', 'scrum', 'sprint', 'agile', 'retrospective', 'planning'],
+  mentoring: ['mentor', 'mentee', 'coaching', 'learning', 'teaching', 'onboarding', 'junior', 'senior'],
+  collaboration: ['collaboration', 'teamwork', 'team', 'together', 'brainstorm', 'workshop'],
+  debugging_pair: ['debug together', 'pair debug', 'troubleshoot together', 'investigate'],
+  presentation: ['presentation', 'talk', 'conference', 'meetup', 'demo', 'showcase', 'lightning talk'],
 };
 
 function detectSceneType(title, content = '') {

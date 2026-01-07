@@ -6,19 +6,23 @@
 import { jsonOutputRule, buildSystemContext } from './base.js';
 
 export const schema = {
-  sceneType: "string - one of: debugging, deployment, scaling, database, security, performance, testing, success, error, mobile, frontend, api, monitoring, architecture",
+  sceneType: "string - one of: debugging, deployment, scaling, database, security, performance, testing, success, error, mobile, frontend, api, monitoring, architecture, interview, codeReview, pairProgramming, standup, mentoring, collaboration, debugging_pair, presentation",
   title: "string - short title for the scene (max 30 chars)",
-  primaryColor: "string - main accent color: blue, purple, green, pink, cyan, orange",
+  primaryColor: "string - main accent color: blue, purple, green, pink, cyan, orange, red",
   elements: {
     servers: [{ label: "string", status: "ok|warn|error", cpu: "number 0-100", position: "left|center|right" }],
     databases: [{ label: "string", position: "left|center|right" }],
     clouds: [{ label: "string", position: "left|center|right" }],
-    codePanel: { show: "boolean", lines: [{ text: "string", highlight: "boolean" }] },
+    codePanel: { show: "boolean", lines: [{ text: "string", highlight: "boolean" }], title: "string" },
     terminal: { show: "boolean", lines: [{ text: "string", type: "command|success|error|info" }] },
     metrics: [{ label: "string", value: "string", unit: "string", trend: "up|down|stable" }],
     statusItems: [{ state: "ok|warn|error|info", text: "string" }],
     connections: [{ from: "string", to: "string", label: "string" }],
-    icons: [{ type: "checkmark|xmark|lightning|shield|gear", position: "string" }]
+    icons: [{ type: "checkmark|xmark|lightning|shield|gear", position: "string" }],
+    // People & dialogue elements
+    people: [{ x: "number", y: "number", color: "string", pose: "standing|waving|thinking|pointing|sitting|working", expression: "neutral|happy|surprised|thinking", label: "string", laptop: "boolean", phone: "boolean", coffee: "boolean" }],
+    team: { count: "number 2-5", startX: "number", spacing: "number", y: "number", samePose: "boolean", pose: "string" },
+    dialogues: [{ x: "number", y: "number", text: "string", type: "speech|thought", tailDirection: "bottom-left|bottom-right|left|right" }]
   },
   bottomLabel: "string - descriptive label at bottom of scene"
 };
@@ -85,7 +89,21 @@ SCENE TYPES:
 - monitoring: Dashboards, alerts, observability
 - architecture: System design, microservices, data flow
 
-COLOR OPTIONS: blue, purple, green, pink, cyan, orange
+PEOPLE & DIALOGUE SCENES (use geometric stick figures):
+- interview: Technical interview with candidate and interviewer
+- codeReview: Code review session with reviewer and author
+- pairProgramming: Pair programming with driver and navigator
+- standup: Daily standup with team members
+- mentoring: Mentoring session with mentor and mentee
+- collaboration: Team brainstorming or workshop
+- debugging_pair: Two developers debugging together
+- presentation: Tech talk or demo with speaker
+
+PEOPLE POSES: standing, waving, thinking, pointing, sitting, working
+EXPRESSIONS: neutral, happy, surprised, thinking
+ACCESSORIES: laptop, phone, coffee
+
+COLOR OPTIONS: blue, purple, green, pink, cyan, orange, red
 
 Output this exact JSON structure:
 ${JSON.stringify(schema, null, 2)}
