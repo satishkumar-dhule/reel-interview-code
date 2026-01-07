@@ -43,19 +43,19 @@ test.describe('Navigation', () => {
     await waitForPageReady(page);
     
     if (isMobile) {
-      // Mobile: tap Learn in bottom nav (fixed at bottom)
+      // Mobile: tap Learn in bottom nav to open submenu, then tap Channels
       const mobileNav = page.locator('nav.fixed.bottom-0');
       await mobileNav.locator('button').filter({ hasText: 'Learn' }).click();
       await page.waitForTimeout(500);
+      // Click Channels in the submenu that appears
+      await page.locator('button').filter({ hasText: 'Channels' }).first().click();
+      await page.waitForTimeout(500);
     } else {
-      // Desktop: click Learn in sidebar
+      // Desktop: click Learn section header to expand, then click Channels
       await page.locator('aside button').filter({ hasText: 'Learn' }).click();
       await page.waitForTimeout(300);
-      // Then click All Channels in submenu
-      const allChannels = page.locator('aside button').filter({ hasText: 'All Channels' });
-      if (await allChannels.isVisible()) {
-        await allChannels.click();
-      }
+      // Then click Channels in submenu
+      await page.locator('aside button').filter({ hasText: 'Channels' }).click();
       await page.waitForTimeout(500);
     }
     await expect(page).toHaveURL(/\/channels/);
@@ -64,6 +64,12 @@ test.describe('Navigation', () => {
   test('navigate to profile via credits', async ({ page, isMobile }) => {
     await page.goto('/');
     await waitForPageReady(page);
+    
+    // Hide the pixel mascot that can intercept clicks
+    await page.evaluate(() => {
+      const mascot = document.querySelector('[data-testid="pixel-mascot"]');
+      if (mascot) (mascot as HTMLElement).style.display = 'none';
+    });
     
     // Click on credits display to go to profile - different location on mobile vs desktop
     if (isMobile) {
