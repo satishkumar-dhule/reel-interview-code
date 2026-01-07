@@ -175,6 +175,7 @@ export default function AllChannelsRedesigned() {
                   channel={channel}
                   isSubscribed={isSubscribed(channel.id)}
                   onToggle={() => toggleSubscription(channel.id)}
+                  onNavigate={() => navigate(`/channel/${channel.id}`)}
                   questionCount={questionCounts[channel.id] || 0}
                   newThisWeek={newThisWeekCounts[channel.id]}
                   index={index}
@@ -206,6 +207,7 @@ export default function AllChannelsRedesigned() {
                         channel={channel}
                         isSubscribed={isSubscribed(channel.id)}
                         onToggle={() => toggleSubscription(channel.id)}
+                        onNavigate={() => navigate(`/channel/${channel.id}`)}
                         questionCount={questionCounts[channel.id] || 0}
                         newThisWeek={newThisWeekCounts[channel.id]}
                         index={index}
@@ -237,6 +239,7 @@ function ChannelCard({
   channel, 
   isSubscribed, 
   onToggle,
+  onNavigate,
   questionCount,
   newThisWeek,
   index
@@ -244,6 +247,7 @@ function ChannelCard({
   channel: ChannelConfig; 
   isSubscribed: boolean; 
   onToggle: () => void;
+  onNavigate: () => void;
   questionCount: number;
   newThisWeek?: number;
   index: number;
@@ -264,7 +268,7 @@ function ChannelCard({
           : 'border-border hover:border-primary/30 hover:shadow-md'
         }
       `}
-      onClick={onToggle}
+      onClick={onNavigate}
     >
       {/* New badge - disabled for now as all questions show as new after migration */}
       {/* {newThisWeek && newThisWeek > 0 && (
@@ -283,6 +287,10 @@ function ChannelCard({
           {iconMap[channel.icon] || <Cpu className="w-5 h-5" />}
         </div>
         <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
           className={`
             p-2 rounded-full transition-all
             ${isSubscribed 
