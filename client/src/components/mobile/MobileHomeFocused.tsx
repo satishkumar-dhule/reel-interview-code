@@ -15,6 +15,12 @@ import { DailyReviewCard, notifySRSUpdate } from '../DailyReviewCard';
 import { ListenIconButton } from '../ListenButton';
 import { loadTests, TestQuestion, Test, getSessionQuestions } from '../../lib/tests';
 import { addToSRS } from '../../lib/spaced-repetition';
+import { 
+  initializeQuizSession, 
+  updateSession, 
+  selectNextQuestion,
+  QuizSession 
+} from '../../lib/progressive-quiz';
 import {
   Cpu, Terminal, Layout, Database, Activity, GitBranch, Server,
   Layers, Smartphone, Shield, Brain, Workflow, Box, Cloud, Code,
@@ -214,6 +220,7 @@ function QuickQuizCard({
   const [isLoading, setIsLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [creditChange, setCreditChange] = useState<number | null>(null);
+  const [quizSession, setQuizSession] = useState<QuizSession>(initializeQuizSession());
   const { onQuizAnswer, config } = useCredits();
   
   // Memoize channel IDs to prevent unnecessary reloads
@@ -230,16 +237,26 @@ function QuickQuizCard({
         setTests(relevantTests);
         
         if (relevantTests.length > 0) {
-          // Gather questions from all relevant tests and shuffle
-          const allQuestions: TestQuestion[] = [];
-          relevantTests.forEach(test => {
-            const sessionQuestions = getSessionQuestions(test, 5); // 5 from each channel
-            allQuestions.push(...sessionQuestions);
-          });
+          // Initialize progressive quiz session
+          const newSession = initializeQuizSession();
+          setQuizSession(newSession);
           
-          // Shuffle all questions together
-          const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-          setQuestions(shuffled.slice(0, 10)); // Take 10 questions max
+          // Generate progressive questions
+          const progressiveQuestions: TestQuestion[] = [];
+          let previousQuestion: TestQuestion | undefined;
+          
+          for (let i = 0; i < 10; i++) {
+            const next = selectNextQuestion(relevantTests, newSession, previousQuestion);
+            if (!next) break;
+            
+            progressiveQuestions.push(next.question);
+            previousQuestion = next.question;
+            
+            // Update session for next selection (simulate average performance)
+            Object.assign(newSession, updateSession(newSession, next.question, true));
+          }
+          
+          setQuestions(progressiveQuestions);
         }
       } catch (e) {
         console.error('Failed to load quiz questions', e);
@@ -253,25 +270,31 @@ function QuickQuizCard({
   }, [channelIds]);
 
   const handleRefresh = useCallback(() => {
-    // Re-shuffle questions first, then reset state in a single batch
+    // Re-generate progressive questions
     if (tests.length > 0) {
-      const allQuestions: TestQuestion[] = [];
-      tests.forEach(test => {
-        const sessionQuestions = getSessionQuestions(test, 5);
-        allQuestions.push(...sessionQuestions);
-      });
-      const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-      const newQuestions = shuffled.slice(0, 10);
+      const newSession = initializeQuizSession();
+      const progressiveQuestions: TestQuestion[] = [];
+      let previousQuestion: TestQuestion | undefined;
       
-      // Reset index first to 0, then set new questions
-      // This prevents the animation from seeing intermediate states
+      for (let i = 0; i < 10; i++) {
+        const next = selectNextQuestion(tests, newSession, previousQuestion);
+        if (!next) break;
+        
+        progressiveQuestions.push(next.question);
+        previousQuestion = next.question;
+        
+        // Update session for next selection
+        Object.assign(newSession, updateSession(newSession, next.question, true));
+      }
+      
+      // Reset state
       setCurrentIndex(0);
       setSelectedAnswer(null);
       setShowFeedback(null);
       setCorrectCount(0);
       setTotalAnswered(0);
-      // Set questions last to trigger single re-render
-      setQuestions(newQuestions);
+      setQuizSession(newSession);
+      setQuestions(progressiveQuestions);
     }
   }, [tests]);
 
@@ -284,6 +307,9 @@ function QuickQuizCard({
     
     setShowFeedback(isCorrect ? 'correct' : 'incorrect');
     setTotalAnswered(prev => prev + 1);
+    
+    // Update quiz session with performance
+    setQuizSession(prev => updateSession(prev, currentQuestion, isCorrect));
     
     // Process credits for quiz answer
     const creditResult = onQuizAnswer(isCorrect);
@@ -304,8 +330,8 @@ function QuickQuizCard({
       }
     }
     
-    // Auto-advance after feedback
-    const advanceDelay = isCorrect ? 800 : 1500;
+    // Auto-advance after feedback - LONGER delay for wrong answers
+    const advanceDelay = isCorrect ? 800 : 3500; // Increased from 1500ms to 3500ms
     setIsTransitioning(true);
     
     setTimeout(() => {
@@ -381,6 +407,16 @@ function QuickQuizCard({
             <span className="text-[10px] sm:text-xs text-muted-foreground">
               {currentIndex + 1}/{questions.length}
             </span>
+            {/* Difficulty indicator */}
+            {totalAnswered > 0 && (
+              <span className={`text-[9px] px-1.5 py-0.5 rounded ${
+                quizSession.difficultyLevel === 'beginner' ? 'bg-green-500/10 text-green-600' :
+                quizSession.difficultyLevel === 'intermediate' ? 'bg-yellow-500/10 text-yellow-600' :
+                'bg-red-500/10 text-red-600'
+              }`}>
+                {quizSession.difficultyLevel}
+              </span>
+            )}
             <span className="text-[9px] flex items-center gap-0.5 ml-1">
               <Coins className="w-2.5 h-2.5 text-amber-400" />
               <span className="text-green-400">+{config.QUIZ_CORRECT}</span>
