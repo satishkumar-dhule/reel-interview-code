@@ -144,6 +144,24 @@ async function main() {
   // Fetch bot activity from work_queue
   console.log('\n📥 Fetching bot activity...');
   try {
+    // First check if work_queue table exists and what columns it has
+    const tableInfo = await client.execute(`
+      SELECT name FROM sqlite_master WHERE type='table' AND name='work_queue'
+    `);
+    
+    if (tableInfo.rows.length === 0) {
+      throw new Error('work_queue table does not exist');
+    }
+
+    // Try simple query first to check available columns
+    const testQuery = await client.execute(`SELECT * FROM work_queue LIMIT 1`);
+    const hasCompletedAt = testQuery.columns.includes('completed_at');
+    const hasBotType = testQuery.columns.includes('bot_type');
+    
+    if (!hasCompletedAt || !hasBotType) {
+      throw new Error('Required columns missing from work_queue table');
+    }
+
     // Get only the most recent activity per question per bot (no duplicates)
     const activityResult = await client.execute(`
       WITH RankedActivity AS (
@@ -418,6 +436,24 @@ async function main() {
   // Generate changelog from bot activity
   console.log('\n📥 Generating changelog from bot activity...');
   try {
+    // First check if work_queue table exists and has required columns
+    const tableInfo = await client.execute(`
+      SELECT name FROM sqlite_master WHERE type='table' AND name='work_queue'
+    `);
+    
+    if (tableInfo.rows.length === 0) {
+      throw new Error('work_queue table does not exist');
+    }
+
+    // Check for required columns
+    const testQuery = await client.execute(`SELECT * FROM work_queue LIMIT 1`);
+    const hasCompletedAt = testQuery.columns.includes('completed_at');
+    const hasBotType = testQuery.columns.includes('bot_type');
+    
+    if (!hasCompletedAt || !hasBotType) {
+      throw new Error('Required columns missing from work_queue table');
+    }
+
     // Get recent bot activity grouped by date
     const changelogResult = await client.execute(`
       SELECT 
