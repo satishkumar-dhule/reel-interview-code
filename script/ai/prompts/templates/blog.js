@@ -177,7 +177,14 @@ export const guidelines = [
 ];
 
 export function build(context) {
-  const { question, answer, explanation, channel, difficulty, tags, realWorldCase } = context;
+  const { question, answer, explanation, channel, difficulty, tags: rawTags, realWorldCase } = context;
+
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try { tags = JSON.parse(tags); } catch { tags = []; }
+  }
+  tags = Array.isArray(tags) ? tags : [];
 
   // Build real-world case section if provided
   const realWorldCaseSection = realWorldCase ? `
@@ -208,7 +215,7 @@ Answer: ${answer || 'N/A'}
 Explanation: ${explanation || 'N/A'}
 Topic: ${channel}
 Difficulty: ${difficulty}
-Tags: ${(tags || []).join(', ')}
+Tags: ${tags.join(', ')}
 ${realWorldCaseSection}
 
 STORYTELLING REQUIREMENTS:

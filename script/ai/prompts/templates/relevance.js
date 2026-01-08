@@ -96,8 +96,22 @@ export const scoringCriteria = {
 export const guidelines = config.guidelines.relevance;
 
 export function build(context) {
-  const { question, answer, explanation, channel, difficulty, tags, companies } = context;
+  const { question, answer, explanation, channel, difficulty, tags: rawTags, companies: rawCompanies } = context;
   
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try { tags = JSON.parse(tags); } catch { tags = []; }
+  }
+  tags = Array.isArray(tags) ? tags : [];
+
+  // Parse companies if it's a string
+  let companies = rawCompanies;
+  if (typeof companies === 'string') {
+    try { companies = JSON.parse(companies); } catch { companies = []; }
+  }
+  companies = Array.isArray(companies) ? companies : [];
+
   const criteriaText = Object.entries(scoringCriteria)
     .map(([key, c]) => {
       const scaleText = Object.entries(c.scale)
@@ -116,8 +130,8 @@ Answer: "${(answer || '').substring(0, 500)}"
 Explanation: "${(explanation || '').substring(0, 300)}"
 Channel: ${channel}
 Difficulty: ${difficulty}
-Tags: ${(tags || []).join(', ') || 'N/A'}
-Companies: ${(companies || []).join(', ') || 'N/A'}
+Tags: ${tags.join(', ') || 'N/A'}
+Companies: ${companies.join(', ') || 'N/A'}
 
 Score each criterion from 1-10:
 

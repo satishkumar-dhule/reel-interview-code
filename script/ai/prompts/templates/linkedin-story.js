@@ -85,10 +85,22 @@ const HOOK_PATTERNS = [
 ];
 
 export function build(context) {
-  const { title, excerpt, channel, tags } = context;
+  const { title, excerpt, channel, tags: rawTags } = context;
+  
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try {
+      tags = JSON.parse(tags);
+    } catch {
+      // If not valid JSON, split by comma or use as-is
+      tags = tags.includes(',') ? tags.split(',').map(t => t.trim()) : [tags];
+    }
+  }
+  tags = Array.isArray(tags) ? tags : [];
   
   // Find relevant recent trends based on channel and content
-  const contentText = `${title} ${excerpt} ${channel} ${(tags || []).join(' ')}`.toLowerCase();
+  const contentText = `${title} ${excerpt} ${channel} ${tags.join(' ')}`.toLowerCase();
   const relevantTrends = RECENT_TECH_TRENDS.filter(t => contentText.includes(t.keyword));
   
   const trendContext = relevantTrends.length > 0 

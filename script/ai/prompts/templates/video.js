@@ -28,7 +28,14 @@ export const TRUSTED_CHANNELS = [
 ];
 
 export function buildKeywordPrompt(context) {
-  const { question, channel, subChannel, tags } = context;
+  const { question, channel, subChannel, tags: rawTags } = context;
+
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try { tags = JSON.parse(tags); } catch { tags = []; }
+  }
+  tags = Array.isArray(tags) ? tags : [];
 
   return `You are a keyword extractor. Output ONLY valid JSON, no explanations.
 
@@ -36,7 +43,7 @@ Extract 3-5 search keywords from this technical interview question that would he
 
 Question: "${question}"
 Topic: ${channel}/${subChannel || 'general'}
-Tags: ${(tags || []).join(', ')}
+Tags: ${tags.join(', ')}
 
 Focus on:
 - Core technical concepts

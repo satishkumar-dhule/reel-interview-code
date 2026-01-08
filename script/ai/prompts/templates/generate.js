@@ -172,8 +172,22 @@ export const guidelines = [
 ];
 
 export function build(context) {
-  const { channel, subChannel, difficulty, tags, targetCompanies, scenarioHint } = context;
+  const { channel, subChannel, difficulty, tags: rawTags, targetCompanies: rawCompanies, scenarioHint } = context;
   
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try { tags = JSON.parse(tags); } catch { tags = []; }
+  }
+  tags = Array.isArray(tags) ? tags : [];
+
+  // Parse targetCompanies if it's a string
+  let targetCompanies = rawCompanies;
+  if (typeof targetCompanies === 'string') {
+    try { targetCompanies = JSON.parse(targetCompanies); } catch { targetCompanies = []; }
+  }
+  targetCompanies = Array.isArray(targetCompanies) ? targetCompanies : [];
+
   const isSystemDesign = channel === 'system-design';
   const explanationFormat = isSystemDesign ? systemDesignFormat : standardFormat;
 
@@ -184,8 +198,8 @@ Generate a REAL interview question that you would actually ask candidates.
 CONTEXT:
 - Channel: ${channel}/${subChannel}
 - Difficulty: ${difficulty}
-- Topics: ${(tags || []).join(', ')}
-- Target companies: ${(targetCompanies || []).join(', ')}
+- Topics: ${tags.join(', ')}
+- Target companies: ${targetCompanies.join(', ')}
 ${scenarioHint ? `- Example scenario for inspiration: ${scenarioHint}` : ''}
 
 REQUIREMENTS:

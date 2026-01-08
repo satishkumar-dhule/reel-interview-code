@@ -6,6 +6,25 @@
 export const jsonOutputRule = `IMPORTANT: Return ONLY the JSON object. No other text, no markdown, no explanations.`;
 
 /**
+ * Parse a value that might be a JSON string or already an array
+ * Handles database values that are stored as JSON strings
+ */
+export function parseArrayField(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      // If not valid JSON, try splitting by comma
+      return value.includes(',') ? value.split(',').map(s => s.trim()) : [value];
+    }
+  }
+  return [];
+}
+
+/**
  * STRICT MARKDOWN FORMATTING RULES
  * These rules MUST be followed for all generated content to ensure proper rendering.
  */

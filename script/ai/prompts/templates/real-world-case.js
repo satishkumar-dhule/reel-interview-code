@@ -63,7 +63,21 @@ export const guidelines = [
 ];
 
 export function build(context) {
-  const { question, answer, explanation, channel, tags, companies, excludeCompanies } = context;
+  const { question, answer, explanation, channel, tags: rawTags, companies: rawCompanies, excludeCompanies } = context;
+
+  // Parse tags if it's a string (from database)
+  let tags = rawTags;
+  if (typeof tags === 'string') {
+    try { tags = JSON.parse(tags); } catch { tags = []; }
+  }
+  tags = Array.isArray(tags) ? tags : [];
+
+  // Parse companies if it's a string
+  let companies = rawCompanies;
+  if (typeof companies === 'string') {
+    try { companies = JSON.parse(companies); } catch { companies = []; }
+  }
+  companies = Array.isArray(companies) ? companies : [];
 
   const excludeSection = excludeCompanies?.length > 0 
     ? `\nDO NOT USE THESE COMPANIES (their sources were invalid): ${excludeCompanies.join(', ')}\nFind a DIFFERENT company with a valid, working source URL.\n`
@@ -80,8 +94,8 @@ Question: ${question}
 Answer: ${answer || 'N/A'}
 Explanation: ${explanation || 'N/A'}
 Channel: ${channel}
-Tags: ${(tags || []).join(', ')}
-${companies?.length > 0 ? `Companies mentioned: ${companies.join(', ')}` : ''}
+Tags: ${tags.join(', ')}
+${companies.length > 0 ? `Companies mentioned: ${companies.join(', ')}` : ''}
 
 DISCOVERY GUIDELINES:
 ${guidelines.map(g => `- ${g}`).join('\n')}
