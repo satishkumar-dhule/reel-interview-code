@@ -37,7 +37,9 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { UserPreferencesProvider, useUserPreferences } from "./context/UserPreferencesContext";
 import { BadgeProvider } from "./context/BadgeContext";
 import { CreditsProvider, useCredits } from "./context/CreditsContext";
+import { AchievementProvider, useAchievementContext } from "./context/AchievementContext";
 import { CreditSplash } from "./components/CreditsDisplay";
+import { AchievementNotificationManager } from "./components/AchievementNotificationManager";
 import { usePageViewTracking, useSessionTracking, useInteractionTracking } from "./hooks/use-analytics";
 import { preloadQuestions, getQuestionByIdAsync } from "./lib/questions-loader";
 import PixelMascot from "./components/PixelMascot";
@@ -153,6 +155,15 @@ function AppContent() {
   useSessionTracking();
   useInteractionTracking();
   
+  // Track daily login for achievements
+  const { trackEvent } = useAchievementContext();
+  useEffect(() => {
+    trackEvent({
+      type: 'daily_login',
+      timestamp: new Date().toISOString(),
+    });
+  }, []);
+  
   // Preload questions for search functionality
   useEffect(() => {
     preloadQuestions().catch(console.error);
@@ -172,6 +183,7 @@ function AppContent() {
       <MascotToaster />
       <BackgroundMascots />
       <GlobalCreditSplash />
+      <AchievementNotificationManager />
       {/* Progressive onboarding - non-blocking, appears after delay */}
       {needsOnboarding && <ProgressiveOnboarding />}
     </>
@@ -199,9 +211,11 @@ function App() {
             <TooltipProvider>
               <BadgeProvider>
                 <CreditsProvider>
-                  <StagingBanner />
-                  <Toaster />
-                  <AppContent />
+                  <AchievementProvider>
+                    <StagingBanner />
+                    <Toaster />
+                    <AppContent />
+                  </AchievementProvider>
                 </CreditsProvider>
               </BadgeProvider>
             </TooltipProvider>

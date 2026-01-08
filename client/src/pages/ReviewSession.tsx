@@ -19,6 +19,7 @@ import {
 } from '../lib/spaced-repetition';
 import { getQuestionById } from '../lib/questions-loader';
 import { useCredits } from '../context/CreditsContext';
+import { useAchievementContext } from '../context/AchievementContext';
 import { ListenButton } from '../components/ListenButton';
 import type { Question } from '../types';
 import { EnhancedMermaid } from '../components/EnhancedMermaid';
@@ -165,6 +166,7 @@ export default function ReviewSession() {
   const [xpPopup, setXpPopup] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
   const [creditPopup, setCreditPopup] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
   const { onSRSReview, config } = useCredits();
+  const { trackEvent } = useAchievementContext();
 
   // Load due cards
   useEffect(() => {
@@ -221,6 +223,13 @@ export default function ReviewSession() {
       setCreditPopup({ amount: creditResult.amount, show: true });
       setTimeout(() => setCreditPopup({ amount: 0, show: false }), 1200);
     }
+    
+    // Track achievement event
+    trackEvent({
+      type: 'srs_review',
+      timestamp: new Date().toISOString(),
+      data: { rating },
+    });
 
     // Update session stats
     setSessionStats(prev => ({ ...prev, [rating]: prev[rating] + 1 }));

@@ -11,8 +11,9 @@ import { useChannelStats } from '../hooks/use-stats';
 import { useUserPreferences } from '../context/UserPreferencesContext';
 import { useProgress, useGlobalStats } from '../hooks/use-progress';
 import { useCredits } from '../context/CreditsContext';
+import { useLevel } from '../hooks/use-level';
 import { SEOHead } from '../components/SEOHead';
-import { MetricCard } from '../components/unified';
+import { MetricCard, LevelDisplay } from '../components/unified';
 import {
   Code, Trophy, Target, Flame, BookOpen, ChevronRight,
   Bell, HelpCircle, Zap, Calendar, TrendingUp, Bookmark, Shuffle, Eye,
@@ -35,6 +36,7 @@ export default function Profile() {
   const { getSubscribedChannels, preferences, toggleShuffleQuestions, togglePrioritizeUnvisited } = useUserPreferences();
   const { stats: activityStats } = useGlobalStats();
   const { balance, state: creditsState, history, onRedeemCoupon, formatCredits, config } = useCredits();
+  const level = useLevel();
   const subscribedChannels = getSubscribedChannels();
   
   const [couponCode, setCouponCode] = useState('');
@@ -73,6 +75,22 @@ export default function Profile() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             {/* Left Column - Profile & Stats */}
             <div className="space-y-4">
+          {/* Level Display - NEW */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card rounded-2xl border border-border overflow-hidden"
+          >
+            <div className="p-4">
+              <LevelDisplay
+                {...level.levelProgress}
+                currentStreak={level.currentStreak}
+                streakMultiplier={level.streakMultiplier}
+                variant="card"
+              />
+            </div>
+          </motion.section>
+
           {/* Profile Header */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}

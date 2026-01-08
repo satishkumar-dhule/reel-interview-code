@@ -20,6 +20,7 @@ import {
 import { SEOHead } from '../components/SEOHead';
 import { getAllQuestionsAsync } from '../lib/questions-loader';
 import { useCredits } from '../context/CreditsContext';
+import { useAchievementContext } from '../context/AchievementContext';
 import { useUserPreferences } from '../hooks/use-user-preferences';
 import { CreditsDisplay } from '../components/CreditsDisplay';
 import { ListenButton } from '../components/ListenButton';
@@ -70,6 +71,7 @@ export default function VoiceSession() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   
   const { onVoiceInterview } = useCredits();
+  const { trackEvent } = useAchievementContext();
 
   const currentQuestion = sessionState ? getCurrentQuestion(sessionState) : null;
 
@@ -248,6 +250,12 @@ export default function VoiceSession() {
       // Award credits
       const verdict = result.overallScore >= 60 ? 'hire' : 'no-hire';
       onVoiceInterview(verdict);
+      
+      // Track achievement event
+      trackEvent({
+        type: 'voice_interview_completed',
+        timestamp: new Date().toISOString(),
+      });
       
       setPageState('results');
     } else {

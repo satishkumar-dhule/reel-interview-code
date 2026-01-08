@@ -34,7 +34,7 @@
 | 🔍 **Semantic Search** | Vector DB powered similarity matching |
 | 💻 **Coding Challenges** | In-browser editor with Python & JS |
 | 🎯 **30+ Topics** | System Design → AI/ML → DevOps |
-| 🏆 **Gamification** | Credits, badges, streaks |
+| 🏆 **Gamification** | 50 levels, 40+ achievements, credits, streaks |
 | 📊 **Adaptive Learning** | Personalized paths based on performance |
 
 ---

@@ -20,6 +20,7 @@ import {
 import { SEOHead } from '../components/SEOHead';
 import { getAllQuestionsAsync } from '../lib/questions-loader';
 import { useCredits } from '../context/CreditsContext';
+import { useAchievementContext } from '../context/AchievementContext';
 import { useUserPreferences } from '../hooks/use-user-preferences';
 import { CreditsDisplay } from '../components/CreditsDisplay';
 import { ListenButton } from '../components/ListenButton';
@@ -76,6 +77,7 @@ function getQuestionType(channel: string): 'technical' | 'behavioral' | 'system-
   const commentTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const { onVoiceInterview, config } = useCredits();
+  const { trackEvent } = useAchievementContext();
   const { preferences } = useUserPreferences();
 
   const currentQuestion = questions[currentIndex];
@@ -271,6 +273,12 @@ function getQuestionType(channel: string): 'technical' | 'behavioral' | 'system-
       // Award credits for the attempt
       const credits = onVoiceInterview(result.verdict);
       setEarnedCredits({ total: credits.totalCredits, bonus: credits.bonusCredits });
+      
+      // Track achievement event
+      trackEvent({
+        type: 'voice_interview_completed',
+        timestamp: new Date().toISOString(),
+      });
       
       // Show appropriate comment based on score
       if (result.score >= 60) {

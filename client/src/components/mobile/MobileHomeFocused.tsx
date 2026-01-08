@@ -10,6 +10,7 @@ import { useChannelStats } from '../../hooks/use-stats';
 import { useUserPreferences } from '../../context/UserPreferencesContext';
 import { useProgress, useGlobalStats } from '../../hooks/use-progress';
 import { useCredits } from '../../context/CreditsContext';
+import { useAchievementContext } from '../../context/AchievementContext';
 import { ProgressStorage } from '../../services/storage.service';
 import { DailyReviewCard, notifySRSUpdate } from '../DailyReviewCard';
 import { ListenIconButton } from '../ListenButton';
@@ -227,6 +228,7 @@ function QuickQuizCard({
   const [creditChange, setCreditChange] = useState<number | null>(null);
   const [quizSession, setQuizSession] = useState<QuizSession>(initializeQuizSession());
   const { onQuizAnswer, config } = useCredits();
+  const { trackEvent } = useAchievementContext();
   
   // Memoize channel IDs to prevent unnecessary reloads
   const channelIds = channels.map(c => c.id).sort().join(',');
@@ -323,6 +325,16 @@ function QuickQuizCard({
       // Clear credit change display after animation
       setTimeout(() => setCreditChange(null), 1500);
     }
+    
+    // Track achievement event
+    trackEvent({
+      type: 'quiz_answered',
+      timestamp: new Date().toISOString(),
+      data: {
+        isCorrect,
+        difficulty: currentQuestion.difficulty,
+      },
+    });
     
     if (isCorrect) {
       setCorrectCount(prev => prev + 1);

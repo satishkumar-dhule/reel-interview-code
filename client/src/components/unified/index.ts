@@ -74,3 +74,14 @@ export {
   type EmptyStateVariant,
   type EmptyStateSize
 } from './EmptyState';
+
+// Achievement System Components
+export {
+  AchievementCard,
+  AchievementGrid
+} from './AchievementCard';
+
+export {
+  LevelDisplay,
+  LevelBadge
+} from './LevelDisplay';

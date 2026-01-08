@@ -8,11 +8,12 @@ import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useGlobalStats } from '../hooks/use-progress';
+import { useAchievements } from '../hooks/use-achievements';
+import { useLevel } from '../hooks/use-level';
 import { channels, getQuestions, getAllQuestions, getQuestionDifficulty } from '../lib/data';
 import { SEOHead } from '../components/SEOHead';
 import { GitHubAnalytics } from '../components/GitHubAnalytics';
-import { BadgeShowcase, NextBadgeProgress } from '../components/BadgeDisplay';
-import { calculateBadgeProgress } from '../lib/badges';
+import { AchievementGrid, LevelDisplay } from '../components/unified';
 import {
   Trophy, Flame, Zap, Target, Activity, TrendingUp, 
   ChevronRight, BarChart2, Calendar
@@ -21,6 +22,8 @@ import {
 export default function StatsRedesigned() {
   const [, setLocation] = useLocation();
   const { stats } = useGlobalStats();
+  const { progress: achievementProgress, nextUp } = useAchievements();
+  const level = useLevel();
   const [timeRange, setTimeRange] = useState<'30' | '90' | '365'>('90');
 
   const days = parseInt(timeRange);
@@ -34,8 +37,7 @@ export default function StatsRedesigned() {
     totalSessions,
     globalDifficulty,
     moduleProgress,
-    activityData,
-    badgeProgress
+    activityData
   } = useMemo(() => {
     const allQuestions = getAllQuestions();
     const allCompletedIds = new Set<string>();
@@ -131,8 +133,7 @@ export default function StatsRedesigned() {
       totalSessions: stats.reduce((a, c) => a + c.count, 0),
       globalDifficulty: globalDiff,
       moduleProgress: modProgress,
-      activityData: actData,
-      badgeProgress: badges
+      activityData: actData
     };
   }, [stats, days]);
 
@@ -148,6 +149,19 @@ export default function StatsRedesigned() {
 
       <AppLayout title="Statistics">
         <div className="space-y-6">
+          {/* Level Display */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <LevelDisplay
+              {...level.levelProgress}
+              currentStreak={level.currentStreak}
+              streakMultiplier={level.streakMultiplier}
+              variant="card"
+            />
+          </motion.div>
+
           {/* Overview Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
@@ -185,15 +199,51 @@ export default function StatsRedesigned() {
           </div>
 
           {/* Badges Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div 
-              className="cursor-pointer" 
-              onClick={() => setLocation('/badges')}
-            >
-              <BadgeShowcase badges={badgeProgress} title="Your Badges" />
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card border border-border rounded-xl p-6"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-primary" />
+                Your Achievements
+              </h3>
+              <button
+                onClick={() => setLocation('/badges')}
+                className="text-sm text-primary hover:underline flex items-center gap-1"
+              >
+                View All
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-            <NextBadgeProgress badges={badgeProgress} />
-          </div>
+            
+            {/* Show unlocked achievements */}
+            <AchievementGrid
+              achievements={achievementProgress.filter(a => a.isUnlocked).slice(0, 8)}
+              size="sm"
+              onAchievementClick={(ap) => setLocation('/badges')}
+            />
+            
+            {/* Next achievements */}
+            {nextUp.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-border">
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Next Up
+                </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {nextUp.slice(0, 4).map((ap) => (
+                    <div key={ap.achievement.id} className="text-center">
+                      <div className="text-xs font-medium mb-1">{ap.achievement.name}</div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {Math.round(ap.progress)}%
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
 
           {/* Difficulty Breakdown */}
           <motion.div

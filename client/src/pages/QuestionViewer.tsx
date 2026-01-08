@@ -11,6 +11,7 @@ import { useQuestionsWithPrefetch, useSubChannels, useCompaniesWithCounts } from
 import { useProgress, trackActivity } from '../hooks/use-progress';
 import { useUserPreferences } from '../context/UserPreferencesContext';
 import { useCredits } from '../context/CreditsContext';
+import { useAchievementContext } from '../context/AchievementContext';
 import { SEOHead } from '../components/SEOHead';
 import { QuestionPanel } from '../components/QuestionPanel';
 import { AnswerPanel } from '../components/AnswerPanel';
@@ -73,6 +74,9 @@ export default function QuestionViewer() {
 
   // Credits system
   const { onQuestionSwipe, onQuestionView } = useCredits();
+  
+  // Achievement system
+  const { trackEvent } = useAchievementContext();
 
   const { question: currentQuestion, questions, totalQuestions, loading, error } = useQuestionsWithPrefetch(
     channelId || '',
@@ -158,6 +162,17 @@ export default function QuestionViewer() {
       trackQuestionView(currentQuestion.id, currentQuestion.channel, currentQuestion.difficulty);
       markCompleted(currentQuestion.id);
       trackActivity();
+      
+      // Track achievement event
+      trackEvent({
+        type: 'question_completed',
+        timestamp: new Date().toISOString(),
+        data: {
+          questionId: currentQuestion.id,
+          difficulty: currentQuestion.difficulty,
+          channel: currentQuestion.channel,
+        },
+      });
     }
   }, [currentQuestion?.id]);
 

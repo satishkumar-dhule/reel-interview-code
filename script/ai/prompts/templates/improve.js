@@ -7,7 +7,7 @@ import config from '../../config.js';
 
 export const schema = {
   question: "improved question ending with ?",
-  answer: "comprehensive interview answer (200-400 chars) that demonstrates expertise. Plain text only, NO markdown.",
+  answer: "comprehensive interview answer (150-500 chars) that demonstrates expertise. Plain text only, NO markdown.",
   explanation: "detailed explanation with sections, properly formatted markdown"
 };
 

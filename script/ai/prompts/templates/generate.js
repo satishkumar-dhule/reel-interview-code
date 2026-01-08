@@ -7,7 +7,7 @@ import config from '../../config.js';
 
 export const schema = {
   question: "Specific, practical interview question ending with ?",
-  answer: "Comprehensive interview answer (200-400 chars) demonstrating expertise with specific details. Plain text only, NO markdown.",
+  answer: "Comprehensive interview answer (150-500 chars) demonstrating expertise with specific details. Plain text only, NO markdown.",
   explanation: "Detailed explanation with sections",
   diagram: "flowchart TD\\n  A[Step] --> B[Step]",
   companies: ["Company1", "Company2"],
