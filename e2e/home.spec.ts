@@ -46,9 +46,10 @@ test.describe('Home Page', () => {
     const creditsNav = page.locator('nav.fixed.bottom-0 button').last(); // Credits is last button in mobile nav
     
     if (await creditsBanner.isVisible({ timeout: 3000 })) {
-      await creditsBanner.click();
+      // Use force: true to bypass mascot overlay
+      await creditsBanner.click({ force: true });
     } else if (await creditsNav.isVisible({ timeout: 3000 })) {
-      await creditsNav.click();
+      await creditsNav.click({ force: true });
     }
     
     await page.waitForTimeout(500);

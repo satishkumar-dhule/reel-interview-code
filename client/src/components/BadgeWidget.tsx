@@ -1,23 +1,24 @@
 /**
  * Compact Badge Widget for Home Page (Desktop)
  * Shows recent badges and next badge progress in a minimal format
+ * 
+ * ✅ Migrated to unified components
  */
 
 import { useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { motion } from 'framer-motion';
 import { Trophy, ChevronRight } from 'lucide-react';
 import { BadgeRing } from './BadgeDisplay';
-import { calculateBadgeProgress, getTierColor } from '../lib/badges';
-import { channels, getQuestions, getAllQuestions, getQuestionDifficulty } from '../lib/data';
+import { calculateBadgeProgress } from '../lib/badges';
+import { channels, getQuestions, getQuestionDifficulty } from '../lib/data';
 import { useGlobalStats } from '../hooks/use-progress';
+import { Card, ProgressBar } from './unified';
 
 export function BadgeWidget() {
   const [_, setLocation] = useLocation();
   const { stats } = useGlobalStats();
 
   const badgeProgress = useMemo(() => {
-    const allQuestions = getAllQuestions();
     const allCompletedIds = new Set<string>();
     const channelsWithProgress: string[] = [];
     const channelCompletionPcts: number[] = [];
@@ -84,10 +85,13 @@ export function BadgeWidget() {
   }
 
   return (
-    <motion.div
+    <Card
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="hidden lg:block fixed bottom-4 right-4 w-72 border border-border bg-card/95 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden z-40"
+      variant="elevated"
+      size="sm"
+      rounded="lg"
+      className="hidden lg:block fixed bottom-4 right-4 w-72 backdrop-blur-sm z-40 p-0"
     >
       {/* Header */}
       <div
@@ -124,15 +128,13 @@ export function BadgeWidget() {
             <BadgeRing progress={nextBadge} size="sm" showProgress={false} />
             <div className="flex-1 min-w-0">
               <div className="text-[10px] font-bold truncate">{nextBadge.badge.name}</div>
-              <div className="h-1 bg-muted/30 rounded-full overflow-hidden mt-1">
-                <div
-                  className="h-full rounded-full"
-                  style={{ 
-                    width: `${nextBadge.progress}%`,
-                    backgroundColor: getTierColor(nextBadge.badge.tier)
-                  }}
-                />
-              </div>
+              <ProgressBar
+                current={nextBadge.current}
+                max={nextBadge.badge.requirement}
+                size="xs"
+                animated={false}
+                className="mt-1"
+              />
               <div className="text-[9px] text-muted-foreground mt-0.5">
                 {nextBadge.current}/{nextBadge.badge.requirement} {nextBadge.badge.unit}
               </div>
@@ -140,6 +142,6 @@ export function BadgeWidget() {
           </div>
         </div>
       )}
-    </motion.div>
+    </Card>
   );
 }

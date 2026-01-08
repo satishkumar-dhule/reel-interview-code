@@ -8,6 +8,7 @@ import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { AppLayout } from '../components/layout/AppLayout';
 import { SEOHead } from '../components/SEOHead';
+import { EmptyState, Button } from '../components/unified';
 import { getAllQuestions } from '../lib/questions-loader';
 import { useUserPreferences } from '../context/UserPreferencesContext';
 import { ProgressStorage } from '../services/storage.service';
@@ -181,25 +182,21 @@ export default function Bookmarks() {
 
           {/* Empty state */}
           {bookmarkedQuestions.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-16"
-            >
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                <Bookmark className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
-              </div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-2">No bookmarks yet</h2>
-              <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                Tap the bookmark icon on any question to save it for later review
-              </p>
-              <button
-                onClick={() => setLocation('/channels')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium text-sm"
-              >
-                Browse Questions
-              </button>
-            </motion.div>
+            <EmptyState
+              icon={<Bookmark className="w-8 h-8 sm:w-10 sm:h-10" />}
+              title="No bookmarks yet"
+              description="Tap the bookmark icon on any question to save it for later review"
+              action={
+                <Button 
+                  variant="primary" 
+                  onClick={() => setLocation('/channels')}
+                >
+                  Browse Questions
+                </Button>
+              }
+              size="lg"
+              animated={true}
+            />
           ) : filteredQuestions.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">No questions match your filters</p>

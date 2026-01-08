@@ -12,6 +12,7 @@ import { useUserPreferences } from '../context/UserPreferencesContext';
 import { useProgress, useGlobalStats } from '../hooks/use-progress';
 import { useCredits } from '../context/CreditsContext';
 import { SEOHead } from '../components/SEOHead';
+import { MetricCard } from '../components/unified';
 import {
   Code, Trophy, Target, Flame, BookOpen, ChevronRight,
   Bell, HelpCircle, Zap, Calendar, TrendingUp, Bookmark, Shuffle, Eye,
@@ -119,33 +120,33 @@ export default function Profile() {
             transition={{ delay: 0.1 }}
             className="grid grid-cols-2 gap-3"
           >
-            <StatCard
+            <MetricCard
               icon={<Flame className="w-5 h-5" />}
               value={streak.toString()}
               label="Day Streak"
-              color="text-orange-500"
-              bgColor="bg-orange-500/10"
+              variant="warning"
+              size="md"
             />
-            <StatCard
+            <MetricCard
               icon={<Target className="w-5 h-5" />}
               value={`${Math.round((totalCompleted / totalQuestions) * 100) || 0}%`}
               label="Progress"
-              color="text-green-500"
-              bgColor="bg-green-500/10"
+              variant="success"
+              size="md"
             />
-            <StatCard
+            <MetricCard
               icon={<Calendar className="w-5 h-5" />}
               value={daysActive.toString()}
               label="Days Active"
-              color="text-blue-500"
-              bgColor="bg-blue-500/10"
+              variant="info"
+              size="md"
             />
-            <StatCard
+            <MetricCard
               icon={<TrendingUp className="w-5 h-5" />}
               value={totalCompleted.toString()}
               label="Questions Done"
-              color="text-purple-500"
-              bgColor="bg-purple-500/10"
+              variant="default"
+              size="md"
             />
           </motion.section>
 
@@ -373,30 +374,6 @@ export default function Profile() {
         </div>
       </AppLayout>
     </>
-  );
-}
-
-function StatCard({ 
-  icon, 
-  value, 
-  label, 
-  color, 
-  bgColor 
-}: { 
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-  color: string;
-  bgColor: string;
-}) {
-  return (
-    <div className="bg-card rounded-2xl border border-border p-4">
-      <div className={`w-10 h-10 rounded-xl ${bgColor} flex items-center justify-center mb-3`}>
-        <span className={color}>{icon}</span>
-      </div>
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-sm text-muted-foreground">{label}</div>
-    </div>
   );
 }
 

@@ -196,12 +196,11 @@ export function BackgroundMascots() {
   // Get mascot based on current URL - must be before any conditional returns
   const MascotComponent = useMemo(() => getMascotForPath(location), [location]);
   
-  // Only show on playful themes
-  const isPlayfulTheme = theme === 'playful' || theme === 'playful-dark';
-  
-  if (!isPlayfulTheme) return null;
+  // Mascots are disabled in the current premium-dark theme
+  // They were designed for playful themes that are no longer active
+  return null;
 
-  const isDark = theme === 'playful-dark';
+  const isDark = theme === 'premium-dark';
 
   return (
     <>

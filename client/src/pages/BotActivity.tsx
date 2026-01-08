@@ -18,6 +18,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { SEOHead } from "../components/SEOHead";
 import { AppLayout } from "../components/layout/AppLayout";
+import { MetricCard } from "../components/unified";
 import { cn } from "../lib/utils";
 
 // Types
@@ -362,56 +363,41 @@ export default function BotActivity() {
 
           {/* Stats Summary */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-card border border-border rounded-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="w-4 h-4 text-cyan-500" />
-                <span className="text-xs text-muted-foreground">Created</span>
-              </div>
-              <div className="text-2xl font-bold text-cyan-500">{totalCreated}</div>
-            </motion.div>
+            <MetricCard
+              icon={<Sparkles className="w-4 h-4" />}
+              value={totalCreated}
+              label="Created"
+              variant="info"
+              size="md"
+              animated={true}
+            />
             
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.05 }}
-              className="bg-card border border-border rounded-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Zap className="w-4 h-4 text-purple-500" />
-                <span className="text-xs text-muted-foreground">Updated</span>
-              </div>
-              <div className="text-2xl font-bold text-purple-500">{totalUpdated}</div>
-            </motion.div>
+            <MetricCard
+              icon={<Zap className="w-4 h-4" />}
+              value={totalUpdated}
+              label="Updated"
+              variant="default"
+              size="md"
+              animated={true}
+            />
             
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-              className="bg-card border border-border rounded-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Trash2 className="w-4 h-4 text-red-500" />
-                <span className="text-xs text-muted-foreground">Deleted</span>
-              </div>
-              <div className="text-2xl font-bold text-red-500">{totalDeleted}</div>
-            </motion.div>
+            <MetricCard
+              icon={<Trash2 className="w-4 h-4" />}
+              value={totalDeleted}
+              label="Deleted"
+              variant="danger"
+              size="md"
+              animated={true}
+            />
             
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15 }}
-              className="bg-card border border-border rounded-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <ListTodo className="w-4 h-4 text-amber-500" />
-                <span className="text-xs text-muted-foreground">Pending</span>
-              </div>
-              <div className="text-2xl font-bold text-amber-500">{pendingQueue}</div>
-            </motion.div>
+            <MetricCard
+              icon={<ListTodo className="w-4 h-4" />}
+              value={pendingQueue}
+              label="Pending"
+              variant="warning"
+              size="md"
+              animated={true}
+            />
           </div>
 
           {/* Tabs */}
