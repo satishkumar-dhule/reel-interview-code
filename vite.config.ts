@@ -44,4 +44,10 @@ export default defineConfig({
     port: 3333,
   },
   appType: 'spa',
+  // @ts-expect-error - vitest config
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [],
+  },
 });

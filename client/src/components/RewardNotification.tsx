@@ -54,7 +54,7 @@ export function RewardNotification({
               initial={{ opacity: 0, y: -50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
+              className="max-w-md w-full mx-4"
             >
               <div className={`bg-gradient-to-br ${achievement.gradient} p-4 rounded-xl shadow-2xl border-2 border-white/20`}>
                 <div className="flex items-start gap-3">

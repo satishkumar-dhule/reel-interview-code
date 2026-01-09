@@ -114,15 +114,7 @@ export default function StatsRedesigned() {
       });
     }
 
-    // Calculate badge progress
-    const badges = calculateBadgeProgress(
-      allCompletedIds.size,
-      currentStreak,
-      channelsWithProgress,
-      { beginner: globalDiff.beginner.done, intermediate: globalDiff.intermediate.done, advanced: globalDiff.advanced.done },
-      channelCompletionPcts,
-      channels.length
-    );
+    // Badge progress is handled by the achievements system
 
     const validTotalCompleted = Math.min(allCompletedIds.size, allQuestions.length);
     return {

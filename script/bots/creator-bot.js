@@ -27,6 +27,126 @@ const BOT_NAME = 'creator';
 const db = getDb();
 
 // ============================================
+// ANSWER FORMATTING STANDARDS INTEGRATION
+// ============================================
+
+/**
+ * Applies Answer Formatting Standards validation and auto-formatting to generated content
+ */
+async function applyAnswerFormattingStandards(content) {
+  // Import Answer Formatting Standards modules dynamically
+  const { patternDetector } = await import('../../client/src/lib/answer-formatting/pattern-detector.js');
+  const { formatValidator } = await import('../../client/src/lib/answer-formatting/format-validator.js');
+  const { autoFormatter } = await import('../../client/src/lib/answer-formatting/auto-formatter.js');
+  
+  const question = content.question || '';
+  const answer = content.explanation || '';
+  
+  if (!answer.trim()) {
+    return {
+      detectedPattern: null,
+      appliedPattern: null,
+      score: 100,
+      violations: [],
+      formatted: false,
+      formattedAnswer: answer
+    };
+  }
+  
+  // Detect pattern based on question text
+  const detectedPattern = patternDetector.detectPattern(question);
+  const confidence = patternDetector.getConfidence();
+  
+  console.log(`   Pattern Detection: ${detectedPattern ? detectedPattern.name : 'none'} (confidence: ${Math.round(confidence * 100)}%)`);
+  
+  let validationResult = null;
+  let formattedAnswer = answer;
+  let appliedPattern = null;
+  
+  if (detectedPattern) { // Remove confidence threshold for testing
+    // Validate answer against detected pattern
+    validationResult = formatValidator.validate(answer, detectedPattern);
+    
+    console.log(`   Validation Score: ${validationResult.score}/100 (${validationResult.violations.length} issues)`);
+    
+    // Auto-apply formatting if score is below threshold
+    if (validationResult.score < 80) {
+      try {
+        formattedAnswer = autoFormatter.format(answer, detectedPattern);
+        appliedPattern = detectedPattern.id;
+        
+        // Re-validate formatted answer
+        const revalidation = formatValidator.validate(formattedAnswer, detectedPattern);
+        console.log(`   Auto-formatting applied: ${validationResult.score} → ${revalidation.score}`);
+        
+        return {
+          detectedPattern: detectedPattern.id,
+          appliedPattern: appliedPattern,
+          score: revalidation.score,
+          violations: revalidation.violations,
+          formatted: true,
+          formattedAnswer: formattedAnswer
+        };
+      } catch (error) {
+        console.warn(`   Auto-formatting failed: ${error.message}`);
+      }
+    }
+  }
+  
+  return {
+    detectedPattern: detectedPattern?.id || null,
+    appliedPattern: appliedPattern,
+    score: validationResult?.score || 100,
+    violations: validationResult?.violations || [],
+    formatted: false,
+    formattedAnswer: answer
+  };
+}
+
+/**
+ * Logs Answer Formatting validation results for monitoring
+ */
+async function logAnswerFormattingValidation(validationData) {
+  try {
+    // Create validation reports table if it doesn't exist
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS answer_formatting_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        question_id TEXT NOT NULL,
+        pattern TEXT,
+        score INTEGER NOT NULL,
+        violations_count INTEGER NOT NULL,
+        violations TEXT,
+        auto_formatted BOOLEAN DEFAULT FALSE,
+        timestamp TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    // Insert validation report
+    const stmt = db.prepare(`
+      INSERT INTO answer_formatting_reports 
+      (question_id, pattern, score, violations_count, violations, auto_formatted, timestamp)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+    
+    stmt.run(
+      validationData.questionId,
+      validationData.pattern,
+      validationData.score,
+      validationData.violations.length,
+      JSON.stringify(validationData.violations),
+      validationData.autoFormatted ? 1 : 0,
+      validationData.timestamp
+    );
+    
+    console.log(`   Logged validation report for question ${validationData.questionId}`);
+  } catch (error) {
+    console.warn(`   Failed to log validation report: ${error.message}`);
+  }
+}
+
+// ============================================
 // LANGGRAPH NODE DEFINITIONS
 // ============================================
 
@@ -141,7 +261,7 @@ async function enrichNode(state) {
 
 /**
  * Node 4: Validate Content
- * Checks quality and duplicates
+ * Checks quality and duplicates, applies Answer Formatting Standards
  */
 async function validateNode(state) {
   console.log('\n✅ [Validate] Checking quality...');
@@ -161,6 +281,42 @@ async function validateNode(state) {
   const validation = validateContent(content, contentType);
   if (!validation.valid) {
     return { ...state, error: validation.error };
+  }
+  
+  // Apply Answer Formatting Standards validation and auto-formatting for questions
+  if (contentType === 'question' && content.explanation) {
+    try {
+      const formatValidation = await applyAnswerFormattingStandards(content);
+      
+      // Update content with formatted answer if auto-formatting was applied
+      if (formatValidation.formatted) {
+        content.explanation = formatValidation.formattedAnswer;
+        console.log(`   Answer Formatting: applied ${formatValidation.pattern} pattern (score: ${formatValidation.score}/100)`);
+      } else {
+        console.log(`   Answer Formatting: validated (score: ${formatValidation.score}/100)`);
+      }
+      
+      // Add formatting metadata to content
+      content.detectedPattern = formatValidation.detectedPattern;
+      content.appliedPattern = formatValidation.appliedPattern;
+      content.validationScore = formatValidation.score;
+      content.lastValidated = new Date().toISOString();
+      content.formatVersion = '1.0';
+      
+      // Log validation results for monitoring
+      await logAnswerFormattingValidation({
+        questionId: content.id,
+        pattern: formatValidation.detectedPattern,
+        score: formatValidation.score,
+        violations: formatValidation.violations,
+        autoFormatted: formatValidation.formatted,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.warn(`   Answer Formatting validation failed: ${error.message}`);
+      // Don't fail the entire pipeline for formatting issues
+    }
   }
   
   console.log('   Validation: passed');
@@ -592,5 +748,5 @@ if (isMainModule) {
   main().catch(console.error);
 }
 
-export { runPipeline };
-export default { runPipeline };
+export { runPipeline, applyAnswerFormattingStandards };
+export default { runPipeline, applyAnswerFormattingStandards };

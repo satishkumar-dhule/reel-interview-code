@@ -9,11 +9,11 @@ import { motion } from 'framer-motion';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useChannelStats } from '../hooks/use-stats';
 import { useUserPreferences } from '../context/UserPreferencesContext';
-import { useProgress, useGlobalStats } from '../hooks/use-progress';
+import { useGlobalStats } from '../hooks/use-progress';
 import { useCredits } from '../context/CreditsContext';
 import { useLevel } from '../hooks/use-level';
 import { SEOHead } from '../components/SEOHead';
-import { MetricCard, LevelDisplay } from '../components/unified';
+import { MetricCard } from '../components/unified';
 import {
   Code, Trophy, Target, Flame, BookOpen, ChevronRight,
   Bell, HelpCircle, Zap, Calendar, TrendingUp, Bookmark, Shuffle, Eye,
@@ -36,7 +36,7 @@ export default function Profile() {
   const { getSubscribedChannels, preferences, toggleShuffleQuestions, togglePrioritizeUnvisited } = useUserPreferences();
   const { stats: activityStats } = useGlobalStats();
   const { balance, state: creditsState, history, onRedeemCoupon, formatCredits, config } = useCredits();
-  const level = useLevel();
+  const { levelProgress, currentStreak } = useLevel();
   const subscribedChannels = getSubscribedChannels();
   
   const [couponCode, setCouponCode] = useState('');
@@ -75,57 +75,81 @@ export default function Profile() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             {/* Left Column - Profile & Stats */}
             <div className="space-y-4">
-          {/* Level Display - NEW */}
+          {/* Profile Header - Clean Premium Design */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-card rounded-2xl border border-border overflow-hidden"
           >
-            <div className="p-4">
-              <LevelDisplay
-                {...level.levelProgress}
-                currentStreak={level.currentStreak}
-                streakMultiplier={level.streakMultiplier}
-                variant="card"
-              />
-            </div>
-          </motion.section>
-
-          {/* Profile Header */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-card rounded-2xl border border-border overflow-hidden"
-          >
-            {/* Cover gradient */}
-            <div className="h-24 lg:h-32 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
-            
-            {/* Profile info */}
-            <div className="px-4 pb-4 -mt-12">
-              <div className="w-24 h-24 rounded-full bg-card border-4 border-card flex items-center justify-center shadow-lg">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-                  <Code className="w-10 h-10 text-primary-foreground" />
+            {/* Top gradient section */}
+            <div className="bg-gradient-to-br from-primary via-primary/90 to-primary/70 p-5">
+              {/* XP and Level row */}
+              <div className="flex items-start justify-between mb-5">
+                {/* XP Progress */}
+                <div className="flex-1 mr-4">
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-white/80 text-sm">Experience</span>
+                    <span className="text-white text-2xl font-bold">{levelProgress.currentXP.toLocaleString()} XP</span>
+                  </div>
+                  <div className="w-full max-w-[200px] bg-white/20 rounded-full h-2.5 mb-1.5">
+                    <div 
+                      className="bg-white h-2.5 rounded-full transition-all duration-700"
+                      style={{ width: `${levelProgress.progress}%` }}
+                    />
+                  </div>
+                  <div className="text-white/70 text-xs">
+                    {levelProgress.xpForNext} XP to next level
+                  </div>
+                </div>
+                
+                {/* Level Badge */}
+                <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center border border-white/20">
+                  <div className="text-white/80 text-xs font-semibold uppercase tracking-wider">
+                    Level {levelProgress.currentLevel.level}
+                  </div>
+                  <div className="text-white text-lg font-bold">
+                    {levelProgress.currentLevel.title}
+                  </div>
                 </div>
               </div>
               
-              <h1 className="text-xl lg:text-2xl font-bold mt-3">Interview Prep</h1>
-              <p className="text-sm text-muted-foreground">
-                Mastering technical interviews
-              </p>
-              
-              {/* Quick stats */}
-              <div className="flex gap-4 mt-4">
+              {/* Title and Streak row */}
+              <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-bold">{totalCompleted}</span>
-                  <span className="text-muted-foreground text-sm ml-1">completed</span>
+                  <h1 className="text-white text-xl font-bold">Interview Prep</h1>
+                  <p className="text-white/70 text-sm">Mastering technical interviews</p>
                 </div>
-                <div>
-                  <span className="font-bold">{subscribedChannels.length}</span>
-                  <span className="text-muted-foreground text-sm ml-1">topics</span>
+                {currentStreak > 0 && (
+                  <div className="flex items-center gap-1.5 bg-orange-500/20 px-3 py-1.5 rounded-full border border-orange-400/30">
+                    <Flame className="w-4 h-4 text-orange-300" />
+                    <span className="text-orange-200 text-sm font-medium">{currentStreak} day streak</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Bottom stats section */}
+            <div className="px-5 py-4">
+              <div className="flex items-center gap-4">
+                {/* Avatar */}
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg flex-shrink-0">
+                  <Code className="w-7 h-7 text-primary-foreground" />
                 </div>
-                <div>
-                  <span className="font-bold">{daysActive}</span>
-                  <span className="text-muted-foreground text-sm ml-1">days</span>
+                
+                {/* Stats Grid */}
+                <div className="flex-1 grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{totalCompleted}</div>
+                    <div className="text-xs text-muted-foreground">Completed</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{subscribedChannels.length}</div>
+                    <div className="text-xs text-muted-foreground">Topics</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{daysActive}</div>
+                    <div className="text-xs text-muted-foreground">Days Active</div>
+                  </div>
                 </div>
               </div>
             </div>
