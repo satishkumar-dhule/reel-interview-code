@@ -35,6 +35,10 @@ runs:
       shell: bash
       run: pnpm install --no-frozen-lockfile
 
+    - name: Build packages
+      shell: bash
+      run: pnpm --filter tech-svg-generator build
+
     - name: Install OpenCode CLI
       shell: bash
       run: npm install -g opencode-ai
