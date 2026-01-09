@@ -2,33 +2,210 @@
   "stats": [
     {
       "botName": "creator",
-      "totalRuns": 21,
-      "successfulRuns": 18,
-      "totalCreated": 36,
+      "totalRuns": 22,
+      "successfulRuns": 19,
+      "totalCreated": 39,
       "totalUpdated": 0,
       "totalDeleted": 0,
-      "lastRun": "2026-01-08T03:39:29.235Z"
+      "lastRun": "2026-01-09T03:40:09.051Z"
     },
     {
       "botName": "processor",
-      "totalRuns": 23,
-      "successfulRuns": 20,
+      "totalRuns": 28,
+      "successfulRuns": 25,
       "totalCreated": 0,
-      "totalUpdated": 193,
+      "totalUpdated": 312,
       "totalDeleted": 0,
-      "lastRun": "2026-01-08T03:43:03.857Z"
+      "lastRun": "2026-01-09T03:44:05.808Z"
     },
     {
       "botName": "verifier",
-      "totalRuns": 26,
-      "successfulRuns": 23,
-      "totalCreated": 97,
+      "totalRuns": 27,
+      "successfulRuns": 24,
+      "totalCreated": 98,
       "totalUpdated": 0,
       "totalDeleted": 0,
-      "lastRun": "2026-01-08T03:41:23.439Z"
+      "lastRun": "2026-01-09T03:42:20.347Z"
     }
   ],
   "runs": [
+    {
+      "id": 77,
+      "botName": "processor",
+      "startedAt": "2026-01-09T03:44:05.808Z",
+      "completedAt": "2026-01-09T03:50:19.596Z",
+      "status": "completed",
+      "itemsProcessed": 10,
+      "itemsCreated": 0,
+      "itemsUpdated": 8,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 10,
+        "updated": 8,
+        "deleted": 0,
+        "skipped": 2,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 10
+        }
+      }
+    },
+    {
+      "id": 76,
+      "botName": "verifier",
+      "startedAt": "2026-01-09T03:42:20.347Z",
+      "completedAt": "2026-01-09T03:43:35.684Z",
+      "status": "completed",
+      "itemsProcessed": 10,
+      "itemsCreated": 1,
+      "itemsUpdated": 0,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Verifier Bot completed",
+        "passed": 9,
+        "flagged": 1,
+        "stats": {
+          "totalAnalyzed": 10,
+          "passed": 9,
+          "flagged": 1,
+          "byIssueType": {
+            "weak_voice_keywords": 2,
+            "answer_mismatch": 1,
+            "insufficient_tags": 2,
+            "missing_question_mark": 2,
+            "difficulty_mismatch": 2,
+            "missing_code_example": 2,
+            "excessive_voice_keywords": 2
+          },
+          "bySeverity": {
+            "critical": 0,
+            "high": 0,
+            "medium": 1,
+            "low": 8,
+            "info": 4
+          },
+          "byChannel": {
+            "devops": 2,
+            "kubernetes": 1,
+            "frontend": 2,
+            "testing": 1,
+            "machine-learning": 1,
+            "behavioral": 1,
+            "database": 1,
+            "system-design": 1
+          },
+          "avgScores": {
+            "technical": 0,
+            "clarity": 0,
+            "completeness": 0,
+            "overall": 0
+          }
+        }
+      }
+    },
+    {
+      "id": 75,
+      "botName": "creator",
+      "startedAt": "2026-01-09T03:40:09.051Z",
+      "completedAt": "2026-01-09T03:41:42.318Z",
+      "status": "completed",
+      "itemsProcessed": 5,
+      "itemsCreated": 3,
+      "itemsUpdated": 0,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Creator Bot completed successfully"
+      }
+    },
+    {
+      "id": 74,
+      "botName": "processor",
+      "startedAt": "2026-01-08T11:50:31.532Z",
+      "completedAt": "2026-01-08T11:59:44.880Z",
+      "status": "completed",
+      "itemsProcessed": 50,
+      "itemsCreated": 0,
+      "itemsUpdated": 40,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 50,
+        "updated": 40,
+        "deleted": 0,
+        "skipped": 10,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 50
+        }
+      }
+    },
+    {
+      "id": 73,
+      "botName": "processor",
+      "startedAt": "2026-01-08T11:36:43.077Z",
+      "completedAt": "2026-01-08T11:47:48.856Z",
+      "status": "completed",
+      "itemsProcessed": 50,
+      "itemsCreated": 0,
+      "itemsUpdated": 25,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 50,
+        "updated": 25,
+        "deleted": 0,
+        "skipped": 25,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 50
+        }
+      }
+    },
+    {
+      "id": 72,
+      "botName": "processor",
+      "startedAt": "2026-01-08T11:25:49.681Z",
+      "completedAt": "2026-01-08T11:34:24.707Z",
+      "status": "completed",
+      "itemsProcessed": 50,
+      "itemsCreated": 0,
+      "itemsUpdated": 23,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 50,
+        "updated": 23,
+        "deleted": 0,
+        "skipped": 27,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 50
+        }
+      }
+    },
+    {
+      "id": 71,
+      "botName": "processor",
+      "startedAt": "2026-01-08T11:17:38.638Z",
+      "completedAt": "2026-01-08T11:24:52.410Z",
+      "status": "completed",
+      "itemsProcessed": 50,
+      "itemsCreated": 0,
+      "itemsUpdated": 23,
+      "itemsDeleted": 0,
+      "summary": {
+        "message": "Processor Bot completed",
+        "processed": 50,
+        "updated": 23,
+        "deleted": 0,
+        "skipped": 27,
+        "failed": 0,
+        "actionCounts": {
+          "polished": 50
+        }
+      }
+    },
     {
       "id": 70,
       "botName": "processor",
@@ -1183,2269 +1360,2011 @@
           "polished": 50
         }
       }
-    },
-    {
-      "id": 27,
-      "botName": "verifier",
-      "startedAt": "2025-12-30T01:39:00.207Z",
-      "completedAt": "2025-12-30T01:43:17.801Z",
-      "status": "completed",
-      "itemsProcessed": 50,
-      "itemsCreated": 12,
-      "itemsUpdated": 0,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Verifier Bot completed",
-        "passed": 38,
-        "flagged": 12,
-        "stats": {
-          "totalAnalyzed": 50,
-          "passed": 38,
-          "flagged": 12,
-          "byIssueType": {
-            "weak_voice_keywords": 10,
-            "insufficient_tags": 26,
-            "difficulty_mismatch": 6,
-            "verbose_for_voice": 2,
-            "low_difficulty_calibration": 1,
-            "missing_code_example": 6,
-            "answer_mismatch": 8,
-            "excessive_voice_keywords": 1,
-            "low_channel_relevance": 2,
-            "truncated_answer": 1
-          },
-          "bySeverity": {
-            "critical": 0,
-            "high": 1,
-            "medium": 11,
-            "low": 22,
-            "info": 29
-          },
-          "byChannel": {
-            "e2e-testing": 4,
-            "sre": 5,
-            "devops": 8,
-            "system-design": 7,
-            "llm-ops": 2,
-            "aws": 2,
-            "networking": 2,
-            "prompt-engineering": 1,
-            "database": 2,
-            "kubernetes": 1,
-            "testing": 1,
-            "android": 1,
-            "react-native": 2,
-            "unix": 1,
-            "computer-vision": 1,
-            "frontend": 2,
-            "performance-testing": 1,
-            "generative-ai": 1,
-            "machine-learning": 2,
-            "behavioral": 1,
-            "data-engineering": 1,
-            "engineering-management": 1,
-            "algorithms": 1
-          },
-          "avgScores": {
-            "technical": 0,
-            "clarity": 0,
-            "completeness": 0,
-            "overall": 0
-          }
-        }
-      }
-    },
-    {
-      "id": 26,
-      "botName": "verifier",
-      "startedAt": "2025-12-30T01:37:51.132Z",
-      "completedAt": "2025-12-30T01:42:06.526Z",
-      "status": "completed",
-      "itemsProcessed": 50,
-      "itemsCreated": 14,
-      "itemsUpdated": 0,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Verifier Bot completed",
-        "passed": 36,
-        "flagged": 14,
-        "stats": {
-          "totalAnalyzed": 50,
-          "passed": 36,
-          "flagged": 14,
-          "byIssueType": {
-            "missing_question_mark": 2,
-            "missing_code_example": 8,
-            "excessive_voice_keywords": 1,
-            "answer_mismatch": 8,
-            "weak_voice_keywords": 10,
-            "difficulty_mismatch": 5,
-            "low_channel_relevance": 4,
-            "insufficient_tags": 19,
-            "low_completeness": 1,
-            "truncated_answer": 1,
-            "verbose_for_voice": 3,
-            "low_difficulty_calibration": 1
-          },
-          "bySeverity": {
-            "critical": 0,
-            "high": 1,
-            "medium": 14,
-            "low": 25,
-            "info": 23
-          },
-          "byChannel": {
-            "security": 1,
-            "system-design": 9,
-            "generative-ai": 2,
-            "machine-learning": 5,
-            "sre": 5,
-            "devops": 6,
-            "performance-testing": 2,
-            "backend": 1,
-            "aws": 2,
-            "frontend": 1,
-            "database": 5,
-            "react-native": 2,
-            "e2e-testing": 1,
-            "kubernetes": 1,
-            "networking": 2,
-            "ios": 1,
-            "testing": 1,
-            "python": 1,
-            "behavioral": 1,
-            "prompt-engineering": 1
-          },
-          "avgScores": {
-            "technical": 0,
-            "clarity": 0,
-            "completeness": 0,
-            "overall": 0
-          }
-        }
-      }
-    },
-    {
-      "id": 25,
-      "botName": "creator",
-      "startedAt": "2025-12-30T01:37:03.553Z",
-      "completedAt": "2025-12-30T01:38:34.301Z",
-      "status": "completed",
-      "itemsProcessed": 5,
-      "itemsCreated": 1,
-      "itemsUpdated": 0,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Creator Bot completed successfully"
-      }
-    },
-    {
-      "id": 24,
-      "botName": "creator",
-      "startedAt": "2025-12-30T01:37:03.500Z",
-      "completedAt": null,
-      "status": "running",
-      "itemsProcessed": 1,
-      "itemsCreated": 1,
-      "itemsUpdated": 0,
-      "itemsDeleted": 0,
-      "summary": null
-    },
-    {
-      "id": 23,
-      "botName": "processor",
-      "startedAt": "2025-12-29T08:31:41.462Z",
-      "completedAt": "2025-12-29T08:54:08.432Z",
-      "status": "completed",
-      "itemsProcessed": 50,
-      "itemsCreated": 0,
-      "itemsUpdated": 30,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Processor Bot completed",
-        "processed": 50,
-        "updated": 30,
-        "deleted": 0,
-        "skipped": 20,
-        "failed": 0,
-        "actionCounts": {
-          "polished": 50
-        }
-      }
-    },
-    {
-      "id": 22,
-      "botName": "verifier",
-      "startedAt": "2025-12-29T08:22:19.055Z",
-      "completedAt": "2025-12-29T08:25:53.019Z",
-      "status": "completed",
-      "itemsProcessed": 10,
-      "itemsCreated": 5,
-      "itemsUpdated": 0,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Verifier Bot completed",
-        "passed": 5,
-        "flagged": 5,
-        "stats": {
-          "totalAnalyzed": 10,
-          "passed": 5,
-          "flagged": 5,
-          "byIssueType": {
-            "insufficient_tags": 2,
-            "answer_mismatch": 4,
-            "low_channel_relevance": 1,
-            "insufficient_voice_keywords": 1,
-            "weak_voice_keywords": 1
-          },
-          "bySeverity": {
-            "critical": 0,
-            "high": 0,
-            "medium": 5,
-            "low": 2,
-            "info": 2
-          },
-          "byChannel": {
-            "sre": 2,
-            "generative-ai": 1,
-            "backend": 1,
-            "aws": 1,
-            "terraform": 1,
-            "e2e-testing": 1,
-            "devops": 1,
-            "testing": 2
-          },
-          "avgScores": {
-            "technical": 0,
-            "clarity": 0,
-            "completeness": 0,
-            "overall": 0
-          }
-        }
-      }
-    },
-    {
-      "id": 21,
-      "botName": "processor",
-      "startedAt": "2025-12-29T06:56:34.133Z",
-      "completedAt": "2025-12-29T08:06:03.319Z",
-      "status": "completed",
-      "itemsProcessed": 10,
-      "itemsCreated": 0,
-      "itemsUpdated": 10,
-      "itemsDeleted": 0,
-      "summary": {
-        "message": "Processor Bot completed",
-        "processed": 10,
-        "updated": 10,
-        "deleted": 0,
-        "failed": 0
-      }
     }
   ],
   "queue": [
     {
-      "id": 320,
+      "id": 604,
       "itemType": "question",
-      "itemId": "q-283",
+      "itemId": "q-399",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "Issues: low_technical_accuracy, low_clarity, low_completeness, low_structure_quality, low_difficulty_calibration | AI: Complete mismatch between question and answer - content discusses load balancing instead of web security vulnerabilities | Fix: Replace answer with XSS vs CSRF comparison; Add attack examples and prevention methods | Score: 16/100",
-      "createdBy": "verifier",
-      "createdAt": "2026-01-06T03:39:37.335Z"
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:04"
     },
     {
-      "id": 316,
+      "id": 605,
       "itemType": "question",
-      "itemId": "al-163",
+      "itemId": "q-400",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "Issues: low_technical_accuracy, low_completeness, low_difficulty_calibration | AI: The content has serious technical flaws - the proposed solution doesn't actually sort the array and the problem constraints are impossible to satisfy  | Fix: Correct the fundamental approach or acknowledge the problem is impossible under given constraints; Add discussion of computational complexity theory and why O(n) sorting without extra space is impossible | Score: 51/100",
-      "createdBy": "verifier",
-      "createdAt": "2026-01-05T04:58:11.473Z"
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:04"
     },
     {
-      "id": 271,
+      "id": 599,
       "itemType": "question",
-      "itemId": "gh-101",
+      "itemId": "q-378",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add practical implementation details and failure scenarios for complete understanding",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:54:49.092Z"
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:03"
     },
     {
-      "id": 270,
+      "id": 600,
       "itemType": "question",
-      "itemId": "q-201",
+      "itemId": "q-380",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add comparison of gradient flow and mention peephole connections for completeness",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:54:02.045Z"
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:03"
     },
     {
-      "id": 269,
+      "id": 601,
       "itemType": "question",
-      "itemId": "gh-97",
+      "itemId": "q-381",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of human decision points and complete the YAML code example.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:34:49.957Z"
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:03"
     },
     {
-      "id": 268,
+      "id": 602,
       "itemType": "question",
-      "itemId": "q-330",
+      "itemId": "q-392",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific technical details about event sourcing, conflict resolution, and handling concurrent updates in collaborative scenarios.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:33:50.220Z"
+      "reason": "Truncated answer detected (high severity, 137 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:03"
     },
     {
-      "id": 267,
+      "id": 603,
       "itemType": "question",
-      "itemId": "q-408",
+      "itemId": "q-395",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific technical details like grid-template-areas, container queries, and Intersection Observer for virtualization.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:33:39.201Z"
+      "reason": "Truncated answer detected (high severity, 136 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:03"
     },
     {
-      "id": 266,
-      "itemType": "question",
-      "itemId": "gh-15",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more detailed comparison criteria (cost, scalability, security) and specific use case scenarios for better completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:32:41.083Z"
-    },
-    {
-      "id": 265,
-      "itemType": "question",
-      "itemId": "q-211",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of debt types and measurable success metrics to strengthen the answer.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:32:30.159Z"
-    },
-    {
-      "id": 264,
-      "itemType": "question",
-      "itemId": "q-304",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more detail on environment isolation strategies and RBAC implementation examples.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:32:22.752Z"
-    },
-    {
-      "id": 263,
-      "itemType": "question",
-      "itemId": "gh-71",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific OWASP Top 10 examples and discuss WAF limitations for comprehensive coverage.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:31:39.373Z"
-    },
-    {
-      "id": 262,
-      "itemType": "question",
-      "itemId": "q-321",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific performance metrics, networking considerations, and migration strategies for a more comprehensive answer.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:31:31.428Z"
-    },
-    {
-      "id": 261,
-      "itemType": "question",
-      "itemId": "sr-124",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the answer to include burn rate calculations, error budget policies, and multi-service correlation examples.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:30:57.206Z"
-    },
-    {
-      "id": 260,
-      "itemType": "question",
-      "itemId": "q-264",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more depth on performance characteristics and error handling scenarios",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:30:26.045Z"
-    },
-    {
-      "id": 259,
-      "itemType": "question",
-      "itemId": "q-403",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the implementation details in the answer and provide more specific hyperparameter ranges for production scenarios",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:30:18.464Z"
-    },
-    {
-      "id": 258,
-      "itemType": "question",
-      "itemId": "q-374",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific coverage targets (80%+ unit, 60%+ integration), mention ServiceNow ATF framework, and discuss mutation testing for validation edge cases.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:29:52.489Z"
-    },
-    {
-      "id": 257,
-      "itemType": "question",
-      "itemId": "q-180",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more technical depth on DNS resolution process and record types for comprehensive coverage",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:29:22.420Z"
-    },
-    {
-      "id": 256,
-      "itemType": "question",
-      "itemId": "gh-44",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific implementation details and advanced security patterns like API key management, threat modeling, and automated security testing to increase completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:29:13.964Z"
-    },
-    {
-      "id": 255,
-      "itemType": "question",
-      "itemId": "fr-157",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the answer and explanation; provide full code examples demonstrating practical TDZ and hoisting scenarios.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:29:00.847Z"
-    },
-    {
-      "id": 254,
-      "itemType": "question",
-      "itemId": "q-359",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand answer to include specific implementation details and additional defense-in-depth measures like input validation and framework-specific protections.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:28:40.550Z"
-    },
-    {
-      "id": 253,
-      "itemType": "question",
-      "itemId": "q-187",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add code examples and discuss trade-offs between different thread-safe approaches (ConcurrentHashMap vs synchronized blocks) and memory considerations",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:27:31.539Z"
-    },
-    {
-      "id": 252,
-      "itemType": "question",
-      "itemId": "fe-3",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more real-world application examples and discuss potential performance implications of closures",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:27:10.922Z"
-    },
-    {
-      "id": 251,
-      "itemType": "question",
-      "itemId": "q-252",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of when to use each quantization strategy and include recent framework benchmarks.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:26:25.683Z"
-    },
-    {
-      "id": 250,
-      "itemType": "question",
-      "itemId": "q-204",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific performance metrics and memory management techniques to increase completeness",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:26:18.235Z"
-    },
-    {
-      "id": 249,
-      "itemType": "question",
-      "itemId": "q-286",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific use case examples and complete the explanation text that was cut off.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:25:20.664Z"
-    },
-    {
-      "id": 248,
-      "itemType": "question",
-      "itemId": "q-415",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific quantitative metrics and implementation details for production deployment",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:25:12.524Z"
-    },
-    {
-      "id": 247,
-      "itemType": "question",
-      "itemId": "q-320",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add detailed comparison of service types with specific use cases and include complete Ingress configuration example.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:23:37.585Z"
-    },
-    {
-      "id": 246,
-      "itemType": "question",
-      "itemId": "q-352",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand answer with specific compensation handling patterns and failure scenarios for trading platforms",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:23:26.778Z"
-    },
-    {
-      "id": 245,
-      "itemType": "question",
-      "itemId": "q-249",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific code examples and metrics for timeout/retry thresholds to make implementation more concrete.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:23:09.578Z"
-    },
-    {
-      "id": 244,
-      "itemType": "question",
-      "itemId": "gh-5",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specifics about storage drivers and security mechanisms to increase completeness",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:22:47.597Z"
-    },
-    {
-      "id": 243,
-      "itemType": "question",
-      "itemId": "q-369",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific metrics thresholds and implementation details to increase completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:21:33.478Z"
-    },
-    {
-      "id": 242,
-      "itemType": "question",
-      "itemId": "q-181",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more concrete examples of retain cycles and when to choose weak vs unowned in common iOS patterns",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:21:26.439Z"
-    },
-    {
-      "id": 241,
-      "itemType": "question",
-      "itemId": "q-434",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the cut-off explanation and add more specific performance benchmarks and code examples to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:20:41.607Z"
-    },
-    {
-      "id": 240,
-      "itemType": "question",
-      "itemId": "gh-18",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add practical use cases and comparison with other tools like Chef/Puppet to strengthen completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:19:44.101Z"
-    },
-    {
-      "id": 239,
-      "itemType": "question",
-      "itemId": "q-487",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific metrics for 99% accuracy validation and expand edge deployment constraints discussion",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:19:25.393Z"
-    },
-    {
-      "id": 238,
-      "itemType": "question",
-      "itemId": "q-300",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add worst-case scenario explanation for quicksort and complete the code example",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:19:02.308Z"
-    },
-    {
-      "id": 237,
-      "itemType": "question",
-      "itemId": "q-383",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand answer with specific code examples and mention race condition handling.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:18:13.306Z"
-    },
-    {
-      "id": 236,
-      "itemType": "question",
-      "itemId": "q-290",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add alerting thresholds and incident response procedures for burn rate monitoring",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:18:05.539Z"
-    },
-    {
-      "id": 235,
-      "itemType": "question",
-      "itemId": "q-343",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific EXPLAIN plan examples and mention parallel query execution considerations",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:16:37.145Z"
-    },
-    {
-      "id": 234,
-      "itemType": "question",
-      "itemId": "q-182",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated answer and expand explanation with specific initialization examples and common mistakes.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:16:03.900Z"
-    },
-    {
-      "id": 233,
-      "itemType": "question",
-      "itemId": "q-344",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand answer to cover security trade-offs, layer caching strategies, and monitoring for production validation.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:15:06.964Z"
-    },
-    {
-      "id": 232,
-      "itemType": "question",
-      "itemId": "q-587",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Answer is cut off and lacks concrete examples. Add specific prompt examples and demonstrate edge case handling with actual text samples.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:14:45.074Z"
-    },
-    {
-      "id": 231,
-      "itemType": "question",
-      "itemId": "q-322",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific metrics and implementation details to improve completeness",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:13:14.580Z"
-    },
-    {
-      "id": 230,
-      "itemType": "question",
-      "itemId": "q-336",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more detailed implementation steps and business context discussion",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:13:04.061Z"
-    },
-    {
-      "id": 229,
-      "itemType": "question",
-      "itemId": "q-365",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Answer should include specific partition maintenance strategies, index sizing considerations, and handling of hot partitions",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:12:56.372Z"
-    },
-    {
-      "id": 228,
-      "itemType": "question",
-      "itemId": "q-226",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific implementation details and examples of the meta-learning algorithm and performance metrics used.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:11:40.778Z"
-    },
-    {
-      "id": 227,
-      "itemType": "question",
-      "itemId": "gh-54",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Explanation cuts off mid-sentence. Complete the architecture and sync status details, add practical examples and comparison to alternatives like Flux.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:11:30.956Z"
-    },
-    {
-      "id": 226,
-      "itemType": "question",
-      "itemId": "q-333",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific metrics and monitoring strategies to the expected answer, include concrete examples of performance optimization techniques, and expand the code example to show actual error budget calculations.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:11:06.003Z"
-    },
-    {
-      "id": 225,
-      "itemType": "question",
-      "itemId": "q-345",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific Grafana query examples and mention SLIs/SLOs for complete incident response workflow.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:10:36.055Z"
-    },
-    {
-      "id": 224,
-      "itemType": "question",
-      "itemId": "q-608",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand explanation to include eviction thresholds, QoS classes, and specific priority/preemption examples",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:10:25.797Z"
-    },
-    {
-      "id": 223,
-      "itemType": "question",
-      "itemId": "gh-51",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more practical examples and cover CRI's role in runtime flexibility.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:10:11.362Z"
-    },
-    {
-      "id": 222,
-      "itemType": "question",
-      "itemId": "q-412",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more detail on failure scenarios, retry policies, and sharing migration data via emptyDir volumes.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:09:57.342Z"
-    },
-    {
-      "id": 221,
-      "itemType": "question",
-      "itemId": "q-363",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Answer contains incorrect solution - justify-content: space-between conflicts with centering middle item. Better approaches: use justify-content: space-around, or flex: 1 on middle item, or grid with template-columns: 1fr auto 1fr.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:09:01.070Z"
-    },
-    {
-      "id": 220,
-      "itemType": "question",
-      "itemId": "gh-62",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more detail on error budget policies and real-world implementation examples",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:07:40.950Z"
-    },
-    {
-      "id": 219,
-      "itemType": "question",
-      "itemId": "q-198",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific implementation examples and measurable metrics for the trade-offs between security and user experience.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:07:27.262Z"
-    },
-    {
-      "id": 218,
+      "id": 595,
       "itemType": "question",
       "itemId": "q-331",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand on adaptive capacity implementation details and specify read/write trade-off metrics for better completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:06:00.599Z"
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:02"
     },
     {
-      "id": 217,
-      "itemType": "question",
-      "itemId": "q-224",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add complete code examples for all three approaches and include performance benchmarks",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:04:46.880Z"
-    },
-    {
-      "id": 216,
-      "itemType": "question",
-      "itemId": "gh-100",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add practical implementation details and real-world use cases to improve completeness",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:04:41.259Z"
-    },
-    {
-      "id": 214,
-      "itemType": "question",
-      "itemId": "q-542",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Answer cuts off mid-sentence and lacks specific test case examples. Complete the implementation strategy and add concrete test scenarios for different HTTP methods and error conditions.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:02:30.389Z"
-    },
-    {
-      "id": 213,
-      "itemType": "question",
-      "itemId": "q-246",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific implementation details like IAM role configurations, cost optimization strategies, and monitoring setup",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:01:48.273Z"
-    },
-    {
-      "id": 212,
-      "itemType": "question",
-      "itemId": "sr-169",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add scenario-based follow-up to test decision-making under budget constraints.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:01:31.568Z"
-    },
-    {
-      "id": 211,
-      "itemType": "question",
-      "itemId": "q-606",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content, missing_question_mark | Feedback: Add specific implementation details like Redis commands, error handling, and fallback strategies for distributed systems.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:01:11.449Z"
-    },
-    {
-      "id": 210,
-      "itemType": "question",
-      "itemId": "gh-36",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of backup tools and real-world scenarios to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:00:54.991Z"
-    },
-    {
-      "id": 209,
-      "itemType": "question",
-      "itemId": "q-257",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated code examples and add comparison table for better clarity",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:00:44.805Z"
-    },
-    {
-      "id": 208,
-      "itemType": "question",
-      "itemId": "gh-104",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated answer and expand the code example for better demonstration.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T06:00:30.546Z"
-    },
-    {
-      "id": 207,
-      "itemType": "question",
-      "itemId": "q-255",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific code examples and mention common validation pitfalls to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:59:57.372Z"
-    },
-    {
-      "id": 206,
-      "itemType": "question",
-      "itemId": "q-192",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add complete code example and bucket configuration for latency histograms",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:59:46.543Z"
-    },
-    {
-      "id": 205,
-      "itemType": "question",
-      "itemId": "q-327",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific implementation details and error handling examples to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:59:28.386Z"
-    },
-    {
-      "id": 204,
-      "itemType": "question",
-      "itemId": "q-357",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific performance metrics and cost optimization details to strengthen the answer.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:59:22.714Z"
-    },
-    {
-      "id": 203,
-      "itemType": "question",
-      "itemId": "q-228",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific performance benchmarks and memory constraints for edge devices",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:59:00.544Z"
-    },
-    {
-      "id": 202,
-      "itemType": "question",
-      "itemId": "q-476",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific code examples and mention modern ORMs like Prisma/TypeORM for better practical guidance.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:39.840Z"
-    },
-    {
-      "id": 201,
-      "itemType": "question",
-      "itemId": "q-385",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific latency targets and confidence threshold examples to strengthen the implementation details.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:30.981Z"
-    },
-    {
-      "id": 200,
-      "itemType": "question",
-      "itemId": "gh-66",
-      "action": "improve",
-      "priority": 2,
-      "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific execution characteristics like cold starts, statelessness, and resource limits to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:25.547Z"
-    },
-    {
-      "id": 199,
+      "id": 596,
       "itemType": "question",
       "itemId": "q-332",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific implementation details and error handling strategies to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:20.236Z"
+      "reason": "Truncated answer detected (high severity, 124 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:02"
     },
     {
-      "id": 198,
+      "id": 597,
       "itemType": "question",
-      "itemId": "q-609",
+      "itemId": "q-347",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content, missing_question_mark | Feedback: Add specific metrics and trade-offs between different algorithms, include scalability considerations and failover mechanisms.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:14.608Z"
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:02"
     },
     {
-      "id": 197,
+      "id": 598,
       "itemType": "question",
-      "itemId": "q-323",
+      "itemId": "q-358",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific implementation details and error handling examples to improve completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:58:09.087Z"
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:02"
     },
     {
-      "id": 196,
+      "id": 590,
       "itemType": "question",
-      "itemId": "q-534",
+      "itemId": "gh-22",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add session invalidation on logout and implement IP/user-agent binding for enhanced security",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:57:30.712Z"
+      "reason": "Truncated answer detected (high severity, 135 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:01"
     },
     {
-      "id": 195,
+      "id": 591,
       "itemType": "question",
-      "itemId": "q-349",
+      "itemId": "gh-16",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific metrics, tools (Jaeger, Prometheus), and failure scenarios for more comprehensive answer.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:57:24.759Z"
+      "reason": "Truncated answer detected (high severity, 139 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:01"
     },
     {
-      "id": 194,
+      "id": 592,
       "itemType": "question",
-      "itemId": "q-599",
+      "itemId": "q-318",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated explanation about trade-offs and add more specific examples about when single-column indexes outperform composite indexes.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:56:50.815Z"
+      "reason": "Truncated answer detected (high severity, 142 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:01"
     },
     {
-      "id": 193,
+      "id": 593,
       "itemType": "question",
-      "itemId": "gh-14",
+      "itemId": "q-324",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific cloud provider examples and detailed trade-off analysis for better completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:56:18.745Z"
+      "reason": "Truncated answer detected (high severity, 142 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:01"
     },
     {
-      "id": 192,
+      "id": 594,
       "itemType": "question",
-      "itemId": "gh-59",
+      "itemId": "q-327",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of SRE practices and more detailed comparison with traditional ops.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:56:01.664Z"
+      "reason": "Truncated answer detected (high severity, 140 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:01"
     },
     {
-      "id": 191,
+      "id": 585,
       "itemType": "question",
-      "itemId": "q-281",
+      "itemId": "gh-66",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Answer is cut off mid-sentence and code example incomplete. Expand with specific examples and complete technical strategies.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:55:50.663Z"
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:00"
     },
     {
-      "id": 190,
+      "id": 586,
       "itemType": "question",
-      "itemId": "q-398",
+      "itemId": "gh-71",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific implementation details and complete code example with actual retry configuration.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:55:38.605Z"
+      "reason": "Truncated answer detected (high severity, 123 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:00"
     },
     {
-      "id": 189,
+      "id": 587,
       "itemType": "question",
-      "itemId": "q-215",
+      "itemId": "gh-74",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the code example and add more details about concurrent features handling",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:55:07.652Z"
+      "reason": "Truncated answer detected (high severity, 132 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:00"
     },
     {
-      "id": 188,
+      "id": 588,
       "itemType": "question",
-      "itemId": "q-217",
+      "itemId": "gh-87",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand answer to include specific state consistency mechanisms, rollback strategies, and handling of 50+ cluster scaling challenges.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:55:02.377Z"
+      "reason": "Truncated answer detected (high severity, 124 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:00"
     },
     {
-      "id": 187,
+      "id": 589,
       "itemType": "question",
-      "itemId": "q-414",
+      "itemId": "gh-9",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated answer and add specific mathematical formulation (QK^T/√d_k) for full credit",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:54:52.561Z"
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:16:00"
     },
     {
-      "id": 186,
+      "id": 583,
       "itemType": "question",
-      "itemId": "q-183",
+      "itemId": "gh-55",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific threading examples and bridge overhead details",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:54:11.674Z"
+      "reason": "Truncated answer detected (high severity, 128 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:59"
     },
     {
-      "id": 185,
+      "id": 584,
       "itemType": "question",
-      "itemId": "q-302",
+      "itemId": "gh-62",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Expand the incomplete comparison of token structures and add concrete examples of validation patterns for both OAuth 2.0 and OIDC flows.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:54:04.249Z"
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:59"
     },
     {
-      "id": 184,
+      "id": 576,
       "itemType": "question",
       "itemId": "gh-30",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more practical examples and complete the Agent-Server Architecture explanation that was cut off.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:53:16.159Z"
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:58"
     },
     {
-      "id": 183,
+      "id": 577,
       "itemType": "question",
-      "itemId": "q-532",
+      "itemId": "gh-31",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific performance constraints and error handling requirements to make the question more comprehensive.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:53:00.315Z"
+      "reason": "Truncated answer detected (high severity, 143 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:58"
     },
     {
-      "id": 182,
+      "id": 578,
       "itemType": "question",
-      "itemId": "gh-102",
+      "itemId": "gh-35",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the code example and add practical implementation details like triggers and jobs.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:51:44.772Z"
+      "reason": "Truncated answer detected (high severity, 123 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:58"
     },
     {
-      "id": 181,
+      "id": 579,
       "itemType": "question",
-      "itemId": "q-240",
+      "itemId": "gh-36",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add practical code examples and mention memory implications for completeness.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:51:32.746Z"
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:58"
     },
     {
-      "id": 179,
+      "id": 571,
       "itemType": "question",
-      "itemId": "q-291",
+      "itemId": "db-2",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more details about error handling and rate limiting in reconciliation loops",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:50:43.579Z"
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:57"
     },
     {
-      "id": 178,
+      "id": 572,
       "itemType": "question",
-      "itemId": "gh-78",
+      "itemId": "gh-13",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add alerting thresholds, escalation procedures, and monitoring tool selection criteria to make it more comprehensive.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:50:36.063Z"
+      "reason": "Truncated answer detected (high severity, 149 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:57"
     },
     {
-      "id": 177,
+      "id": 573,
       "itemType": "question",
-      "itemId": "q-339",
+      "itemId": "gh-18",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add more specific error handling examples and request/response body formats for a more complete answer.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:50:22.020Z"
+      "reason": "Truncated answer detected (high severity, 127 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:57"
     },
     {
-      "id": 176,
+      "id": 574,
       "itemType": "question",
-      "itemId": "gh-53",
+      "itemId": "gh-23",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add practical implementation details like ArgoCD/Flux examples and include a complete YAML manifest.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:50:07.552Z"
+      "reason": "Truncated answer detected (high severity, 141 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:57"
     },
     {
-      "id": 175,
+      "id": 528,
       "itemType": "question",
-      "itemId": "gh-33",
+      "itemId": "q-401",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Complete the truncated answer and expand trade-offs analysis with specific use cases and performance metrics.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:49:13.989Z"
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:48"
     },
     {
-      "id": 174,
+      "id": 529,
       "itemType": "question",
-      "itemId": "q-245",
+      "itemId": "q-419",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific examples of use cases and mention resource sharing differences (PID, network, storage) between patterns.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:48:38.625Z"
+      "reason": "Truncated answer detected (high severity, 124 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:48"
     },
     {
-      "id": 173,
+      "id": 524,
       "itemType": "question",
-      "itemId": "q-605",
+      "itemId": "q-346",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content, missing_question_mark | Feedback: Answer lacks specific details on failover mechanisms, monitoring setup, and scalability considerations for the 99.99% uptime requirement.",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:48:33.402Z"
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:47"
     },
     {
-      "id": 172,
+      "id": 525,
+      "itemType": "question",
+      "itemId": "q-353",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 129 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:47"
+    },
+    {
+      "id": 526,
+      "itemType": "question",
+      "itemId": "q-366",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 149 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:47"
+    },
+    {
+      "id": 527,
+      "itemType": "question",
+      "itemId": "q-383",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 145 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:47"
+    },
+    {
+      "id": 519,
+      "itemType": "question",
+      "itemId": "q-334",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:46"
+    },
+    {
+      "id": 520,
+      "itemType": "question",
+      "itemId": "q-335",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 127 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:46"
+    },
+    {
+      "id": 521,
+      "itemType": "question",
+      "itemId": "q-337",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 141 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:46"
+    },
+    {
+      "id": 522,
+      "itemType": "question",
+      "itemId": "q-338",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:46"
+    },
+    {
+      "id": 514,
+      "itemType": "question",
+      "itemId": "q-416",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 133 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:45"
+    },
+    {
+      "id": 509,
+      "itemType": "question",
+      "itemId": "q-330",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:44"
+    },
+    {
+      "id": 510,
+      "itemType": "question",
+      "itemId": "q-322",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 139 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:44"
+    },
+    {
+      "id": 511,
+      "itemType": "question",
+      "itemId": "q-345",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 140 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:44"
+    },
+    {
+      "id": 512,
+      "itemType": "question",
+      "itemId": "q-360",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:44"
+    },
+    {
+      "id": 513,
+      "itemType": "question",
+      "itemId": "q-363",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:44"
+    },
+    {
+      "id": 505,
+      "itemType": "question",
+      "itemId": "q-173",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 121 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:43"
+    },
+    {
+      "id": 506,
+      "itemType": "question",
+      "itemId": "q-408",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 126 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:43"
+    },
+    {
+      "id": 507,
+      "itemType": "question",
+      "itemId": "q-413",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:43"
+    },
+    {
+      "id": 508,
       "itemType": "question",
       "itemId": "q-311",
       "action": "improve",
       "priority": 2,
       "status": "completed",
-      "reason": "placeholder_content | Feedback: Add specific example showing mock implementation within the function being tested",
-      "createdBy": "verifier",
-      "createdAt": "2025-12-29T05:48:28.091Z"
+      "reason": "Truncated answer detected (high severity, 127 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:43"
+    },
+    {
+      "id": 480,
+      "itemType": "question",
+      "itemId": "gh-58",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:38"
+    },
+    {
+      "id": 481,
+      "itemType": "question",
+      "itemId": "sr-143",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 135 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:38"
+    },
+    {
+      "id": 476,
+      "itemType": "question",
+      "itemId": "q-196",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 123 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:37"
+    },
+    {
+      "id": 477,
+      "itemType": "question",
+      "itemId": "q-197",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 133 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:37"
+    },
+    {
+      "id": 478,
+      "itemType": "question",
+      "itemId": "q-199",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 134 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:37"
+    },
+    {
+      "id": 479,
+      "itemType": "question",
+      "itemId": "gh-54",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 129 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:37"
+    },
+    {
+      "id": 471,
+      "itemType": "question",
+      "itemId": "q-180",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 143 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:36"
+    },
+    {
+      "id": 472,
+      "itemType": "question",
+      "itemId": "q-186",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 145 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:36"
+    },
+    {
+      "id": 473,
+      "itemType": "question",
+      "itemId": "q-188",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:36"
+    },
+    {
+      "id": 474,
+      "itemType": "question",
+      "itemId": "q-193",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:36"
+    },
+    {
+      "id": 475,
+      "itemType": "question",
+      "itemId": "q-194",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 130 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:36"
+    },
+    {
+      "id": 466,
+      "itemType": "question",
+      "itemId": "fr-161",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:35"
+    },
+    {
+      "id": 467,
+      "itemType": "question",
+      "itemId": "fr-162",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:35"
+    },
+    {
+      "id": 468,
+      "itemType": "question",
+      "itemId": "q-170",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 125 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:35"
+    },
+    {
+      "id": 469,
+      "itemType": "question",
+      "itemId": "q-172",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 122 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:35"
+    },
+    {
+      "id": 470,
+      "itemType": "question",
+      "itemId": "q-175",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 134 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:35"
+    },
+    {
+      "id": 461,
+      "itemType": "question",
+      "itemId": "sy-141",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:34"
+    },
+    {
+      "id": 462,
+      "itemType": "question",
+      "itemId": "sr-146",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 122 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:34"
+    },
+    {
+      "id": 463,
+      "itemType": "question",
+      "itemId": "sr-149",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 136 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:34"
+    },
+    {
+      "id": 464,
+      "itemType": "question",
+      "itemId": "sr-150",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:34"
+    },
+    {
+      "id": 465,
+      "itemType": "question",
+      "itemId": "sy-151",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 135 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:34"
+    },
+    {
+      "id": 456,
+      "itemType": "question",
+      "itemId": "da-134",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 145 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:33"
+    },
+    {
+      "id": 457,
+      "itemType": "question",
+      "itemId": "de-135",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 142 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:33"
+    },
+    {
+      "id": 458,
+      "itemType": "question",
+      "itemId": "sy-137",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 124 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:33"
+    },
+    {
+      "id": 459,
+      "itemType": "question",
+      "itemId": "de-137",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 132 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:33"
+    },
+    {
+      "id": 460,
+      "itemType": "question",
+      "itemId": "sy-140",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 137 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:33"
+    },
+    {
+      "id": 452,
+      "itemType": "question",
+      "itemId": "gh-97",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 123 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:32"
+    },
+    {
+      "id": 453,
+      "itemType": "question",
+      "itemId": "gh-102",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:32"
+    },
+    {
+      "id": 454,
+      "itemType": "question",
+      "itemId": "sr-131",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:32"
+    },
+    {
+      "id": 455,
+      "itemType": "question",
+      "itemId": "sy-132",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:32"
+    },
+    {
+      "id": 428,
+      "itemType": "question",
+      "itemId": "q-298",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 138 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:27"
+    },
+    {
+      "id": 429,
+      "itemType": "question",
+      "itemId": "q-206",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 134 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:27"
+    },
+    {
+      "id": 423,
+      "itemType": "question",
+      "itemId": "q-274",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 137 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:26"
+    },
+    {
+      "id": 424,
+      "itemType": "question",
+      "itemId": "q-275",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 132 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:26"
+    },
+    {
+      "id": 425,
+      "itemType": "question",
+      "itemId": "q-278",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 140 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:26"
+    },
+    {
+      "id": 426,
+      "itemType": "question",
+      "itemId": "q-285",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 146 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:26"
+    },
+    {
+      "id": 427,
+      "itemType": "question",
+      "itemId": "q-293",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:26"
+    },
+    {
+      "id": 418,
+      "itemType": "question",
+      "itemId": "q-250",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:25"
+    },
+    {
+      "id": 420,
+      "itemType": "question",
+      "itemId": "q-256",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 148 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:25"
+    },
+    {
+      "id": 421,
+      "itemType": "question",
+      "itemId": "q-258",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 142 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:25"
+    },
+    {
+      "id": 422,
+      "itemType": "question",
+      "itemId": "q-272",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 124 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:25"
+    },
+    {
+      "id": 413,
+      "itemType": "question",
+      "itemId": "q-232",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 141 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:24"
+    },
+    {
+      "id": 414,
+      "itemType": "question",
+      "itemId": "q-237",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 147 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:24"
+    },
+    {
+      "id": 415,
+      "itemType": "question",
+      "itemId": "q-238",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 149 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:24"
+    },
+    {
+      "id": 417,
+      "itemType": "question",
+      "itemId": "q-240",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 145 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:24"
+    },
+    {
+      "id": 409,
+      "itemType": "question",
+      "itemId": "q-219",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 143 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:23"
+    },
+    {
+      "id": 410,
+      "itemType": "question",
+      "itemId": "q-220",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 144 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:23"
+    },
+    {
+      "id": 411,
+      "itemType": "question",
+      "itemId": "q-227",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 142 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:23"
+    },
+    {
+      "id": 412,
+      "itemType": "question",
+      "itemId": "q-228",
+      "action": "improve",
+      "priority": 2,
+      "status": "completed",
+      "reason": "Truncated answer detected (high severity, 134 chars)",
+      "createdBy": "truncation-detector",
+      "createdAt": "2026-01-08 11:15:23"
     }
   ],
   "ledger": [
     {
-      "id": 1092,
+      "id": 1315,
       "botName": "processor",
       "action": "update",
-      "itemType": "question",
-      "itemId": "q-543",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-08T03:43:15.101Z"
-    },
-    {
-      "id": 1091,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-249",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-08T03:43:06.917Z"
-    },
-    {
-      "id": 1090,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-294",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-08T03:42:33.097Z"
-    },
-    {
-      "id": 1089,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-461",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-08T03:42:26.170Z"
-    },
-    {
-      "id": 1088,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-543",
-      "reason": "Flagged for improve: 2 issues, score 86/100",
-      "createdAt": "2026-01-08T03:42:20.242Z"
-    },
-    {
-      "id": 1087,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-328",
-      "reason": "Passed verification with score 86/100",
-      "createdAt": "2026-01-08T03:42:14.413Z"
-    },
-    {
-      "id": 1086,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-291",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-08T03:42:09.121Z"
-    },
-    {
-      "id": 1085,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-407",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-08T03:42:04.191Z"
-    },
-    {
-      "id": 1084,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-347",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-08T03:41:55.106Z"
-    },
-    {
-      "id": 1083,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-249",
-      "reason": "Flagged for improve: 1 issues, score 81/100",
-      "createdAt": "2026-01-08T03:41:49.763Z"
-    },
-    {
-      "id": 1082,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-273",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-08T03:41:39.940Z"
-    },
-    {
-      "id": 1081,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-264",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-08T03:41:29.302Z"
-    },
-    {
-      "id": 1080,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-648",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-08T03:40:53.027Z"
-    },
-    {
-      "id": 1079,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-647",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-08T03:40:33.334Z"
-    },
-    {
-      "id": 1078,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-646",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-08T03:40:16.123Z"
-    },
-    {
-      "id": 1077,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-645",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-08T03:39:58.792Z"
-    },
-    {
-      "id": 1076,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-601",
-      "reason": "Processed: code_added, answer_aligned",
-      "createdAt": "2026-01-07T14:06:04.943Z"
-    },
-    {
-      "id": 1075,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-590",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T14:05:39.873Z"
-    },
-    {
-      "id": 1074,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-473",
-      "reason": "Processed: answer_aligned, voice_keywords_added",
-      "createdAt": "2026-01-07T14:05:32.392Z"
-    },
-    {
-      "id": 1073,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-198",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T14:05:21.178Z"
-    },
-    {
-      "id": 1072,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-365",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-07T14:04:42.972Z"
-    },
-    {
-      "id": 1071,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-178",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T14:04:37.960Z"
-    },
-    {
-      "id": 1070,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-551",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T14:04:30.100Z"
-    },
-    {
-      "id": 1069,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-360",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T14:04:24.136Z"
-    },
-    {
-      "id": 1068,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-437",
-      "reason": "Passed verification with score 77/100",
-      "createdAt": "2026-01-07T14:04:13.602Z"
-    },
-    {
-      "id": 1067,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-644",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T14:03:32.800Z"
-    },
-    {
-      "id": 1066,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-643",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T14:03:16.749Z"
-    },
-    {
-      "id": 1065,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-642",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T14:03:02.298Z"
-    },
-    {
-      "id": 1064,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-641",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T14:02:39.099Z"
-    },
-    {
-      "id": 1063,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-640",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T14:02:23.300Z"
-    },
-    {
-      "id": 1062,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-601",
-      "reason": "Flagged for improve: 2 issues, score 85/100",
-      "createdAt": "2026-01-07T13:17:09.426Z"
-    },
-    {
-      "id": 1061,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-590",
-      "reason": "Flagged for improve: 2 issues, score 85/100",
-      "createdAt": "2026-01-07T13:16:56.927Z"
-    },
-    {
-      "id": 1060,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-194",
-      "reason": "Passed verification with score 77/100",
-      "createdAt": "2026-01-07T13:16:44.174Z"
-    },
-    {
-      "id": 1059,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "gh-55",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T13:16:29.970Z"
-    },
-    {
-      "id": 1058,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-473",
-      "reason": "Flagged for improve: 2 issues, score 83/100",
-      "createdAt": "2026-01-07T13:16:24.058Z"
-    },
-    {
-      "id": 1057,
-      "botName": "verifier",
-      "action": "verify",
       "itemType": "question",
       "itemId": "q-515",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T13:16:17.130Z"
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:50:16.709Z"
     },
     {
-      "id": 1056,
+      "id": 1314,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-514",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:45:00.243Z"
+    },
+    {
+      "id": 1313,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-513",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:50.734Z"
+    },
+    {
+      "id": 1312,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-512",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:45.750Z"
+    },
+    {
+      "id": 1311,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-510",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:39.931Z"
+    },
+    {
+      "id": 1310,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-509",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:31.944Z"
+    },
+    {
+      "id": 1309,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-505",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:27.065Z"
+    },
+    {
+      "id": 1308,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-503",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:22.264Z"
+    },
+    {
+      "id": 1307,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-502",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:16.858Z"
+    },
+    {
+      "id": 1306,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-501",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-09T03:44:11.114Z"
+    },
+    {
+      "id": 1305,
       "botName": "verifier",
       "action": "verify",
       "itemType": "question",
-      "itemId": "gh-68",
-      "reason": "Passed verification with score 86/100",
-      "createdAt": "2026-01-07T13:16:09.281Z"
+      "itemId": "q-634",
+      "reason": "Passed verification with score 79/100",
+      "createdAt": "2026-01-09T03:43:35.063Z"
     },
     {
-      "id": 1055,
+      "id": 1304,
       "botName": "verifier",
       "action": "verify",
       "itemType": "question",
-      "itemId": "gh-50",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T13:16:03.627Z"
+      "itemId": "da-129",
+      "reason": "Passed verification with score 92/100",
+      "createdAt": "2026-01-09T03:43:29.019Z"
     },
     {
-      "id": 1054,
+      "id": 1303,
       "botName": "verifier",
       "action": "verify",
       "itemType": "question",
-      "itemId": "sy-138",
+      "itemId": "q-644",
       "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T13:15:57.124Z"
+      "createdAt": "2026-01-09T03:43:21.408Z"
     },
     {
-      "id": 1053,
+      "id": 1302,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-390",
+      "reason": "Passed verification with score 83/100",
+      "createdAt": "2026-01-09T03:43:16.483Z"
+    },
+    {
+      "id": 1301,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-446",
+      "reason": "Passed verification with score 85/100",
+      "createdAt": "2026-01-09T03:43:10.538Z"
+    },
+    {
+      "id": 1300,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-403",
+      "reason": "Passed verification with score 84/100",
+      "createdAt": "2026-01-09T03:43:05.254Z"
+    },
+    {
+      "id": 1299,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-311",
+      "reason": "Passed verification with score 83/100",
+      "createdAt": "2026-01-09T03:42:54.992Z"
+    },
+    {
+      "id": 1298,
+      "botName": "verifier",
+      "action": "verify",
+      "itemType": "question",
+      "itemId": "q-595",
+      "reason": "Passed verification with score 91/100",
+      "createdAt": "2026-01-09T03:42:49.700Z"
+    },
+    {
+      "id": 1297,
       "botName": "verifier",
       "action": "flag",
       "itemType": "question",
-      "itemId": "q-198",
-      "reason": "Flagged for improve: 1 issues, score 82/100",
-      "createdAt": "2026-01-07T13:15:45.345Z"
+      "itemId": "q-579",
+      "reason": "Flagged for improve: 2 issues, score 92/100",
+      "createdAt": "2026-01-09T03:42:44.883Z"
     },
     {
-      "id": 1052,
+      "id": 1296,
       "botName": "verifier",
       "action": "verify",
       "itemType": "question",
-      "itemId": "q-600",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T13:15:38.520Z"
-    },
-    {
-      "id": 1051,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-574",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T13:15:30.252Z"
-    },
-    {
-      "id": 1050,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-418",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T13:15:20.530Z"
-    },
-    {
-      "id": 1049,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-541",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T13:15:09.486Z"
-    },
-    {
-      "id": 1048,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-215",
+      "itemId": "q-490",
       "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-07T13:15:01.885Z"
+      "createdAt": "2026-01-09T03:42:38.924Z"
     },
     {
-      "id": 1047,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "gh-45",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T13:14:55.591Z"
-    },
-    {
-      "id": 1046,
+      "id": 1295,
       "botName": "creator",
       "action": "create",
       "itemType": "question",
-      "itemId": "q-639",
+      "itemId": "q-651",
       "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T13:14:35.013Z"
+      "createdAt": "2026-01-09T03:41:17.085Z"
     },
     {
-      "id": 1045,
+      "id": 1294,
+      "botName": "creator",
+      "action": "create",
+      "itemType": "question",
+      "itemId": "q-650",
+      "reason": "Created by Creator Bot",
+      "createdAt": "2026-01-09T03:40:57.425Z"
+    },
+    {
+      "id": 1293,
+      "botName": "creator",
+      "action": "create",
+      "itemType": "question",
+      "itemId": "q-649",
+      "reason": "Created by Creator Bot",
+      "createdAt": "2026-01-09T03:40:39.668Z"
+    },
+    {
+      "id": 1292,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-615",
-      "reason": "Processed: code_added, answer_aligned",
-      "createdAt": "2026-01-07T13:10:00.180Z"
+      "itemId": "q-499",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:59:42.315Z"
     },
     {
-      "id": 1044,
+      "id": 1291,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "da-128",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T13:09:41.449Z"
+      "itemId": "q-498",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:59:33.351Z"
     },
     {
-      "id": 1043,
+      "id": 1290,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "gh-20",
-      "reason": "Processed: voice_keywords_added",
-      "createdAt": "2026-01-07T13:09:36.366Z"
+      "itemId": "q-497",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:59:23.877Z"
     },
     {
-      "id": 1042,
+      "id": 1289,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-594",
-      "reason": "Processed: code_added, answer_aligned, voice_keywords_added",
-      "createdAt": "2026-01-07T13:09:31.494Z"
+      "itemId": "q-496",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:59:14.782Z"
     },
     {
-      "id": 1041,
+      "id": 1288,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "gh-10",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T13:09:20.272Z"
+      "itemId": "q-495",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:59:05.660Z"
     },
     {
-      "id": 1040,
-      "botName": "verifier",
-      "action": "verify",
+      "id": 1287,
+      "botName": "processor",
+      "action": "update",
       "itemType": "question",
-      "itemId": "q-500",
-      "reason": "Passed verification with score 86/100",
-      "createdAt": "2026-01-07T13:08:44.704Z"
+      "itemId": "q-493",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:57.213Z"
     },
     {
-      "id": 1039,
-      "botName": "verifier",
-      "action": "verify",
+      "id": 1286,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-492",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:48.537Z"
+    },
+    {
+      "id": 1285,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-489",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:39.899Z"
+    },
+    {
+      "id": 1284,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-488",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:29.130Z"
+    },
+    {
+      "id": 1283,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-486",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:19.053Z"
+    },
+    {
+      "id": 1282,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-484",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:58:10.126Z"
+    },
+    {
+      "id": 1281,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-482",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:57:57.538Z"
+    },
+    {
+      "id": 1280,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-254",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:57:47.045Z"
+    },
+    {
+      "id": 1279,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-239",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:57:34.527Z"
+    },
+    {
+      "id": 1278,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-564",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:57:22.806Z"
+    },
+    {
+      "id": 1277,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-563",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:57:08.155Z"
+    },
+    {
+      "id": 1276,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-562",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:56:55.305Z"
+    },
+    {
+      "id": 1275,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-561",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:56:44.375Z"
+    },
+    {
+      "id": 1274,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-560",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:56:33.226Z"
+    },
+    {
+      "id": 1273,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-559",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:56:21.596Z"
+    },
+    {
+      "id": 1272,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-556",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:56:11.138Z"
+    },
+    {
+      "id": 1271,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-555",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:57.218Z"
+    },
+    {
+      "id": 1270,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-553",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:47.944Z"
+    },
+    {
+      "id": 1269,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-551",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:34.543Z"
+    },
+    {
+      "id": 1268,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-549",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:24.933Z"
+    },
+    {
+      "id": 1267,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-548",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:16.245Z"
+    },
+    {
+      "id": 1266,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-547",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:55:06.026Z"
+    },
+    {
+      "id": 1265,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-546",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:54:54.500Z"
+    },
+    {
+      "id": 1264,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-544",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:54:44.446Z"
+    },
+    {
+      "id": 1263,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-541",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:54:34.605Z"
+    },
+    {
+      "id": 1262,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-540",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:54:23.171Z"
+    },
+    {
+      "id": 1261,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-565",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:54:09.023Z"
+    },
+    {
+      "id": 1260,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-567",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:58.717Z"
+    },
+    {
+      "id": 1259,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-568",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:47.946Z"
+    },
+    {
+      "id": 1258,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-569",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:38.499Z"
+    },
+    {
+      "id": 1257,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-572",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:27.862Z"
+    },
+    {
+      "id": 1256,
+      "botName": "processor",
+      "action": "update",
       "itemType": "question",
       "itemId": "q-573",
-      "reason": "Passed verification with score 78/100",
-      "createdAt": "2026-01-07T13:08:39.661Z"
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:16.014Z"
     },
     {
-      "id": 1038,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-522",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T13:08:32.224Z"
-    },
-    {
-      "id": 1037,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-570",
-      "reason": "Passed verification with score 86/100",
-      "createdAt": "2026-01-07T13:08:25.944Z"
-    },
-    {
-      "id": 1036,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "gh-27",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-07T13:08:12.506Z"
-    },
-    {
-      "id": 1035,
+      "id": 1255,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-571",
-      "reason": "Processed: code_added, answer_aligned",
-      "createdAt": "2026-01-07T03:44:27.623Z"
+      "itemId": "q-574",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:53:06.866Z"
     },
     {
-      "id": 1034,
+      "id": 1254,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-312",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:44:16.586Z"
+      "itemId": "q-575",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:52:56.946Z"
     },
     {
-      "id": 1033,
+      "id": 1253,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-305",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:44:12.297Z"
+      "itemId": "q-576",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:52:46.411Z"
     },
     {
-      "id": 1032,
+      "id": 1252,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-578",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:52:32.417Z"
+    },
+    {
+      "id": 1251,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-579",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:52:22.929Z"
+    },
+    {
+      "id": 1250,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-581",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:52:10.090Z"
+    },
+    {
+      "id": 1249,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-582",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:51:40.130Z"
+    },
+    {
+      "id": 1248,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-583",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:51:28.197Z"
+    },
+    {
+      "id": 1247,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-584",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:51:18.547Z"
+    },
+    {
+      "id": 1246,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-585",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:51:08.528Z"
+    },
+    {
+      "id": 1245,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-586",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:50:58.877Z"
+    },
+    {
+      "id": 1244,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-588",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:50:50.164Z"
+    },
+    {
+      "id": 1243,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-591",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:50:40.559Z"
+    },
+    {
+      "id": 1242,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-592",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:47:46.100Z"
+    },
+    {
+      "id": 1241,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-597",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:47:36.418Z"
+    },
+    {
+      "id": 1240,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-618",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:47:27.382Z"
+    },
+    {
+      "id": 1239,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-621",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:47:17.922Z"
+    },
+    {
+      "id": 1238,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-623",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:47:08.549Z"
+    },
+    {
+      "id": 1237,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-626",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:46:28.066Z"
+    },
+    {
+      "id": 1236,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-638",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:46:18.253Z"
+    },
+    {
+      "id": 1235,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-642",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:46:09.242Z"
+    },
+    {
+      "id": 1234,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-643",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:46:00.042Z"
+    },
+    {
+      "id": 1233,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-645",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:45:48.580Z"
+    },
+    {
+      "id": 1232,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-647",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:45:40.009Z"
+    },
+    {
+      "id": 1231,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-648",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:45:19.852Z"
+    },
+    {
+      "id": 1230,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "q-438",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:45:09.118Z"
+    },
+    {
+      "id": 1229,
+      "botName": "processor",
+      "action": "update",
+      "itemType": "question",
+      "itemId": "gh-41",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:44:56.901Z"
+    },
+    {
+      "id": 1228,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
       "itemId": "gh-28",
-      "reason": "Processed: terms_added",
-      "createdAt": "2026-01-07T03:44:07.232Z"
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:44:48.046Z"
     },
     {
-      "id": 1031,
+      "id": 1227,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "sy-158",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:43:53.774Z"
+      "itemId": "q-466",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:44:38.715Z"
     },
     {
-      "id": 1030,
+      "id": 1226,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-447",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:43:49.275Z"
+      "itemId": "q-454",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:44:13.190Z"
     },
     {
-      "id": 1029,
+      "id": 1225,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-185",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:43:44.935Z"
+      "itemId": "q-444",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:44:01.815Z"
     },
     {
-      "id": 1028,
+      "id": 1224,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "gh-31",
-      "reason": "Processed: code_added, terms_added, voice_keywords_added",
-      "createdAt": "2026-01-07T03:43:40.106Z"
+      "itemId": "q-430",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:43:45.176Z"
     },
     {
-      "id": 1027,
+      "id": 1223,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-265",
-      "reason": "Processed: code_added, terms_added, voice_keywords_added",
-      "createdAt": "2026-01-07T03:43:22.096Z"
+      "itemId": "q-436",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:43:30.551Z"
     },
     {
-      "id": 1026,
+      "id": 1222,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-545",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-07T03:43:05.971Z"
+      "itemId": "q-425",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:43:17.833Z"
     },
     {
-      "id": 1025,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-483",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T03:42:26.946Z"
-    },
-    {
-      "id": 1024,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-552",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-07T03:42:21.528Z"
-    },
-    {
-      "id": 1023,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-391",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T03:42:16.581Z"
-    },
-    {
-      "id": 1022,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-615",
-      "reason": "Flagged for improve: 3 issues, score 85/100",
-      "createdAt": "2026-01-07T03:42:11.563Z"
-    },
-    {
-      "id": 1021,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-243",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T03:42:06.148Z"
-    },
-    {
-      "id": 1020,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "gh-40",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-07T03:42:00.464Z"
-    },
-    {
-      "id": 1019,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-337",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T03:41:53.922Z"
-    },
-    {
-      "id": 1018,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-241",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-07T03:41:47.800Z"
-    },
-    {
-      "id": 1017,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-290",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T03:41:40.773Z"
-    },
-    {
-      "id": 1016,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-275",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-07T03:41:34.713Z"
-    },
-    {
-      "id": 1015,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-638",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-07T03:40:06.628Z"
-    },
-    {
-      "id": 1014,
+      "id": 1221,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "gh-84",
-      "reason": "Processed: code_added, answer_aligned",
-      "createdAt": "2026-01-06T04:04:42.126Z"
+      "itemId": "q-538",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:43:07.375Z"
     },
     {
-      "id": 1013,
+      "id": 1220,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-467",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-06T04:04:29.761Z"
+      "itemId": "q-530",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:42:54.966Z"
     },
     {
-      "id": 1012,
+      "id": 1219,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-458",
-      "reason": "Processed: answer_aligned",
-      "createdAt": "2026-01-06T04:04:25.605Z"
+      "itemId": "q-518",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:42:43.700Z"
     },
     {
-      "id": 1011,
+      "id": 1218,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "q-589",
-      "reason": "Processed: answer_aligned, voice_keywords_added",
-      "createdAt": "2026-01-06T04:04:20.727Z"
+      "itemId": "q-508",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:42:33.236Z"
     },
     {
-      "id": 1010,
+      "id": 1217,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "gh-11",
-      "reason": "Processed: code_added, answer_aligned",
-      "createdAt": "2026-01-06T04:04:10.406Z"
+      "itemId": "q-507",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:42:16.723Z"
     },
     {
-      "id": 1009,
+      "id": 1216,
       "botName": "processor",
       "action": "update",
       "itemType": "question",
-      "itemId": "sre-2",
-      "reason": "Processed: ",
-      "createdAt": "2026-01-06T04:03:59.670Z"
-    },
-    {
-      "id": 1008,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-619",
-      "reason": "Processed: terms_added, voice_keywords_added",
-      "createdAt": "2026-01-06T04:03:56.720Z"
-    },
-    {
-      "id": 1007,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "gh-27",
-      "reason": "Processed: improved",
-      "createdAt": "2026-01-06T04:03:45.542Z"
-    },
-    {
-      "id": 1006,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-379",
-      "reason": "Processed: terms_added, voice_keywords_added",
-      "createdAt": "2026-01-06T04:03:33.531Z"
-    },
-    {
-      "id": 1005,
-      "botName": "processor",
-      "action": "update",
-      "itemType": "question",
-      "itemId": "q-283",
-      "reason": "Processed: accuracy_fixed, clarity_improved, improved",
-      "createdAt": "2026-01-06T04:03:24.118Z"
-    },
-    {
-      "id": 1004,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "fr-172",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-06T03:40:17.722Z"
-    },
-    {
-      "id": 1003,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-419",
-      "reason": "Passed verification with score 91/100",
-      "createdAt": "2026-01-06T03:40:11.987Z"
-    },
-    {
-      "id": 1002,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-225",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-06T03:40:05.289Z"
-    },
-    {
-      "id": 1001,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-252",
-      "reason": "Passed verification with score 83/100",
-      "createdAt": "2026-01-06T03:40:00.329Z"
-    },
-    {
-      "id": 1000,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-343",
-      "reason": "Passed verification with score 85/100",
-      "createdAt": "2026-01-06T03:39:54.930Z"
-    },
-    {
-      "id": 999,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "gh-53",
-      "reason": "Passed verification with score 84/100",
-      "createdAt": "2026-01-06T03:39:48.150Z"
-    },
-    {
-      "id": 998,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-414",
-      "reason": "Passed verification with score 89/100",
-      "createdAt": "2026-01-06T03:39:42.634Z"
-    },
-    {
-      "id": 997,
-      "botName": "verifier",
-      "action": "flag",
-      "itemType": "question",
-      "itemId": "q-283",
-      "reason": "Flagged for improve: 5 issues, score 16/100",
-      "createdAt": "2026-01-06T03:39:37.681Z"
-    },
-    {
-      "id": 996,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-486",
-      "reason": "Passed verification with score 92/100",
-      "createdAt": "2026-01-06T03:39:33.041Z"
-    },
-    {
-      "id": 995,
-      "botName": "verifier",
-      "action": "verify",
-      "itemType": "question",
-      "itemId": "q-216",
-      "reason": "Passed verification with score 71/100",
-      "createdAt": "2026-01-06T03:39:26.314Z"
-    },
-    {
-      "id": 994,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-635",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-06T02:55:37.967Z"
-    },
-    {
-      "id": 993,
-      "botName": "creator",
-      "action": "create",
-      "itemType": "question",
-      "itemId": "q-634",
-      "reason": "Created by Creator Bot",
-      "createdAt": "2026-01-06T02:54:48.903Z"
+      "itemId": "q-491",
+      "reason": "Processed: polished",
+      "createdAt": "2026-01-08T11:42:04.169Z"
     }
   ],
-  "generatedAt": "2026-01-08T10:42:14.774Z"
+  "generatedAt": "2026-01-09T03:53:54.433Z"
 }
