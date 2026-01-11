@@ -356,6 +356,10 @@ export default function QuestionViewer() {
     );
   }
 
+  // At this point, currentQuestion is guaranteed to be non-null
+  // TypeScript needs explicit assertion after the guard above
+  if (!currentQuestion) return null;
+
   const isMarked = markedQuestions.includes(currentQuestion.id);
   const isCompleted = completed.includes(currentQuestion.id);
   const progress = Math.round(((currentIndex + 1) / totalQuestions) * 100);

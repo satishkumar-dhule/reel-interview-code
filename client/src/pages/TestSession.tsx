@@ -1,5 +1,6 @@
 /**
  * Test Session Page - Quiz interface for knowledge assessment
+ * Vibrant channel-based theming with pass expiration tracking
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -7,7 +8,8 @@ import { useLocation, useParams } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Trophy,
-  Share2, RotateCcw, Home, AlertCircle, Check, X, Zap, ExternalLink, Eye
+  Share2, RotateCcw, Home, AlertCircle, Check, X, Zap, ExternalLink, Eye,
+  Sparkles, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Filter
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { QuestionFeedback } from '../components/QuestionFeedback';
@@ -16,7 +18,7 @@ import { DesktopSidebarWrapper } from '../components/layout/DesktopSidebarWrappe
 import {
   Test, TestQuestion, getTestForChannel, getSessionQuestions,
   calculateScore, saveTestAttempt, TestAttempt, getTestProgress,
-  generateShareableBadge, generateSocialShare
+  generateShareableBadge, generateSocialShare, getChannelTheme, checkTestExpiration
 } from '../lib/tests';
 import { mascotEvents } from '../components/PixelMascot';
 
@@ -76,6 +78,8 @@ export default function TestSession() {
   const [result, setResult] = useState<{ score: number; correct: number; total: number; passed: boolean } | null>(null);
   const [autoSubmit, setAutoSubmit] = useState(getAutoSubmitPref);
   const [showFeedback, setShowFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
+  const [reviewFilter, setReviewFilter] = useState<'all' | 'correct' | 'incorrect'>('all');
 
   // Load test
   useEffect(() => {
@@ -117,6 +121,8 @@ export default function TestSession() {
 
   const currentQuestion = questions[currentIndex];
   const progress = getTestProgress(test?.id || '');
+  const theme = test ? getChannelTheme(test.channelId) : getChannelTheme('default');
+  const isExpired = test && progress ? checkTestExpiration(test, progress) : false;
 
   const handleOptionSelect = (optionId: string) => {
     if (!currentQuestion) return;
@@ -210,7 +216,8 @@ export default function TestSession() {
       timeSpent,
     };
     
-    saveTestAttempt(test.id, test.channelId, attempt);
+    // Pass test version for expiration tracking
+    saveTestAttempt(test.id, test.channelId, attempt, test.version);
     setSessionState('review'); // Go to review first
     
     // Trigger mascot reaction based on result
@@ -283,56 +290,97 @@ export default function TestSession() {
 
       <DesktopSidebarWrapper>
       <div className="min-h-screen bg-background text-foreground font-mono">
-        {/* Ready State */}
+        {/* Ready State - Vibrant Channel Theme */}
         {sessionState === 'ready' && (
           <div className="min-h-screen flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-md w-full border border-border bg-card rounded-lg p-6"
+              className={`max-w-md w-full border bg-card rounded-lg p-6 relative overflow-hidden ${
+                isExpired ? 'border-amber-500/50' : 'border-border'
+              }`}
             >
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                  <Trophy className="w-8 h-8 text-primary" />
-                </div>
-                <h1 className="text-xl font-bold mb-2">{test.title}</h1>
-                <p className="text-sm text-muted-foreground">{test.description}</p>
-              </div>
-
-              <div className="space-y-3 mb-6 text-sm">
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Questions</span>
-                  <span className="font-bold">15 (random from {test.questions.length})</span>
-                </div>
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Passing Score</span>
-                  <span className="font-bold">{test.passingScore}%</span>
-                </div>
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Question Types</span>
-                  <span className="font-bold">Single & Multiple Choice</span>
-                </div>
-                {progress && (
-                  <div className="flex justify-between p-2 bg-primary/10 rounded">
-                    <span className="text-muted-foreground">Your Best</span>
-                    <span className="font-bold text-primary">{progress.bestScore}%</span>
-                  </div>
+              {/* Vibrant gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-30`} />
+              
+              <div className="relative z-10">
+                {/* Expired banner */}
+                {isExpired && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 p-3 bg-amber-500/20 border border-amber-500/30 rounded-lg flex items-center gap-2"
+                  >
+                    <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-amber-500">Pass Expired!</p>
+                      <p className="text-xs text-muted-foreground">New questions added - retake to recertify</p>
+                    </div>
+                  </motion.div>
                 )}
-              </div>
 
-              <div className="space-y-2">
-                <button
-                  onClick={startTest}
-                  className="w-full py-3 bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 transition-colors"
-                >
-                  Start Test
-                </button>
-                <button
-                  onClick={() => setLocation(`/channel/${channelId}`)}
-                  className="w-full py-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
-                >
-                  Back to Channel
-                </button>
+                <div className="text-center mb-6">
+                  <div className={`w-16 h-16 rounded-xl ${theme.secondary} flex items-center justify-center mx-auto mb-4 shadow-lg ${theme.glow}`}>
+                    <span className="text-3xl">{theme.icon}</span>
+                  </div>
+                  <h1 className={`text-xl font-bold mb-2 ${theme.primary}`}>{test.title}</h1>
+                  <p className="text-sm text-muted-foreground">{test.description}</p>
+                  {test.version > 1 && (
+                    <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full">
+                      <Sparkles className="w-3 h-3" /> v{test.version} - Updated
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-3 mb-6 text-sm">
+                  <div className={`flex justify-between p-2 rounded ${theme.secondary}`}>
+                    <span className="text-muted-foreground">Questions</span>
+                    <span className="font-bold">15 (random from {test.questions.length})</span>
+                  </div>
+                  <div className={`flex justify-between p-2 rounded ${theme.secondary}`}>
+                    <span className="text-muted-foreground">Passing Score</span>
+                    <span className="font-bold">{test.passingScore}%</span>
+                  </div>
+                  <div className={`flex justify-between p-2 rounded ${theme.secondary}`}>
+                    <span className="text-muted-foreground">Question Types</span>
+                    <span className="font-bold">Single & Multiple Choice</span>
+                  </div>
+                  {progress && !isExpired && (
+                    <div className="flex justify-between p-2 bg-green-500/10 rounded border border-green-500/30">
+                      <span className="text-muted-foreground">Your Best</span>
+                      <span className="font-bold text-green-500">{progress.bestScore}%</span>
+                    </div>
+                  )}
+                  {progress && isExpired && (
+                    <div className="flex justify-between p-2 bg-amber-500/10 rounded border border-amber-500/30">
+                      <span className="text-muted-foreground">Previous Best</span>
+                      <span className="font-bold text-amber-500">{progress.bestScore}% (expired)</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <button
+                    onClick={startTest}
+                    className={`w-full py-3 ${theme.badge} text-white font-bold rounded hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg ${theme.glow}`}
+                  >
+                    {isExpired ? (
+                      <>
+                        <RefreshCw className="w-5 h-5" /> Retake Test
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-5 h-5" /> Start Test
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setLocation(`/channel/${channelId}`)}
+                    className="w-full py-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Back to Channel
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -562,236 +610,539 @@ export default function TestSession() {
           </div>
         )}
 
-        {/* Review State - Show all questions with correct/incorrect */}
+        {/* Review State - Magical Collapsible Answer Review */}
         {sessionState === 'review' && result && (
-          <div className="min-h-screen flex flex-col">
-            {/* Header */}
-            <header className="border-b border-border p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Eye className="w-5 h-5 text-primary" />
-                <h1 className="font-bold">Review Answers</h1>
-              </div>
-              <div className={`px-3 py-1 rounded-full text-sm font-bold ${
-                result.passed ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'
-              }`}>
-                {result.score}% ({result.correct}/{result.total})
+          <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-background to-muted/20">
+            {/* Vibrant Header with Score Summary */}
+            <header className={`border-b p-4 relative overflow-hidden ${
+              result.passed ? 'border-green-500/30' : 'border-orange-500/30'
+            }`}>
+              {/* Animated gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${
+                result.passed 
+                  ? 'from-green-500/10 via-emerald-500/5 to-teal-500/10' 
+                  : 'from-orange-500/10 via-amber-500/5 to-yellow-500/10'
+              }`} />
+              
+              <div className="relative z-10 max-w-3xl mx-auto">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${
+                        result.passed 
+                          ? 'bg-gradient-to-br from-green-500 to-emerald-600 shadow-green-500/30' 
+                          : 'bg-gradient-to-br from-orange-500 to-amber-600 shadow-orange-500/30'
+                      }`}
+                    >
+                      <Eye className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <div>
+                      <h1 className="font-bold text-lg">Review Answers</h1>
+                      <p className="text-xs text-muted-foreground">
+                        Tap any question to expand details
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Score Badge */}
+                  <motion.div 
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    className={`flex items-center gap-3 px-4 py-2 rounded-xl ${
+                      result.passed 
+                        ? 'bg-green-500/20 border border-green-500/30' 
+                        : 'bg-orange-500/20 border border-orange-500/30'
+                    }`}
+                  >
+                    <div className="text-right">
+                      <div className={`text-2xl font-bold ${result.passed ? 'text-green-500' : 'text-orange-500'}`}>
+                        {result.score}%
+                      </div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {result.correct}/{result.total} correct
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Filter Tabs & Quick Actions */}
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50">
+                  <div className="flex bg-muted/30 rounded-lg p-1 gap-1">
+                    {(['all', 'incorrect', 'correct'] as const).map((filter) => (
+                      <button
+                        key={filter}
+                        onClick={() => setReviewFilter(filter)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+                          reviewFilter === filter
+                            ? filter === 'correct' 
+                              ? 'bg-green-500 text-white shadow-sm'
+                              : filter === 'incorrect'
+                              ? 'bg-red-500 text-white shadow-sm'
+                              : 'bg-background text-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {filter === 'all' ? `All (${result.total})` : 
+                         filter === 'correct' ? `✓ ${result.correct}` : 
+                         `✗ ${result.total - result.correct}`}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="flex-1" />
+                  
+                  <button
+                    onClick={() => {
+                      const questionResults = getQuestionResults();
+                      const allIndices = questionResults
+                        .map((_, i) => i)
+                        .filter(i => {
+                          const item = questionResults[i];
+                          if (reviewFilter === 'correct') return item.isCorrect;
+                          if (reviewFilter === 'incorrect') return !item.isCorrect;
+                          return true;
+                        });
+                      if (expandedQuestions.size === allIndices.length) {
+                        setExpandedQuestions(new Set());
+                      } else {
+                        setExpandedQuestions(new Set(allIndices));
+                      }
+                    }}
+                    className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg transition-all hover:bg-muted/30"
+                  >
+                    {expandedQuestions.size > 0 ? 'Collapse All' : 'Expand All'}
+                  </button>
+                </div>
               </div>
             </header>
 
-            {/* Questions Review */}
+            {/* Questions Review - Collapsible Cards */}
             <div className="flex-1 overflow-y-auto p-4">
-              <div className="max-w-2xl mx-auto space-y-4">
-                {getQuestionResults().map((item, idx) => (
-                  <motion.div
-                    key={item.question.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className={`p-4 border rounded-lg ${
-                      item.isCorrect 
-                        ? 'border-green-500/30 bg-green-500/5' 
-                        : 'border-red-500/30 bg-red-500/5'
-                    }`}
-                  >
-                    {/* Question header */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        item.isCorrect ? 'bg-green-500' : 'bg-red-500'
-                      }`}>
-                        {item.isCorrect ? (
-                          <Check className="w-4 h-4 text-white" />
-                        ) : (
-                          <X className="w-4 h-4 text-white" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs text-muted-foreground">Q{idx + 1}</span>
-                          <span className={`px-1.5 py-0.5 text-[9px] uppercase rounded ${
-                            item.question.difficulty === 'beginner' ? 'bg-green-500/20 text-green-400' :
-                            item.question.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
-                            'bg-red-500/20 text-red-400'
-                          }`}>
-                            {item.question.difficulty}
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium">{renderWithInlineCode(item.question.question)}</p>
-                      </div>
-                    </div>
-
-                    {/* Options review */}
-                    <div className="space-y-1.5 ml-9 mb-3">
-                      {item.question.options.map(opt => {
-                        const wasSelected = item.userAnswers.includes(opt.id);
-                        const isCorrectOption = opt.isCorrect;
-                        
-                        return (
-                          <div
-                            key={opt.id}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs ${
-                              isCorrectOption
-                                ? 'bg-green-500/20 text-green-400'
-                                : wasSelected
-                                ? 'bg-red-500/20 text-red-400'
-                                : 'text-muted-foreground'
+              <div className="max-w-3xl mx-auto space-y-2">
+                {getQuestionResults()
+                  .map((item, idx) => ({ item, idx }))
+                  .filter(({ item }) => {
+                    if (reviewFilter === 'correct') return item.isCorrect;
+                    if (reviewFilter === 'incorrect') return !item.isCorrect;
+                    return true;
+                  })
+                  .map(({ item, idx }) => {
+                    const isExpanded = expandedQuestions.has(idx);
+                    
+                    return (
+                      <motion.div
+                        key={item.question.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.02 }}
+                        className={`rounded-xl overflow-hidden border transition-all duration-300 ${
+                          item.isCorrect 
+                            ? 'border-green-500/30 hover:border-green-500/50' 
+                            : 'border-red-500/30 hover:border-red-500/50'
+                        } ${isExpanded ? 'shadow-lg' : 'shadow-sm hover:shadow-md'}`}
+                      >
+                        {/* Collapsed Header - Always Visible */}
+                        <button
+                          onClick={() => {
+                            setExpandedQuestions(prev => {
+                              const newSet = new Set(prev);
+                              if (newSet.has(idx)) {
+                                newSet.delete(idx);
+                              } else {
+                                newSet.add(idx);
+                              }
+                              return newSet;
+                            });
+                          }}
+                          className={`w-full px-4 py-3 flex items-center gap-3 transition-all ${
+                            item.isCorrect 
+                              ? 'bg-gradient-to-r from-green-500/10 to-transparent hover:from-green-500/20' 
+                              : 'bg-gradient-to-r from-red-500/10 to-transparent hover:from-red-500/20'
+                          }`}
+                        >
+                          {/* Status Icon */}
+                          <motion.div 
+                            animate={{ 
+                              scale: isExpanded ? 1.1 : 1,
+                              rotate: isExpanded ? 360 : 0 
+                            }}
+                            transition={{ type: 'spring', stiffness: 200 }}
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                              item.isCorrect 
+                                ? 'bg-green-500 shadow-lg shadow-green-500/30' 
+                                : 'bg-red-500 shadow-lg shadow-red-500/30'
                             }`}
                           >
-                            {isCorrectOption && <CheckCircle className="w-3 h-3" />}
-                            {wasSelected && !isCorrectOption && <XCircle className="w-3 h-3" />}
-                            {!isCorrectOption && !wasSelected && <span className="w-3" />}
-                            <span>{renderWithInlineCode(opt.text)}</span>
-                            {wasSelected && <span className="ml-auto text-[10px] opacity-70">(your answer)</span>}
+                            {item.isCorrect ? (
+                              <Check className="w-5 h-5 text-white" />
+                            ) : (
+                              <X className="w-5 h-5 text-white" />
+                            )}
+                          </motion.div>
+                          
+                          {/* Question Preview */}
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className={`text-sm font-bold ${item.isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                                Q{idx + 1}
+                              </span>
+                              <span className={`px-1.5 py-0.5 text-[9px] uppercase rounded-full font-medium ${
+                                item.question.difficulty === 'beginner' 
+                                  ? 'bg-green-500/20 text-green-400' 
+                                  : item.question.difficulty === 'intermediate' 
+                                  ? 'bg-yellow-500/20 text-yellow-400' 
+                                  : 'bg-red-500/20 text-red-400'
+                              }`}>
+                                {item.question.difficulty}
+                              </span>
+                            </div>
+                            <p className={`text-sm truncate ${isExpanded ? 'text-foreground' : 'text-muted-foreground'}`}>
+                              {item.question.question}
+                            </p>
                           </div>
-                        );
-                      })}
+
+                          {/* Expand Indicator */}
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                              isExpanded ? 'bg-primary/20' : 'bg-muted/30'
+                            }`}
+                          >
+                            <ChevronDown className={`w-5 h-5 ${isExpanded ? 'text-primary' : 'text-muted-foreground'}`} />
+                          </motion.div>
+                        </button>
+
+                        {/* Expanded Content */}
+                        <AnimatePresence>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3, ease: 'easeInOut' }}
+                              className="overflow-hidden"
+                            >
+                              <div className="p-4 bg-card border-t border-border/50">
+                                {/* Full Question */}
+                                <p className="font-medium mb-4 leading-relaxed">{renderWithInlineCode(item.question.question)}</p>
+
+                                {/* Options */}
+                                <div className="space-y-2">
+                                  {item.question.options.map((opt, optIdx) => {
+                                    const wasSelected = item.userAnswers.includes(opt.id);
+                                    const isCorrectOption = opt.isCorrect;
+                                    
+                                    return (
+                                      <motion.div
+                                        key={opt.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: optIdx * 0.05 }}
+                                        className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
+                                          isCorrectOption
+                                            ? 'bg-green-500/10 border-green-500/40'
+                                            : wasSelected
+                                            ? 'bg-red-500/10 border-red-500/40'
+                                            : 'bg-muted/10 border-border/50'
+                                        }`}
+                                      >
+                                        {/* Option indicator */}
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                          isCorrectOption
+                                            ? 'bg-green-500 text-white'
+                                            : wasSelected
+                                            ? 'bg-red-500 text-white'
+                                            : 'bg-muted/50 text-muted-foreground'
+                                        }`}>
+                                          {isCorrectOption ? (
+                                            <CheckCircle className="w-4 h-4" />
+                                          ) : wasSelected ? (
+                                            <XCircle className="w-4 h-4" />
+                                          ) : (
+                                            <span className="text-xs font-medium">{String.fromCharCode(65 + optIdx)}</span>
+                                          )}
+                                        </div>
+                                        
+                                        <div className="flex-1 min-w-0">
+                                          <span className={`text-sm ${
+                                            isCorrectOption 
+                                              ? 'text-green-400 font-medium' 
+                                              : wasSelected 
+                                              ? 'text-red-400' 
+                                              : 'text-muted-foreground'
+                                          }`}>
+                                            {renderWithInlineCode(opt.text)}
+                                          </span>
+                                        </div>
+
+                                        {/* Labels */}
+                                        <div className="flex gap-1 flex-shrink-0">
+                                          {isCorrectOption && (
+                                            <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[9px] uppercase rounded-full font-medium">
+                                              ✓ Correct
+                                            </span>
+                                          )}
+                                          {wasSelected && !isCorrectOption && (
+                                            <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-[9px] uppercase rounded-full font-medium">
+                                              Your Pick
+                                            </span>
+                                          )}
+                                        </div>
+                                      </motion.div>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Explanation */}
+                                {item.question.explanation && (
+                                  <motion.div 
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className={`mt-4 p-3 rounded-lg border ${
+                                      item.isCorrect 
+                                        ? 'bg-blue-500/10 border-blue-500/30' 
+                                        : 'bg-amber-500/10 border-amber-500/30'
+                                    }`}
+                                  >
+                                    <div className="flex items-start gap-2">
+                                      <Sparkles className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
+                                        item.isCorrect ? 'text-blue-400' : 'text-amber-400'
+                                      }`} />
+                                      <div>
+                                        <span className={`text-xs font-bold uppercase ${
+                                          item.isCorrect ? 'text-blue-400' : 'text-amber-400'
+                                        }`}>
+                                          {item.isCorrect ? '💡 Why this is correct' : '📚 Learn from this'}
+                                        </span>
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                          {item.question.explanation}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                )}
+
+                                {/* Action Links */}
+                                {item.question.questionId && (
+                                  <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between">
+                                    <a
+                                      href={`/channel/${test.channelId}?q=${item.question.questionId}`}
+                                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
+                                    >
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                      <span>Study full question</span>
+                                    </a>
+                                    <QuestionFeedback questionId={item.question.questionId} />
+                                  </div>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    );
+                  })}
+                
+                {/* Empty State for Filters */}
+                {getQuestionResults().filter(item => {
+                  if (reviewFilter === 'correct') return item.isCorrect;
+                  if (reviewFilter === 'incorrect') return !item.isCorrect;
+                  return true;
+                }).length === 0 && (
+                  <div className="text-center py-12">
+                    <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${
+                      reviewFilter === 'correct' ? 'bg-green-500/20' : 'bg-red-500/20'
+                    }`}>
+                      {reviewFilter === 'correct' ? (
+                        <Trophy className="w-8 h-8 text-green-500" />
+                      ) : (
+                        <AlertCircle className="w-8 h-8 text-red-500" />
+                      )}
                     </div>
-
-                    {/* Explanation if wrong */}
-                    {!item.isCorrect && item.question.explanation && (
-                      <div className="ml-9 p-2 bg-muted/30 rounded text-xs text-muted-foreground">
-                        <span className="font-medium text-foreground">Explanation:</span> {item.question.explanation}
-                      </div>
-                    )}
-
-                    {/* Link to main question */}
-                    {item.question.questionId && (
-                      <div className="ml-9 mt-2 flex items-center gap-2">
-                        <a
-                          href={`/channel/${test.channelId}?q=${item.question.questionId}`}
-                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          View full question & answer
-                        </a>
-                        <QuestionFeedback questionId={item.question.questionId} />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
+                    <p className="text-muted-foreground">
+                      {reviewFilter === 'correct' 
+                        ? 'No correct answers to show' 
+                        : 'No incorrect answers - Perfect score! 🎉'}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Footer */}
-            <footer className="border-t border-border p-4">
-              <div className="max-w-2xl mx-auto flex gap-3">
+            {/* Sticky Footer */}
+            <footer className={`border-t p-4 bg-background/95 backdrop-blur ${
+              result.passed ? 'border-green-500/30' : 'border-orange-500/30'
+            }`}>
+              <div className="max-w-3xl mx-auto flex gap-3">
+                <button
+                  onClick={startTest}
+                  className="flex-1 py-3 border border-border rounded-xl font-medium hover:bg-muted/50 transition-all flex items-center justify-center gap-2"
+                >
+                  <RotateCcw className="w-4 h-4" /> Try Again
+                </button>
                 <button
                   onClick={() => setSessionState('completed')}
-                  className="flex-1 py-3 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                  className={`flex-1 py-3 font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg ${
+                    result.passed 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-500/30 hover:shadow-green-500/50' 
+                      : 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-orange-500/30 hover:shadow-orange-500/50'
+                  }`}
                 >
-                  Continue to Results
+                  <Trophy className="w-4 h-4" /> View Results
                 </button>
               </div>
             </footer>
           </div>
         )}
 
-        {/* Completed State */}
+        {/* Completed State - Vibrant Results */}
         {sessionState === 'completed' && result && (
           <div className="min-h-screen flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-md w-full border border-border bg-card rounded-lg p-6"
+              className="max-w-md w-full border border-border bg-card rounded-lg p-6 relative overflow-hidden"
             >
-              <div className="text-center mb-6">
-                <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                  result.passed ? 'bg-green-500/20' : 'bg-orange-500/20'
-                }`}>
-                  {result.passed ? (
-                    <Trophy className="w-10 h-10 text-green-500" />
-                  ) : (
-                    <AlertCircle className="w-10 h-10 text-orange-500" />
-                  )}
+              {/* Vibrant gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${
+                result.passed 
+                  ? 'from-green-500/20 via-emerald-500/10 to-teal-500/20' 
+                  : 'from-orange-500/20 via-amber-500/10 to-yellow-500/20'
+              } opacity-50`} />
+              
+              <div className="relative z-10">
+                <div className="text-center mb-6">
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', delay: 0.2 }}
+                    className={`w-20 h-20 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg ${
+                      result.passed 
+                        ? 'bg-gradient-to-br from-green-500 to-emerald-600 shadow-green-500/30' 
+                        : 'bg-gradient-to-br from-orange-500 to-amber-600 shadow-orange-500/30'
+                    }`}
+                  >
+                    {result.passed ? (
+                      <Trophy className="w-10 h-10 text-white" />
+                    ) : (
+                      <AlertCircle className="w-10 h-10 text-white" />
+                    )}
+                  </motion.div>
+                  <h1 className="text-2xl font-bold mb-1">
+                    {result.passed ? '🎉 Congratulations!' : 'Keep Practicing!'}
+                  </h1>
+                  <p className="text-muted-foreground">
+                    {result.passed 
+                      ? 'You passed the test!' 
+                      : `You need ${test.passingScore}% to pass`}
+                  </p>
                 </div>
-                <h1 className="text-2xl font-bold mb-1">
-                  {result.passed ? 'Congratulations!' : 'Keep Practicing!'}
-                </h1>
-                <p className="text-muted-foreground">
-                  {result.passed 
-                    ? 'You passed the test!' 
-                    : `You need ${test.passingScore}% to pass`}
-                </p>
-              </div>
 
-              {/* Score display */}
-              <div className="relative w-32 h-32 mx-auto mb-6">
-                <svg className="w-full h-full transform -rotate-90">
-                  <circle
-                    cx="64" cy="64" r="56"
-                    fill="none" stroke="currentColor" strokeWidth="8"
-                    className="text-muted/20"
-                  />
-                  <circle
-                    cx="64" cy="64" r="56"
-                    fill="none"
-                    stroke={result.passed ? '#22c55e' : '#f97316'}
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray={`${(result.score / 100) * 352} 352`}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold">{result.score}%</span>
-                  <span className="text-xs text-muted-foreground">
-                    {result.correct}/{result.total}
-                  </span>
+                {/* Score display - Vibrant ring */}
+                <div className="relative w-32 h-32 mx-auto mb-6">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle
+                      cx="64" cy="64" r="56"
+                      fill="none" stroke="currentColor" strokeWidth="8"
+                      className="text-muted/20"
+                    />
+                    <motion.circle
+                      cx="64" cy="64" r="56"
+                      fill="none"
+                      stroke={result.passed ? '#22c55e' : '#f97316'}
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      initial={{ strokeDasharray: '0 352' }}
+                      animate={{ strokeDasharray: `${(result.score / 100) * 352} 352` }}
+                      transition={{ duration: 1, delay: 0.3 }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.span 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className={`text-3xl font-bold ${result.passed ? 'text-green-500' : 'text-orange-500'}`}
+                    >
+                      {result.score}%
+                    </motion.span>
+                    <span className="text-xs text-muted-foreground">
+                      {result.correct}/{result.total}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Time Spent</span>
-                  <span className="font-bold">{formatTime(timeSpent)}</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className={`flex justify-between p-2 rounded ${theme.secondary}`}>
+                    <span className="text-muted-foreground">Time Spent</span>
+                    <span className="font-bold">{formatTime(timeSpent)}</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-green-500/10 rounded">
+                    <span className="text-muted-foreground">Correct Answers</span>
+                    <span className="font-bold text-green-500">{result.correct}</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-red-500/10 rounded">
+                    <span className="text-muted-foreground">Incorrect</span>
+                    <span className="font-bold text-red-500">{result.total - result.correct}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Correct Answers</span>
-                  <span className="font-bold text-green-500">{result.correct}</span>
-                </div>
-                <div className="flex justify-between p-2 bg-muted/20 rounded">
-                  <span className="text-muted-foreground">Incorrect</span>
-                  <span className="font-bold text-red-500">{result.total - result.correct}</span>
-                </div>
-              </div>
 
-              {/* Share buttons */}
-              <div className="flex gap-2 mb-4">
-                <a
-                  href={generateShareableBadge(test.channelName, result.score, result.passed)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-2 border border-border rounded text-center text-sm hover:bg-muted/20 transition-colors flex items-center justify-center gap-1"
-                >
-                  <Share2 className="w-4 h-4" /> Share on X
-                </a>
-                <a
-                  href={generateSocialShare(test.channelName, result.score, result.passed)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-2 border border-border rounded text-center text-sm hover:bg-muted/20 transition-colors flex items-center justify-center gap-1"
-                >
-                  <Share2 className="w-4 h-4" /> Share
-                </a>
-              </div>
+                {/* Share buttons */}
+                <div className="flex gap-2 mb-4">
+                  <a
+                    href={generateShareableBadge(test.channelName, result.score, result.passed)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex-1 py-2 border rounded text-center text-sm hover:opacity-80 transition-all flex items-center justify-center gap-1 ${
+                      result.passed ? 'border-green-500/30 text-green-500' : 'border-border'
+                    }`}
+                  >
+                    <Share2 className="w-4 h-4" /> Share on X
+                  </a>
+                  <a
+                    href={generateSocialShare(test.channelName, result.score, result.passed)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex-1 py-2 border rounded text-center text-sm hover:opacity-80 transition-all flex items-center justify-center gap-1 ${
+                      result.passed ? 'border-green-500/30 text-green-500' : 'border-border'
+                    }`}
+                  >
+                    <Share2 className="w-4 h-4" /> Share
+                  </a>
+                </div>
 
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSessionState('review')}
-                  className="w-full py-2 bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Eye className="w-4 h-4" /> Review Answers
-                </button>
-                <button
-                  onClick={startTest}
-                  className="w-full py-2 border border-primary text-primary font-bold rounded hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
-                >
-                  <RotateCcw className="w-4 h-4" /> Try Again
-                </button>
-                <button
-                  onClick={() => setLocation(`/channel/${channelId}`)}
-                  className="w-full py-2 text-muted-foreground hover:text-foreground transition-colors text-sm flex items-center justify-center gap-2"
-                >
-                  <Home className="w-4 h-4" /> Back to Channel
-                </button>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSessionState('review')}
+                    className={`w-full py-2 font-bold rounded transition-all flex items-center justify-center gap-2 ${
+                      result.passed 
+                        ? 'bg-green-500 text-white hover:bg-green-600' 
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    }`}
+                  >
+                    <Eye className="w-4 h-4" /> Review Answers
+                  </button>
+                  <button
+                    onClick={startTest}
+                    className={`w-full py-2 border font-bold rounded transition-all flex items-center justify-center gap-2 ${
+                      result.passed 
+                        ? 'border-green-500 text-green-500 hover:bg-green-500/10' 
+                        : 'border-primary text-primary hover:bg-primary/10'
+                    }`}
+                  >
+                    <RotateCcw className="w-4 h-4" /> Try Again
+                  </button>
+                  <button
+                    onClick={() => setLocation(`/channel/${channelId}`)}
+                    className="w-full py-2 text-muted-foreground hover:text-foreground transition-colors text-sm flex items-center justify-center gap-2"
+                  >
+                    <Home className="w-4 h-4" /> Back to Channel
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
