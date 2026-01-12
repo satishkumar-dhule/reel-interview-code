@@ -36,9 +36,10 @@ jobs:
       - name: Get dynamic channel lists
         id: channel-lists
         run: |
-          NEW_CHANNELS=$(node script/get-channel-lists.js fundamentals)
-          echo "new_channels=$NEW_CHANNELS" >> $GITHUB_OUTPUT
-          echo "Fundamentals channels: $NEW_CHANNELS"
+          # Get all channels (not just fundamentals)
+          ALL_CHANNELS=$(node script/get-channel-lists.js all)
+          echo "all_channels=$ALL_CHANNELS" >> $GITHUB_OUTPUT
+          echo "All channels: $ALL_CHANNELS"
       
       - name: Determine target channels
         id: channels
@@ -47,9 +48,11 @@ jobs:
             echo "channels=${{ inputs.channel }}" >> $GITHUB_OUTPUT
             echo "count=${{ inputs.count || '10' }}" >> $GITHUB_OUTPUT
           elif [ "${{ inputs.aggressive }}" == "true" ] || [ "${{ github.event_name }}" == "schedule" ]; then
-            # Aggressive mode: prioritize new channels (dynamically loaded)
-            echo "channels=${{ steps.channel-lists.outputs.new_channels }}" >> $GITHUB_OUTPUT
-            echo "count=15" >> $GITHUB_OUTPUT
+            # Aggressive mode: Use ALL channels (not just fundamentals)
+            # The generator will prioritize channels with 0 questions
+            echo "channels=" >> $GITHUB_OUTPUT
+            echo "count=25" >> $GITHUB_OUTPUT
+            echo "Using auto-balanced mode with increased count to cover empty channels"
           else
             echo "channels=" >> $GITHUB_OUTPUT
             echo "count=${{ inputs.count || '5' }}" >> $GITHUB_OUTPUT
@@ -69,11 +72,14 @@ jobs:
           ENSURE_MINIMUM: 'true'
         run: |
           echo "🚀 Starting aggressive question generation..."
-          echo "Target channels: ${INPUT_CHANNEL:-auto-balanced}"
+          echo "Mode: Auto-balanced (prioritize channels with 0 questions)"
+          echo "Target: ALL channels (not specified, will auto-select)"
           echo "Count: ${INPUT_LIMIT}"
-          echo "Mode: Ensure every channel has at least 1 question"
+          echo "Balance mode: ${BALANCE_CHANNELS}"
+          echo "Aggressive mode: ${AGGRESSIVE_MODE}"
           
           # Run generator with aggressive settings
+          # Empty INPUT_CHANNEL means it will use weighted selection
           # This will prioritize ALL channels with 0 questions first
           node script/generate-question.js
       
@@ -103,7 +109,7 @@ jobs:
   trigger-deploy:
     name: 🚀 Trigger Deploy
     needs: [generate, generate-certifications]
-    if: success()
+    if: always() && (needs.generate.result == 'success' || needs.generate-certifications.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Trigger deploy workflow
@@ -150,9 +156,13 @@ jobs:
           QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
           OLLAMA_URL: ${{ secrets.OLLAMA_URL }}
           CERT_CHANNELS: ${{ steps.cert-channels.outputs.cert_channels }}
+          QUESTIONS_PER_CERT: '5'
+          MAX_CERTS_PER_RUN: '10'
         run: |
           echo "🎓 Starting certification question generation..."
           echo "Target certifications: ${CERT_CHANNELS}"
+          echo "Questions per cert: ${QUESTIONS_PER_CERT}"
+          echo "Max certs per run: ${MAX_CERTS_PER_RUN}"
           
           # Run certification question generator
           node script/generate-certification-questions.js || true
