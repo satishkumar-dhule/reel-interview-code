@@ -22,7 +22,7 @@
 import 'dotenv/config';
 import { getDb, initBotTables } from './shared/db.js';
 import { logAction } from './shared/ledger.js';
-import { addWorkItem } from './shared/queue.js';
+import { addToQueue } from './shared/queue.js';
 import { startRun, completeRun, failRun, updateRunStats } from './shared/runs.js';
 
 const BOT_NAME = 'analysis';
@@ -343,17 +343,18 @@ async function createWorkItems(question, issues) {
   
   for (const issue of issues) {
     try {
-      await addWorkItem({
-        botName: 'processor',
-        action: issue.type,
+      await addToQueue({
         itemType: 'question',
         itemId: question.id,
+        action: issue.type,
         priority: issue.priority,
-        metadata: {
+        reason: JSON.stringify({
           severity: issue.severity,
           detectedBy: BOT_NAME,
           ...issue.metadata
-        }
+        }),
+        createdBy: BOT_NAME,
+        assignedTo: 'processor'
       });
       created++;
     } catch (e) {
