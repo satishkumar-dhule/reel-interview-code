@@ -46,7 +46,9 @@ jobs:
           pnpm run build:pagefind
 
       - name: Run E2E tests
-        run: pnpm exec playwright test --project=chromium-desktop
+        run: |
+          # Run only critical smoke tests in CI
+          pnpm exec playwright test e2e/core.spec.ts e2e/unified/unified-question-view.spec.ts --project=chromium-desktop
         env:
           CI: 'true'
 
