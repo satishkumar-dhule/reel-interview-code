@@ -395,7 +395,7 @@ async function main() {
       query += ` AND channel = ?`;
     }
     
-    query += ` ORDER BY lastUpdated DESC`;
+    query += ` ORDER BY last_updated DESC`;
     
     if (limit > 0) {
       query += ` LIMIT ${limit}`;
