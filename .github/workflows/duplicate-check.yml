@@ -114,6 +114,14 @@ jobs:
               const report = JSON.parse(fs.readFileSync(files[0], 'utf8'));
               
               if (report.duplicateCount > 0) {
+                const duplicatePairs = report.duplicatePairs.slice(0, 10).map(pair => {
+                  const dups = pair.duplicates.map(d => `\`${d.id}\` (${d.similarity}%)`).join(', ');
+                  return `- \`${pair.original}\` has ${pair.duplicates.length} duplicate(s): ${dups}`;
+                }).join('\n');
+                
+                const moreText = report.duplicatePairs.length > 10 ? `\n_...and ${report.duplicatePairs.length - 10} more pairs_` : '';
+                const channelArg = report.channel ? ` --channel=${report.channel}` : '';
+                
                 await github.rest.issues.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -132,19 +140,16 @@ Review the duplicate pairs and decide whether to:
 3. Mark as false positive
 
 ### Duplicate Pairs
-${report.duplicatePairs.slice(0, 10).map(pair => 
-  `- \`${pair.original}\` has ${pair.duplicates.length} duplicate(s): ${pair.duplicates.map(d => `\`${d.id}\` (${d.similarity}%)`).join(', ')}`
-).join('\n')}
-
-${report.duplicatePairs.length > 10 ? `\n_...and ${report.duplicatePairs.length - 10} more pairs_` : ''}
+${duplicatePairs}
+${moreText}
 
 ### How to Fix
 \`\`\`bash
 # Review duplicates
-npm run check:duplicates -- --type=${report.contentType}${report.channel ? ` --channel=${report.channel}` : ''}
+npm run check:duplicates -- --type=${report.contentType}${channelArg}
 
 # Auto-fix (mark for deletion)
-npm run check:duplicates:fix -- --type=${report.contentType}${report.channel ? ` --channel=${report.channel}` : ''}
+npm run check:duplicates:fix -- --type=${report.contentType}${channelArg}
 \`\`\`
 
 ---
