@@ -195,14 +195,14 @@ export function MobileBottomNav() {
                   )}
                 >
                   <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
+                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all p-2.5",
                     isActive 
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" 
                       : isVoice 
                         ? "bg-gradient-to-br from-primary to-cyan-500 text-white shadow-md shadow-primary/20"
                         : "bg-muted/80"
                   )}>
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-full h-full" strokeWidth={2} />
                   </div>
                   <div className="text-center">
                     <div className={cn(
@@ -222,10 +222,11 @@ export function MobileBottomNav() {
         </motion.div>
       )}
 
-      {/* Bottom Navigation Bar - Premium Design */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden w-full overflow-hidden">
+      {/* Bottom Navigation Bar - Premium Design with proper elevation space */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden w-full">
         <div className="pb-safe bg-gradient-to-t from-card via-card/98 to-card/90 backdrop-blur-xl border-t border-border/30 w-full">
-          <div className="flex items-center justify-around h-16 px-2 max-w-md mx-auto w-full">
+          {/* Add padding-top to create space for elevated button */}
+          <div className="flex items-end justify-around h-20 pt-4 px-2 max-w-md mx-auto w-full">
             {mainNavItems.map((item) => {
               const isActive = activeSection === item.id;
               const hasSubmenu = item.id === 'practice' || item.id === 'learn' || item.id === 'progress';
@@ -237,7 +238,8 @@ export function MobileBottomNav() {
                   key={item.id}
                   onClick={() => handleNavClick(item)}
                   className={cn(
-                    "relative flex flex-col items-center justify-center flex-1 h-14 transition-all min-w-0",
+                    "relative flex flex-col items-center justify-end flex-1 h-full transition-all min-w-0",
+                    item.highlight && "px-2",
                     isActive || isMenuOpen ? "text-primary" : "text-muted-foreground"
                   )}
                 >
@@ -245,7 +247,7 @@ export function MobileBottomNav() {
                   {(isActive || isMenuOpen) && (
                     <motion.div
                       layoutId="nav-pill"
-                      className="absolute -top-1 w-8 h-1 bg-primary rounded-full"
+                      className="absolute top-0 w-8 h-1 bg-primary rounded-full"
                       transition={{ type: "spring", bounce: 0.3, duration: 0.4 }}
                     />
                   )}
@@ -255,32 +257,31 @@ export function MobileBottomNav() {
                     <motion.div 
                       whileTap={{ scale: 0.95 }}
                       className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center -mt-4 shadow-lg transition-all flex-shrink-0",
+                        "w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all flex-shrink-0 mb-1",
                         isActive || isMenuOpen
                           ? "bg-primary text-primary-foreground shadow-primary/40" 
                           : "bg-gradient-to-br from-primary via-primary to-cyan-500 text-white shadow-primary/30"
                       )}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-6 h-6" strokeWidth={1.5} />
                     </motion.div>
                   ) : (
                     <motion.div 
                       whileTap={{ scale: 0.9 }}
                       className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all flex-shrink-0",
+                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all flex-shrink-0 mb-1",
                         isActive || isMenuOpen ? "bg-primary/10" : "hover:bg-muted/50"
                       )}
                     >
                       <Icon className={cn(
                         "w-5 h-5 transition-colors",
                         isActive || isMenuOpen ? "text-primary" : ""
-                      )} />
+                      )} strokeWidth={1.5} />
                     </motion.div>
                   )}
                   
                   <span className={cn(
-                    "text-[10px] font-medium mt-0.5 transition-colors truncate max-w-full",
-                    item.highlight && "-mt-1",
+                    "text-[10px] font-medium mb-1 transition-colors truncate max-w-full",
                     isActive || isMenuOpen ? "text-primary" : ""
                   )}>
                     {item.label}
@@ -289,7 +290,7 @@ export function MobileBottomNav() {
                   {/* Submenu indicator dot */}
                   {hasSubmenu && !item.highlight && (
                     <div className={cn(
-                      "absolute bottom-1 w-1 h-1 rounded-full transition-colors",
+                      "absolute bottom-0 w-1 h-1 rounded-full transition-colors",
                       isMenuOpen ? "bg-primary" : "bg-muted-foreground/30"
                     )} />
                   )}

@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Zap, Target, Flame, Bookmark, Clock, Check, Building2, 
+  Zap, Target, Flame, Bookmark, Check, Building2, 
   Hash, Sparkles, Star, Trophy, Brain, Eye, Layers, CheckCircle
 } from 'lucide-react';
 import type { Question } from '../../lib/data';
@@ -26,8 +26,6 @@ interface ExtremeQuestionPanelProps {
   isCompleted: boolean;
   onToggleMark: () => void;
   onTapQuestion?: () => void;
-  timerEnabled: boolean;
-  timeLeft: number;
 }
 
 function renderWithInlineCode(text: string): React.ReactNode {
@@ -55,9 +53,7 @@ export function ExtremeQuestionPanel({
   isMarked,
   isCompleted,
   onToggleMark,
-  onTapQuestion,
-  timerEnabled,
-  timeLeft
+  onTapQuestion
 }: ExtremeQuestionPanelProps) {
   const [srsCard, setSrsCard] = useState<ReviewCard | null>(null);
   const [hasRated, setHasRated] = useState(false);
@@ -340,20 +336,6 @@ export function ExtremeQuestionPanel({
               {question.tags.length > 8 && (
                 <span className="text-[10px] text-muted-foreground py-0.5">+{question.tags.length - 8}</span>
               )}
-            </motion.div>
-          )}
-
-          {/* Timer */}
-          {timerEnabled && timeLeft > 0 && (
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="mt-6 inline-flex items-center gap-3 px-5 py-3 bg-primary/10 border border-primary/30 rounded-xl self-start"
-            >
-              <Clock className="w-5 h-5 text-primary" />
-              <div className="text-2xl font-mono font-black text-primary tabular-nums">
-                {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}
-              </div>
             </motion.div>
           )}
         </div>

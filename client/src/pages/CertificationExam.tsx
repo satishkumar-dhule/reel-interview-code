@@ -22,9 +22,9 @@ import {
 import { useCredits } from '../context/CreditsContext';
 import { SEOHead } from '../components/SEOHead';
 import {
-  ArrowLeft, Award, Clock, Target, CheckCircle, XCircle,
-  ChevronRight, ChevronLeft, Lightbulb, BarChart3, Play,
-  Pause, RotateCcw, Flag, BookOpen, Zap, Trophy, AlertCircle
+  ArrowLeft, Award, Target, CheckCircle, XCircle,
+  ChevronRight, ChevronLeft, Lightbulb, BarChart3,
+  RotateCcw, Flag, BookOpen, Zap, Trophy, AlertCircle
 } from 'lucide-react';
 import { useUnifiedToast } from '../hooks/use-unified-toast';
 
@@ -59,10 +59,6 @@ export default function CertificationExam() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
-  
-  // Timer
-  const [timeRemaining, setTimeRemaining] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [questionStartTime, setQuestionStartTime] = useState(Date.now());
 
   const { toast } = useUnifiedToast();
@@ -82,23 +78,7 @@ export default function CertificationExam() {
     }
   }, [certification, certificationId, toast, setLocation]);
 
-  // Timer effect
-  useEffect(() => {
-    if (sessionState !== 'active' || examMode !== 'timed' || isPaused) return;
-    
-    const interval = setInterval(() => {
-      setTimeRemaining(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          finishExam();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
 
-    return () => clearInterval(interval);
-  }, [sessionState, examMode, isPaused]);
 
   const currentQuestion = questions[currentIndex];
   const isAnswered = answers.some(a => a.questionId === currentQuestion?.id);
@@ -115,11 +95,7 @@ export default function CertificationExam() {
     setFlaggedQuestions(new Set());
     setQuestionStartTime(Date.now());
     
-    if (examMode === 'timed' && examConfig) {
-      // Scale time based on question count vs full exam
-      const timePerQuestion = (examConfig.timeLimit * 60) / examConfig.totalQuestions;
-      setTimeRemaining(Math.round(timePerQuestion * questionCount));
-    }
+
     
     setSessionState('active');
   }, [certificationId, questionCount, examMode, examConfig]);
@@ -219,12 +195,7 @@ export default function CertificationExam() {
     return { correct, total, percentage, passed, totalTime, avgTime, domainResults };
   }, [answers, questions, examConfig]);
 
-  // Format time
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+
 
   if (!certification) {
     return (
@@ -295,8 +266,6 @@ export default function CertificationExam() {
             currentAnswer={currentAnswer}
             showExplanation={showExplanation}
             flaggedQuestions={flaggedQuestions}
-            timeRemaining={timeRemaining}
-            isPaused={isPaused}
             answers={answers}
             questions={questions}
             onSelectOption={submitAnswer}
@@ -304,9 +273,7 @@ export default function CertificationExam() {
             onPrev={goToPrev}
             onGoToQuestion={goToQuestion}
             onToggleFlag={toggleFlag}
-            onTogglePause={() => setIsPaused(!isPaused)}
             onFinish={finishExam}
-            formatTime={formatTime}
           />
         )}
 
@@ -483,7 +450,7 @@ function SetupScreen({
           onClick={onStart}
           className="w-full py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
         >
-          <Play className="w-5 h-5" />
+          <Zap className="w-5 h-5" />
           Start Practice
         </button>
       </motion.div>
@@ -506,8 +473,6 @@ interface ActiveExamProps {
   currentAnswer: AnswerRecord | undefined;
   showExplanation: boolean;
   flaggedQuestions: Set<number>;
-  timeRemaining: number;
-  isPaused: boolean;
   answers: AnswerRecord[];
   questions: CertificationQuestion[];
   onSelectOption: (optionId: string) => void;
@@ -515,9 +480,7 @@ interface ActiveExamProps {
   onPrev: () => void;
   onGoToQuestion: (index: number) => void;
   onToggleFlag: () => void;
-  onTogglePause: () => void;
   onFinish: () => void;
-  formatTime: (seconds: number) => string;
 }
 
 function ActiveExam({
@@ -531,8 +494,6 @@ function ActiveExam({
   currentAnswer,
   showExplanation,
   flaggedQuestions,
-  timeRemaining,
-  isPaused,
   answers,
   questions,
   onSelectOption,
@@ -540,9 +501,7 @@ function ActiveExam({
   onPrev,
   onGoToQuestion,
   onToggleFlag,
-  onTogglePause,
   onFinish,
-  formatTime,
 }: ActiveExamProps) {
   const [showNav, setShowNav] = useState(false);
   const isFlagged = flaggedQuestions.has(currentIndex);
@@ -561,18 +520,6 @@ function ActiveExam({
             </div>
 
             <div className="flex items-center gap-3">
-              {examMode === 'timed' && (
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
-                  timeRemaining < 60 ? 'bg-red-500/10 text-red-500' : 'bg-muted'
-                }`}>
-                  <Clock className="w-4 h-4" />
-                  <span className="font-mono font-semibold">{formatTime(timeRemaining)}</span>
-                  <button onClick={onTogglePause} className="ml-1">
-                    {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-                  </button>
-                </div>
-              )}
-              
               <button
                 onClick={() => setShowNav(!showNav)}
                 className="px-3 py-1.5 bg-muted rounded-lg text-sm font-medium"
@@ -900,7 +847,7 @@ function ResultsScreen({
             <div className="text-xs text-muted-foreground">Correct</div>
           </div>
           <div className="bg-card border border-border rounded-xl p-4 text-center">
-            <Clock className="w-5 h-5 mx-auto mb-2 text-primary" />
+            <Trophy className="w-5 h-5 mx-auto mb-2 text-primary" />
             <div className="text-2xl font-bold">{results.avgTime}s</div>
             <div className="text-xs text-muted-foreground">Avg Time</div>
           </div>

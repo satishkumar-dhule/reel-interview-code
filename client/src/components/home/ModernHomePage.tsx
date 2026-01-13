@@ -19,7 +19,7 @@ import {
   CheckCircle, ArrowRight, Sparkles, Award, Users, Globe,
   Cpu, Terminal, Layout, Database, Activity, GitBranch, Server,
   Layers, Smartphone, Shield, Workflow, Box, Cloud,
-  Network, MessageCircle, Eye, FileText, Monitor, Gauge, X
+  Network, MessageCircle, Eye, FileText, Monitor, Gauge, X, AlertTriangle
 } from 'lucide-react';
 
 // Icon mapping for channels
@@ -353,8 +353,8 @@ function QuickActionsGrid({ onNavigate }: { onNavigate: (path: string) => void }
           >
             <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
             <div className="relative space-y-2 lg:space-y-3">
-              <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center flex-shrink-0`}>
-                <action.icon className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+              <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-gradient-to-br ${action.color} p-2 lg:p-2.5 flex items-center justify-center flex-shrink-0`}>
+                <action.icon className="w-6 h-6 lg:w-7 lg:h-7 text-white" strokeWidth={2} />
               </div>
               <div className="text-left">
                 <h3 className="font-semibold text-xs lg:text-sm truncate">{action.title}</h3>

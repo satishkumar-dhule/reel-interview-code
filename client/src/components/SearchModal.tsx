@@ -22,9 +22,10 @@ function isCodingResult(result: UnifiedSearchResult): result is CodingSearchResu
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialQuery?: string;
 }
 
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<UnifiedSearchResult[]>([]);
   const [filteredResults, setFilteredResults] = useState<UnifiedSearchResult[]>([]);
@@ -38,6 +39,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const { toast } = useUnifiedToast();
   
   const debouncedQuery = useDebounce(query, 150);
+
+  // Set initial query when modal opens
+  useEffect(() => {
+    if (isOpen && initialQuery) {
+      setQuery(initialQuery);
+    }
+  }, [isOpen, initialQuery]);
 
   const filters: { id: FilterType; label: string; icon: React.ReactNode }[] = [
     { id: 'all', label: 'All', icon: <Filter className="w-3 h-3" /> },

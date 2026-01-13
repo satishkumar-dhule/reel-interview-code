@@ -25,7 +25,6 @@ import {
   AlertCircle,
   Copy,
   Check,
-  Timer,
   TrendingUp,
   FileText,
   Mic,
@@ -121,8 +120,6 @@ export default function CodingChallenge() {
   const [showSolution, setShowSolution] = useState(false);
   const [showHints, setShowHints] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
-  const [startTime, setStartTime] = useState(0);
-  const [timeSpent, setTimeSpent] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [copied, setCopied] = useState(false);
   const [userComplexity, setUserComplexity] = useState<ComplexityAnalysis | null>(null);
@@ -130,6 +127,8 @@ export default function CodingChallenge() {
   const [solvedIds, setSolvedIds] = useState<Set<string>>(() => getSolvedChallengeIds());
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [startTime, setStartTime] = useState<number>(Date.now());
+  const [timeSpent, setTimeSpent] = useState<number>(0);
   
   // Load challenges from JSON on mount
   useEffect(() => {
@@ -336,14 +335,7 @@ export default function CodingChallenge() {
     }
   }, [language, currentChallenge]);
 
-  // Timer - stops when challenge is completed
-  useEffect(() => {
-    if (viewState !== 'challenge' || !startTime || showSuccessModal) return;
-    const interval = setInterval(() => {
-      setTimeSpent(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [viewState, startTime, showSuccessModal]);
+
 
   // Auto-analyze complexity when code changes (debounced)
   useEffect(() => {
@@ -366,8 +358,6 @@ export default function CodingChallenge() {
       setShowSolution(false);
       setShowHints(false);
       setHintIndex(0);
-      setStartTime(Date.now());
-      setTimeSpent(0);
       setUserComplexity(null);
       setShowSuccessModal(false);
       setViewState('challenge');
@@ -400,11 +390,10 @@ export default function CodingChallenge() {
           challengeId: currentChallenge.id,
           code,
           language,
-          startedAt: new Date(startTime).toISOString(),
+          startedAt: new Date().toISOString(),
           completedAt: new Date().toISOString(),
           passed: true,
           testResults: results,
-          timeSpent,
         });
         setShowSuccessModal(true);
         mascotEvents.celebrate(); // Mascot celebrates on success!
@@ -439,11 +428,7 @@ export default function CodingChallenge() {
     setTimeout(() => setCopied(false), 2000);
   }, [code]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+
 
   const goBack = () => {
     if (viewState === 'challenge') {
@@ -452,6 +437,12 @@ export default function CodingChallenge() {
     } else {
       window.history.back();
     }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const allPassed = testResults.length > 0 && testResults.every((r) => r.passed);
@@ -731,12 +722,6 @@ export default function CodingChallenge() {
                   questionType="coding"
                   size="sm"
                 />
-                <div className="flex items-center gap-1 text-sm bg-muted/30 px-2 py-1 rounded">
-                  <Timer className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-mono font-bold" data-testid="timer">
-                    {formatTime(timeSpent)}
-                  </span>
-                </div>
               </div>
               <div className="flex items-center gap-2">
                 <select
@@ -1206,7 +1191,7 @@ export default function CodingChallenge() {
                     </motion.div>
                     <h2 className="text-2xl font-bold mb-2">🎉 Challenge Complete!</h2>
                     <p className="text-muted-foreground mb-4">
-                      You solved it in <span className="font-mono font-bold text-primary">{formatTime(timeSpent)}</span>
+                      Great job solving this challenge!
                     </p>
 
                     {userComplexity && (

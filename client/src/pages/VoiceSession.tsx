@@ -11,7 +11,7 @@ import {
   CheckCircle, XCircle, AlertCircle, Loader2,
   Target, MessageSquare, Edit3,
   BarChart3, Sparkles, Play, ArrowRight, BookOpen, Volume2,
-  Clock, Zap, Award, Trophy
+  Zap, Award, Trophy
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { getAllQuestionsAsync } from '../lib/questions-loader';
@@ -59,7 +59,6 @@ export default function VoiceSession() {
   
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
-  const [recordingTime, setRecordingTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [practiceTranscript, setPracticeTranscript] = useState('');
   
@@ -143,11 +142,9 @@ export default function VoiceSession() {
     return () => { recognition.stop(); };
   }, [pageState]);
 
-  // Recording timer
+  // Recording timer removed - keeping only recording indicator
   useEffect(() => {
-    if (pageState === 'recording' || pageState === 'practice') {
-      timerRef.current = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
-    } else if (timerRef.current) {
+    if (timerRef.current) {
       clearInterval(timerRef.current);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
@@ -172,7 +169,6 @@ export default function VoiceSession() {
     saveSessionState(updated);
     setTranscript('');
     setInterimTranscript('');
-    setRecordingTime(0);
     
     if (recognitionRef.current) {
       try {
@@ -220,7 +216,6 @@ export default function VoiceSession() {
       saveSessionState(updated);
       setTranscript('');
       setInterimTranscript('');
-      setRecordingTime(0);
       
       if (recognitionRef.current) {
         try {
@@ -236,7 +231,6 @@ export default function VoiceSession() {
   const retryQuestion = useCallback(() => {
     setTranscript('');
     setInterimTranscript('');
-    setRecordingTime(0);
     if (recognitionRef.current) {
       try {
         recognitionRef.current.start();
@@ -254,11 +248,7 @@ export default function VoiceSession() {
     setPageState('select');
   }, []);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+
 
   // Unsupported browser
   if (!isSpeechSupported) {
@@ -375,8 +365,7 @@ export default function VoiceSession() {
                                   <MessageSquare className="w-3.5 h-3.5" />
                                   {session.totalQuestions} questions
                                 </span>
-                                <span className="text-xs text-[#6e7681] flex items-center gap-1">
-                                  <Clock className="w-3.5 h-3.5" />
+                                <span className="text-xs text-[#6e7681]">
                                   ~{session.estimatedMinutes} min
                                 </span>
                               </div>
@@ -546,7 +535,7 @@ export default function VoiceSession() {
                 {pageState === 'recording' && (
                   <div className="flex items-center gap-3 px-4 py-2 bg-[#f85149]/10 border border-[#f85149]/30 rounded-full">
                     <span className="w-3 h-3 bg-[#f85149] rounded-full animate-pulse" />
-                    <span className="font-mono text-[#f85149] font-medium">{formatTime(recordingTime)}</span>
+                    <span className="text-sm text-[#f85149]">Recording</span>
                   </div>
                 )}
                 {pageState === 'editing' && (
@@ -629,7 +618,6 @@ export default function VoiceSession() {
     const startPracticeMode = () => {
       setPracticeTranscript('');
       setInterimTranscript('');
-      setRecordingTime(0);
       setPageState('practice');
       if (recognitionRef.current) {
         try { recognitionRef.current.start(); } catch (e) { /* ignore */ }
@@ -802,7 +790,7 @@ export default function VoiceSession() {
               </div>
               <div className="flex items-center gap-3 px-4 py-2 bg-[#f85149]/10 border border-[#f85149]/30 rounded-full">
                 <span className="w-3 h-3 bg-[#f85149] rounded-full animate-pulse" />
-                <span className="font-mono text-sm text-[#f85149]">{formatTime(recordingTime)}</span>
+                <span className="text-sm text-[#f85149]">Recording</span>
               </div>
             </div>
           </header>

@@ -7,7 +7,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation, useParams } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Trophy,
+  ArrowLeft, ArrowRight, CheckCircle, XCircle, Trophy,
   Share2, RotateCcw, Home, AlertCircle, Check, X, Zap, ExternalLink, Eye,
   Sparkles, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Filter
 } from 'lucide-react';
@@ -74,7 +74,6 @@ export default function TestSession() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const [startTime, setStartTime] = useState<number>(0);
-  const [timeSpent, setTimeSpent] = useState(0);
   const [result, setResult] = useState<{ score: number; correct: number; total: number; passed: boolean } | null>(null);
   const [autoSubmit, setAutoSubmit] = useState(getAutoSubmitPref);
   const [showFeedback, setShowFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -98,12 +97,8 @@ export default function TestSession() {
   // Timer
   useEffect(() => {
     if (sessionState !== 'in-progress') return;
-    
-    const interval = setInterval(() => {
-      setTimeSpent(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-    
-    return () => clearInterval(interval);
+
+    return () => {};
   }, [sessionState, startTime]);
 
   const startTest = useCallback(() => {
@@ -114,7 +109,6 @@ export default function TestSession() {
     setAnswers({});
     setCurrentIndex(0);
     setStartTime(Date.now());
-    setTimeSpent(0);
     setResult(null);
     setSessionState('in-progress');
   }, [test]);
@@ -213,7 +207,6 @@ export default function TestSession() {
       answers,
       score: calcResult.score,
       passed: calcResult.passed,
-      timeSpent,
     };
     
     // Pass test version for expiration tracking
@@ -389,13 +382,13 @@ export default function TestSession() {
         {/* In Progress State */}
         {sessionState === 'in-progress' && currentQuestion && (
           <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
-            {/* Header */}
-            <header className="border-b border-border p-3 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-3">
+            {/* Header - COMPACT */}
+            <header className="border-b border-border p-2.5 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">
-                  {currentIndex + 1} / {questions.length}
+                  {currentIndex + 1}/{questions.length}
                 </span>
-                <div className="h-1 w-24 bg-muted/30 rounded-full overflow-hidden">
+                <div className="h-1 w-20 bg-muted/30 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary transition-all"
                     style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
@@ -406,7 +399,7 @@ export default function TestSession() {
               {/* Auto-submit toggle */}
               <button
                 onClick={toggleAutoSubmit}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium transition-all ${
                   autoSubmit 
                     ? 'bg-primary/20 text-primary border border-primary/30' 
                     : 'bg-muted/30 text-muted-foreground border border-transparent'
@@ -417,12 +410,8 @@ export default function TestSession() {
                 <span className="hidden sm:inline">Auto</span>
               </button>
               
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="font-mono">{formatTime(timeSpent)}</span>
-              </div>
               <span className="text-xs text-muted-foreground">
-                {answeredCount}/{questions.length} answered
+                {answeredCount}/{questions.length}
               </span>
             </header>
 
@@ -529,32 +518,26 @@ export default function TestSession() {
               </div>
             </div>
 
-            {/* Navigation */}
-            <footer className="border-t border-border p-3 w-full overflow-x-hidden">
-              <div className="max-w-2xl mx-auto flex items-center justify-between w-full">
+            {/* Navigation - SINGLE LINE COMPACT */}
+            <footer className="border-t border-border p-2 w-full overflow-x-hidden">
+              <div className="max-w-2xl mx-auto flex items-center justify-between gap-2 w-full">
                 <button
                   onClick={goPrev}
                   disabled={currentIndex === 0}
-                  className="flex items-center gap-1 px-4 py-2 text-sm disabled:opacity-30 hover:text-primary transition-colors"
+                  className="flex items-center gap-0.5 px-2 py-1 text-xs disabled:opacity-30 hover:text-primary transition-colors shrink-0"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Previous
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Prev</span>
                 </button>
 
-                {/* Question dots */}
-                <div className="flex gap-1 flex-wrap justify-center max-w-xs">
-                  {questions.map((q, i) => (
-                    <button
-                      key={q.id}
-                      onClick={() => setCurrentIndex(i)}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        i === currentIndex
-                          ? 'bg-primary'
-                          : answers[q.id]
-                          ? 'bg-primary/50'
-                          : 'bg-muted/30'
-                      }`}
-                    />
-                  ))}
+                {/* Compact question indicator */}
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                  <span className="font-medium text-foreground">{currentIndex + 1}</span>
+                  <span>/</span>
+                  <span>{questions.length}</span>
+                  <span className="hidden sm:inline text-[10px]">
+                    ({Object.keys(answers).length} answered)
+                  </span>
                 </div>
 
                 {currentIndex === questions.length - 1 ? (
@@ -577,32 +560,35 @@ export default function TestSession() {
                         }, 800);
                       }}
                       disabled={(answers[currentQuestion.id] || []).length === 0 || showFeedback !== null}
-                      className="px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="px-2.5 py-1 bg-primary text-primary-foreground text-xs font-bold rounded hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0"
                     >
-                      Confirm & Submit
+                      Submit
                     </button>
                   ) : (
                     <button
                       onClick={submitTest}
-                      className="px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded hover:bg-primary/90 transition-colors"
+                      className="px-2.5 py-1 bg-primary text-primary-foreground text-xs font-bold rounded hover:bg-primary/90 transition-colors shrink-0"
                     >
-                      Submit Test
+                      Submit
                     </button>
                   )
                 ) : currentQuestion?.type === 'multiple' ? (
                   <button
                     onClick={confirmMultipleChoice}
                     disabled={(answers[currentQuestion.id] || []).length === 0 || showFeedback !== null}
-                    className="flex items-center gap-1 px-4 py-2 text-sm bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-0.5 px-2.5 py-1 text-xs bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0"
                   >
-                    Confirm <ArrowRight className="w-4 h-4" />
+                    <span className="hidden sm:inline">Confirm</span>
+                    <span className="sm:hidden">OK</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (
                   <button
                     onClick={goNext}
-                    className="flex items-center gap-1 px-4 py-2 text-sm hover:text-primary transition-colors"
+                    className="flex items-center gap-0.5 px-2 py-1 text-xs hover:text-primary transition-colors shrink-0"
                   >
-                    Next <ArrowRight className="w-4 h-4" />
+                    <span className="hidden sm:inline">Next</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -1077,11 +1063,7 @@ export default function TestSession() {
                 </div>
 
                 <div className="space-y-2 mb-6 text-sm">
-                  <div className={`flex justify-between p-2 rounded ${theme.secondary}`}>
-                    <span className="text-muted-foreground">Time Spent</span>
-                    <span className="font-bold">{formatTime(timeSpent)}</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-green-500/10 rounded">
+                  <div className={`flex justify-between p-2 bg-green-500/10 rounded`}>
                     <span className="text-muted-foreground">Correct Answers</span>
                     <span className="font-bold text-green-500">{result.correct}</span>
                   </div>

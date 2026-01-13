@@ -22,8 +22,8 @@ import { trackQuestionView } from '../../hooks/use-analytics';
 import { useUnifiedToast } from '../../hooks/use-unified-toast';
 import { useSwipe } from '../../hooks/use-swipe';
 import {
-  ChevronLeft, ChevronRight, Play, Pause, Search, ChevronDown, Check,
-  Brain, Clock, Target, Zap, Flame, Building2,
+  ChevronLeft, ChevronRight, Search, ChevronDown, Check,
+  Brain, Target, Zap, Flame, Building2,
   X, Bookmark, Share2, Sparkles, Maximize2, Settings
 } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -73,12 +73,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [mobileView, setMobileView] = useState<'question' | 'answer'>('question');
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  
-  // Timer states
-  const [timeSpent, setTimeSpent] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get companies for filtering
   const { companiesWithCounts } = useCompaniesWithCounts(
@@ -262,34 +256,11 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, totalQuestions, showSearchModal]);
 
-  // Timer for tracking time spent
-  useEffect(() => {
-    if (isPlaying) {
-      timerRef.current = setInterval(() => {
-        setTimeSpent(prev => prev + 1);
-      }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isPlaying]);
-
-  // Auto-start timer when question loads
-  useEffect(() => {
-    if (currentQuestion && !showAnswer) {
-      setIsPlaying(true);
-      setTimeSpent(0);
-    }
-  }, [currentQuestion, showAnswer]);
-
   // Navigation functions
   const nextQuestion = () => {
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex(prev => prev + 1);
       setShowAnswer(false);
-      setTimeSpent(0);
       setMobileView('question');
       // Track swipe for voice reminder
       onQuestionSwipe();
@@ -302,7 +273,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
       setShowAnswer(false);
-      setTimeSpent(0);
       setMobileView('question');
     }
   };
@@ -473,9 +443,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
           currentIndex={currentIndex}
           totalQuestions={totalQuestions}
           progress={progress}
-          timeSpent={timeSpent}
-          isPlaying={isPlaying}
-          onPlayPause={() => setIsPlaying(!isPlaying)}
           onFullscreen={() => setIsFullscreen(!isFullscreen)}
           filters={{
             selectedSubChannel,
@@ -499,8 +466,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
                 isMarked={isMarked}
                 isCompleted={isCompleted}
                 onToggleMark={toggleMark}
-                timerEnabled={true}
-                timeLeft={timeSpent}
               />
             </div>
             {/* Answer Panel */}
@@ -550,8 +515,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
                   isCompleted={isCompleted}
                   onToggleMark={toggleMark}
                   onTapQuestion={() => setMobileView('answer')}
-                  timerEnabled={true}
-                  timeLeft={timeSpent}
                 />
               ) : (
                 <ExtremeAnswerPanel question={currentQuestion} isCompleted={isCompleted} />
@@ -617,9 +580,6 @@ function Header({
   currentIndex, 
   totalQuestions, 
   progress, 
-  timeSpent,
-  isPlaying,
-  onPlayPause,
   onFullscreen,
   filters 
 }: any) {
@@ -631,13 +591,13 @@ function Header({
   
   return (
     <header className="bg-background/95 backdrop-blur-xl border-b border-border shrink-0 relative z-20">
-      {/* Minimal top bar */}
-      <div className="h-14 flex items-center justify-between px-4 gap-4">
+      {/* Minimal top bar - COMPACT */}
+      <div className="h-12 flex items-center justify-between px-3 gap-2">
         {/* Left: Back + Channel */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <motion.button 
             onClick={onBack} 
-            className="p-2 hover:bg-muted rounded-lg transition-all"
+            className="p-1.5 hover:bg-muted rounded-lg transition-all"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -645,18 +605,18 @@ function Header({
           </motion.button>
           
           <div className="hidden sm:block">
-            <h1 className="font-bold text-foreground text-base">{channel.name}</h1>
+            <h1 className="font-bold text-foreground text-sm">{channel.name}</h1>
           </div>
         </div>
 
         {/* Center: Progress */}
         {totalQuestions > 0 && (
           <div className="flex-1 max-w-md mx-auto">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold text-primary tabular-nums min-w-[60px]">
-                {currentIndex + 1} / {totalQuestions}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-primary tabular-nums min-w-[50px]">
+                {currentIndex + 1}/{totalQuestions}
               </span>
-              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden border border-border">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border">
                 <motion.div 
                   className="h-full bg-primary rounded-full" 
                   initial={{ width: 0 }}
@@ -664,28 +624,18 @@ function Header({
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 />
               </div>
-              <span className="text-xs font-bold text-foreground tabular-nums min-w-[35px]">{progress}%</span>
+              <span className="text-xs font-bold text-foreground tabular-nums min-w-[30px]">{progress}%</span>
             </div>
           </div>
         )}
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2">
-          {/* Timer - Compact */}
-          {timeSpent !== undefined && (
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-card border border-border rounded-lg">
-              <Clock className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-mono text-foreground tabular-nums">
-                {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
-              </span>
-            </div>
-          )}
-
+        <div className="flex items-center gap-1.5">
           {/* Filter Toggle */}
           {filters && (
             <motion.button 
               onClick={() => setShowFilters(!showFilters)}
-              className={`relative p-2 rounded-lg transition-all ${
+              className={`relative p-1.5 rounded-lg transition-all ${
                 showFilters || hasActiveFilter 
                   ? 'bg-primary/10 text-primary border border-primary/30' 
                   : 'hover:bg-muted text-muted-foreground'
@@ -693,9 +643,9 @@ function Header({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-background">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center border border-background">
                   {activeFilterCount}
                 </span>
               )}
@@ -705,22 +655,22 @@ function Header({
           {/* Search */}
           <motion.button 
             onClick={onSearch} 
-            className="p-2 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
+            className="p-1.5 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4" />
           </motion.button>
 
           {/* Fullscreen */}
           {onFullscreen && (
             <motion.button 
               onClick={onFullscreen} 
-              className="hidden lg:block p-2 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
+              className="hidden lg:block p-1.5 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Maximize2 className="w-5 h-5" />
+              <Maximize2 className="w-4 h-4" />
             </motion.button>
           )}
         </div>
@@ -736,9 +686,9 @@ function Header({
             transition={{ duration: 0.2 }}
             className="overflow-hidden border-t border-border"
           >
-            <div className="px-4 py-4 bg-muted/30">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Filters:</span>
+            <div className="px-3 py-3 bg-muted/30">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Filters:</span>
                 
                 {channel.subChannels?.length > 1 && (
                   <FilterDropdown
@@ -781,7 +731,7 @@ function Header({
                       onFilterChange('diff', 'all');
                       onFilterChange('company', 'all');
                     }}
-                    className="ml-auto px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 rounded-lg transition-all"
+                    className="ml-auto px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 rounded-lg transition-all"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -818,7 +768,7 @@ function FilterDropdown({ label, options, selected, onSelect }: FilterDropdownPr
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button 
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap outline-none focus:outline-none ${
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap outline-none focus:outline-none ${
             isActive 
               ? 'bg-primary/10 text-primary border border-primary/30' 
               : 'bg-card hover:bg-muted border border-border text-foreground'
@@ -830,14 +780,14 @@ function FilterDropdown({ label, options, selected, onSelect }: FilterDropdownPr
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="min-w-[200px] max-h-[350px] overflow-y-auto bg-popover backdrop-blur-xl border border-border rounded-xl shadow-2xl p-2 z-50"
-          sideOffset={8}
+          className="min-w-[180px] max-h-[350px] overflow-y-auto bg-popover backdrop-blur-xl border border-border rounded-xl shadow-2xl p-1.5 z-50"
+          sideOffset={6}
         >
           {options.map((opt: any) => (
             <DropdownMenu.Item
               key={opt.id}
               onClick={() => onSelect(opt.id)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer outline-none text-sm transition-all ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer outline-none text-xs transition-all ${
                 selected === opt.id 
                   ? 'bg-primary/10 text-primary border border-primary/30' 
                   : 'text-foreground hover:bg-muted'
@@ -845,7 +795,7 @@ function FilterDropdown({ label, options, selected, onSelect }: FilterDropdownPr
             >
               {opt.icon}
               <span className="flex-1">{opt.label}</span>
-              {selected === opt.id && <Check className="w-4 h-4 text-primary" />}
+              {selected === opt.id && <Check className="w-3.5 h-3.5 text-primary" />}
             </DropdownMenu.Item>
           ))}
         </DropdownMenu.Content>
@@ -973,12 +923,12 @@ function NavigationFooter({
     <>
       {/* Mobile: Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/95 backdrop-blur-xl border-t border-border">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-3 py-2">
           {/* Previous */}
           <motion.button
             onClick={onPrev}
             disabled={!canGoPrev}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs transition-all ${
               canGoPrev
                 ? 'bg-card hover:bg-muted text-foreground border border-border'
                 : 'bg-muted/50 text-muted-foreground border border-border cursor-not-allowed opacity-50'
@@ -986,108 +936,19 @@ function NavigationFooter({
             whileHover={canGoPrev ? { scale: 1.05 } : {}}
             whileTap={canGoPrev ? { scale: 0.95 } : {}}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5" />
             <span>Prev</span>
           </motion.button>
 
           {/* Center Actions */}
-          <div className="flex items-center gap-2">
-            {/* Bookmark */}
-            <motion.button
-              onClick={onToggleMark}
-              className={`p-2.5 rounded-lg transition-all ${
-                isMarked
-                  ? 'bg-primary/10 text-primary border border-primary/30'
-                  : 'bg-card text-muted-foreground hover:text-primary border border-border'
-              }`}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Bookmark className={`w-5 h-5 ${isMarked ? 'fill-current' : ''}`} />
-            </motion.button>
-
-            {/* Share */}
-            <motion.button 
-              onClick={onShare} 
-              className="p-2.5 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-all border border-border"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Share2 className="w-5 h-5" />
-            </motion.button>
-          </div>
-
-          {/* Next */}
-          <motion.button
-            onClick={onNext}
-            disabled={!canGoNext}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
-              canGoNext
-                ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                : 'bg-muted/50 text-muted-foreground border border-border cursor-not-allowed opacity-50'
-            }`}
-            whileHover={canGoNext ? { scale: 1.05 } : {}}
-            whileTap={canGoNext ? { scale: 0.95 } : {}}
-          >
-            <span>Next</span>
-            <ChevronRight className="w-4 h-4" />
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Desktop: Bottom Center Bar Only - No Side Rails */}
-      <div className="hidden lg:block">
-        {/* Bottom Center - Navigation + Quick Actions */}
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
-        >
-          <div className="flex items-center gap-3 px-4 py-3 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-xl">
-            {/* Previous */}
-            <motion.button
-              onClick={onPrev}
-              disabled={!canGoPrev}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                canGoPrev
-                  ? 'bg-muted hover:bg-muted/80 text-foreground'
-                  : 'bg-muted/50 text-muted-foreground cursor-not-allowed opacity-50'
-              }`}
-              whileHover={canGoPrev ? { scale: 1.05 } : {}}
-              whileTap={canGoPrev ? { scale: 0.95 } : {}}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous</span>
-            </motion.button>
-
-            {/* Divider */}
-            <div className="w-px h-8 bg-border" />
-
-            {/* Progress Info */}
-            <div className="flex items-center gap-3 px-3 py-1 bg-muted rounded-lg border border-border">
-              <span className="text-xs font-bold text-primary tabular-nums">
-                {currentIndex + 1}/{totalQuestions}
-              </span>
-              <div className="w-20 h-1.5 bg-background rounded-full overflow-hidden border border-border">
-                <motion.div 
-                  className="h-full bg-primary rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-8 bg-border" />
-
+          <div className="flex items-center gap-1.5">
             {/* Bookmark */}
             <motion.button
               onClick={onToggleMark}
               className={`p-2 rounded-lg transition-all ${
-                isMarked 
-                  ? 'bg-primary/10 text-primary border border-primary/30' 
-                  : 'hover:bg-muted text-muted-foreground hover:text-primary'
+                isMarked
+                  ? 'bg-primary/10 text-primary border border-primary/30'
+                  : 'bg-card text-muted-foreground hover:text-primary border border-border'
               }`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -1098,21 +959,110 @@ function NavigationFooter({
             {/* Share */}
             <motion.button 
               onClick={onShare} 
-              className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
+              className="p-2 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-all border border-border"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
               <Share2 className="w-4 h-4" />
             </motion.button>
+          </div>
+
+          {/* Next */}
+          <motion.button
+            onClick={onNext}
+            disabled={!canGoNext}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs transition-all ${
+              canGoNext
+                ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                : 'bg-muted/50 text-muted-foreground border border-border cursor-not-allowed opacity-50'
+            }`}
+            whileHover={canGoNext ? { scale: 1.05 } : {}}
+            whileTap={canGoNext ? { scale: 0.95 } : {}}
+          >
+            <span>Next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Desktop: Bottom Center Bar Only - No Side Rails */}
+      <div className="hidden lg:block">
+        {/* Bottom Center - Navigation + Quick Actions */}
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+        >
+          <div className="flex items-center gap-2 px-3 py-2 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-xl">
+            {/* Previous */}
+            <motion.button
+              onClick={onPrev}
+              disabled={!canGoPrev}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                canGoPrev
+                  ? 'bg-muted hover:bg-muted/80 text-foreground'
+                  : 'bg-muted/50 text-muted-foreground cursor-not-allowed opacity-50'
+              }`}
+              whileHover={canGoPrev ? { scale: 1.05 } : {}}
+              whileTap={canGoPrev ? { scale: 0.95 } : {}}
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Prev</span>
+            </motion.button>
 
             {/* Divider */}
-            <div className="w-px h-8 bg-border" />
+            <div className="w-px h-6 bg-border" />
+
+            {/* Progress Info */}
+            <div className="flex items-center gap-2 px-2 py-1 bg-muted rounded-lg border border-border">
+              <span className="text-[10px] font-bold text-primary tabular-nums">
+                {currentIndex + 1}/{totalQuestions}
+              </span>
+              <div className="w-16 h-1 bg-background rounded-full overflow-hidden border border-border">
+                <motion.div 
+                  className="h-full bg-primary rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-6 bg-border" />
+
+            {/* Bookmark */}
+            <motion.button
+              onClick={onToggleMark}
+              className={`p-1.5 rounded-lg transition-all ${
+                isMarked 
+                  ? 'bg-primary/10 text-primary border border-primary/30' 
+                  : 'hover:bg-muted text-muted-foreground hover:text-primary'
+              }`}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Bookmark className={`w-3.5 h-3.5 ${isMarked ? 'fill-current' : ''}`} />
+            </motion.button>
+
+            {/* Share */}
+            <motion.button 
+              onClick={onShare} 
+              className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </motion.button>
+
+            {/* Divider */}
+            <div className="w-px h-6 bg-border" />
 
             {/* Next */}
             <motion.button
               onClick={onNext}
               disabled={!canGoNext}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
                 canGoNext
                   ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'bg-muted/50 text-muted-foreground cursor-not-allowed opacity-50'
@@ -1121,7 +1071,7 @@ function NavigationFooter({
               whileTap={canGoNext ? { scale: 0.95 } : {}}
             >
               <span>Next</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </motion.button>
           </div>
         </motion.div>

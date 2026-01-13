@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mic, MicOff, Play, Square, RotateCcw, Home, ChevronRight,
   CheckCircle, XCircle, AlertCircle, Volume2, Loader2, Sparkles,
-  ThumbsUp, ThumbsDown, Minus, Clock, Target, MessageSquare, Coins, Edit3,
+  ThumbsUp, ThumbsDown, Minus, Target, MessageSquare, Coins, Edit3,
   SkipForward, ExternalLink, Shuffle, ChevronLeft, MoreHorizontal, User,
   BarChart3, Brain, Lightbulb, Zap, Award
 } from 'lucide-react';
@@ -61,7 +61,6 @@ export default function VoiceInterview() {
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
-  const [recordingTime, setRecordingTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [earnedCredits, setEarnedCredits] = useState<{ total: number; bonus: number } | null>(null);
   const [interviewerComment, setInterviewerComment] = useState<string | null>(null);
@@ -161,9 +160,7 @@ export default function VoiceInterview() {
   }, [state]);
 
   useEffect(() => {
-    if (state === 'recording') {
-      timerRef.current = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
-    } else if (timerRef.current) {
+    if (timerRef.current) {
       clearInterval(timerRef.current);
     }
     return () => {
@@ -176,7 +173,6 @@ export default function VoiceInterview() {
     if (!recognitionRef.current) return;
     setTranscript('');
     setInterimTranscript('');
-    setRecordingTime(0);
     setEvaluation(null);
     setError(null);
     try {
@@ -219,7 +215,6 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
-      setRecordingTime(0);
       setState('ready');
     }
   }, [currentIndex, questions.length]);
@@ -231,7 +226,6 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
-      setRecordingTime(0);
       setState('ready');
       setShowActions(false);
     }
@@ -246,7 +240,6 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
-      setRecordingTime(0);
       setState('ready');
       setShowActions(false);
     }
@@ -265,7 +258,6 @@ export default function VoiceInterview() {
     setInterimTranscript('');
     setEvaluation(null);
     setEarnedCredits(null);
-    setRecordingTime(0);
     setState('ready');
     setShowActions(false);
   }, [questions, showComment]);
@@ -275,15 +267,10 @@ export default function VoiceInterview() {
     setTranscript('');
     setInterimTranscript('');
     setEvaluation(null);
-    setRecordingTime(0);
     setState('ready');
   }, [showComment]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+
 
   // Unsupported browser
   if (!isSpeechSupported) {
@@ -355,39 +342,39 @@ export default function VoiceInterview() {
 
       <DesktopSidebarWrapper>
       <div className="min-h-screen bg-[#0d1117] text-[#e6edf3]">
-        {/* Header */}
+        {/* Header - COMPACT */}
         <header className="sticky top-0 z-50 border-b border-[#30363d] bg-[#0d1117]/95 backdrop-blur-md">
-          <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="max-w-4xl mx-auto px-3 h-14 flex items-center justify-between">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setLocation('/')}
-                className="p-2 hover:bg-[#21262d] rounded-lg transition-colors"
+                className="p-1.5 hover:bg-[#21262d] rounded-lg transition-colors"
               >
-                <Home className="w-5 h-5 text-[#8b949e]" />
+                <Home className="w-4 h-4 text-[#8b949e]" />
               </button>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f85149] to-[#ff7b72] flex items-center justify-center">
-                  <Mic className="w-5 h-5 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#f85149] to-[#ff7b72] flex items-center justify-center">
+                  <Mic className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h1 className="font-semibold text-white">Voice Interview</h1>
-                  <p className="text-xs text-[#8b949e]">
-                    Question {currentIndex + 1} of {questions.length}
+                  <h1 className="font-semibold text-white text-sm">Voice Interview</h1>
+                  <p className="text-[10px] text-[#8b949e]">
+                    Q{currentIndex + 1}/{questions.length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setLocation('/voice-session')}
-                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm bg-[#21262d] text-[#8b949e] hover:text-white rounded-lg border border-[#30363d] hover:border-[#58a6ff]/50 transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 text-xs bg-[#21262d] text-[#8b949e] hover:text-white rounded-lg border border-[#30363d] hover:border-[#58a6ff]/50 transition-all"
               >
-                <Target className="w-4 h-4" />
+                <Target className="w-3.5 h-3.5" />
                 Sessions
               </button>
               <CreditsDisplay compact onClick={() => setLocation('/profile')} />
-              <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${
+              <span className={`px-2 py-0.5 text-[10px] font-medium rounded-lg ${
                 currentQuestion?.difficulty === 'beginner' ? 'bg-[#238636]/20 text-[#3fb950]' :
                 currentQuestion?.difficulty === 'intermediate' ? 'bg-[#d29922]/20 text-[#d29922]' :
                 'bg-[#f85149]/20 text-[#f85149]'
@@ -405,8 +392,8 @@ export default function VoiceInterview() {
           </div>
           
           {/* Progress Bar */}
-          <div className="max-w-4xl mx-auto px-4 pb-3">
-            <div className="h-1.5 bg-[#21262d] rounded-full overflow-hidden">
+          <div className="max-w-4xl mx-auto px-3 pb-2">
+            <div className="h-1 bg-[#21262d] rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
@@ -546,7 +533,7 @@ export default function VoiceInterview() {
               {state === 'recording' && (
                 <div className="flex items-center gap-3 px-4 py-2 bg-[#f85149]/10 border border-[#f85149]/30 rounded-full">
                   <span className="w-3 h-3 bg-[#f85149] rounded-full animate-pulse" />
-                  <span className="font-mono text-[#f85149] font-medium">{formatTime(recordingTime)}</span>
+                  <span className="text-sm text-[#f85149]">Recording</span>
                 </div>
               )}
               
