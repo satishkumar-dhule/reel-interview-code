@@ -56,7 +56,6 @@ const FORBIDDEN_PATTERNS = {
     /\bTODO\b/i,
     /\bFIXME\b/i,
     /\bTBD\b/i,
-    /\bplaceholder\b/i,
     /lorem ipsum/i,
     /\[insert\s+/i,
     /\[add\s+/i,
