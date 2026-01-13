@@ -1,0 +1,163 @@
+name: 📊 Social Media & Analytics
+
+# Unified social media workflow
+# Combines: social-analytics.yml + linkedin-poll.yml
+# Handles: LinkedIn posts, polls, and analytics collection
+
+on:
+  schedule:
+    # Daily at 5 AM: Social analytics
+    - cron: '0 5 * * *'
+    # Daily at 10 AM: LinkedIn poll
+    - cron: '0 10 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - linkedin-post
+          - linkedin-poll
+          - analytics
+      # LinkedIn post inputs
+      post_url:
+        description: 'Specific blog post URL (for linkedin-post)'
+        required: false
+        type: string
+      # LinkedIn poll inputs
+      question_id:
+        description: 'Question ID for poll (for linkedin-poll)'
+        required: false
+        default: ''
+      channel:
+        description: 'Filter by channel (for linkedin-poll)'
+        required: false
+        default: ''
+      difficulty:
+        description: 'Filter by difficulty (for linkedin-poll)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - beginner
+          - intermediate
+          - advanced
+      poll_duration:
+        description: 'Poll duration in hours (for linkedin-poll)'
+        required: false
+        default: '24'
+      dry_run:
+        description: 'Dry run (test without posting)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  linkedin-post:
+    name: 📢 LinkedIn Post
+    if: |
+      (github.event.schedule == '0 5 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.task == 'all' || inputs.task == 'linkedin-post'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+
+      - name: Get latest blog post
+        id: get_post
+        run: node script/get-latest-blog-post.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          SPECIFIC_URL: ${{ inputs.post_url }}
+
+      - name: Publish to LinkedIn
+        if: steps.get_post.outputs.has_post == 'true'
+        id: publish
+        run: node script/publish-to-linkedin.js
+        env:
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          POST_TITLE: ${{ steps.get_post.outputs.title }}
+          POST_URL: ${{ steps.get_post.outputs.url }}
+          POST_EXCERPT: ${{ steps.get_post.outputs.excerpt }}
+          POST_TAGS: ${{ steps.get_post.outputs.tags }}
+          POST_CHANNEL: ${{ steps.get_post.outputs.channel }}
+
+      - name: Mark post as shared
+        if: steps.get_post.outputs.has_post == 'true' && steps.publish.outputs.posted == 'true'
+        run: node script/mark-post-shared.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          POST_ID: ${{ steps.get_post.outputs.post_id }}
+
+  linkedin-poll:
+    name: 📊 LinkedIn Poll
+    if: |
+      (github.event.schedule == '0 10 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.task == 'all' || inputs.task == 'linkedin-poll'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-bot
+      
+      - name: Post Poll to LinkedIn
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          QUESTION_ID: ${{ inputs.question_id }}
+          CHANNEL: ${{ inputs.channel }}
+          DIFFICULTY: ${{ inputs.difficulty }}
+          POLL_DURATION: ${{ inputs.poll_duration || '24' }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: node script/post-linkedin-poll.js
+
+  analytics:
+    name: 📈 GitHub Analytics
+    if: |
+      (github.event.schedule == '0 5 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.task == 'all' || inputs.task == 'analytics'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Collect GitHub Analytics
+        run: node script/github-analytics-bot.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          REPO_OWNER: satishkumar-dhule
+          REPO_NAME: code-reels
+          PAGES_REPO_OWNER: open-interview
+          PAGES_REPO_NAME: open-interview.github.io
+
+  summary:
+    name: 📋 Summary
+    needs: [linkedin-post, linkedin-poll, analytics]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## 📊 Social Media & Analytics Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Task | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 📢 LinkedIn Post | ${{ needs.linkedin-post.result == 'success' && '✅' || needs.linkedin-post.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 LinkedIn Poll | ${{ needs.linkedin-poll.result == 'success' && '✅' || needs.linkedin-poll.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📈 Analytics | ${{ needs.analytics.result == 'success' && '✅' || needs.analytics.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
