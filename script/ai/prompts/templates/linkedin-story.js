@@ -44,6 +44,18 @@ const RECENT_TECH_TRENDS = [
   { keyword: 'api', trend: 'GraphQL federation, tRPC, API-first design' }
 ];
 
+// Diverse hook patterns to avoid repetition
+const HOOK_PATTERNS = [
+  'question', // Start with a thought-provoking question
+  'statistic', // Lead with a surprising number or fact
+  'contrarian', // Challenge common assumptions
+  'story', // Brief narrative (not always 2am!)
+  'problem', // State a common pain point
+  'insight', // Share a key realization
+  'trend', // Highlight what's changing in 2025
+  'mistake' // Common error engineers make
+];
+
 export function build(context) {
   const { title, excerpt, channel, tags: rawTags } = context;
   
@@ -67,12 +79,20 @@ export function build(context) {
 ${relevantTrends.map(t => `- ${t.keyword.toUpperCase()}: ${t.trend}`).join('\n')}`
     : '';
 
-  return `Create an ENGAGING LinkedIn post for a technical blog article.
+  // Select a random hook pattern to ensure variety
+  const hookPattern = HOOK_PATTERNS[Math.floor(Math.random() * HOOK_PATTERNS.length)];
+
+  return `Create an ENGAGING and INFORMATIVE LinkedIn post for a technical blog article.
+
+CRITICAL: This post should be EDUCATIONAL and include enough technical detail that someone unfamiliar with the topic can understand what it's about and why it matters.
 
 Article Title: ${title}
 Topic/Channel: ${channel || 'tech'}
 Summary: ${excerpt || 'Technical interview preparation content'}
 ${trendContext}
+
+HOOK PATTERN FOR THIS POST: ${hookPattern}
+Use this pattern to create a UNIQUE opening that fits the content.
 
 ═══════════════════════════════════════════════════════════════
 CRITICAL: LINKEDIN FORMATTING RULES
@@ -90,41 +110,70 @@ REQUIRED POST STRUCTURE (follow this EXACTLY)
 ═══════════════════════════════════════════════════════════════
 
 SECTION 1 - HOOK (1-2 lines)
-Start with an attention-grabbing hook. Examples:
-• "It was 3am when the pager went off..."
-• "Everyone says X. They're wrong."
-• "This single change reduced latency by 90%."
+Create an attention-grabbing hook using the "${hookPattern}" pattern:
 
-SECTION 2 - CONTEXT (2-3 lines, separated by blank line)
-Brief explanation of the problem or situation.
+• question: "Why do 90% of engineers get X wrong?"
+• statistic: "73% of production outages trace back to this one thing."
+• contrarian: "Everyone optimizes for X. The real bottleneck is Y."
+• story: "Last Tuesday, our API went down. The root cause surprised everyone."
+• problem: "You've seen this error message. Here's what it really means."
+• insight: "After 50 interviews, I noticed a pattern most engineers miss."
+• trend: "In 2025, the way we approach X is fundamentally different."
+• mistake: "I spent 3 days debugging. The fix was one line."
 
-SECTION 3 - KEY INSIGHTS (3-5 bullet points)
-Use emoji bullets for each point:
-• 🔍 First insight
-• ⚡ Second insight  
-• 🎯 Third insight
+SECTION 2 - TECHNICAL CONTEXT (3-4 lines, separated by blank line)
+Explain the WHAT and WHY with enough detail for newcomers:
+- What is the technology/concept?
+- Why does it matter?
+- What problem does it solve?
+- Include 1-2 specific technical terms with brief context
+
+SECTION 3 - KEY INSIGHTS (4-5 bullet points)
+Use emoji bullets with CONCRETE, ACTIONABLE points:
+🔍 Specific technical insight with context
+⚡ Performance/efficiency gain with numbers if possible
+🎯 Best practice or pattern to follow
+🛡️ Common pitfall to avoid
+💡 Practical takeaway or next step
 
 SECTION 4 - TAKEAWAY (1-2 lines)
-End with actionable insight or curiosity gap.
+End with actionable insight that reinforces learning value.
 
 ═══════════════════════════════════════════════════════════════
-EXAMPLE OUTPUT FORMAT
+EXAMPLE OUTPUT FORMAT (using "statistic" hook)
 ═══════════════════════════════════════════════════════════════
 
-It was 3am when the pager went off: OOM errors everywhere.
+67% of Kubernetes clusters are misconfigured in production.
 
-Memory metrics looked fine. CPU was stable. But containers kept dying.
+The issue? Most teams focus on deployment but overlook resource limits and requests. These settings control how the scheduler allocates pods across nodes. Without proper configuration, you get cascading failures during traffic spikes.
 
-The root cause? Hidden memory pressure in cgroups that standard monitoring misses.
+Here's what actually matters:
 
-Here's what we learned:
+🔍 Requests define minimum guaranteed resources - set too low and pods get evicted
+⚡ Limits cap maximum usage - set too high and you waste money, too low and you throttle
+🎯 Use Vertical Pod Autoscaler to discover optimal values from real usage data
+🛡️ Always set memory limits - OOM kills are harder to debug than CPU throttling
+💡 Start with conservative requests, then tune based on P95 metrics
 
-🔍 Memory limits ≠ actual memory available
-⚡ Kernel memory accounting is often overlooked
-🎯 Per-container metrics are essential, not optional
-🛡️ Proactive reservations beat reactive scaling
+Proper resource management isn't optional - it's the difference between stable and chaotic deployments.
 
-The fix wasn't more memory—it was better visibility.
+═══════════════════════════════════════════════════════════════
+EXAMPLE OUTPUT FORMAT (using "question" hook)
+═══════════════════════════════════════════════════════════════
+
+Why do senior engineers always talk about "idempotency"?
+
+Because distributed systems fail in unpredictable ways. Idempotency means an operation produces the same result whether you run it once or multiple times. This is critical when network requests can timeout, retry, or duplicate.
+
+Key principles:
+
+🔍 Use unique request IDs to detect and skip duplicate operations
+⚡ Design APIs where POST /orders with same ID returns existing order, not error
+🎯 Database upserts (INSERT ... ON CONFLICT UPDATE) are your friend
+🛡️ Avoid incrementing counters directly - use SET operations instead
+💡 Test retry scenarios explicitly - they will happen in production
+
+The best systems assume failure and handle it gracefully.
 
 ═══════════════════════════════════════════════════════════════
 FORMATTING RULES
@@ -134,8 +183,10 @@ FORMATTING RULES
 - Use \\n\\n (double newline) between paragraphs
 - Start bullet points with emoji + space
 - Keep each bullet on its own line
-- Use 4-6 emojis total (🔍 ⚡ 🎯 🛡️ 💡 🚀 ✅ ❌ 📈)
-- Total length: 500-800 characters
+- Include specific technical terms with brief explanations
+- Use 5-6 emojis total (🔍 ⚡ 🎯 🛡️ 💡 🚀 ✅ ❌ 📈)
+- Make it educational - someone new should learn something concrete
+- Total length: 600-900 characters
 
 ❌ DON'T:
 - Write wall-of-text paragraphs
@@ -143,6 +194,8 @@ FORMATTING RULES
 - Include hashtags (added separately)
 - Include URLs (added separately)
 - Use markdown formatting (**, ##, etc.)
+- Assume reader knows all the jargon - explain briefly
+- Repeat the same hook pattern (it was 2am, etc.)
 
 ═══════════════════════════════════════════════════════════════
 OUTPUT
@@ -151,10 +204,14 @@ OUTPUT
 Output ONLY valid JSON with the story field containing properly formatted text:
 
 {
-  "story": "Hook line here.\\n\\nContext paragraph here.\\n\\nKey insights:\\n\\n🔍 Point one\\n⚡ Point two\\n🎯 Point three\\n\\nTakeaway line here."
+  "story": "Hook line here.\\n\\nTechnical context with explanations here.\\n\\nKey insights:\\n\\n🔍 Point one with specifics\\n⚡ Point two with context\\n🎯 Point three with actionable advice\\n🛡️ Point four avoiding pitfalls\\n💡 Point five with takeaway\\n\\nFinal insight that reinforces learning."
 }
 
-IMPORTANT: Use \\n for line breaks and \\n\\n for paragraph breaks in the JSON string.`;
+IMPORTANT: 
+- Use \\n for line breaks and \\n\\n for paragraph breaks in the JSON string
+- Include enough technical detail that a newcomer can understand the concept
+- Vary your hook - don't always use story-based openings
+- Make it educational AND engaging`;
 }
 
 export default { schema, build };

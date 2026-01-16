@@ -32,7 +32,8 @@ const QuestionState = Annotation.Root({
   
   // Processing state
   retryCount: Annotation({ reducer: (_, b) => b, default: () => 0 }),
-  maxRetries: Annotation({ reducer: (_, b) => b, default: () => 2 }),
+  maxRetries: Annotation({ reducer: (_, b) => b, default: () => 3 }), // Increased from 2 to 3
+  lastError: Annotation({ reducer: (_, b) => b, default: () => null }),
   
   // Output
   status: Annotation({ reducer: (_, b) => b, default: () => 'pending' }),
@@ -116,6 +117,7 @@ async function generateQuestionNode(state) {
   console.log(`\n📝 [GENERATE_QUESTION] Creating ${state.difficulty} question for ${state.channel}...`);
   console.log(`   Sub-channel: ${state.subChannel}`);
   console.log(`   Companies: ${state.targetCompanies.join(', ')}`);
+  console.log(`   Attempt: ${state.retryCount + 1}/${state.maxRetries + 1}`);
   
   // Log RAG context usage
   if (state.ragContext?.hasContext) {
@@ -124,6 +126,13 @@ async function generateQuestionNode(state) {
   }
   
   try {
+    // Add exponential backoff for retries
+    if (state.retryCount > 0) {
+      const backoffMs = Math.min(1000 * Math.pow(2, state.retryCount - 1), 10000);
+      console.log(`   ⏳ Waiting ${backoffMs}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, backoffMs));
+    }
+    
     const result = await ai.run('generate', {
       channel: state.channel,
       subChannel: state.subChannel,
@@ -139,15 +148,40 @@ async function generateQuestionNode(state) {
       return { question: result };
     }
     
-    return { error: 'No question in response' };
-  } catch (error) {
-    console.log(`   ❌ Generation failed: ${error.message}`);
+    console.log(`   ⚠️ No question in response`);
     
     if (state.retryCount < state.maxRetries) {
+      console.log(`   🔄 Will retry (${state.retryCount + 1}/${state.maxRetries})...`);
       return { retryCount: state.retryCount + 1 };
     }
     
-    return { error: error.message };
+    return { error: 'No question in response after all retries' };
+  } catch (error) {
+    const errorMsg = error.message || String(error);
+    console.log(`   ❌ Generation failed: ${errorMsg}`);
+    
+    // Check if it's a retryable error
+    const isRetryable = 
+      errorMsg.includes('HTTP status 400') ||
+      errorMsg.includes('HTTP status 429') ||
+      errorMsg.includes('HTTP status 500') ||
+      errorMsg.includes('HTTP status 502') ||
+      errorMsg.includes('HTTP status 503') ||
+      errorMsg.includes('timeout') ||
+      errorMsg.includes('ECONNRESET') ||
+      errorMsg.includes('ETIMEDOUT') ||
+      errorMsg.includes('SERVER_ERROR');
+    
+    if (isRetryable && state.retryCount < state.maxRetries) {
+      console.log(`   🔄 Retryable error detected, will retry (${state.retryCount + 1}/${state.maxRetries})...`);
+      return { 
+        retryCount: state.retryCount + 1,
+        lastError: errorMsg
+      };
+    }
+    
+    console.log(`   ❌ Non-retryable error or max retries reached`);
+    return { error: errorMsg };
   }
 }
 
@@ -372,9 +406,13 @@ function routeAfterGeneration(state) {
     return 'validate_quality';
   }
   if (state.retryCount < state.maxRetries && !state.error) {
-    console.log(`\n🔀 [ROUTER] Retrying generation (attempt ${state.retryCount + 1})...`);
+    console.log(`\n🔀 [ROUTER] Retrying generation (attempt ${state.retryCount + 1}/${state.maxRetries + 1})...`);
+    if (state.lastError) {
+      console.log(`   Previous error: ${state.lastError}`);
+    }
     return 'generate_question';
   }
+  console.log(`\n🔀 [ROUTER] Max retries reached or fatal error, finalizing...`);
   return 'finalize';
 }
 
@@ -450,7 +488,8 @@ export async function generateQuestion(options) {
     validatedVideos: { shortVideo: null, longVideo: null },
     validatedDiagram: null,
     retryCount: 0,
-    maxRetries: 2,
+    maxRetries: 3, // Increased from 2 to 3
+    lastError: null,
     status: 'pending',
     error: null
   };

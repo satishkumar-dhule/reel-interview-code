@@ -40,6 +40,59 @@ export const RETRY_DELAY_MS = 10000;
 export const TIMEOUT_MS = 300000; // 5 minutes
 
 // ============================================
+// DATABASE RETRY LOGIC
+// ============================================
+
+/**
+ * Retry wrapper for database operations with exponential backoff
+ * Handles transient errors from Turso (HTTP 400, 500, 502, 503, timeouts)
+ */
+async function retryDatabaseOperation(operation, operationName = 'database operation', maxRetries = 3) {
+  let lastError = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      // Add exponential backoff for retries
+      if (attempt > 0) {
+        const backoffMs = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+        console.log(`   ⏳ [DB RETRY] Waiting ${backoffMs}ms before retry ${attempt}/${maxRetries}...`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+      }
+      
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      const errorMsg = error.message || String(error);
+      
+      // Check if it's a retryable error
+      const isRetryable = 
+        errorMsg.includes('HTTP status 400') ||
+        errorMsg.includes('HTTP status 429') ||
+        errorMsg.includes('HTTP status 500') ||
+        errorMsg.includes('HTTP status 502') ||
+        errorMsg.includes('HTTP status 503') ||
+        errorMsg.includes('timeout') ||
+        errorMsg.includes('ECONNRESET') ||
+        errorMsg.includes('ETIMEDOUT') ||
+        errorMsg.includes('SERVER_ERROR');
+      
+      if (isRetryable && attempt < maxRetries) {
+        console.log(`   🔄 [DB RETRY] ${operationName} failed (attempt ${attempt + 1}/${maxRetries + 1}): ${errorMsg}`);
+        continue;
+      }
+      
+      // Non-retryable error or max retries reached
+      if (attempt >= maxRetries) {
+        console.log(`   ❌ [DB RETRY] ${operationName} failed after ${maxRetries + 1} attempts`);
+      }
+      throw error;
+    }
+  }
+  
+  throw lastError;
+}
+
+// ============================================
 // DATABASE OPERATIONS
 // ============================================
 
@@ -209,30 +262,36 @@ export async function saveQuestion(question) {
     console.warn(`⚠️  Question ${question.id} had JSON in answer field - sanitized automatically`);
   }
   
-  await dbClient.execute({
-    sql: `INSERT OR REPLACE INTO questions 
-          (id, question, answer, explanation, diagram, difficulty, tags, channel, sub_channel, source_url, videos, companies, eli5, tldr, last_updated, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM questions WHERE id = ?), ?))`,
-    args: [
-      sanitized.id,
-      sanitized.question,
-      sanitized.answer,
-      sanitized.explanation,
-      sanitized.diagram || null,
-      sanitized.difficulty || 'intermediate',
-      sanitized.tags ? JSON.stringify(sanitized.tags) : null,
-      sanitized.channel,
-      sanitized.subChannel,
-      sanitized.sourceUrl || null,
-      sanitized.videos ? JSON.stringify(sanitized.videos) : null,
-      sanitized.companies ? JSON.stringify(sanitized.companies) : null,
-      sanitized.eli5 || null,
-      sanitized.tldr || null,
-      sanitized.lastUpdated || new Date().toISOString(),
-      sanitized.id,
-      new Date().toISOString()
-    ]
-  });
+  // Wrap database operation with retry logic
+  await retryDatabaseOperation(
+    async () => {
+      await dbClient.execute({
+        sql: `INSERT OR REPLACE INTO questions 
+              (id, question, answer, explanation, diagram, difficulty, tags, channel, sub_channel, source_url, videos, companies, eli5, tldr, last_updated, created_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM questions WHERE id = ?), ?))`,
+        args: [
+          sanitized.id,
+          sanitized.question,
+          sanitized.answer,
+          sanitized.explanation,
+          sanitized.diagram || null,
+          sanitized.difficulty || 'intermediate',
+          sanitized.tags ? JSON.stringify(sanitized.tags) : null,
+          sanitized.channel,
+          sanitized.subChannel,
+          sanitized.sourceUrl || null,
+          sanitized.videos ? JSON.stringify(sanitized.videos) : null,
+          sanitized.companies ? JSON.stringify(sanitized.companies) : null,
+          sanitized.eli5 || null,
+          sanitized.tldr || null,
+          sanitized.lastUpdated || new Date().toISOString(),
+          sanitized.id,
+          new Date().toISOString()
+        ]
+      });
+    },
+    `saveQuestion(${sanitized.id})`
+  );
   
   console.log(`✅ Question ${sanitized.id} validated and saved successfully`);
 }
@@ -293,9 +352,15 @@ export async function saveUnifiedQuestions(questions) {
   console.log(`   ✅ Valid: ${validCount}`);
   console.log(`   ❌ Invalid (skipped): ${invalidCount}`);
   
-  // Execute in batches of 50
+  // Execute in batches of 50 with retry logic
   for (let i = 0; i < batch.length; i += 50) {
-    await dbClient.batch(batch.slice(i, i + 50));
+    const batchSlice = batch.slice(i, i + 50);
+    await retryDatabaseOperation(
+      async () => {
+        await dbClient.batch(batchSlice);
+      },
+      `batch save questions (${i}-${i + batchSlice.length})`
+    );
   }
   
   console.log(`✅ Saved ${validCount} validated questions to database`);
@@ -355,7 +420,7 @@ export async function addUnifiedQuestion(question, channels) {
   question.channel = channels[0].channel;
   question.subChannel = channels[0].subChannel;
   
-  // Save question
+  // Save question (already has retry logic)
   await saveQuestion(question);
   
   // Batch insert channel mappings (single transaction instead of multiple calls)
@@ -364,7 +429,14 @@ export async function addUnifiedQuestion(question, channels) {
       sql: 'INSERT OR IGNORE INTO channel_mappings (channel_id, sub_channel, question_id) VALUES (?, ?, ?)',
       args: [channel, subChannel, question.id]
     }));
-    await dbClient.batch(batch);
+    
+    // Wrap batch operation with retry logic
+    await retryDatabaseOperation(
+      async () => {
+        await dbClient.batch(batch);
+      },
+      `batch insert channel mappings for ${question.id}`
+    );
   }
   
   // Index in vector database for semantic search
@@ -938,21 +1010,31 @@ export async function addWorkItem(questionId, botType, reason, createdBy, priori
   await initWorkQueue();
   
   // Check if pending work already exists for this question+bot
-  const existing = await dbClient.execute({
-    sql: `SELECT id FROM work_queue WHERE question_id = ? AND bot_type = ? AND status = 'pending'`,
-    args: [questionId, botType]
-  });
+  const existing = await retryDatabaseOperation(
+    async () => {
+      return await dbClient.execute({
+        sql: `SELECT id FROM work_queue WHERE question_id = ? AND bot_type = ? AND status = 'pending'`,
+        args: [questionId, botType]
+      });
+    },
+    `check existing work item for ${questionId}`
+  );
   
   if (existing.rows.length > 0) {
     console.log(`  ℹ️ Work item already exists for ${questionId} -> ${botType}`);
     return existing.rows[0].id;
   }
   
-  const result = await dbClient.execute({
-    sql: `INSERT INTO work_queue (question_id, bot_type, priority, status, reason, created_by, created_at)
-          VALUES (?, ?, ?, 'pending', ?, ?, ?)`,
-    args: [questionId, botType, priority, reason, createdBy, new Date().toISOString()]
-  });
+  const result = await retryDatabaseOperation(
+    async () => {
+      return await dbClient.execute({
+        sql: `INSERT INTO work_queue (question_id, bot_type, priority, status, reason, created_by, created_at)
+              VALUES (?, ?, ?, 'pending', ?, ?, ?)`,
+        args: [questionId, botType, priority, reason, createdBy, new Date().toISOString()]
+      });
+    },
+    `insert work item for ${questionId}`
+  );
   
   console.log(`  📋 Created work item: ${questionId} -> ${botType} (${reason})`);
   return result.lastInsertRowid;
@@ -1001,26 +1083,41 @@ export async function getPendingWork(botType, limit = 10) {
 
 // Mark work item as started
 export async function startWorkItem(workId) {
-  await dbClient.execute({
-    sql: `UPDATE work_queue SET status = 'processing', started_at = ? WHERE id = ?`,
-    args: [new Date().toISOString(), workId]
-  });
+  await retryDatabaseOperation(
+    async () => {
+      await dbClient.execute({
+        sql: `UPDATE work_queue SET status = 'processing', started_at = ? WHERE id = ?`,
+        args: [new Date().toISOString(), workId]
+      });
+    },
+    `startWorkItem(${workId})`
+  );
 }
 
 // Mark work item as completed
 export async function completeWorkItem(workId, result = null) {
-  await dbClient.execute({
-    sql: `UPDATE work_queue SET status = 'completed', completed_at = ?, result = ? WHERE id = ?`,
-    args: [new Date().toISOString(), result ? JSON.stringify(result) : null, workId]
-  });
+  await retryDatabaseOperation(
+    async () => {
+      await dbClient.execute({
+        sql: `UPDATE work_queue SET status = 'completed', completed_at = ?, result = ? WHERE id = ?`,
+        args: [new Date().toISOString(), result ? JSON.stringify(result) : null, workId]
+      });
+    },
+    `completeWorkItem(${workId})`
+  );
 }
 
 // Mark work item as failed
 export async function failWorkItem(workId, error) {
-  await dbClient.execute({
-    sql: `UPDATE work_queue SET status = 'failed', completed_at = ?, result = ? WHERE id = ?`,
-    args: [new Date().toISOString(), JSON.stringify({ error }), workId]
-  });
+  await retryDatabaseOperation(
+    async () => {
+      await dbClient.execute({
+        sql: `UPDATE work_queue SET status = 'failed', completed_at = ?, result = ? WHERE id = ?`,
+        args: [new Date().toISOString(), JSON.stringify({ error }), workId]
+      });
+    },
+    `failWorkItem(${workId})`
+  );
 }
 
 // Get work queue stats

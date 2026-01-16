@@ -257,104 +257,156 @@ async function generateStoryNode(state) {
 
 /**
  * Fallback story templates for when AI is unavailable
- * Each template generates properly formatted LinkedIn content
+ * Each template generates properly formatted LinkedIn content with educational value
  */
 const FALLBACK_TEMPLATES = [
-  // Template 1: Problem-Solution
+  // Template 1: Question Hook
   (title, emoji, excerpt) => {
-    const problem = excerpt ? excerpt.split('.')[0] + '.' : 'A common challenge many engineers face.';
+    const topic = title.toLowerCase().split(' ').slice(0, 4).join(' ');
+    const context = excerpt ? excerpt.split('.')[0] + '.' : 'A critical concept every engineer should understand.';
+    return `Why do experienced engineers approach ${topic} differently?
+
+${context}
+
+The difference comes down to understanding the fundamentals:
+
+🔍 Know the "why" behind the pattern, not just the "how"
+⚡ Design for failure scenarios from day one
+🎯 Measure impact before optimizing
+🛡️ Prioritize maintainability over cleverness
+💡 Learn from production incidents, not just tutorials
+
+${emoji} The full article breaks down the technical details.`;
+  },
+  
+  // Template 2: Statistic Hook
+  (title, emoji, excerpt) => {
+    const problem = excerpt ? excerpt.split('.')[0] + '.' : 'A common challenge in production systems.';
+    return `Most engineering teams encounter this issue within their first year.
+
+${problem}
+
+What makes the difference:
+
+🔍 Understanding the root cause, not just symptoms
+⚡ Implementing proper monitoring and alerting
+🎯 Following proven patterns from the start
+🛡️ Testing edge cases before they hit production
+💡 Building with observability in mind
+
+${emoji} Worth reading if you want to avoid common pitfalls.`;
+  },
+  
+  // Template 3: Contrarian Hook
+  (title, emoji, excerpt) => {
+    const topic = title.toLowerCase().split(' ').slice(0, 4).join(' ');
+    const insight = excerpt ? excerpt.split('.')[0] + '.' : 'The conventional wisdom often misses key nuances.';
+    return `The popular advice about ${topic} is incomplete.
+
+${insight}
+
+What actually works in production:
+
+✅ Start simple, add complexity only when needed
+✅ Measure before and after every optimization
+✅ Question "best practices" - context matters
+✅ Build for your actual scale, not theoretical scale
+✅ Document the "why" behind architectural decisions
+
+${emoji} The counterintuitive details are in the article.`;
+  },
+  
+  // Template 4: Problem-Solution Hook
+  (title, emoji, excerpt) => {
+    const problem = excerpt ? excerpt.split('.')[0] + '.' : 'A scenario many engineers face.';
     return `${emoji} ${title}
 
 ${problem}
 
 Here's what you need to know:
 
-🔍 Understanding the root cause is half the battle
-⚡ The right approach saves hours of debugging
-🎯 Prevention beats reaction every time
+🔍 The root cause is often different from the obvious symptom
+⚡ The right approach saves hours of debugging time
+🎯 Prevention through design beats reactive fixes
+🛡️ Proper error handling is non-negotiable
+💡 Learn the underlying principles, not just the tools
 
-The details matter more than you think.`;
+The technical details matter more than you think.`;
   },
   
-  // Template 2: Story Hook
+  // Template 5: Insight Hook
   (title, emoji, excerpt) => {
-    return `It was 3am when the alert fired.
+    const context = excerpt ? excerpt.split('.').slice(0, 2).join('.') + '.' : 'After working with dozens of production systems, patterns emerge.';
+    return `After debugging hundreds of production issues, one pattern stands out.
 
-${excerpt ? excerpt.split('.').slice(0, 2).join('.') + '.' : 'Something was wrong, but the metrics looked fine.'}
+${context}
 
 Key lessons learned:
 
-🔍 Monitor what matters, not just what's easy
-⚡ Root cause analysis is a skill worth mastering
-🎯 Documentation saves future you
+🔍 Observability must be built in, not bolted on
+⚡ Performance problems are often architecture problems
+🎯 The simplest solution is usually the right one
+🛡️ Failure modes should be explicit and tested
+💡 Documentation saves future you countless hours
 
-${emoji} Full breakdown in the article.`;
+${emoji} The full breakdown includes specific examples.`;
   },
   
-  // Template 3: Contrarian
+  // Template 6: Trending/2025 Hook (for recent topics)
   (title, emoji, excerpt) => {
-    const topic = title.toLowerCase().split(' ').slice(0, 4).join(' ');
-    return `Everyone thinks they understand ${topic}.
-
-Most are wrong.
-
-${excerpt ? excerpt.split('.')[0] + '.' : 'The conventional wisdom misses critical nuances.'}
-
-What actually works:
-
-✅ Focus on fundamentals first
-✅ Question "best practices"
-✅ Measure before optimizing
-
-${emoji} The counterintuitive truth awaits.`;
-  },
-  
-  // Template 4: List-based
-  (title, emoji, excerpt) => {
-    return `${emoji} ${title}
-
-${excerpt ? excerpt.split('.')[0] + '.' : 'A topic every engineer should understand.'}
-
-3 things that changed my perspective:
-
-1️⃣ Simplicity beats complexity
-2️⃣ Observability is non-negotiable
-3️⃣ Learn from production incidents
-
-The full article dives deeper into each.`;
-  },
-  
-  // Template 5: Question Hook
-  (title, emoji, excerpt) => {
-    const topic = title.toLowerCase().split(' ').slice(0, 3).join(' ');
-    return `Why do senior engineers approach ${topic} differently?
-
-${excerpt ? excerpt.split('.')[0] + '.' : 'Experience teaches patterns that tutorials miss.'}
-
-The difference comes down to:
-
-🔍 Asking "why" before "how"
-⚡ Building for failure, not just success
-🎯 Prioritizing maintainability
-
-${emoji} Worth a read if you want to level up.`;
-  },
-  
-  // Template 6: Trending/New (for recent topics)
-  (title, emoji, excerpt) => {
+    const context = excerpt ? excerpt.split('.')[0] + '.' : 'The landscape has evolved significantly.';
     return `🆕 ${title}
 
-The 2025 approach is different from what you learned.
+The 2025 approach is fundamentally different from what you learned before.
 
-${excerpt ? excerpt.split('.')[0] + '.' : 'Things have evolved significantly.'}
+${context}
 
 What's changed:
 
-⚡ New tools simplify old problems
-🎯 Best practices have been updated
-🚀 Performance gains are now achievable
+⚡ New tools solve old problems more elegantly
+🎯 Best practices have been updated based on real-world data
+🚀 Performance gains that weren't possible before are now standard
+🔍 The ecosystem has matured with better patterns
+💡 Understanding these changes is critical for staying current
 
-${emoji} Stay current or fall behind.`;
+${emoji} Stay ahead of the curve with the technical deep dive.`;
+  },
+  
+  // Template 7: Mistake Hook
+  (title, emoji, excerpt) => {
+    const topic = title.toLowerCase().split(' ').slice(0, 3).join(' ');
+    const context = excerpt ? excerpt.split('.')[0] + '.' : 'A common mistake that costs time and reliability.';
+    return `I spent two days debugging ${topic}. The fix was embarrassingly simple.
+
+${context}
+
+What I learned:
+
+🔍 Read the error message carefully - it usually tells you exactly what's wrong
+⚡ Check your assumptions first before diving into complex debugging
+🎯 Reproduce the issue in isolation before fixing in production
+🛡️ Add tests for the failure case so it never happens again
+💡 Document the gotcha for your future self and teammates
+
+${emoji} The article covers the technical details and prevention strategies.`;
+  },
+  
+  // Template 8: Trend Analysis Hook
+  (title, emoji, excerpt) => {
+    const context = excerpt ? excerpt.split('.')[0] + '.' : 'An important shift in how we build systems.';
+    return `The way we approach this is changing in 2025.
+
+${context}
+
+Why this matters:
+
+🔍 Industry leaders are adopting new patterns for good reasons
+⚡ Performance and reliability improvements are measurable
+🎯 The tooling ecosystem has matured significantly
+🛡️ Common pitfalls now have well-documented solutions
+💡 Early adoption gives you a competitive advantage
+
+${emoji} Get the technical details and implementation guidance.`;
   }
 ];
 
@@ -376,21 +428,22 @@ function isTrendingTopic(title, channel, tags) {
 }
 
 /**
- * Generate fallback story without AI - with proper formatting
+ * Generate fallback story without AI - with proper formatting and variety
  */
 function generateFallbackStory(state) {
   const emoji = getChannelEmoji(state.channel);
   const isTrending = isTrendingTopic(state.title, state.channel, state.tags);
   
-  // Select template
+  // Select template with more variety
   let templateIndex;
   if (isTrending) {
-    // Use trending template (index 5)
-    templateIndex = 5;
-    console.log(`   📈 Trending topic detected, using trending template`);
+    // Use trending templates (indices 5 or 7)
+    templateIndex = Math.random() < 0.5 ? 5 : 7;
+    console.log(`   📈 Trending topic detected, using trending template #${templateIndex + 1}`);
   } else {
-    // Random from templates 0-4
-    templateIndex = Math.floor(Math.random() * 5);
+    // Random from all other templates (0-4, 6)
+    const nonTrendingIndices = [0, 1, 2, 3, 4, 6];
+    templateIndex = nonTrendingIndices[Math.floor(Math.random() * nonTrendingIndices.length)];
   }
   
   const templateFn = FALLBACK_TEMPLATES[templateIndex];

@@ -10,6 +10,7 @@ import NotFound from "@/pages/not-found";
 
 // Lazy loaded pages with React.lazy for code splitting
 const Home = React.lazy(() => import("@/pages/HomeRedesigned"));
+const AnswerHistory = React.lazy(() => import("@/pages/AnswerHistory"));
 const About = React.lazy(() => import("@/pages/About"));
 const WhatsNew = React.lazy(() => import("@/pages/WhatsNew"));
 const QuestionViewer = React.lazy(() => import("@/pages/QuestionViewer"));
@@ -116,6 +117,7 @@ function Router() {
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/history" component={AnswerHistory} />
         <Route path="/about" component={About} />
         <Route path="/whats-new" component={WhatsNew} />
         <Route path="/stats" component={Stats} />

@@ -2,6 +2,24 @@
 
 ## Automated Workflows
 
+### 🔄 scheduled-deploy.yml
+**Purpose:** Automatically redeploy website to keep it fresh with latest content
+
+**Schedule:**
+- **Daily 2 AM UTC (0 2 * * *):** After content generation completes
+
+**Manual Trigger:**
+```bash
+gh workflow run scheduled-deploy.yml -f reason="Manual deploy for testing"
+```
+
+**What it does:**
+- Builds the website with latest content
+- Deploys to GitHub Pages
+- Ensures users always see fresh questions and blog posts
+
+---
+
 ### 🤖 content-generation.yml
 **Purpose:** Generate and process content (questions, blog, voice sessions, intelligence)
 

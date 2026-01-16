@@ -453,120 +453,132 @@ const scenarioHint = getScenarioHint(channel);
       console.log(`   RAG context unavailable: ${e.message}`);
     }
 
-    // Use LangGraph pipeline for question generation
+    // Use LangGraph pipeline for question generation with graceful error handling
     console.log('\n📝 Generating question using LangGraph pipeline...');
     console.log('─'.repeat(50));
     
-    const result = await generateQuestionGraph({
-      channel,
-      subChannel: subChannelConfig.subChannel,
-      difficulty,
-      tags: subChannelConfig.tags,
-      targetCompanies,
-      scenarioHint,
-      ragContext // Pass RAG context to the generation pipeline
-    });
-    
-    if (!result.success) {
-      console.log(`❌ Generation failed: ${result.error}`);
-      failedAttempts.push({ channel, reason: result.error || 'Generation failed' });
-      continue;
-    }
-    
-    const data = result.question;
-    
-    if (!validateQuestion(data)) {
-      console.log('❌ Invalid response format.');
-      failedAttempts.push({ channel, reason: 'Invalid JSON format' });
-      continue;
-    }
-
-    if (await isDuplicateUnified(data.question)) {
-      console.log('❌ Duplicate question detected.');
-      failedAttempts.push({ channel, reason: 'Duplicate detected' });
-      continue;
-    }
-
-    // Run quality gate - all questions must pass
-    console.log('\n🚦 Running Quality Gate...');
-    console.log('─'.repeat(50));
-    
-    // Get existing questions for duplicate detection
-    const existingQuestions = await getQuestionsForChannel(channel);
-    
-    const qualityResult = await runQualityGate(data, {
-      channel,
-      subChannel: subChannelConfig.subChannel,
-      difficulty,
-      existingQuestions,
-      passThreshold: 70
-    });
-    
-    if (!qualityResult.success) {
-      console.log(`❌ Quality gate failed: ${qualityResult.decision}`);
-      console.log(`   Score: ${qualityResult.score}/100`);
-      if (qualityResult.issues.length > 0) {
-        console.log(`   Issues: ${qualityResult.issues.join(', ')}`);
+    try {
+      const result = await generateQuestionGraph({
+        channel,
+        subChannel: subChannelConfig.subChannel,
+        difficulty,
+        tags: subChannelConfig.tags,
+        targetCompanies,
+        scenarioHint,
+        ragContext // Pass RAG context to the generation pipeline
+      });
+      
+      if (!result.success) {
+        console.log(`❌ Generation failed: ${result.error}`);
+        failedAttempts.push({ channel, reason: result.error || 'Generation failed' });
+        continue; // Continue with next channel instead of crashing
       }
+      
+      const data = result.question;
+      
+      if (!validateQuestion(data)) {
+        console.log('❌ Invalid response format.');
+        failedAttempts.push({ channel, reason: 'Invalid JSON format' });
+        continue;
+      }
+
+      if (await isDuplicateUnified(data.question)) {
+        console.log('❌ Duplicate question detected.');
+        failedAttempts.push({ channel, reason: 'Duplicate detected' });
+        continue;
+      }
+
+      // Run quality gate - all questions must pass
+      console.log('\n🚦 Running Quality Gate...');
+      console.log('─'.repeat(50));
+      
+      // Get existing questions for duplicate detection
+      const existingQuestions = await getQuestionsForChannel(channel);
+      
+      const qualityResult = await runQualityGate(data, {
+        channel,
+        subChannel: subChannelConfig.subChannel,
+        difficulty,
+        existingQuestions,
+        passThreshold: 70
+      });
+      
+      if (!qualityResult.success) {
+        console.log(`❌ Quality gate failed: ${qualityResult.decision}`);
+        console.log(`   Score: ${qualityResult.score}/100`);
+        if (qualityResult.issues.length > 0) {
+          console.log(`   Issues: ${qualityResult.issues.join(', ')}`);
+        }
+        if (qualityResult.warnings.length > 0) {
+          console.log(`   Warnings: ${qualityResult.warnings.join(', ')}`);
+        }
+        failedAttempts.push({ 
+          channel, 
+          reason: `Quality gate: ${qualityResult.decision} (score: ${qualityResult.score})`,
+          issues: qualityResult.issues,
+          warnings: qualityResult.warnings
+        });
+        continue;
+      }
+      
+      console.log(`✅ Quality gate passed (score: ${qualityResult.score}/100)`);
       if (qualityResult.warnings.length > 0) {
         console.log(`   Warnings: ${qualityResult.warnings.join(', ')}`);
       }
+
+      const newQuestion = {
+        id: await generateUnifiedId(),
+        question: data.question,
+        answer: data.answer?.substring(0, 200) || '',
+        explanation: data.explanation || '',
+        tags: subChannelConfig.tags,
+        difficulty: difficulty,
+        diagram: data.diagram || null,
+        sourceUrl: data.sourceUrl || null,
+        videos: data.videos || { shortVideo: null, longVideo: null },
+        companies: normalizeCompanies(data.companies),
+        lastUpdated: new Date().toISOString()
+      };
+
+      const channelMappings = [{ channel, subChannel: subChannelConfig.subChannel }];
+
+      await addUnifiedQuestion(newQuestion, channelMappings);
+      
+      // Log bot activity
+      await logBotActivity(newQuestion.id, 'generate', 'new question created', 'completed', {
+        channel,
+        subChannel: subChannelConfig.subChannel,
+        difficulty
+      });
+      
+      // Post comment to Giscus discussion
+      await postBotCommentToDiscussion(newQuestion.id, 'Question Generator Bot', 'generated', {
+        summary: `New ${difficulty} question generated for ${channel}/${subChannelConfig.subChannel}`,
+        changes: [
+          `Channel: ${channel}`,
+          `Sub-channel: ${subChannelConfig.subChannel}`,
+          `Difficulty: ${difficulty}`,
+          `Tags: ${newQuestion.tags.join(', ')}`,
+          newQuestion.diagram ? 'Includes diagram' : 'No diagram',
+          newQuestion.companies?.length > 0 ? `Companies: ${newQuestion.companies.join(', ')}` : null
+        ].filter(Boolean)
+      });
+      
+      addedQuestions.push({ ...newQuestion, mappedChannels: channelMappings });
+
+      console.log(`✅ Added: ${newQuestion.id}`);
+      console.log(`Q: ${newQuestion.question.substring(0, 60)}...`);
+      
+    } catch (error) {
+      // Catch any unexpected errors and continue with next channel
+      console.log(`❌ Unexpected error: ${error.message}`);
+      console.log(`   Stack: ${error.stack?.split('\n')[0]}`);
       failedAttempts.push({ 
         channel, 
-        reason: `Quality gate: ${qualityResult.decision} (score: ${qualityResult.score})`,
-        issues: qualityResult.issues,
-        warnings: qualityResult.warnings
+        reason: `Unexpected error: ${error.message}` 
       });
       continue;
     }
-    
-    console.log(`✅ Quality gate passed (score: ${qualityResult.score}/100)`);
-    if (qualityResult.warnings.length > 0) {
-      console.log(`   Warnings: ${qualityResult.warnings.join(', ')}`);
-    }
-
-    const newQuestion = {
-      id: await generateUnifiedId(),
-      question: data.question,
-      answer: data.answer?.substring(0, 200) || '',
-      explanation: data.explanation || '',
-      tags: subChannelConfig.tags,
-      difficulty: difficulty,
-      diagram: data.diagram || null,
-      sourceUrl: data.sourceUrl || null,
-      videos: data.videos || { shortVideo: null, longVideo: null },
-      companies: normalizeCompanies(data.companies),
-      lastUpdated: new Date().toISOString()
-    };
-
-    const channelMappings = [{ channel, subChannel: subChannelConfig.subChannel }];
-
-    await addUnifiedQuestion(newQuestion, channelMappings);
-    
-    // Log bot activity
-    await logBotActivity(newQuestion.id, 'generate', 'new question created', 'completed', {
-      channel,
-      subChannel: subChannelConfig.subChannel,
-      difficulty
-    });
-    
-    // Post comment to Giscus discussion
-    await postBotCommentToDiscussion(newQuestion.id, 'Question Generator Bot', 'generated', {
-      summary: `New ${difficulty} question generated for ${channel}/${subChannelConfig.subChannel}`,
-      changes: [
-        `Channel: ${channel}`,
-        `Sub-channel: ${subChannelConfig.subChannel}`,
-        `Difficulty: ${difficulty}`,
-        `Tags: ${newQuestion.tags.join(', ')}`,
-        newQuestion.diagram ? 'Includes diagram' : 'No diagram',
-        newQuestion.companies?.length > 0 ? `Companies: ${newQuestion.companies.join(', ')}` : null
-      ].filter(Boolean)
-    });
-    
-    addedQuestions.push({ ...newQuestion, mappedChannels: channelMappings });
-
-    console.log(`✅ Added: ${newQuestion.id}`);
-    console.log(`Q: ${newQuestion.question.substring(0, 60)}...`);
   }
 
   const totalQuestions = await getQuestionCount();
