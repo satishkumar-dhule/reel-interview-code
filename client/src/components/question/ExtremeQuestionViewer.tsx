@@ -3,7 +3,7 @@
  * Focus: Immersive learning experience with all original features
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { getChannel } from '../../lib/data';
@@ -21,14 +21,28 @@ import { ComingSoon } from '../ComingSoon';
 import { trackQuestionView } from '../../hooks/use-analytics';
 import { useUnifiedToast } from '../../hooks/use-unified-toast';
 import { useSwipe } from '../../hooks/use-swipe';
+import { loadTests, getSessionQuestions, TestQuestion, Test } from '../../lib/tests';
+import { spendCredits } from '../../lib/credits';
 import {
   ChevronLeft, ChevronRight, Search, ChevronDown, Check,
   Brain, Target, Zap, Flame, Building2,
-  X, Bookmark, Share2, Sparkles, Maximize2, Settings
+  X, Bookmark, Share2, Sparkles, Maximize2, Settings,
+  Lock, Unlock, CheckCircle, XCircle, RefreshCw, SkipForward,
+  AlertTriangle, Coins, ChevronUp, Lightbulb
 } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
-// Helper function - removed unused formatTime function
+const SKIP_TEST_PENALTY = 50;
+const QUESTIONS_PER_TEST = 5;
+const TEST_QUESTIONS_COUNT = 3;
+const FEEDBACK_DELAY = 800; // ms before auto-advance
+
+interface TestAnswer {
+  questionId: string;
+  selectedOptionId: string;
+  isCorrect: boolean;
+  correctOptionId: string;
+}
 
 interface ExtremeQuestionViewerProps {
   channelId: string;
@@ -67,12 +81,73 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   
   // UI states
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [aiAssistant, setAiAssistant] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [mobileView, setMobileView] = useState<'question' | 'answer'>('question');
   const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  // Test state
+  const [availableTests, setAvailableTests] = useState<Test[]>([]);
+  const [showTest, setShowTest] = useState(false);
+  const [testQuestions, setTestQuestions] = useState<TestQuestion[]>([]);
+  const [currentTestIndex, setCurrentTestIndex] = useState(0);
+  const [testAnswers, setTestAnswers] = useState<TestAnswer[]>([]);
+  const [showingFeedback, setShowingFeedback] = useState(false);
+  const [lastAnswer, setLastAnswer] = useState<TestAnswer | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+  const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
+  const [expandedResults, setExpandedResults] = useState<Set<number>>(new Set());
+
+  // Session management
+  const sessionKey = `channel-session-${channelId}`;
+  const checkpointsKey = `channel-checkpoints-${channelId}`;
+  
+  const saveSession = useCallback(() => {
+    if (!channelId || questions.length === 0) return;
+    
+    const sessionData = {
+      channelId,
+      channelName: channel?.name,
+      questions,
+      currentIndex,
+      selectedSubChannel,
+      selectedDifficulty,
+      selectedCompany,
+      passedCheckpoints: Array.from(passedCheckpoints),
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionKey, JSON.stringify(sessionData));
+  }, [channelId, channel, questions, currentIndex, selectedSubChannel, selectedDifficulty, selectedCompany, passedCheckpoints, sessionKey]);
+
+  const exitSession = useCallback(() => {
+    saveSession();
+    setLocation('/channels');
+  }, [saveSession, setLocation]);
+
+  // Load checkpoints on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(checkpointsKey);
+      if (saved) setPassedCheckpoints(new Set(JSON.parse(saved)));
+    } catch {}
+  }, [checkpointsKey]);
+
+  // Save checkpoints when they change
+  useEffect(() => {
+    if (channelId) {
+      localStorage.setItem(checkpointsKey, JSON.stringify(Array.from(passedCheckpoints)));
+    }
+  }, [passedCheckpoints, channelId, checkpointsKey]);
+
+  // Auto-save on progress
+  useEffect(() => {
+    if (questions.length > 0) {
+      saveSession();
+    }
+  }, [currentIndex, passedCheckpoints, saveSession, questions.length]);
 
   // Get companies for filtering
   const { companiesWithCounts } = useCompaniesWithCounts(
@@ -87,7 +162,7 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   const prioritizeUnvisited = preferences.prioritizeUnvisited !== false;
 
   // Credits system
-  const { onQuestionSwipe, onQuestionView } = useCredits();
+  const { onQuestionSwipe, onQuestionView, balance, formatCredits, refreshBalance } = useCredits();
   
   // Achievement system
   const { trackEvent } = useAchievementContext();
@@ -102,6 +177,123 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     shuffleEnabled,
     prioritizeUnvisited
   );
+
+  // Load tests for checkpoints
+  useEffect(() => {
+    const fetchTests = async () => {
+      if (!channelId) return;
+      try {
+        const allTests = await loadTests();
+        setAvailableTests(allTests.filter(t => t.channelId === channelId));
+      } catch (e) {
+        console.error('Failed to load tests:', e);
+      }
+    };
+    fetchTests();
+  }, [channelId]);
+
+  // Checkpoint helpers
+  const isTestCheckpoint = useCallback((index: number) => index > 0 && index % QUESTIONS_PER_TEST === 0, []);
+  const isCheckpointPassed = useCallback((index: number) => passedCheckpoints.has(index), [passedCheckpoints]);
+
+  const getTestForCheckpoint = useCallback(() => {
+    if (availableTests.length === 0) return [];
+    const randomTest = availableTests[Math.floor(Math.random() * availableTests.length)];
+    return getSessionQuestions(randomTest, TEST_QUESTIONS_COUNT);
+  }, [availableTests]);
+
+  const startTest = useCallback(() => {
+    const qs = getTestForCheckpoint();
+    if (qs.length > 0) {
+      setTestQuestions(qs);
+      setCurrentTestIndex(0);
+      setTestAnswers([]);
+      setShowingFeedback(false);
+      setLastAnswer(null);
+      setShowResults(false);
+      setExpandedResults(new Set());
+      setShowTest(true);
+    } else {
+      setPassedCheckpoints(prev => new Set(Array.from(prev).concat(currentIndex)));
+      toast({ title: 'Checkpoint passed!' });
+    }
+  }, [getTestForCheckpoint, currentIndex, toast]);
+
+  // ONE-CLICK: Select answer = submit immediately, show feedback, auto-advance
+  const handleAnswerClick = useCallback((optionId: string) => {
+    if (showingFeedback) return;
+    
+    const currentQ = testQuestions[currentTestIndex];
+    const correctOption = currentQ.options.find(o => o.isCorrect);
+    const isCorrect = optionId === correctOption?.id;
+    
+    const answer: TestAnswer = {
+      questionId: currentQ.id,
+      selectedOptionId: optionId,
+      isCorrect,
+      correctOptionId: correctOption?.id || ''
+    };
+    
+    setTestAnswers(prev => [...prev, answer]);
+    setLastAnswer(answer);
+    setShowingFeedback(true);
+    
+    // Auto-advance after brief feedback
+    setTimeout(() => {
+      setShowingFeedback(false);
+      setLastAnswer(null);
+      
+      if (currentTestIndex < testQuestions.length - 1) {
+        setCurrentTestIndex(prev => prev + 1);
+      } else {
+        setShowResults(true);
+      }
+    }, FEEDBACK_DELAY);
+  }, [showingFeedback, testQuestions, currentTestIndex]);
+
+  const testResults = useMemo(() => {
+    const correct = testAnswers.filter(a => a.isCorrect).length;
+    return { correct, total: testQuestions.length, passed: correct === testQuestions.length };
+  }, [testAnswers, testQuestions.length]);
+
+  const retryTest = useCallback(() => {
+    const qs = getTestForCheckpoint();
+    setTestQuestions(qs);
+    setCurrentTestIndex(0);
+    setTestAnswers([]);
+    setShowingFeedback(false);
+    setLastAnswer(null);
+    setShowResults(false);
+    setExpandedResults(new Set());
+  }, [getTestForCheckpoint]);
+
+  const skipTestWithPenalty = useCallback(() => {
+    const result = spendCredits(SKIP_TEST_PENALTY, `Skipped checkpoint test`);
+    if (result.success) {
+      setPassedCheckpoints(prev => new Set(Array.from(prev).concat(currentIndex)));
+      setShowTest(false);
+      setShowSkipConfirm(false);
+      refreshBalance();
+      toast({ title: 'Test Skipped', description: `-${SKIP_TEST_PENALTY} credits` });
+    } else {
+      toast({ title: 'Insufficient Credits', description: `Need ${SKIP_TEST_PENALTY} credits` });
+    }
+  }, [currentIndex, refreshBalance, toast]);
+
+  const closeTestAndContinue = useCallback(() => {
+    if (testResults.passed) {
+      setPassedCheckpoints(prev => new Set(Array.from(prev).concat(currentIndex)));
+    }
+    setShowTest(false);
+  }, [testResults.passed, currentIndex]);
+
+  const toggleResultExpand = (index: number) => {
+    setExpandedResults(prev => {
+      const newSet = new Set(prev);
+      newSet.has(index) ? newSet.delete(index) : newSet.add(index);
+      return newSet;
+    });
+  };
   
   const { completed, markCompleted, saveLastVisitedIndex } = useProgress(channelId || '');
   const { toast } = useUnifiedToast();
@@ -240,7 +432,7 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
         setShowSearchModal(true);
         return;
       }
-      if (showSearchModal) return;
+      if (showSearchModal || showTest) return;
 
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
@@ -254,13 +446,25 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, totalQuestions, showSearchModal]);
+  }, [currentIndex, totalQuestions, showSearchModal, showTest]);
+
+  // Trigger checkpoint test when reaching checkpoint
+  useEffect(() => {
+    if (isTestCheckpoint(currentIndex) && !isCheckpointPassed(currentIndex) && !showTest && !loading) {
+      startTest();
+    }
+  }, [currentIndex, isTestCheckpoint, isCheckpointPassed, showTest, loading, startTest]);
 
   // Navigation functions
   const nextQuestion = () => {
     if (currentIndex < totalQuestions - 1) {
-      setCurrentIndex(prev => prev + 1);
-      setShowAnswer(false);
+      const nextIndex = currentIndex + 1;
+      if (isTestCheckpoint(nextIndex) && !isCheckpointPassed(nextIndex)) {
+        setCurrentIndex(nextIndex);
+        startTest();
+        return;
+      }
+      setCurrentIndex(nextIndex);
       setMobileView('question');
       // Track swipe for voice reminder
       onQuestionSwipe();
@@ -272,7 +476,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   const prevQuestion = () => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
-      setShowAnswer(false);
       setMobileView('question');
     }
   };
@@ -280,7 +483,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   // Filter change handler
   const handleFilterChange = (type: 'sub' | 'diff' | 'company', value: string) => {
     setCurrentIndex(0);
-    setShowAnswer(false);
     if (type === 'sub') setSelectedSubChannel(value);
     else if (type === 'diff') setSelectedDifficulty(value);
     else setSelectedCompany(value);

@@ -2,7 +2,8 @@
  * Training Mode - Read and Record Answers
  * 
  * Features:
- * - Answer is visible for reading
+ * - Answer is visible for reading (training mode)
+ * - Answer hidden until after recording (interview mode)
  * - Voice recording with unified hook
  * - Practice speaking technical answers fluently
  * - Word-by-word playback highlighting
@@ -10,7 +11,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, useRoute } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ChevronRight, Eye, Target,
@@ -174,6 +175,7 @@ function calculateFeedback(
 
 export default function TrainingMode() {
   const [, setLocation] = useLocation();
+  const [isInterviewMode] = useRoute('/voice-interview');
   const { getSubscribedChannels } = useUserPreferences();
   const subscribedChannels = getSubscribedChannels();
 
@@ -184,10 +186,13 @@ export default function TrainingMode() {
   const [hasLoadedQuestions, setHasLoadedQuestions] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [currentFeedback, setCurrentFeedback] = useState<RecordingFeedback | null>(null);
+  const [showAnswer, setShowAnswer] = useState(false); // For interview mode - show after recording
+  const sessionId = isInterviewMode ? 'voice-interview-session-state' : 'training-session-state';
   
   // Use refs to avoid stale closures in callbacks
   const recordingStartTimeRef = useRef<number>(0);
   const currentQuestionRef = useRef<Question | null>(null);
+  const resetRecordingRef = useRef<(() => void) | null>(null);
 
   const currentQuestion = questions[currentIndex];
   const totalWords = currentQuestion?.answer ? countWords(currentQuestion.answer) : 0;
@@ -200,17 +205,20 @@ export default function TrainingMode() {
   // Use unified voice recording hook
   const recording = useVoiceRecording({
     onRecordingStart: () => {
+      console.log('TrainingMode: Recording started');
       recordingStartTimeRef.current = Date.now();
       setShowFeedback(false);
       setCurrentFeedback(null);
     },
     onRecordingComplete: (_audioBlob, transcript) => {
+      console.log('TrainingMode: Recording completed', { transcript });
       // Calculate duration
       const duration = Math.round((Date.now() - recordingStartTimeRef.current) / 1000);
       const question = currentQuestionRef.current;
       
       // Use the transcript from the recording state if callback transcript is empty
       const finalTranscript = transcript || recording.state.transcript || recording.state.finalTranscript;
+      console.log('TrainingMode: Final transcript', { finalTranscript });
       
       // Calculate feedback
       if (question) {
@@ -218,11 +226,30 @@ export default function TrainingMode() {
         setCurrentFeedback(feedback);
         setShowFeedback(true);
         
+        // In interview mode, reveal the answer after recording
+        if (isInterviewMode) {
+          console.log('TrainingMode: Revealing answer in interview mode');
+          setShowAnswer(true);
+        }
+        
         // Mark question as completed
         setCompletedQuestions(prev => new Set(prev).add(question.id));
       }
     }
   });
+
+  console.log('TrainingMode: Recording object', { 
+    recording: !!recording, 
+    state: recording?.state,
+    isInterviewMode 
+  });
+
+  // Store resetRecording in ref to avoid stale closures
+  useEffect(() => {
+    if (recording) {
+      resetRecordingRef.current = recording.resetRecording;
+    }
+  }, [recording]);
 
   // Load questions from subscribed channels - only once
   useEffect(() => {
@@ -230,6 +257,27 @@ export default function TrainingMode() {
 
     const loadQuestions = async () => {
       setLoading(true);
+      
+      // Check for saved session first
+      const savedData = localStorage.getItem(sessionId);
+      if (savedData) {
+        try {
+          const sessionData = JSON.parse(savedData);
+          if (sessionData.questions && sessionData.questions.length > 0) {
+            setQuestions(sessionData.questions);
+            setCurrentIndex(sessionData.currentIndex || 0);
+            if (sessionData.completedQuestions) {
+              setCompletedQuestions(new Set(sessionData.completedQuestions));
+            }
+            setLoading(false);
+            setHasLoadedQuestions(true);
+            return;
+          }
+        } catch (e) {
+          console.error('Invalid session data:', e);
+          localStorage.removeItem(sessionId);
+        }
+      }
       
       if (subscribedChannels.length === 0) {
         setLoading(false);
@@ -243,19 +291,27 @@ export default function TrainingMode() {
         for (const channel of subscribedChannels) {
           try {
             const data = await ChannelService.getData(channel.id);
-            allQuestions.push(...data.questions);
+            // In interview mode, filter for voice-suitable questions
+            const channelQuestions = isInterviewMode 
+              ? data.questions.filter((q: Question) => 
+                  q.voiceSuitable !== false && 
+                  q.answer && 
+                  q.answer.length > 100
+                )
+              : data.questions;
+            allQuestions.push(...channelQuestions);
           } catch (e) {
-            console.error(`TrainingMode: Failed to load ${channel.id}`, e);
+            console.error(`Failed to load ${channel.id}`, e);
           }
         }
         
         if (allQuestions.length > 0) {
           const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-          const selected = shuffled.slice(0, 20);
+          const selected = shuffled.slice(0, isInterviewMode ? 10 : 20);
           setQuestions(selected);
         }
       } catch (e) {
-        console.error('TrainingMode: Failed to load questions', e);
+        console.error('Failed to load questions', e);
       }
       
       setLoading(false);
@@ -263,20 +319,26 @@ export default function TrainingMode() {
     };
 
     loadQuestions();
-  }, [subscribedChannels, hasLoadedQuestions]);
+  }, [subscribedChannels, hasLoadedQuestions, sessionId, isInterviewMode]);
 
   // Reset recording when question changes
   useEffect(() => {
     if (!currentQuestion?.answer) return;
-    recording.resetRecording();
+    if (resetRecordingRef.current) {
+      resetRecordingRef.current();
+    }
     setShowFeedback(false);
     setCurrentFeedback(null);
-  }, [currentQuestion]);
+    setShowAnswer(false); // Hide answer for new question in interview mode
+  }, [currentQuestion?.id]); // Use question ID to avoid infinite loop
 
   const goToNext = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
+      saveSessionProgress();
     } else {
+      // Clear session when completed
+      localStorage.removeItem(sessionId);
       setLocation('/');
     }
   };
@@ -284,13 +346,33 @@ export default function TrainingMode() {
   const goToPrevious = () => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
+      saveSessionProgress();
     }
+  };
+
+  const saveSessionProgress = () => {
+    if (questions.length === 0) return;
+    
+    const sessionData = {
+      questions,
+      currentIndex,
+      completedQuestions: Array.from(completedQuestions),
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionId, JSON.stringify(sessionData));
+  };
+
+  const exitTraining = () => {
+    saveSessionProgress();
+    setLocation('/');
   };
 
   const tryAgain = () => {
     recording.resetRecording();
     setShowFeedback(false);
     setCurrentFeedback(null);
+    setShowAnswer(false); // Hide answer again in interview mode
   };
 
   if (loading) {
@@ -331,8 +413,11 @@ export default function TrainingMode() {
   return (
     <>
       <SEOHead 
-        title="Training Mode - Practice Speaking Answers"
-        description="Read and record technical interview answers to improve your speaking skills"
+        title={isInterviewMode ? "Voice Interview Practice" : "Training Mode - Practice Speaking Answers"}
+        description={isInterviewMode 
+          ? "Practice answering interview questions out loud with AI-powered feedback"
+          : "Read and record technical interview answers to improve your speaking skills"
+        }
       />
 
       <DesktopSidebarWrapper>
@@ -341,13 +426,21 @@ export default function TrainingMode() {
         <div className="sticky top-0 z-10 bg-[#0d1117]/95 backdrop-blur-md border-b border-[#30363d]">
           <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
             <button
-              onClick={() => setLocation('/')}
+              onClick={exitTraining}
               className="p-2 hover:bg-[#21262d] rounded-lg transition-colors"
+              title="Exit and save progress"
             >
               <ArrowLeft className="w-5 h-5 text-[#8b949e]" />
             </button>
 
             <div className="flex items-center gap-3">
+              {isInterviewMode && (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#f85149]/10 border border-[#f85149]/30 rounded-lg">
+                  <Sparkles className="w-4 h-4 text-[#f85149]" />
+                  <span className="text-sm font-semibold text-[#f85149]">Interview Mode</span>
+                </div>
+              )}
+              
               <div className="flex items-center gap-2 px-3 py-1.5 bg-[#58a6ff]/10 border border-[#58a6ff]/30 rounded-lg">
                 <Target className="w-4 h-4 text-[#58a6ff]" />
                 <span className="text-sm font-semibold text-[#58a6ff]">
@@ -413,36 +506,59 @@ export default function TrainingMode() {
                   </div>
                 </div>
 
-                {/* Answer with Full Display */}
-                <div className="bg-[#0d1117] rounded-xl p-5 border border-[#30363d]">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Eye className="w-4 h-4 text-[#3fb950]" />
-                      <span className="text-sm font-semibold text-white">Answer to Read</span>
+                {/* Answer Display - Conditional based on mode */}
+                {!isInterviewMode || showAnswer ? (
+                  <div className="bg-[#0d1117] rounded-xl p-5 border border-[#30363d]">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-4 h-4 text-[#3fb950]" />
+                        <span className="text-sm font-semibold text-white">
+                          {isInterviewMode ? "Ideal Answer" : "Answer to Read"}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#6e7681] px-2 py-1 bg-[#21262d] rounded-lg">
+                        {totalWords} words
+                      </span>
                     </div>
-                    <span className="text-xs text-[#6e7681] px-2 py-1 bg-[#21262d] rounded-lg">
-                      {totalWords} words
-                    </span>
-                  </div>
 
-                  <div className="max-w-none overflow-auto max-h-96">
-                    <p className="text-[#e6edf3] leading-relaxed whitespace-pre-wrap break-words">
-                      {currentQuestion.answer}
-                    </p>
+                    <div className="max-w-none overflow-auto max-h-96">
+                      <p className="text-[#e6edf3] leading-relaxed whitespace-pre-wrap break-words">
+                        {currentQuestion.answer}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="bg-[#0d1117] rounded-xl p-5 border border-[#30363d]">
+                    <div className="flex items-center justify-center py-8">
+                      <div className="text-center">
+                        <div className="w-16 h-16 rounded-2xl bg-[#f85149]/10 flex items-center justify-center mx-auto mb-4">
+                          <Eye className="w-8 h-8 text-[#f85149]" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-white mb-2">Answer Hidden</h3>
+                        <p className="text-sm text-[#8b949e] max-w-md">
+                          Record your answer first. The ideal answer will be revealed after you finish recording.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Recording Controls - Using Unified Component */}
-              <RecordingPanel
-                recording={recording}
-                targetWords={totalWords}
-                showTranscript={true}
-                showWordCount={true}
-                showTimer={true}
-                tip="Read the full answer naturally. Click 'Stop Recording' when you're done."
-                className=""
-              />
+              {recording && (
+                <RecordingPanel
+                  recording={recording}
+                  targetWords={totalWords}
+                  showTranscript={true}
+                  showWordCount={true}
+                  showTimer={true}
+                  tip={isInterviewMode 
+                    ? "Answer the question in your own words. The ideal answer will be revealed after you finish."
+                    : "Read the full answer naturally. Click 'Stop Recording' when you're done."
+                  }
+                  className=""
+                />
+              )}
 
               {/* Feedback Panel - Shows after recording */}
               <AnimatePresence>

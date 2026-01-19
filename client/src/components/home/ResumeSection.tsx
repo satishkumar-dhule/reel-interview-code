@@ -41,6 +41,9 @@ export function ResumeSection() {
       case 'certification':
         setLocation(`/certification/${session.certificationId}/exam`);
         break;
+      case 'training':
+        setLocation('/training');
+        break;
       default:
         toast({
           title: 'Unknown session type',

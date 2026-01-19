@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, CheckCircle, XCircle, Trophy,
   Share2, RotateCcw, Home, AlertCircle, Check, X, Zap, ExternalLink, Eye,
-  Sparkles, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Filter
+  Sparkles, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Filter, Play
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { QuestionFeedback } from '../components/QuestionFeedback';
@@ -79,14 +79,35 @@ export default function TestSession() {
   const [showFeedback, setShowFeedback] = useState<'correct' | 'incorrect' | null>(null);
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
   const [reviewFilter, setReviewFilter] = useState<'all' | 'correct' | 'incorrect'>('all');
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
-  // Load test
+  // Load test and check for existing session
   useEffect(() => {
     if (!channelId) return;
     
     getTestForChannel(channelId).then(t => {
       if (t) {
         setTest(t);
+        
+        // Check if there's a saved session
+        const savedSessionId = `test-session-${t.channelId}`;
+        const savedData = localStorage.getItem(savedSessionId);
+        
+        if (savedData) {
+          try {
+            const sessionData = JSON.parse(savedData);
+            // Validate session data
+            if (sessionData.questions && sessionData.questions.length > 0) {
+              setSessionId(savedSessionId);
+              setSessionState('ready'); // Show ready state with resume option
+              return;
+            }
+          } catch (e) {
+            console.error('Invalid session data:', e);
+            localStorage.removeItem(savedSessionId);
+          }
+        }
+        
         setSessionState('ready');
       } else {
         setSessionState('loading');
@@ -101,9 +122,51 @@ export default function TestSession() {
     return () => {};
   }, [sessionState, startTime]);
 
-  const startTest = useCallback(() => {
+  // Save session progress to localStorage
+  const saveSessionProgress = useCallback(() => {
+    if (!test || !sessionId) return;
+    
+    const sessionData = {
+      testId: test.id,
+      channelId: test.channelId,
+      channelName: test.channelName,
+      questions,
+      currentIndex,
+      answers,
+      startTime,
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionId, JSON.stringify(sessionData));
+  }, [test, sessionId, questions, currentIndex, answers, startTime]);
+
+  // Load or start test session
+  const startTest = useCallback((resume: boolean = false) => {
     if (!test) return;
-    // Select 15 random questions from the pool for each session
+    
+    const newSessionId = `test-session-${test.channelId}`;
+    setSessionId(newSessionId);
+    
+    if (resume) {
+      // Try to resume existing session
+      const savedData = localStorage.getItem(newSessionId);
+      if (savedData) {
+        try {
+          const sessionData = JSON.parse(savedData);
+          setQuestions(sessionData.questions);
+          setAnswers(sessionData.answers || {});
+          setCurrentIndex(sessionData.currentIndex || 0);
+          setStartTime(sessionData.startTime || Date.now());
+          setResult(null);
+          setSessionState('in-progress');
+          return;
+        } catch (e) {
+          console.error('Failed to resume session:', e);
+        }
+      }
+    }
+    
+    // Start new session
     const sessionQuestions = getSessionQuestions(test, 15);
     setQuestions(sessionQuestions);
     setAnswers({});
@@ -112,6 +175,14 @@ export default function TestSession() {
     setResult(null);
     setSessionState('in-progress');
   }, [test]);
+
+  // Clear session from localStorage
+  const clearSession = useCallback(() => {
+    if (sessionId) {
+      localStorage.removeItem(sessionId);
+      setSessionId(null);
+    }
+  }, [sessionId]);
 
   const currentQuestion = questions[currentIndex];
   const progress = getTestProgress(test?.id || '');
@@ -151,6 +222,13 @@ export default function TestSession() {
       }
     }
   };
+
+  // Save progress whenever answers or current index changes
+  useEffect(() => {
+    if (sessionState === 'in-progress' && questions.length > 0) {
+      saveSessionProgress();
+    }
+  }, [sessionState, answers, currentIndex, saveSessionProgress, questions.length]);
 
   const toggleAutoSubmit = () => {
     const newValue = !autoSubmit;
@@ -213,12 +291,21 @@ export default function TestSession() {
     saveTestAttempt(test.id, test.channelId, attempt, test.version);
     setSessionState('review'); // Go to review first
     
+    // Clear the saved session since test is completed
+    clearSession();
+    
     // Trigger mascot reaction based on result
     if (calcResult.passed) {
       mascotEvents.celebrate();
     } else {
       mascotEvents.disappointed();
     }
+  };
+
+  // Exit test and save progress
+  const exitTest = () => {
+    saveSessionProgress();
+    setLocation('/');
   };
 
   // Get question results for review
@@ -312,6 +399,21 @@ export default function TestSession() {
                   </motion.div>
                 )}
 
+                {/* Resume banner */}
+                {sessionId && localStorage.getItem(sessionId) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 p-3 bg-primary/20 border border-primary/30 rounded-lg flex items-center gap-2"
+                  >
+                    <RefreshCw className="w-5 h-5 text-primary flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-primary">Continue where you left off</p>
+                      <p className="text-xs text-muted-foreground">You have an in-progress test session</p>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div className="text-center mb-6">
                   <div className={`w-16 h-16 rounded-xl ${theme.secondary} flex items-center justify-center mx-auto mb-4 shadow-lg ${theme.glow}`}>
                     <span className="text-3xl">{theme.icon}</span>
@@ -353,13 +455,31 @@ export default function TestSession() {
                 </div>
 
                 <div className="space-y-2">
+                  {sessionId && localStorage.getItem(sessionId) && (
+                    <button
+                      onClick={() => startTest(true)}
+                      className={`w-full py-3 ${theme.badge} text-white font-bold rounded hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg ${theme.glow}`}
+                    >
+                      <Play className="w-5 h-5" /> Resume Test
+                    </button>
+                  )}
                   <button
-                    onClick={startTest}
-                    className={`w-full py-3 ${theme.badge} text-white font-bold rounded hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg ${theme.glow}`}
+                    onClick={() => {
+                      if (sessionId && localStorage.getItem(sessionId)) {
+                        // Clear old session before starting new
+                        clearSession();
+                      }
+                      startTest(false);
+                    }}
+                    className={`w-full py-3 ${sessionId && localStorage.getItem(sessionId) ? 'bg-muted text-foreground' : `${theme.badge} text-white shadow-lg ${theme.glow}`} font-bold rounded hover:opacity-90 transition-all flex items-center justify-center gap-2`}
                   >
                     {isExpired ? (
                       <>
                         <RefreshCw className="w-5 h-5" /> Retake Test
+                      </>
+                    ) : sessionId && localStorage.getItem(sessionId) ? (
+                      <>
+                        <Zap className="w-5 h-5" /> Start New Test
                       </>
                     ) : (
                       <>
@@ -385,6 +505,15 @@ export default function TestSession() {
             {/* Header - COMPACT */}
             <header className="border-b border-border p-2.5 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
+                <button
+                  onClick={exitTest}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  title="Exit and save progress"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Exit</span>
+                </button>
+                <div className="h-4 w-px bg-border" />
                 <span className="text-xs text-muted-foreground">
                   {currentIndex + 1}/{questions.length}
                 </span>

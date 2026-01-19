@@ -66,6 +66,8 @@ export default function VoiceInterview() {
   const [interviewerComment, setInterviewerComment] = useState<string | null>(null);
   const [comments, setComments] = useState<InterviewerComments | null>(null);
   const [showActions, setShowActions] = useState(false);
+  const [sessionId, setSessionId] = useState<string>('voice-session-state');
+  const [showAnswer, setShowAnswer] = useState(false); // Hide answer until after recording
   
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -95,6 +97,24 @@ export default function VoiceInterview() {
   useEffect(() => {
     async function loadQuestions() {
       try {
+        // Check for saved session first
+        const savedData = localStorage.getItem(sessionId);
+        if (savedData) {
+          try {
+            const sessionData = JSON.parse(savedData);
+            if (sessionData.questions && sessionData.questions.length > 0) {
+              setQuestions(sessionData.questions);
+              setCurrentIndex(sessionData.currentIndex || 0);
+              setState('ready');
+              return;
+            }
+          } catch (e) {
+            console.error('Invalid session data:', e);
+            localStorage.removeItem(sessionId);
+          }
+        }
+
+        // Load new questions
         const allQuestions = await getAllQuestionsAsync();
         const subscribedChannelIds = preferences.subscribedChannels;
         const suitable = allQuestions.filter((q: Question) => {
@@ -113,7 +133,7 @@ export default function VoiceInterview() {
       }
     }
     loadQuestions();
-  }, [preferences.subscribedChannels]);
+  }, [preferences.subscribedChannels, sessionId]);
 
   useEffect(() => {
     if (state === 'ready' && currentIndex === 0 && questions.length > 0 && comments) {
@@ -131,14 +151,26 @@ export default function VoiceInterview() {
     recognition.lang = 'en-US';
     
     recognition.onresult = (event: any) => {
+      console.log('Speech recognition result received:', event.results.length);
       let interim = '';
       let final = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
-        if (result.isFinal) final += result[0].transcript + ' ';
-        else interim += result[0].transcript;
+        if (result.isFinal) {
+          final += result[0].transcript + ' ';
+          console.log('Final transcript:', result[0].transcript);
+        } else {
+          interim += result[0].transcript;
+          console.log('Interim transcript:', result[0].transcript);
+        }
       }
-      if (final) setTranscript(prev => prev + final);
+      if (final) {
+        setTranscript(prev => {
+          const updated = prev + final;
+          console.log('Updated transcript:', updated);
+          return updated;
+        });
+      }
       setInterimTranscript(interim);
     };
     
@@ -146,17 +178,38 @@ export default function VoiceInterview() {
       console.error('Speech recognition error:', event.error);
       if (event.error === 'not-allowed') {
         setError('Microphone access denied. Please allow microphone access and try again.');
+        setState('ready');
+      } else if (event.error === 'no-speech') {
+        console.log('No speech detected, continuing...');
+      } else {
+        setError(`Speech recognition error: ${event.error}`);
       }
     };
     
+    recognition.onstart = () => {
+      console.log('Speech recognition started');
+    };
+    
     recognition.onend = () => {
+      console.log('Speech recognition ended, state:', state);
       if (state === 'recording') {
-        try { recognition.start(); } catch (e) { /* ignore */ }
+        try { 
+          console.log('Restarting recognition...');
+          recognition.start(); 
+        } catch (e) { 
+          console.error('Failed to restart recognition:', e);
+        }
       }
     };
     
     recognitionRef.current = recognition;
-    return () => { recognition.stop(); };
+    return () => { 
+      try {
+        recognition.stop(); 
+      } catch (e) {
+        console.log('Recognition already stopped');
+      }
+    };
   }, [state]);
 
   useEffect(() => {
@@ -204,6 +257,7 @@ export default function VoiceInterview() {
       trackEvent({ type: 'voice_interview_completed', timestamp: new Date().toISOString() });
       if (result.score >= 60) showComment('good_score');
       else showComment('bad_score');
+      setShowAnswer(true); // Reveal answer after evaluation
       setState('evaluated');
     }, 800);
   }, [transcript, currentQuestion, onVoiceInterview, showComment, trackEvent]);
@@ -215,9 +269,14 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
+      setShowAnswer(false); // Hide answer for next question
       setState('ready');
+      saveSessionProgress();
+    } else {
+      // Clear session when completed
+      localStorage.removeItem(sessionId);
     }
-  }, [currentIndex, questions.length]);
+  }, [currentIndex, questions.length, sessionId]);
 
   const previousQuestion = useCallback(() => {
     if (currentIndex > 0) {
@@ -226,8 +285,10 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
+      setShowAnswer(false); // Hide answer for previous question
       setState('ready');
       setShowActions(false);
+      saveSessionProgress();
     }
   }, [currentIndex]);
 
@@ -240,10 +301,31 @@ export default function VoiceInterview() {
       setInterimTranscript('');
       setEvaluation(null);
       setEarnedCredits(null);
+      setShowAnswer(false); // Hide answer for skipped question
+      setEarnedCredits(null);
       setState('ready');
       setShowActions(false);
+      saveSessionProgress();
     }
   }, [currentIndex, questions.length, state, showComment]);
+
+  const saveSessionProgress = useCallback(() => {
+    if (questions.length === 0) return;
+    
+    const sessionData = {
+      questions,
+      currentIndex,
+      startedAt: new Date().toISOString(),
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionId, JSON.stringify(sessionData));
+  }, [questions, currentIndex, sessionId]);
+
+  const exitInterview = useCallback(() => {
+    saveSessionProgress();
+    setLocation('/');
+  }, [saveSessionProgress, setLocation]);
 
   const goToOriginalQuestion = useCallback(() => {
     if (currentQuestion) setLocation(`/channel/${currentQuestion.channel}/${currentQuestion.id}`);
@@ -267,6 +349,7 @@ export default function VoiceInterview() {
     setTranscript('');
     setInterimTranscript('');
     setEvaluation(null);
+    setShowAnswer(false); // Hide answer when retrying
     setState('ready');
   }, [showComment]);
 
@@ -347,8 +430,9 @@ export default function VoiceInterview() {
           <div className="max-w-4xl mx-auto px-3 h-14 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setLocation('/')}
+                onClick={exitInterview}
                 className="p-1.5 hover:bg-[#21262d] rounded-lg transition-colors"
+                title="Exit and save progress"
               >
                 <Home className="w-4 h-4 text-[#8b949e]" />
               </button>
@@ -534,6 +618,9 @@ export default function VoiceInterview() {
                 <div className="flex items-center gap-3 px-4 py-2 bg-[#f85149]/10 border border-[#f85149]/30 rounded-full">
                   <span className="w-3 h-3 bg-[#f85149] rounded-full animate-pulse" />
                   <span className="text-sm text-[#f85149]">Recording</span>
+                  {!transcript && !interimTranscript && (
+                    <span className="text-xs text-[#6e7681]">(Listening...)</span>
+                  )}
                 </div>
               )}
               
@@ -564,11 +651,19 @@ export default function VoiceInterview() {
                   />
                 ) : (
                   <div className="p-4 bg-[#0d1117] rounded-xl min-h-[120px] max-h-[200px] overflow-y-auto border border-[#30363d]">
-                    <p className="text-sm text-[#e6edf3] whitespace-pre-wrap leading-relaxed">
-                      {transcript}
-                      <span className="text-[#6e7681]">{interimTranscript}</span>
-                      {state === 'recording' && <span className="animate-pulse text-[#58a6ff]">|</span>}
-                    </p>
+                    {transcript || interimTranscript ? (
+                      <p className="text-sm text-[#e6edf3] whitespace-pre-wrap leading-relaxed">
+                        {transcript}
+                        <span className="text-[#6e7681]">{interimTranscript}</span>
+                        {state === 'recording' && <span className="animate-pulse text-[#58a6ff]">|</span>}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-[#6e7681] italic">
+                        {state === 'recording' 
+                          ? 'Start speaking... Your words will appear here.'
+                          : 'No transcript yet'}
+                      </p>
+                    )}
                   </div>
                 )}
                 {state === 'editing' && (
@@ -848,22 +943,24 @@ export default function VoiceInterview() {
                   </div>
                 </div>
 
-                {/* Ideal Answer Reference */}
-                <details className="p-5 rounded-2xl border border-[#30363d] bg-[#161b22] group">
-                  <summary className="cursor-pointer font-semibold text-white flex items-center gap-2 list-none">
-                    <Volume2 className="w-5 h-5 text-[#a371f7]" />
-                    View Ideal Answer
-                    <ChevronRight className="w-4 h-4 text-[#6e7681] ml-auto transition-transform group-open:rotate-90" />
-                  </summary>
-                  <div className="mt-4 pt-4 border-t border-[#30363d] space-y-3">
-                    <div className="flex justify-end">
-                      <ListenButton text={currentQuestion?.answer || ''} label="Listen to Answer" size="sm" />
+                {/* Ideal Answer Reference - Only show after answer is revealed */}
+                {showAnswer && (
+                  <details className="p-5 rounded-2xl border border-[#30363d] bg-[#161b22] group">
+                    <summary className="cursor-pointer font-semibold text-white flex items-center gap-2 list-none">
+                      <Volume2 className="w-5 h-5 text-[#a371f7]" />
+                      View Ideal Answer
+                      <ChevronRight className="w-4 h-4 text-[#6e7681] ml-auto transition-transform group-open:rotate-90" />
+                    </summary>
+                    <div className="mt-4 pt-4 border-t border-[#30363d] space-y-3">
+                      <div className="flex justify-end">
+                        <ListenButton text={currentQuestion?.answer || ''} label="Listen to Answer" size="sm" />
+                      </div>
+                      <div className="text-sm text-[#8b949e] whitespace-pre-wrap leading-relaxed bg-[#0d1117] p-4 rounded-xl">
+                        {currentQuestion?.answer}
+                      </div>
                     </div>
-                    <div className="text-sm text-[#8b949e] whitespace-pre-wrap leading-relaxed bg-[#0d1117] p-4 rounded-xl">
-                      {currentQuestion?.answer}
-                    </div>
-                  </div>
-                </details>
+                  </details>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

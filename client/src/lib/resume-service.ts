@@ -3,7 +3,7 @@
  * Allows users to continue where they left off
  */
 
-export type ActivityType = 'test' | 'voice-interview' | 'certification' | 'channel';
+export type ActivityType = 'test' | 'voice-interview' | 'certification' | 'training' | 'channel';
 
 export interface ResumeSession {
   id: string;
@@ -39,6 +39,14 @@ export function getInProgressSessions(): ResumeSession[] {
   const certSessions = getCertificationSessions();
   sessions.push(...certSessions);
 
+  // 4. Check for in-progress training sessions
+  const trainingSession = getTrainingSession();
+  if (trainingSession) sessions.push(trainingSession);
+
+  // 5. Check for in-progress channel sessions
+  const channelSessions = getChannelSessions();
+  sessions.push(...channelSessions);
+
   // Sort by last accessed (most recent first)
   return sessions.sort((a, b) => 
     new Date(b.lastAccessedAt).getTime() - new Date(a.lastAccessedAt).getTime()
@@ -59,20 +67,22 @@ function getTestSessions(): ResumeSession[] {
         const data = JSON.parse(localStorage.getItem(key) || '{}');
         
         // Only include if session is active (not completed)
-        if (data.currentQuestionIndex !== undefined && 
-            data.currentQuestionIndex < data.questions?.length) {
+        if (data.questions && data.questions.length > 0 && 
+            data.currentIndex !== undefined && 
+            data.currentIndex < data.questions.length) {
           
-          const channelId = key.replace('test-session-', '');
-          const progress = (data.currentQuestionIndex / data.questions.length) * 100;
+          const channelId = data.channelId || key.replace('test-session-', '');
+          const progress = (data.currentIndex / data.questions.length) * 100;
+          const answeredCount = Object.keys(data.answers || {}).length;
           
           sessions.push({
             id: key,
             type: 'test',
             title: `${data.channelName || channelId} Test`,
-            subtitle: `Question ${data.currentQuestionIndex + 1} of ${data.questions.length}`,
+            subtitle: `Question ${data.currentIndex + 1} of ${data.questions.length} • ${answeredCount} answered`,
             progress: Math.round(progress),
             totalItems: data.questions.length,
-            completedItems: data.currentQuestionIndex,
+            completedItems: data.currentIndex,
             lastAccessedAt: data.lastAccessedAt || new Date().toISOString(),
             channelId,
             sessionData: data,
@@ -96,21 +106,21 @@ function getVoiceSession(): ResumeSession | null {
   try {
     const data = JSON.parse(localStorage.getItem('voice-session-state') || '{}');
     
-    if (data.session && data.currentQuestionIndex !== undefined &&
-        data.currentQuestionIndex < data.questions?.length) {
+    if (data.questions && data.questions.length > 0 &&
+        data.currentIndex !== undefined &&
+        data.currentIndex < data.questions.length) {
       
-      const progress = (data.currentQuestionIndex / data.questions.length) * 100;
+      const progress = (data.currentIndex / data.questions.length) * 100;
       
       return {
         id: 'voice-session-state',
         type: 'voice-interview',
-        title: data.session.topic || 'Voice Interview',
-        subtitle: `Question ${data.currentQuestionIndex + 1} of ${data.questions.length}`,
+        title: 'Voice Interview',
+        subtitle: `Question ${data.currentIndex + 1} of ${data.questions.length}`,
         progress: Math.round(progress),
         totalItems: data.questions.length,
-        completedItems: data.currentQuestionIndex,
-        lastAccessedAt: data.startedAt || new Date().toISOString(),
-        channelId: data.session.channel,
+        completedItems: data.currentIndex,
+        lastAccessedAt: data.lastAccessedAt || new Date().toISOString(),
         sessionData: data,
         icon: 'mic',
         color: '#8b5cf6' // Purple for voice
@@ -129,28 +139,30 @@ function getVoiceSession(): ResumeSession | null {
 function getCertificationSessions(): ResumeSession[] {
   const sessions: ResumeSession[] = [];
   
-  // Scan localStorage for certification session keys
+  // Scan localStorage for certification session keys (both exam and practice)
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (key?.startsWith('certification-session-')) {
+    if (key?.startsWith('certification-session-') || key?.startsWith('cert-session-')) {
       try {
         const data = JSON.parse(localStorage.getItem(key) || '{}');
         
         // Only include if session is active
-        if (data.currentQuestionIndex !== undefined && 
-            data.currentQuestionIndex < data.questions?.length) {
+        if (data.questions && data.questions.length > 0 &&
+            data.currentIndex !== undefined && 
+            data.currentIndex < data.questions.length) {
           
-          const certId = key.replace('certification-session-', '');
-          const progress = (data.currentQuestionIndex / data.questions.length) * 100;
+          const certId = data.certificationId || key.replace('certification-session-', '').replace('cert-session-', '');
+          const progress = (data.currentIndex / data.questions.length) * 100;
+          const answeredCount = data.answers?.length || data.completedIds?.length || 0;
           
           sessions.push({
             id: key,
             type: 'certification',
-            title: data.certificationName || `${certId} Exam`,
-            subtitle: `Question ${data.currentQuestionIndex + 1} of ${data.questions.length}`,
+            title: data.certificationName || `${certId} Practice`,
+            subtitle: `Question ${data.currentIndex + 1} of ${data.questions.length} • ${answeredCount} completed`,
             progress: Math.round(progress),
             totalItems: data.questions.length,
-            completedItems: data.currentQuestionIndex,
+            completedItems: data.currentIndex,
             lastAccessedAt: data.lastAccessedAt || new Date().toISOString(),
             certificationId: certId,
             sessionData: data,
@@ -160,6 +172,86 @@ function getCertificationSessions(): ResumeSession[] {
         }
       } catch (e) {
         console.error('Error parsing certification session:', e);
+      }
+    }
+  }
+  
+  return sessions;
+}
+
+/**
+ * Get in-progress training session
+ */
+function getTrainingSession(): ResumeSession | null {
+  try {
+    const data = JSON.parse(localStorage.getItem('training-session-state') || '{}');
+    
+    if (data.questions && data.questions.length > 0 &&
+        data.currentIndex !== undefined &&
+        data.currentIndex < data.questions.length) {
+      
+      const progress = (data.currentIndex / data.questions.length) * 100;
+      const completedCount = data.completedQuestions?.length || 0;
+      
+      return {
+        id: 'training-session-state',
+        type: 'training',
+        title: 'Training Mode',
+        subtitle: `Question ${data.currentIndex + 1} of ${data.questions.length} • ${completedCount} completed`,
+        progress: Math.round(progress),
+        totalItems: data.questions.length,
+        completedItems: data.currentIndex,
+        lastAccessedAt: data.lastAccessedAt || new Date().toISOString(),
+        sessionData: data,
+        icon: 'target',
+        color: '#10b981' // Green for training
+      };
+    }
+  } catch (e) {
+    console.error('Error parsing training session:', e);
+  }
+  
+  return null;
+}
+
+/**
+ * Get in-progress channel browsing sessions
+ */
+function getChannelSessions(): ResumeSession[] {
+  const sessions: ResumeSession[] = [];
+  
+  // Scan localStorage for channel session keys
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith('channel-session-')) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key) || '{}');
+        
+        // Only include if session is active
+        if (data.questions && data.questions.length > 0 &&
+            data.currentIndex !== undefined && 
+            data.currentIndex < data.questions.length) {
+          
+          const channelId = data.channelId || key.replace('channel-session-', '');
+          const progress = (data.currentIndex / data.questions.length) * 100;
+          
+          sessions.push({
+            id: key,
+            type: 'channel',
+            title: `${data.channelName || channelId} Practice`,
+            subtitle: `Question ${data.currentIndex + 1} of ${data.questions.length}`,
+            progress: Math.round(progress),
+            totalItems: data.questions.length,
+            completedItems: data.currentIndex,
+            lastAccessedAt: data.lastAccessedAt || new Date().toISOString(),
+            channelId,
+            sessionData: data,
+            icon: 'clipboard-list',
+            color: getChannelColor(channelId)
+          });
+        }
+      } catch (e) {
+        console.error('Error parsing channel session:', e);
       }
     }
   }

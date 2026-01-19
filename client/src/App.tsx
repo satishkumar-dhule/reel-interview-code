@@ -25,15 +25,15 @@ const Profile = React.lazy(() => import("@/pages/Profile"));
 const Notifications = React.lazy(() => import("@/pages/Notifications"));
 const Bookmarks = React.lazy(() => import("@/pages/Bookmarks"));
 const ReviewSession = React.lazy(() => import("@/pages/ReviewSessionOptimized"));
-const VoiceInterview = React.lazy(() => import("@/pages/VoiceInterview"));
+const VoicePractice = React.lazy(() => import("@/pages/VoicePractice")); // Unified voice practice
 const VoiceSession = React.lazy(() => import("@/pages/VoiceSession"));
 const Certifications = React.lazy(() => import("@/pages/Certifications"));
 const CertificationPractice = React.lazy(() => import("@/pages/CertificationPractice"));
 const CertificationExam = React.lazy(() => import("@/pages/CertificationExam"));
-const TrainingMode = React.lazy(() => import("@/pages/TrainingMode"));
 const Documentation = React.lazy(() => import("@/pages/Documentation"));
 const ExtremeQuestionViewer = React.lazy(() => import("@/pages/ExtremeQuestionViewer"));
 const LearningPaths = React.lazy(() => import("@/pages/LearningPaths"));
+const PersonalizedPath = React.lazy(() => import("@/pages/PersonalizedPath"));
 import { ProgressiveOnboarding } from "./components/ProgressiveOnboarding";
 import { ThemeProvider } from "./context/ThemeContext";
 import { UserPreferencesProvider, useUserPreferences } from "./context/UserPreferencesContext";
@@ -129,14 +129,15 @@ function Router() {
         <Route path="/bot-activity" component={BotActivity} />
         <Route path="/channels" component={Channels} />
         <Route path="/learning-paths" component={LearningPaths} />
+        <Route path="/personalized-path" component={PersonalizedPath} />
         <Route path="/profile" component={Profile} />
         <Route path="/notifications" component={Notifications} />
         <Route path="/bookmarks" component={Bookmarks} />
         <Route path="/review" component={ReviewSession} />
-        <Route path="/voice-interview" component={VoiceInterview} />
+        <Route path="/voice-interview" component={VoicePractice} />
+        <Route path="/training" component={VoicePractice} />
         <Route path="/voice-session" component={VoiceSession} />
         <Route path="/voice-session/:questionId" component={VoiceSession} />
-        <Route path="/training" component={TrainingMode} />
         <Route path="/docs" component={Documentation} />
         <Route path="/certifications" component={Certifications} />
         <Route path="/certification/:id" component={CertificationPractice} />

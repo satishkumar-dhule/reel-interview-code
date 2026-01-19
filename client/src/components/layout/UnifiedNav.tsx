@@ -57,6 +57,7 @@ const mainNavItems: NavItem[] = [
 const learnSubNav: NavItem[] = [
   { id: 'channels', label: 'Channels', icon: BookOpen, path: '/channels', description: 'Browse by topic' },
   { id: 'certifications', label: 'Certifications', icon: Award, path: '/certifications', description: 'Exam prep tracks' },
+  { id: 'personalized', label: 'My Learning Path', icon: Target, path: '/personalized-path', badge: 'NEW', description: 'Customized for your role' },
 ];
 
 // Practice section - Active learning modes
@@ -374,7 +375,7 @@ export function DesktopSidebar({ onSearchClick }: DesktopSidebarProps) {
           </div>
           
           {showLabel && !isCollapsed && (
-            <span className="text-sm font-medium flex-1 text-left truncate">
+            <span className="text-sm font-medium flex-1 text-left">
               {item.label}
             </span>
           )}

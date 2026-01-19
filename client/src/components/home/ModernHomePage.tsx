@@ -361,8 +361,8 @@ function QuickActionsGrid({ onNavigate }: { onNavigate: (path: string) => void }
                 <action.icon className="w-6 h-6 lg:w-7 lg:h-7 text-white" strokeWidth={2} />
               </div>
               <div className="text-left">
-                <h3 className="font-semibold text-xs lg:text-sm truncate">{action.title}</h3>
-                <p className="text-[10px] lg:text-xs text-muted-foreground truncate">{action.desc}</p>
+                <h3 className="font-semibold text-xs lg:text-sm line-clamp-2">{action.title}</h3>
+                <p className="text-[10px] lg:text-xs text-muted-foreground line-clamp-2">{action.desc}</p>
               </div>
             </div>
           </motion.button>
@@ -411,6 +411,7 @@ function ChannelsOverview({
 }) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [placeholderCount, setPlaceholderCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const { unsubscribeChannel } = useUserPreferences();
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; channelId: string; channelName: string }>({
     isOpen: false,
@@ -418,19 +419,31 @@ function ChannelsOverview({
     channelName: ''
   });
 
+  // Filter channels based on search query
+  const filteredChannels = channels.filter(channel => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    const config = allChannelsConfig.find(c => c.id === channel.id);
+    return (
+      config?.name.toLowerCase().includes(query) ||
+      config?.description.toLowerCase().includes(query) ||
+      channel.id.toLowerCase().includes(query)
+    );
+  });
+
   // Update placeholder count on resize and channel changes
   useEffect(() => {
     const updatePlaceholderCount = () => {
-      setPlaceholderCount(getPlaceholderCount(channels.length));
+      setPlaceholderCount(getPlaceholderCount(filteredChannels.length));
     };
     
     updatePlaceholderCount();
     window.addEventListener('resize', updatePlaceholderCount);
     return () => window.removeEventListener('resize', updatePlaceholderCount);
-  }, [channels.length]);
+  }, [filteredChannels.length]);
 
   // Calculate total cards for optimal sizing
-  const totalCards = channels.length + placeholderCount;
+  const totalCards = filteredChannels.length + placeholderCount;
   const cardSizeClass = getCardSizeClass(totalCards);
 
   const handleUnsubscribeClick = (channelId: string, channelName: string) => {
@@ -441,6 +454,7 @@ function ChannelsOverview({
     if (confirmDialog.channelId) {
       unsubscribeChannel(confirmDialog.channelId);
     }
+    setConfirmDialog({ isOpen: false, channelId: '', channelName: '' });
   };
 
   return (
@@ -486,6 +500,28 @@ function ChannelsOverview({
           </div>
         </div>
 
+        {/* Search Box */}
+        {channels.length > 0 && (
+          <div className="relative">
+            <Eye className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search your channels..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-4 h-4 text-muted-foreground" />
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Premium Grid Layout with Dynamic Sizing */}
         <div 
           className={viewMode === 'grid' 
@@ -493,25 +529,25 @@ function ChannelsOverview({
             : 'flex flex-col gap-3 w-full'
           }
         >
-          {channels.map((channel, i) => (
+          {filteredChannels.map((channel, i) => (
             <ChannelCard
               key={channel.id}
               channel={channel}
               questionCount={questionCounts[channel.id] || 0}
               onClick={() => onChannelClick(channel.id)}
-              onUnsubscribe={() => handleUnsubscribeClick(channel.id, channel.name)}
+              onUnsubscribe={() => handleUnsubscribeClick(channel.id, allChannelsConfig.find(c => c.id === channel.id)?.name || channel.id)}
               index={i}
               viewMode={viewMode}
             />
           ))}
           
           {/* Premium Placeholder Cards with Advanced Animations */}
-          {viewMode === 'grid' && placeholderCount > 0 && (
+          {viewMode === 'grid' && placeholderCount > 0 && !searchQuery && (
             <>
               {Array.from({ length: placeholderCount }).map((_, i) => (
                 <PlaceholderCard
                   key={`placeholder-${i}`}
-                  index={channels.length + i}
+                  index={filteredChannels.length + i}
                   onClick={onManageChannels}
                   variant={i % 3}
                 />
@@ -520,7 +556,28 @@ function ChannelsOverview({
           )}
         </div>
 
-        {/* Empty State */}
+        {/* Empty State - No Results */}
+        {filteredChannels.length === 0 && searchQuery && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
+          >
+            <Eye className="w-12 h-12 mx-auto mb-4 text-muted-foreground/30" />
+            <h3 className="text-lg font-semibold mb-2">No channels found</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Try a different search term
+            </p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="text-sm text-primary hover:underline"
+            >
+              Clear search
+            </button>
+          </motion.div>
+        )}
+
+        {/* Empty State - No Channels */}
         {channels.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1141,6 +1198,8 @@ function StreakBadgeCard({
 
 // Learning Path Section - Redesigned for sidebar
 function LearningPathSection({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const paths = [
     {
       title: 'Frontend',
@@ -1168,6 +1227,16 @@ function LearningPathSection({ onNavigate }: { onNavigate: (path: string) => voi
     }
   ];
 
+  // Filter paths based on search query
+  const filteredPaths = paths.filter(path => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      path.title.toLowerCase().includes(query) ||
+      path.desc.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -1184,8 +1253,28 @@ function LearningPathSection({ onNavigate }: { onNavigate: (path: string) => voi
         </button>
       </div>
 
+      {/* Search Box */}
+      <div className="relative mb-4">
+        <Eye className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Search paths..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+          >
+            <X className="w-3 h-3 text-muted-foreground" />
+          </button>
+        )}
+      </div>
+
       <div className="space-y-4">
-        {paths.map((path, i) => (
+        {filteredPaths.map((path, i) => (
           <motion.button
             key={i}
             initial={{ opacity: 0, x: -20 }}
@@ -1225,6 +1314,20 @@ function LearningPathSection({ onNavigate }: { onNavigate: (path: string) => voi
             </div>
           </motion.button>
         ))}
+
+        {/* Empty State */}
+        {filteredPaths.length === 0 && searchQuery && (
+          <div className="text-center py-6">
+            <Eye className="w-8 h-8 mx-auto mb-2 text-muted-foreground/30" />
+            <p className="text-xs text-muted-foreground">No paths found</p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="text-xs text-primary hover:underline mt-2"
+            >
+              Clear search
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Quick Action */}

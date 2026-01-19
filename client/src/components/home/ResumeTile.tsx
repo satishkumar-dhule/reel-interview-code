@@ -43,12 +43,12 @@ export function ResumeTile({ session, onResume, onAbandon }: ResumeTileProps) {
           />
         </div>
         
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-sm truncate">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <h3 className="font-semibold text-sm break-words">
             {session.title}
           </h3>
           {session.subtitle && (
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5 break-words">
               {session.subtitle}
             </p>
           )}
@@ -60,7 +60,7 @@ export function ResumeTile({ session, onResume, onAbandon }: ResumeTileProps) {
             e.stopPropagation();
             onAbandon(session);
           }}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-destructive/10 rounded"
+          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-destructive/10 rounded flex-shrink-0"
           title="Abandon session"
         >
           <X className="w-4 h-4 text-muted-foreground hover:text-destructive" />

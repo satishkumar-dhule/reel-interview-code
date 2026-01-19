@@ -121,19 +121,18 @@ export default function AllChannelsRedesigned() {
 
       <AppLayout title="All Channels">
         <div className="space-y-6">
-          {/* Header Stats */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Browse Channels</h1>
-              <p className="text-muted-foreground">
-                {preferences.subscribedChannels.length} of {allChannelsConfig.length} channels subscribed
-              </p>
-            </div>
-          </div>
-
-          {/* Search and Filters */}
+          {/* Header with Search */}
           <div className="space-y-4">
-            {/* Search */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">Browse Channels</h1>
+                <p className="text-muted-foreground">
+                  {preferences.subscribedChannels.length} of {allChannelsConfig.length} channels subscribed
+                </p>
+              </div>
+            </div>
+
+            {/* Search - directly below title */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
@@ -144,7 +143,10 @@ export default function AllChannelsRedesigned() {
                 className="w-full bg-muted/50 border border-border rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
               />
             </div>
+          </div>
 
+          {/* Category Filters */}
+          <div className="space-y-4">
             {/* Category Pills */}
             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
               <button

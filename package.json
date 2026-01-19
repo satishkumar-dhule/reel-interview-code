@@ -79,6 +79,7 @@
     "check": "tsc",
     "db:migrate": "node script/migrate-questions-to-turso.js",
     "db:migrate:history": "node script/migrations/add-question-history.js",
+    "db:migrate:job-titles": "node script/migrations/add-job-title-fields.js",
     "db:push": "drizzle-kit push",
     "vector:init": "node script/vector-db-cli.js init",
     "vector:sync": "node script/sync-vector-db.js",
@@ -125,7 +126,9 @@
     "check:element": "node script/check-specific-element.js",
     "fix:bottom-nav": "node script/test-bottom-nav-fix.js",
     "validate:questions": "node script/validate-questions.js",
-    "fix:duplicates": "node script/fix-duplicate-questions.js"
+    "fix:duplicates": "node script/fix-duplicate-questions.js",
+    "test:job-titles": "node script/test-job-title-relevance.js",
+    "backfill:job-titles": "node script/backfill-job-title-relevance.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -20,6 +20,7 @@ import { runQualityGate } from './ai/graphs/quality-gate-graph.js';
 import { channelConfigs, topCompanies as TOP_TECH_COMPANIES, realScenarios as REAL_SCENARIOS } from './ai/prompts/templates/generate.js';
 import { certificationDomains } from './ai/prompts/templates/certification-question.js';
 import ragService from './ai/services/rag-enhanced-generation.js';
+import jobTitleService from './ai/services/job-title-relevance.js';
 
 // Channel configurations - imported from AI framework template (used for sub-channel info)
 
@@ -545,8 +546,18 @@ const scenarioHint = getScenarioHint(channel);
         // Save regular question
         console.log(`\n✅ Quality gate passed (${qualityResult.score}/100)`);
         
-        const id = generateUnifiedId();
+        const id = await generateUnifiedId();
         const normalizedCompanies = normalizeCompanies(data.companies || []);
+        
+        // Enrich with job title relevance
+        const enrichedData = jobTitleService.enrichQuestionWithJobTitleData({
+          ...data,
+          channel,
+          subChannel: subChannelConfig.subChannel,
+          difficulty
+        });
+        
+        console.log(`📊 Job title relevance calculated for ${Object.keys(JSON.parse(enrichedData.jobTitleRelevance)).length} roles`);
         
         await addUnifiedQuestion({
           id,
@@ -556,18 +567,33 @@ const scenarioHint = getScenarioHint(channel);
           answer: data.answer,
           explanation: data.explanation,
           difficulty,
-          tags: JSON.stringify(data.tags || subChannelConfig.tags),
-          companies: JSON.stringify(normalizedCompanies),
+          tags: data.tags || subChannelConfig.tags, // Keep as array
+          companies: normalizedCompanies, // Keep as array
           tldr: data.tldr || null,
           diagram: data.diagram || null,
           diagramType: data.diagramType || null,
           diagramLabel: data.diagramLabel || null,
           shortVideo: data.shortVideo || null,
           longVideo: data.longVideo || null,
+          jobTitleRelevance: enrichedData.jobTitleRelevance,
+          experienceLevelTags: enrichedData.experienceLevelTags,
           status: 'active'
-        });
+        }, [{ channel, subChannel: subChannelConfig.subChannel }]);
         
-        questionsAdded++;
+        // Add to results
+        const regularQuestion = {
+          id,
+          question: data.question,
+          answer: data.answer?.substring(0, 200) || '',
+          explanation: data.explanation || '',
+          tags: data.tags || subChannelConfig.tags,
+          difficulty,
+          diagram: data.diagram || null,
+          companies: normalizedCompanies,
+          mappedChannels: [{ channel, subChannel: subChannelConfig.subChannel }]
+        };
+        addedQuestions.push(regularQuestion);
+        
         console.log(`✅ Question added successfully (ID: ${id})`);
         
         // Process certification questions
@@ -588,15 +614,27 @@ const scenarioHint = getScenarioHint(channel);
                     channel: certResult.certId,
                     subChannel: certQ.domain || 'general',
                     question: certQ.question,
-                    answer: JSON.stringify(certQ.options), // MCQ options
+                    answer: JSON.stringify(certQ.options), // MCQ options as JSON
                     explanation: certQ.explanation,
                     difficulty: certQ.difficulty || difficulty,
-                    tags: JSON.stringify([...(certQ.tags || []), 'certification-mcq']),
-                    companies: JSON.stringify([]),
+                    tags: [...(certQ.tags || []), 'certification-mcq'], // Keep as array
+                    companies: [], // Keep as array
                     status: 'active'
-                  });
+                  }, [{ channel: certResult.certId, subChannel: certQ.domain || 'general' }]);
                   
-                  questionsAdded++;
+                  // Add to results
+                  const certQuestion = {
+                    id: certId,
+                    question: certQ.question,
+                    answer: JSON.stringify(certQ.options),
+                    explanation: certQ.explanation || '',
+                    tags: [...(certQ.tags || []), 'certification-mcq'],
+                    difficulty: certQ.difficulty || difficulty,
+                    companies: [],
+                    mappedChannels: [{ channel: certResult.certId, subChannel: certQ.domain || 'general' }]
+                  };
+                  addedQuestions.push(certQuestion);
+                  
                   console.log(`   ✅ Saved cert MCQ: ${certQ.question.substring(0, 50)}...`);
                 } catch (error) {
                   console.log(`   ⚠️ Failed to save cert MCQ: ${error.message}`);
@@ -716,7 +754,8 @@ const scenarioHint = getScenarioHint(channel);
     } catch (error) {
       // Catch any unexpected errors and continue with next channel
       console.log(`❌ Unexpected error: ${error.message}`);
-      console.log(`   Stack: ${error.stack?.split('\n')[0]}`);
+      console.log(`   Stack trace:`);
+      console.log(error.stack);
       failedAttempts.push({ 
         channel, 
         reason: `Unexpected error: ${error.message}` 

@@ -711,6 +711,182 @@ export async function registerRoutes(
   });
 
   // ============================================
+  // LEARNING PATHS API
+  // ============================================
+
+  // Helper to parse learning path from DB row
+  function parseLearningPath(row: any) {
+    return {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      pathType: row.path_type,
+      targetCompany: row.target_company,
+      targetJobTitle: row.target_job_title,
+      difficulty: row.difficulty,
+      estimatedHours: row.estimated_hours,
+      questionIds: row.question_ids ? JSON.parse(row.question_ids) : [],
+      channels: row.channels ? JSON.parse(row.channels) : [],
+      tags: row.tags ? JSON.parse(row.tags) : [],
+      prerequisites: row.prerequisites ? JSON.parse(row.prerequisites) : [],
+      learningObjectives: row.learning_objectives ? JSON.parse(row.learning_objectives) : [],
+      milestones: row.milestones ? JSON.parse(row.milestones) : [],
+      popularity: row.popularity || 0,
+      completionRate: row.completion_rate || 0,
+      averageRating: row.average_rating || 0,
+      metadata: row.metadata ? JSON.parse(row.metadata) : {},
+      status: row.status,
+      createdAt: row.created_at,
+      lastUpdated: row.last_updated,
+      lastGenerated: row.last_generated,
+    };
+  }
+
+  // Get all learning paths with filters
+  app.get("/api/learning-paths", async (req, res) => {
+    try {
+      const { 
+        pathType, 
+        difficulty, 
+        company, 
+        jobTitle, 
+        search,
+        limit = '50',
+        offset = '0'
+      } = req.query;
+      
+      let sql = "SELECT * FROM learning_paths WHERE status = 'active'";
+      const args: any[] = [];
+
+      if (pathType && pathType !== 'all') {
+        sql += " AND path_type = ?";
+        args.push(pathType);
+      }
+      if (difficulty && difficulty !== 'all') {
+        sql += " AND difficulty = ?";
+        args.push(difficulty);
+      }
+      if (company) {
+        sql += " AND target_company = ?";
+        args.push(company);
+      }
+      if (jobTitle) {
+        sql += " AND target_job_title = ?";
+        args.push(jobTitle);
+      }
+      if (search) {
+        sql += " AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)";
+        const searchPattern = `%${search}%`;
+        args.push(searchPattern, searchPattern, searchPattern);
+      }
+
+      sql += " ORDER BY popularity DESC, created_at DESC LIMIT ? OFFSET ?";
+      args.push(parseInt(limit as string), parseInt(offset as string));
+
+      const result = await client.execute({ sql, args });
+      res.json(result.rows.map(parseLearningPath));
+    } catch (error) {
+      console.error("Error fetching learning paths:", error);
+      res.json([]);
+    }
+  });
+
+  // Get a single learning path by ID
+  app.get("/api/learning-paths/:pathId", async (req, res) => {
+    try {
+      const { pathId } = req.params;
+      
+      const result = await client.execute({
+        sql: "SELECT * FROM learning_paths WHERE id = ? LIMIT 1",
+        args: [pathId]
+      });
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Learning path not found" });
+      }
+
+      res.json(parseLearningPath(result.rows[0]));
+    } catch (error) {
+      console.error("Error fetching learning path:", error);
+      res.status(500).json({ error: "Failed to fetch learning path" });
+    }
+  });
+
+  // Get available companies (for filtering)
+  app.get("/api/learning-paths/filters/companies", async (_req, res) => {
+    try {
+      const result = await client.execute(
+        "SELECT DISTINCT target_company FROM learning_paths WHERE target_company IS NOT NULL AND status = 'active' ORDER BY target_company"
+      );
+      res.json(result.rows.map(r => r.target_company));
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      res.json([]);
+    }
+  });
+
+  // Get available job titles (for filtering)
+  app.get("/api/learning-paths/filters/job-titles", async (_req, res) => {
+    try {
+      const result = await client.execute(
+        "SELECT DISTINCT target_job_title FROM learning_paths WHERE target_job_title IS NOT NULL AND status = 'active' ORDER BY target_job_title"
+      );
+      res.json(result.rows.map(r => r.target_job_title));
+    } catch (error) {
+      console.error("Error fetching job titles:", error);
+      res.json([]);
+    }
+  });
+
+  // Get learning path stats
+  app.get("/api/learning-paths/stats", async (_req, res) => {
+    try {
+      const result = await client.execute(
+        "SELECT path_type, difficulty, COUNT(*) as count FROM learning_paths WHERE status = 'active' GROUP BY path_type, difficulty"
+      );
+
+      const stats = {
+        total: 0,
+        byType: {} as Record<string, number>,
+        byDifficulty: {} as Record<string, number>,
+      };
+
+      for (const row of result.rows) {
+        const count = Number(row.count);
+        stats.total += count;
+        
+        const type = row.path_type as string;
+        stats.byType[type] = (stats.byType[type] || 0) + count;
+        
+        const diff = row.difficulty as string;
+        stats.byDifficulty[diff] = (stats.byDifficulty[diff] || 0) + count;
+      }
+
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching learning path stats:", error);
+      res.json({ total: 0, byType: {}, byDifficulty: {} });
+    }
+  });
+
+  // Increment popularity when user starts a path
+  app.post("/api/learning-paths/:pathId/start", async (req, res) => {
+    try {
+      const { pathId } = req.params;
+      
+      await client.execute({
+        sql: "UPDATE learning_paths SET popularity = popularity + 1 WHERE id = ?",
+        args: [pathId]
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating path popularity:", error);
+      res.status(500).json({ error: "Failed to update popularity" });
+    }
+  });
+
+  // ============================================
   // USER SESSION ENDPOINTS (for resume feature)
   // ============================================
 

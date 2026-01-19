@@ -113,33 +113,73 @@ export default function VoiceSession() {
     recognition.lang = 'en-US';
     
     recognition.onresult = (event: any) => {
+      console.log('Speech recognition result received:', event.results.length);
       let interim = '';
       let final = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
-        if (result.isFinal) final += result[0].transcript + ' ';
-        else interim += result[0].transcript;
+        if (result.isFinal) {
+          final += result[0].transcript + ' ';
+          console.log('Final transcript:', result[0].transcript);
+        } else {
+          interim += result[0].transcript;
+          console.log('Interim transcript:', result[0].transcript);
+        }
       }
       if (final) {
-        if (pageState === 'practice') setPracticeTranscript(prev => prev + final);
-        else setTranscript(prev => prev + final);
+        if (pageState === 'practice') {
+          setPracticeTranscript(prev => {
+            const updated = prev + final;
+            console.log('Updated practice transcript:', updated);
+            return updated;
+          });
+        } else {
+          setTranscript(prev => {
+            const updated = prev + final;
+            console.log('Updated transcript:', updated);
+            return updated;
+          });
+        }
       }
       setInterimTranscript(interim);
     };
     
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
-      if (event.error === 'not-allowed') setError('Microphone access denied.');
+      if (event.error === 'not-allowed') {
+        setError('Microphone access denied.');
+        setPageState('ready');
+      } else if (event.error === 'no-speech') {
+        console.log('No speech detected, continuing...');
+      } else {
+        setError(`Speech recognition error: ${event.error}`);
+      }
+    };
+    
+    recognition.onstart = () => {
+      console.log('Speech recognition started');
     };
     
     recognition.onend = () => {
+      console.log('Speech recognition ended, pageState:', pageState);
       if (pageState === 'recording' || pageState === 'practice') {
-        try { recognition.start(); } catch (e) { /* ignore */ }
+        try { 
+          console.log('Restarting recognition...');
+          recognition.start(); 
+        } catch (e) { 
+          console.error('Failed to restart recognition:', e);
+        }
       }
     };
     
     recognitionRef.current = recognition;
-    return () => { recognition.stop(); };
+    return () => { 
+      try {
+        recognition.stop(); 
+      } catch (e) {
+        console.log('Recognition already stopped');
+      }
+    };
   }, [pageState]);
 
   // Recording timer removed - keeping only recording indicator
@@ -557,11 +597,19 @@ export default function VoiceSession() {
                   />
                 ) : (
                   <div className="p-4 bg-[#0d1117] rounded-xl min-h-[80px] border border-[#30363d]">
-                    <p className="text-sm text-[#e6edf3] whitespace-pre-wrap">
-                      {transcript}
-                      <span className="text-[#6e7681]">{interimTranscript}</span>
-                      {pageState === 'recording' && <span className="animate-pulse text-[#58a6ff]">|</span>}
-                    </p>
+                    {transcript || interimTranscript ? (
+                      <p className="text-sm text-[#e6edf3] whitespace-pre-wrap">
+                        {transcript}
+                        <span className="text-[#6e7681]">{interimTranscript}</span>
+                        {pageState === 'recording' && <span className="animate-pulse text-[#58a6ff]">|</span>}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-[#6e7681] italic">
+                        {pageState === 'recording' 
+                          ? 'Start speaking... Your words will appear here.'
+                          : 'No transcript yet'}
+                      </p>
+                    )}
                   </div>
                 )}
                 <p className="text-xs text-[#6e7681] mt-2 flex items-center gap-1.5">

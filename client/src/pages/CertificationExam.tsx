@@ -24,7 +24,7 @@ import { SEOHead } from '../components/SEOHead';
 import {
   ArrowLeft, Award, Target, CheckCircle, XCircle,
   ChevronRight, ChevronLeft, Lightbulb, BarChart3,
-  RotateCcw, Flag, BookOpen, Zap, Trophy, AlertCircle
+  RotateCcw, Flag, BookOpen, Zap, Trophy, AlertCircle, Home, Clock
 } from 'lucide-react';
 import { useUnifiedToast } from '../hooks/use-unified-toast';
 
@@ -51,6 +51,7 @@ export default function CertificationExam() {
   const [sessionState, setSessionState] = useState<SessionState>('setup');
   const [examMode, setExamMode] = useState<ExamMode>('practice');
   const [questionCount, setQuestionCount] = useState(10);
+  const [sessionId, setSessionId] = useState<string>(`certification-session-${certificationId}`);
   
   // Active session
   const [questions, setQuestions] = useState<CertificationQuestion[]>([]);
@@ -94,11 +95,46 @@ export default function CertificationExam() {
     setShowExplanation(false);
     setFlaggedQuestions(new Set());
     setQuestionStartTime(Date.now());
-    
-
-    
     setSessionState('active');
+    saveSessionProgress();
   }, [certificationId, questionCount, examMode, examConfig]);
+
+  // Save session progress
+  const saveSessionProgress = useCallback(() => {
+    if (!certificationId || questions.length === 0) return;
+    
+    const sessionData = {
+      certificationId,
+      certificationName: certification?.name,
+      questions,
+      currentIndex,
+      answers,
+      examMode,
+      questionCount,
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionId, JSON.stringify(sessionData));
+  }, [certificationId, certification, questions, currentIndex, answers, examMode, questionCount, sessionId]);
+
+  // Load saved session on mount
+  useEffect(() => {
+    if (!certificationId) return;
+    
+    const savedData = localStorage.getItem(sessionId);
+    if (savedData) {
+      try {
+        const sessionData = JSON.parse(savedData);
+        if (sessionData.questions && sessionData.questions.length > 0) {
+          // Session exists - could auto-resume or show option
+          // For now, we'll just keep it in localStorage for resume service
+        }
+      } catch (e) {
+        console.error('Invalid session data:', e);
+        localStorage.removeItem(sessionId);
+      }
+    }
+  }, [certificationId, sessionId]);
 
   // Submit answer
   const submitAnswer = useCallback((optionId: string) => {
@@ -130,8 +166,9 @@ export default function CertificationExam() {
       setSelectedOption(null);
       setShowExplanation(false);
       setQuestionStartTime(Date.now());
+      saveSessionProgress();
     }
-  }, [currentIndex, questions.length]);
+  }, [currentIndex, questions.length, saveSessionProgress]);
 
   const goToPrev = useCallback(() => {
     if (currentIndex > 0) {
@@ -139,8 +176,9 @@ export default function CertificationExam() {
       const prevAnswer = answers.find(a => a.questionId === questions[currentIndex - 1]?.id);
       setSelectedOption(prevAnswer?.selectedOptionId || null);
       setShowExplanation(false);
+      saveSessionProgress();
     }
-  }, [currentIndex, answers, questions]);
+  }, [currentIndex, answers, questions, saveSessionProgress]);
 
   const goToQuestion = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -148,7 +186,8 @@ export default function CertificationExam() {
     setSelectedOption(answer?.selectedOptionId || null);
     setShowExplanation(false);
     setQuestionStartTime(Date.now());
-  }, [answers, questions]);
+    saveSessionProgress();
+  }, [answers, questions, saveSessionProgress]);
 
   const toggleFlag = useCallback(() => {
     setFlaggedQuestions(prev => {
@@ -160,11 +199,19 @@ export default function CertificationExam() {
       }
       return newSet;
     });
-  }, [currentIndex]);
+    saveSessionProgress();
+  }, [currentIndex, saveSessionProgress]);
 
   const finishExam = useCallback(() => {
     setSessionState('results');
-  }, []);
+    // Clear session when exam is completed
+    localStorage.removeItem(sessionId);
+  }, [sessionId]);
+
+  const exitExam = useCallback(() => {
+    saveSessionProgress();
+    setLocation(`/certification/${certificationId}`);
+  }, [saveSessionProgress, certificationId, setLocation]);
 
   // Results calculations
   const results = useMemo(() => {
@@ -274,6 +321,7 @@ export default function CertificationExam() {
             onGoToQuestion={goToQuestion}
             onToggleFlag={toggleFlag}
             onFinish={finishExam}
+            onExit={exitExam}
           />
         )}
 
@@ -481,6 +529,7 @@ interface ActiveExamProps {
   onGoToQuestion: (index: number) => void;
   onToggleFlag: () => void;
   onFinish: () => void;
+  onExit: () => void;
 }
 
 function ActiveExam({
@@ -502,6 +551,7 @@ function ActiveExam({
   onGoToQuestion,
   onToggleFlag,
   onFinish,
+  onExit,
 }: ActiveExamProps) {
   const [showNav, setShowNav] = useState(false);
   const isFlagged = flaggedQuestions.has(currentIndex);
@@ -514,6 +564,13 @@ function ActiveExam({
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <button
+                onClick={onExit}
+                className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                title="Exit and save progress"
+              >
+                <Home className="w-4 h-4 text-muted-foreground" />
+              </button>
               <span className="text-sm font-medium text-muted-foreground">
                 {certification.name}
               </span>

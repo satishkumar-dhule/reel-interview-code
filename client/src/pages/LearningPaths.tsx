@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { 
   BookOpen, Code2, Database, Cloud, Shield, Cpu, 
   Network, Terminal, Layers, GitBranch, CheckCircle, 
-  Lock, ArrowRight, Trophy, Target, Zap, Flame, Clock
+  Lock, ArrowRight, Trophy, Target, Zap, Flame, Clock,
+  Search, Building2, Briefcase, Filter, X
 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SEOHead } from '@/components/SEOHead';
@@ -13,117 +14,25 @@ interface LearningPath {
   id: string;
   title: string;
   description: string;
-  icon: React.ReactNode;
+  pathType: 'company' | 'job-title' | 'skill' | 'certification';
+  targetCompany?: string;
+  targetJobTitle?: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
-  duration: string;
-  topics: number;
+  estimatedHours: number;
+  questionIds: string[];
   channels: string[];
-  color: string;
-  gradient: string;
-  locked?: boolean;
+  tags: string[];
+  prerequisites: string[];
+  learningObjectives: string[];
+  milestones: any[];
+  popularity: number;
+  completionRate: number;
+  averageRating: number;
+  metadata: any;
+  status: string;
+  createdAt: string;
+  lastUpdated: string;
 }
-
-const learningPaths: LearningPath[] = [
-  {
-    id: 'frontend-fundamentals',
-    title: 'Frontend Fundamentals',
-    description: 'Master HTML, CSS, JavaScript, and modern frontend frameworks',
-    icon: <Code2 className="w-6 h-6" />,
-    difficulty: 'beginner',
-    duration: '4-6 weeks',
-    topics: 45,
-    channels: ['html-css', 'javascript', 'react', 'frontend'],
-    color: 'text-blue-500',
-    gradient: 'from-blue-500 to-cyan-500',
-  },
-  {
-    id: 'backend-mastery',
-    title: 'Backend Development',
-    description: 'Learn server-side programming, APIs, and database management',
-    icon: <Database className="w-6 h-6" />,
-    difficulty: 'intermediate',
-    duration: '6-8 weeks',
-    topics: 52,
-    channels: ['nodejs', 'python', 'databases', 'api-design'],
-    color: 'text-green-500',
-    gradient: 'from-green-500 to-emerald-500',
-  },
-  {
-    id: 'system-design',
-    title: 'System Design Expert',
-    description: 'Design scalable, distributed systems for large-scale applications',
-    icon: <Layers className="w-6 h-6" />,
-    difficulty: 'advanced',
-    duration: '8-10 weeks',
-    topics: 38,
-    channels: ['system-design', 'distributed-systems', 'microservices'],
-    color: 'text-purple-500',
-    gradient: 'from-purple-500 to-pink-500',
-  },
-  {
-    id: 'devops-cloud',
-    title: 'DevOps & Cloud',
-    description: 'Master CI/CD, containerization, and cloud infrastructure',
-    icon: <Cloud className="w-6 h-6" />,
-    difficulty: 'intermediate',
-    duration: '6-8 weeks',
-    topics: 42,
-    channels: ['docker', 'kubernetes', 'aws', 'devops'],
-    color: 'text-orange-500',
-    gradient: 'from-orange-500 to-red-500',
-  },
-  {
-    id: 'data-structures',
-    title: 'Data Structures & Algorithms',
-    description: 'Build strong problem-solving skills for coding interviews',
-    icon: <GitBranch className="w-6 h-6" />,
-    difficulty: 'beginner',
-    duration: '8-12 weeks',
-    topics: 65,
-    channels: ['algorithms', 'data-structures'],
-    color: 'text-yellow-500',
-    gradient: 'from-yellow-500 to-orange-500',
-  },
-  {
-    id: 'security',
-    title: 'Security & Authentication',
-    description: 'Learn security best practices and authentication patterns',
-    icon: <Shield className="w-6 h-6" />,
-    difficulty: 'intermediate',
-    duration: '4-6 weeks',
-    topics: 28,
-    channels: ['security', 'authentication'],
-    color: 'text-red-500',
-    gradient: 'from-red-500 to-pink-500',
-    locked: true,
-  },
-  {
-    id: 'machine-learning',
-    title: 'ML & AI Fundamentals',
-    description: 'Introduction to machine learning and artificial intelligence',
-    icon: <Cpu className="w-6 h-6" />,
-    difficulty: 'advanced',
-    duration: '10-12 weeks',
-    topics: 48,
-    channels: ['machine-learning', 'ai'],
-    color: 'text-indigo-500',
-    gradient: 'from-indigo-500 to-purple-500',
-    locked: true,
-  },
-  {
-    id: 'networking',
-    title: 'Networking & Protocols',
-    description: 'Understand network fundamentals and communication protocols',
-    icon: <Network className="w-6 h-6" />,
-    difficulty: 'intermediate',
-    duration: '5-7 weeks',
-    topics: 35,
-    channels: ['networking', 'protocols'],
-    color: 'text-teal-500',
-    gradient: 'from-teal-500 to-cyan-500',
-    locked: true,
-  },
-];
 
 const getDifficultyConfig = (difficulty: string) => {
   switch (difficulty) {
@@ -138,13 +47,119 @@ const getDifficultyConfig = (difficulty: string) => {
   }
 };
 
+const getPathTypeIcon = (pathType: string) => {
+  switch (pathType) {
+    case 'company':
+      return <Building2 className="w-6 h-6" />;
+    case 'job-title':
+      return <Briefcase className="w-6 h-6" />;
+    case 'skill':
+      return <Code2 className="w-6 h-6" />;
+    case 'certification':
+      return <Trophy className="w-6 h-6" />;
+    default:
+      return <BookOpen className="w-6 h-6" />;
+  }
+};
+
+const getPathTypeColor = (pathType: string) => {
+  switch (pathType) {
+    case 'company':
+      return 'from-blue-500 to-cyan-500';
+    case 'job-title':
+      return 'from-purple-500 to-pink-500';
+    case 'skill':
+      return 'from-green-500 to-emerald-500';
+    case 'certification':
+      return 'from-orange-500 to-red-500';
+    default:
+      return 'from-gray-500 to-gray-600';
+  }
+};
+
 export default function LearningPaths() {
   const [, setLocation] = useLocation();
+  const [paths, setPaths] = useState<LearningPath[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+  const [selectedPathType, setSelectedPathType] = useState<string>('all');
+  const [selectedCompany, setSelectedCompany] = useState<string>('all');
+  const [selectedJobTitle, setSelectedJobTitle] = useState<string>('all');
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [jobTitles, setJobTitles] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
-  const filteredPaths = selectedDifficulty === 'all' 
-    ? learningPaths 
-    : learningPaths.filter(p => p.difficulty === selectedDifficulty);
+  useEffect(() => {
+    fetchLearningPaths();
+    fetchFilterOptions();
+  }, [selectedDifficulty, selectedPathType, selectedCompany, selectedJobTitle, searchQuery]);
+
+  const fetchLearningPaths = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      
+      if (selectedDifficulty !== 'all') params.append('difficulty', selectedDifficulty);
+      if (selectedPathType !== 'all') params.append('pathType', selectedPathType);
+      if (selectedCompany !== 'all') params.append('company', selectedCompany);
+      if (selectedJobTitle !== 'all') params.append('jobTitle', selectedJobTitle);
+      if (searchQuery) params.append('search', searchQuery);
+      
+      const response = await fetch(`/api/learning-paths?${params.toString()}`);
+      const data = await response.json();
+      setPaths(data);
+    } catch (error) {
+      console.error('Failed to fetch learning paths:', error);
+      setPaths([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFilterOptions = async () => {
+    try {
+      const [companiesRes, jobTitlesRes] = await Promise.all([
+        fetch('/api/learning-paths/filters/companies'),
+        fetch('/api/learning-paths/filters/job-titles')
+      ]);
+      
+      setCompanies(await companiesRes.json());
+      setJobTitles(await jobTitlesRes.json());
+    } catch (error) {
+      console.error('Failed to fetch filter options:', error);
+    }
+  };
+
+  const handleStartPath = async (path: LearningPath) => {
+    // Increment popularity
+    try {
+      await fetch(`/api/learning-paths/${path.id}/start`, { method: 'POST' });
+    } catch (error) {
+      console.error('Failed to update popularity:', error);
+    }
+    
+    // Navigate to first question or channel
+    if (path.questionIds.length > 0) {
+      setLocation(`/extreme/question/${path.questionIds[0]}`);
+    } else if (path.channels.length > 0) {
+      setLocation(`/extreme/channel/${path.channels[0]}`);
+    }
+  };
+
+  const clearFilters = () => {
+    setSelectedDifficulty('all');
+    setSelectedPathType('all');
+    setSelectedCompany('all');
+    setSelectedJobTitle('all');
+    setSearchQuery('');
+  };
+
+  const hasActiveFilters = selectedDifficulty !== 'all' || 
+                          selectedPathType !== 'all' || 
+                          selectedCompany !== 'all' || 
+                          selectedJobTitle !== 'all' ||
+                          searchQuery !== '';
 
   return (
     <>
@@ -159,131 +174,264 @@ export default function LearningPaths() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            className="text-center mb-6"
           >
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
               <BookOpen className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-4xl font-black text-foreground mb-4">Learning Paths</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Follow structured roadmaps to master technical skills. Each path includes curated questions and topics.
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+              Follow structured roadmaps tailored to companies, job titles, and skills. Each path includes curated questions.
             </p>
+            
+            {/* Search Bar - directly below title */}
+            <div className="relative max-w-2xl mx-auto">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search learning paths..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
           </motion.div>
 
           {/* Filters */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="flex items-center justify-center gap-3 mb-8 flex-wrap"
+            transition={{ delay: 0.15 }}
+            className="mb-6"
           >
-            <span className="text-sm text-muted-foreground font-medium">Filter by:</span>
-            {['all', 'beginner', 'intermediate', 'advanced'].map(level => (
+            <div className="flex items-center justify-between mb-4">
               <button
-                key={level}
-                onClick={() => setSelectedDifficulty(level)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  selectedDifficulty === level
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-card border border-border text-foreground hover:bg-muted'
-                }`}
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg text-foreground hover:bg-muted transition-colors"
               >
-                {level === 'all' ? 'All Paths' : level.charAt(0).toUpperCase() + level.slice(1)}
+                <Filter className="w-4 h-4" />
+                <span className="font-medium">Filters</span>
+                {hasActiveFilters && (
+                  <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
+                    Active
+                  </span>
+                )}
               </button>
-            ))}
+              
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                  Clear all
+                </button>
+              )}
+            </div>
+
+            {showFilters && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-card border border-border rounded-lg">
+                {/* Path Type */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Path Type</label>
+                  <select
+                    value={selectedPathType}
+                    onChange={(e) => setSelectedPathType(e.target.value)}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="all">All Types</option>
+                    <option value="company">Company-Specific</option>
+                    <option value="job-title">Job Title</option>
+                    <option value="skill">Skill-Based</option>
+                    <option value="certification">Certification</option>
+                  </select>
+                </div>
+
+                {/* Difficulty */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Difficulty</label>
+                  <select
+                    value={selectedDifficulty}
+                    onChange={(e) => setSelectedDifficulty(e.target.value)}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="all">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+
+                {/* Company */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Company</label>
+                  <select
+                    value={selectedCompany}
+                    onChange={(e) => setSelectedCompany(e.target.value)}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="all">All Companies</option>
+                    {companies.map(company => (
+                      <option key={company} value={company}>{company}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Job Title */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Job Title</label>
+                  <select
+                    value={selectedJobTitle}
+                    onChange={(e) => setSelectedJobTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="all">All Roles</option>
+                    {jobTitles.map(title => (
+                      <option key={title} value={title}>
+                        {title.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
           </motion.div>
 
+          {/* Results Count */}
+          {!loading && (
+            <div className="mb-4 text-sm text-muted-foreground">
+              Found {paths.length} learning path{paths.length !== 1 ? 's' : ''}
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-muted-foreground">Loading learning paths...</p>
+            </div>
+          )}
+
           {/* Learning Paths Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPaths.map((path, index) => {
-              const diffConfig = getDifficultyConfig(path.difficulty);
-              
-              return (
-                <motion.div
-                  key={path.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="group relative"
-                >
-                  <div className={`relative h-full bg-card border border-border rounded-xl overflow-hidden transition-all ${
-                    path.locked 
-                      ? 'opacity-60' 
-                      : 'hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10'
-                  }`}>
-                    {/* Gradient header */}
-                    <div className={`h-2 bg-gradient-to-r ${path.gradient}`} />
-                    
-                    <div className="p-6">
-                      {/* Icon & Title */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${path.gradient} text-white`}>
-                          {path.icon}
-                        </div>
-                        {path.locked && (
+          {!loading && paths.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paths.map((path, index) => {
+                const diffConfig = getDifficultyConfig(path.difficulty);
+                const gradient = getPathTypeColor(path.pathType);
+                
+                return (
+                  <motion.div
+                    key={path.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="group relative"
+                  >
+                    <div className="relative h-full bg-card border border-border rounded-xl overflow-hidden transition-all hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
+                      {/* Gradient header */}
+                      <div className={`h-2 bg-gradient-to-r ${gradient}`} />
+                      
+                      <div className="p-6">
+                        {/* Icon & Type Badge */}
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} text-white`}>
+                            {getPathTypeIcon(path.pathType)}
+                          </div>
                           <div className="flex items-center gap-1 px-2 py-1 bg-muted rounded-full">
-                            <Lock className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground font-medium">Coming Soon</span>
+                            <span className="text-xs text-muted-foreground font-medium capitalize">
+                              {path.pathType.replace('-', ' ')}
+                            </span>
+                          </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2">{path.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{path.description}</p>
+
+                        {/* Meta info */}
+                        <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Terminal className="w-3 h-3" />
+                            <span>{path.questionIds.length} questions</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{path.estimatedHours}h</span>
+                          </div>
+                        </div>
+
+                        {/* Company or Job Title Badge */}
+                        {path.targetCompany && (
+                          <div className="mb-4">
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-500 text-xs rounded-full">
+                              <Building2 className="w-3 h-3" />
+                              {path.targetCompany}
+                            </span>
                           </div>
                         )}
-                      </div>
-
-                      <h3 className="text-xl font-bold text-foreground mb-2">{path.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{path.description}</p>
-
-                      {/* Meta info */}
-                      <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Terminal className="w-3 h-3" />
-                          <span>{path.topics} topics</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{path.duration}</span>
-                        </div>
-                      </div>
-
-                      {/* Difficulty badge */}
-                      <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${diffConfig.bg} mb-4`}>
-                        <span className={diffConfig.color}>{diffConfig.icon}</span>
-                        <span className={`text-xs font-bold ${diffConfig.color}`}>{diffConfig.label}</span>
-                      </div>
-
-                      {/* Action button */}
-                      <button
-                        onClick={() => {
-                          if (!path.locked && path.channels.length > 0) {
-                            // Navigate to the first channel in the learning path using extreme viewer
-                            setLocation(`/extreme/channel/${path.channels[0]}`);
-                          }
-                        }}
-                        disabled={path.locked}
-                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition-all ${
-                          path.locked
-                            ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                            : 'bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer'
-                        }`}
-                      >
-                        {path.locked ? (
-                          <>
-                            <Lock className="w-4 h-4" />
-                            Locked
-                          </>
-                        ) : (
-                          <>
-                            Start Learning
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </>
+                        {path.targetJobTitle && (
+                          <div className="mb-4">
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-500 text-xs rounded-full">
+                              <Briefcase className="w-3 h-3" />
+                              {path.targetJobTitle.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </span>
+                          </div>
                         )}
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
 
-          {/* Coming Soon Notice */}
+                        {/* Difficulty badge */}
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${diffConfig.bg} mb-4`}>
+                          <span className={diffConfig.color}>{diffConfig.icon}</span>
+                          <span className={`text-xs font-bold ${diffConfig.color}`}>{diffConfig.label}</span>
+                        </div>
+
+                        {/* Popularity indicator */}
+                        {path.popularity > 0 && (
+                          <div className="mb-4 text-xs text-muted-foreground">
+                            🔥 {path.popularity} learners started this path
+                          </div>
+                        )}
+
+                        {/* Action button */}
+                        <button
+                          onClick={() => handleStartPath(path)}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition-all bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+                        >
+                          Start Learning
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && paths.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-2">No learning paths found</h3>
+              <p className="text-muted-foreground mb-4">
+                Try adjusting your filters or search query
+              </p>
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </motion.div>
+          )}
+
+          {/* Info Notice */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -292,7 +440,9 @@ export default function LearningPaths() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full">
               <Trophy className="w-4 h-4 text-primary" />
-              <span className="text-sm text-primary font-medium">More learning paths coming soon!</span>
+              <span className="text-sm text-primary font-medium">
+                Learning paths are updated daily based on new questions and trends
+              </span>
             </div>
           </motion.div>
         </div>

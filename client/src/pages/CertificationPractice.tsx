@@ -79,6 +79,7 @@ export default function CertificationPractice() {
 
   const progressKey = `cert-progress-${certificationId}`;
   const checkpointsKey = `cert-checkpoints-${certificationId}`;
+  const sessionKey = `cert-session-${certificationId}`;
   
   const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
     try {
@@ -88,6 +89,54 @@ export default function CertificationPractice() {
       return new Set();
     }
   });
+
+  // Save session progress
+  const saveSession = useCallback(() => {
+    if (!certificationId || questions.length === 0) return;
+    
+    const sessionData = {
+      certificationId,
+      certificationName: certification?.name,
+      questions,
+      currentIndex,
+      completedIds: Array.from(completedIds),
+      passedCheckpoints: Array.from(passedCheckpoints),
+      selectedDifficulty,
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionKey, JSON.stringify(sessionData));
+  }, [certificationId, certification, questions, currentIndex, completedIds, passedCheckpoints, selectedDifficulty, sessionKey]);
+
+  // Load session on mount
+  useEffect(() => {
+    if (!certificationId) return;
+    
+    try {
+      const savedSession = localStorage.getItem(sessionKey);
+      if (savedSession) {
+        const sessionData = JSON.parse(savedSession);
+        if (sessionData.currentIndex !== undefined) {
+          setCurrentIndex(sessionData.currentIndex);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load session:', e);
+    }
+  }, [certificationId, sessionKey]);
+
+  // Auto-save on progress
+  useEffect(() => {
+    if (questions.length > 0) {
+      saveSession();
+    }
+  }, [currentIndex, completedIds, passedCheckpoints, saveSession, questions.length]);
+
+  // Exit and save
+  const exitSession = useCallback(() => {
+    saveSession();
+    setLocation(`/certification/${certificationId}`);
+  }, [saveSession, certificationId, setLocation]);
 
   useEffect(() => {
     try {
@@ -648,7 +697,7 @@ export default function CertificationPractice() {
           <div className="max-w-7xl mx-auto px-3 py-2">
             {/* Main row: Back, Title, Progress, Credits */}
             <div className="flex items-center gap-2">
-              <button onClick={() => setLocation('/certifications')} className="p-1.5 hover:bg-muted rounded-md shrink-0">
+              <button onClick={exitSession} className="p-1.5 hover:bg-muted rounded-md shrink-0" title="Exit and save progress">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               
