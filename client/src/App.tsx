@@ -13,26 +13,27 @@ const Home = React.lazy(() => import("@/pages/HomeRedesigned"));
 const AnswerHistory = React.lazy(() => import("@/pages/AnswerHistory"));
 const About = React.lazy(() => import("@/pages/About"));
 const WhatsNew = React.lazy(() => import("@/pages/WhatsNew"));
-const QuestionViewer = React.lazy(() => import("@/pages/QuestionViewer"));
-const Stats = React.lazy(() => import("@/pages/StatsRedesigned"));
-const Channels = React.lazy(() => import("@/pages/AllChannelsRedesigned"));
+const QuestionViewer = React.lazy(() => import("@/pages/QuestionViewerGenZ"));
+const Stats = React.lazy(() => import("@/pages/StatsGenZ"));
+const Channels = React.lazy(() => import("@/pages/AllChannelsGenZ"));
 const BotActivity = React.lazy(() => import("@/pages/BotActivity"));
-const Badges = React.lazy(() => import("@/pages/Badges"));
-const TestSession = React.lazy(() => import("@/pages/TestSession"));
-const Tests = React.lazy(() => import("@/pages/Tests"));
-const CodingChallenge = React.lazy(() => import("@/pages/CodingChallenge"));
-const Profile = React.lazy(() => import("@/pages/Profile"));
+const Badges = React.lazy(() => import("@/pages/BadgesGenZ"));
+const TestSession = React.lazy(() => import("@/pages/TestSessionGenZ"));
+const Tests = React.lazy(() => import("@/pages/TestsGenZ"));
+const CodingChallenge = React.lazy(() => import("@/pages/CodingChallengeGenZ"));
+const Profile = React.lazy(() => import("@/pages/ProfileGenZ"));
 const Notifications = React.lazy(() => import("@/pages/Notifications"));
 const Bookmarks = React.lazy(() => import("@/pages/Bookmarks"));
-const ReviewSession = React.lazy(() => import("@/pages/ReviewSessionOptimized"));
-const VoicePractice = React.lazy(() => import("@/pages/VoicePractice")); // Unified voice practice
-const VoiceSession = React.lazy(() => import("@/pages/VoiceSession"));
-const Certifications = React.lazy(() => import("@/pages/Certifications"));
-const CertificationPractice = React.lazy(() => import("@/pages/CertificationPractice"));
-const CertificationExam = React.lazy(() => import("@/pages/CertificationExam"));
+const ReviewSession = React.lazy(() => import("@/pages/ReviewSessionGenZ"));
+const VoicePractice = React.lazy(() => import("@/pages/VoicePracticeGenZ"));
+const VoiceSession = React.lazy(() => import("@/pages/VoiceSessionGenZ"));
+const Certifications = React.lazy(() => import("@/pages/CertificationsGenZ"));
+const CertificationPractice = React.lazy(() => import("@/pages/CertificationPracticeGenZ"));
+const CertificationExam = React.lazy(() => import("@/pages/CertificationExamGenZ"));
 const Documentation = React.lazy(() => import("@/pages/Documentation"));
 const ExtremeQuestionViewer = React.lazy(() => import("@/pages/ExtremeQuestionViewer"));
-const LearningPaths = React.lazy(() => import("@/pages/LearningPaths"));
+const LearningPaths = React.lazy(() => import("@/pages/LearningPathsGenZ"));
+const MyPath = React.lazy(() => import("@/pages/MyPathGenZ"));
 const PersonalizedPath = React.lazy(() => import("@/pages/PersonalizedPath"));
 import { ProgressiveOnboarding } from "./components/ProgressiveOnboarding";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -129,6 +130,7 @@ function Router() {
         <Route path="/bot-activity" component={BotActivity} />
         <Route path="/channels" component={Channels} />
         <Route path="/learning-paths" component={LearningPaths} />
+        <Route path="/my-path" component={MyPath} />
         <Route path="/personalized-path" component={PersonalizedPath} />
         <Route path="/profile" component={Profile} />
         <Route path="/notifications" component={Notifications} />
@@ -193,8 +195,8 @@ function AppContent() {
       <BackgroundMascots />
       <GlobalCreditSplash />
       <AchievementNotificationManager />
-      {/* Progressive onboarding - non-blocking, appears after delay */}
-      {needsOnboarding && <ProgressiveOnboarding />}
+      {/* Progressive onboarding - DISABLED for Gen Z redesign */}
+      {/* {needsOnboarding && <ProgressiveOnboarding />} */}
     </>
   );
 }

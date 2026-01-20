@@ -219,7 +219,7 @@ export default function PersonalizedPath() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + idx * 0.05 }}
-                    onClick={() => setLocation(`/extreme/channel/${channel}`)}
+                    onClick={() => setLocation(`/channel/${channel}`)}
                     className="group bg-card border border-border rounded-lg p-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 cursor-pointer transition-all"
                   >
                     <div className="flex items-start justify-between mb-2">
@@ -260,7 +260,7 @@ export default function PersonalizedPath() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 + idx * 0.05 }}
-                    onClick={() => setLocation(`/extreme/channel/${channel}`)}
+                    onClick={() => setLocation(`/channel/${channel}`)}
                     className="group bg-card border border-border rounded-lg p-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 cursor-pointer transition-all"
                   >
                     <div className="flex items-start justify-between mb-2">

@@ -5,20 +5,20 @@
  */
 
 import { AppLayout } from '../components/layout/AppLayout';
-import { ModernHomePage } from '../components/home/ModernHomePage';
+import { GenZHomePage } from '../components/home/GenZHomePage';
 import { SEOHead } from '../components/SEOHead';
 
 export default function HomeRedesigned() {
   return (
     <>
       <SEOHead
-        title="Code Reels - AI-Powered Technical Interview Prep | Master Coding Interviews"
-        description="Transform your interview skills with AI-powered practice. Voice interviews, coding challenges, system design, and personalized learning paths. Join 12,000+ successful candidates."
+        title="CodeReels - Level Up Your Interview Game 🚀"
+        description="Practice. Progress. Get hired. The most addictive way to prep for technical interviews. No cap."
         canonical="https://open-interview.github.io/"
       />
       
       <AppLayout>
-        <ModernHomePage />
+        <GenZHomePage />
       </AppLayout>
     </>
   );

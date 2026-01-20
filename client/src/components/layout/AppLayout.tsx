@@ -4,9 +4,9 @@
  */
 
 import { useState, useEffect } from 'react';
-import { DesktopSidebar, MobileBottomNav, UnifiedMobileHeader } from './UnifiedNav';
+import { GenZSidebar } from './GenZSidebar';
+import { MobileBottomNav, UnifiedMobileHeader } from './UnifiedNav';
 import { UnifiedSearch } from '../UnifiedSearch';
-import { useSidebar } from '../../context/SidebarContext';
 import { cn } from '../../lib/utils';
 
 interface AppLayoutProps {
@@ -25,7 +25,6 @@ export function AppLayout({
   showBackOnMobile = false 
 }: AppLayoutProps) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const { isCollapsed } = useSidebar();
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -44,10 +43,10 @@ export function AppLayout({
   }
 
   return (
-    <div className="min-h-screen min-h-dvh bg-background overflow-x-hidden w-full">
+    <div className="min-h-screen min-h-dvh bg-black overflow-x-hidden w-full">
       {/* Desktop Sidebar - hidden on mobile */}
       <div className="hidden lg:block">
-        <DesktopSidebar onSearchClick={() => setSearchOpen(true)} />
+        <GenZSidebar />
       </div>
 
       {/* Mobile Header - visible only on mobile */}
@@ -57,15 +56,12 @@ export function AppLayout({
         onSearchClick={() => setSearchOpen(true)}
       />
 
-      {/* Main content area - adjusts based on sidebar collapsed state */}
-      <div className={cn(
-        "transition-all duration-200 w-full overflow-x-hidden",
-        isCollapsed ? "lg:pl-16" : "lg:pl-64"
-      )}>
+      {/* Main content area - fixed padding for Gen Z sidebar */}
+      <div className="lg:pl-64 w-full overflow-x-hidden">
         {/* Page content with bottom padding for mobile nav */}
         <main className={`
           pb-20 lg:pb-4 w-full overflow-x-hidden
-          ${fullWidth ? '' : 'max-w-5xl mx-auto px-3 lg:px-4 py-3 lg:py-4'}
+          ${fullWidth ? '' : 'max-w-7xl mx-auto px-3 lg:px-6 py-3 lg:py-6'}
         `}>
           {children}
         </main>

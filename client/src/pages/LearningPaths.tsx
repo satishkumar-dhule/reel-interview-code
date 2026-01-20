@@ -141,9 +141,9 @@ export default function LearningPaths() {
     
     // Navigate to first question or channel
     if (path.questionIds.length > 0) {
-      setLocation(`/extreme/question/${path.questionIds[0]}`);
+      setLocation(`/channel/${path.questionIds[0]}`);
     } else if (path.channels.length > 0) {
-      setLocation(`/extreme/channel/${path.channels[0]}`);
+      setLocation(`/channel/${path.channels[0]}`);
     }
   };
 

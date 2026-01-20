@@ -100,32 +100,9 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
   const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
   const [expandedResults, setExpandedResults] = useState<Set<number>>(new Set());
 
-  // Session management
+  // Session management keys
   const sessionKey = `channel-session-${channelId}`;
   const checkpointsKey = `channel-checkpoints-${channelId}`;
-  
-  const saveSession = useCallback(() => {
-    if (!channelId || questions.length === 0) return;
-    
-    const sessionData = {
-      channelId,
-      channelName: channel?.name,
-      questions,
-      currentIndex,
-      selectedSubChannel,
-      selectedDifficulty,
-      selectedCompany,
-      passedCheckpoints: Array.from(passedCheckpoints),
-      lastAccessedAt: new Date().toISOString(),
-    };
-    
-    localStorage.setItem(sessionKey, JSON.stringify(sessionData));
-  }, [channelId, channel, questions, currentIndex, selectedSubChannel, selectedDifficulty, selectedCompany, passedCheckpoints, sessionKey]);
-
-  const exitSession = useCallback(() => {
-    saveSession();
-    setLocation('/channels');
-  }, [saveSession, setLocation]);
 
   // Load checkpoints on mount
   useEffect(() => {
@@ -141,13 +118,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
       localStorage.setItem(checkpointsKey, JSON.stringify(Array.from(passedCheckpoints)));
     }
   }, [passedCheckpoints, channelId, checkpointsKey]);
-
-  // Auto-save on progress
-  useEffect(() => {
-    if (questions.length > 0) {
-      saveSession();
-    }
-  }, [currentIndex, passedCheckpoints, saveSession, questions.length]);
 
   // Get companies for filtering
   const { companiesWithCounts } = useCompaniesWithCounts(
@@ -178,6 +148,37 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     prioritizeUnvisited
   );
 
+  // Session management functions (must be after questions is defined)
+  const saveSession = useCallback(() => {
+    if (!channelId || questions.length === 0) return;
+    
+    const sessionData = {
+      channelId,
+      channelName: channel?.name,
+      questions,
+      currentIndex,
+      selectedSubChannel,
+      selectedDifficulty,
+      selectedCompany,
+      passedCheckpoints: Array.from(passedCheckpoints),
+      lastAccessedAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(sessionKey, JSON.stringify(sessionData));
+  }, [channelId, channel, questions, currentIndex, selectedSubChannel, selectedDifficulty, selectedCompany, passedCheckpoints, sessionKey]);
+
+  const exitSession = useCallback(() => {
+    saveSession();
+    setLocation('/channels');
+  }, [saveSession, setLocation]);
+
+  // Auto-save on progress
+  useEffect(() => {
+    if (questions.length > 0) {
+      saveSession();
+    }
+  }, [currentIndex, passedCheckpoints, saveSession, questions.length]);
+
   // Load tests for checkpoints
   useEffect(() => {
     const fetchTests = async () => {
@@ -191,6 +192,10 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
     };
     fetchTests();
   }, [channelId]);
+
+  // Get progress and toast hooks (must be before callbacks that use them)
+  const { completed, markCompleted, saveLastVisitedIndex } = useProgress(channelId || '');
+  const { toast } = useUnifiedToast();
 
   // Checkpoint helpers
   const isTestCheckpoint = useCallback((index: number) => index > 0 && index % QUESTIONS_PER_TEST === 0, []);
@@ -294,9 +299,6 @@ export function ExtremeQuestionViewer({ channelId, questionId }: ExtremeQuestion
       return newSet;
     });
   };
-  
-  const { completed, markCompleted, saveLastVisitedIndex } = useProgress(channelId || '');
-  const { toast } = useUnifiedToast();
 
   // Bookmarking system
   const [markedQuestions, setMarkedQuestions] = useState<string[]>(() => {

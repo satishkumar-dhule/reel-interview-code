@@ -125,7 +125,7 @@ export function ModernHomePage() {
             <ChannelsOverview 
               channels={subscribedChannels}
               questionCounts={questionCounts}
-              onChannelClick={(id) => setLocation(`/extreme/channel/${id}`)}
+              onChannelClick={(id) => setLocation(`/channel/${id}`)}
               onManageChannels={() => setLocation('/channels')}
             />
           </div>
@@ -1284,7 +1284,7 @@ function LearningPathSection({ onNavigate }: { onNavigate: (path: string) => voi
             onClick={() => {
               // Navigate to the first channel in the learning path
               if (path.channels.length > 0) {
-                onNavigate(`/extreme/channel/${path.channels[0]}`);
+                onNavigate(`/channel/${path.channels[0]}`);
               }
             }}
             className="group cursor-pointer w-full text-left"

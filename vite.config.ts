@@ -29,8 +29,8 @@ export default defineConfig({
     // This reduces initial bundle size by ~200KB
   },
   optimizeDeps: {
-    // Don't pre-bundle mermaid - it's lazy loaded
-    exclude: ['mermaid'],
+    // Include mermaid for proper bundling
+    include: ['mermaid'],
   },
   server: {
     host: "0.0.0.0",
