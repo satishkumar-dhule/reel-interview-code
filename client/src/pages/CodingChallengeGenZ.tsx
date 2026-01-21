@@ -444,7 +444,7 @@ export default function CodingChallengeGenZ() {
                     {/* Description */}
                     <div>
                       <h3 className="text-sm font-black text-primary mb-3 uppercase tracking-wider">Problem</h3>
-                      <p className="text-[#e0e0e0] leading-relaxed whitespace-pre-wrap">
+                      <p className="text-foreground leading-relaxed whitespace-pre-wrap">
                         {currentChallenge.description}
                       </p>
                     </div>

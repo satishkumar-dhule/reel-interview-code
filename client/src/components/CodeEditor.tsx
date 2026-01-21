@@ -35,19 +35,19 @@ loader.init().then((monaco) => {
       { token: 'attribute.value', foreground: 'CE9178' },
     ],
     colors: {
-      'editor.background': '#1E1E1E',
-      'editor.foreground': '#D4D4D4',
-      'editor.lineHighlightBackground': '#2D2D2D',
+      'editor.background': '#0F0F0F',
+      'editor.foreground': '#E0E0E0',
+      'editor.lineHighlightBackground': '#1A1A1A',
       'editor.selectionBackground': '#264F78',
       'editor.inactiveSelectionBackground': '#3A3D41',
-      'editorLineNumber.foreground': '#858585',
-      'editorLineNumber.activeForeground': '#C6C6C6',
-      'editorCursor.foreground': '#AEAFAD',
+      'editorLineNumber.foreground': '#6E7681',
+      'editorLineNumber.activeForeground': '#FFFFFF',
+      'editorCursor.foreground': '#00FF88',
       'editor.selectionHighlightBackground': '#ADD6FF26',
-      'editorIndentGuide.background': '#404040',
-      'editorIndentGuide.activeBackground': '#707070',
+      'editorIndentGuide.background': '#2A2A2A',
+      'editorIndentGuide.activeBackground': '#00FF88',
       'editorBracketMatch.background': '#0064001A',
-      'editorBracketMatch.border': '#888888',
+      'editorBracketMatch.border': '#00FF88',
     },
   });
 });
@@ -200,10 +200,10 @@ export function CodeEditor({
           },
         }}
         loading={
-          <div className="flex items-center justify-center h-full bg-[#1E1E1E]">
+          <div className="flex items-center justify-center h-full bg-[#0F0F0F]">
             <div className="flex flex-col items-center gap-3">
-              <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full" />
-              <span className="text-sm text-gray-400 font-mono">Loading editor...</span>
+              <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+              <span className="text-sm text-muted-foreground font-mono">Loading editor...</span>
             </div>
           </div>
         }
