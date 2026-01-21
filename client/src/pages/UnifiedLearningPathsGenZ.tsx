@@ -11,7 +11,7 @@ import { SEOHead } from '../components/SEOHead';
 import { allChannelsConfig } from '../lib/channels-config';
 import {
   Plus, Trash2, Edit, ChevronRight, Brain, Check, Target, Clock, Sparkles, Award,
-  Code, Server, Rocket, X, Search, Star, Zap, Trophy
+  Code, Server, Rocket, X, Search, Star, Zap, Trophy, Building2
 } from 'lucide-react';
 
 interface CustomPath {
@@ -30,99 +30,12 @@ interface Certification {
   category: string;
 }
 
-// Curated paths
-const curatedPaths = [
-  {
-    id: 'frontend',
-    name: 'Frontend Developer',
-    icon: Code,
-    color: 'from-blue-500 to-cyan-500',
-    description: 'Master React, JavaScript, and modern web development',
-    channels: ['frontend', 'react-native', 'javascript', 'algorithms'],
-    difficulty: 'Beginner Friendly',
-    duration: '3-6 months',
-    totalQuestions: 450,
-    jobs: ['Frontend Developer', 'React Developer', 'UI Engineer'],
-    skills: ['React', 'JavaScript', 'CSS', 'HTML', 'TypeScript'],
-    salary: '$80k - $120k'
-  },
-  {
-    id: 'backend',
-    name: 'Backend Engineer',
-    icon: Server,
-    color: 'from-green-500 to-emerald-500',
-    description: 'Build scalable APIs and microservices',
-    channels: ['backend', 'database', 'system-design', 'algorithms'],
-    difficulty: 'Intermediate',
-    duration: '4-8 months',
-    totalQuestions: 520,
-    jobs: ['Backend Engineer', 'API Developer', 'Systems Engineer'],
-    skills: ['Node.js', 'Python', 'SQL', 'REST APIs', 'Microservices'],
-    salary: '$90k - $140k'
-  },
-  {
-    id: 'fullstack',
-    name: 'Full Stack Developer',
-    icon: Rocket,
-    color: 'from-purple-500 to-pink-500',
-    description: 'End-to-end application development',
-    channels: ['frontend', 'backend', 'database', 'devops', 'system-design'],
-    difficulty: 'Advanced',
-    duration: '6-12 months',
-    totalQuestions: 680,
-    jobs: ['Full Stack Developer', 'Software Engineer', 'Tech Lead'],
-    skills: ['React', 'Node.js', 'SQL', 'AWS', 'System Design'],
-    salary: '$100k - $160k'
-  },
-  {
-    id: 'devops',
-    name: 'DevOps Engineer',
-    icon: Target,
-    color: 'from-orange-500 to-red-500',
-    description: 'Infrastructure, CI/CD, and cloud platforms',
-    channels: ['devops', 'kubernetes', 'aws', 'terraform', 'docker'],
-    difficulty: 'Advanced',
-    duration: '4-8 months',
-    totalQuestions: 420,
-    jobs: ['DevOps Engineer', 'SRE', 'Cloud Engineer'],
-    skills: ['Kubernetes', 'Docker', 'AWS', 'Terraform', 'CI/CD'],
-    salary: '$110k - $170k'
-  },
-  {
-    id: 'mobile',
-    name: 'Mobile Developer',
-    icon: Sparkles,
-    color: 'from-pink-500 to-rose-500',
-    description: 'iOS and Android app development',
-    channels: ['react-native', 'ios', 'android', 'frontend'],
-    difficulty: 'Intermediate',
-    duration: '4-6 months',
-    totalQuestions: 380,
-    jobs: ['Mobile Developer', 'iOS Developer', 'Android Developer'],
-    skills: ['React Native', 'Swift', 'Kotlin', 'Mobile UI'],
-    salary: '$85k - $130k'
-  },
-  {
-    id: 'data',
-    name: 'Data Engineer',
-    icon: Brain,
-    color: 'from-indigo-500 to-purple-500',
-    description: 'Data pipelines, warehousing, and analytics',
-    channels: ['data-engineering', 'database', 'python', 'aws'],
-    difficulty: 'Advanced',
-    duration: '6-10 months',
-    totalQuestions: 490,
-    jobs: ['Data Engineer', 'Analytics Engineer', 'ML Engineer'],
-    skills: ['Python', 'SQL', 'Spark', 'Airflow', 'Data Modeling'],
-    salary: '$95k - $150k'
-  }
-];
-
 export default function UnifiedLearningPathsGenZ() {
   const [, setLocation] = useLocation();
   const [view, setView] = useState<'all' | 'custom' | 'curated'>('all');
   const [customPaths, setCustomPaths] = useState<CustomPath[]>([]);
   const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [curatedPaths, setCuratedPaths] = useState<any[]>([]); // Curated paths - loaded from database
   const [showPathModal, setShowPathModal] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
   const [selectedPath, setSelectedPath] = useState<any>(null);
@@ -170,6 +83,75 @@ export default function UnifiedLearningPathsGenZ() {
     }
     loadCerts();
   }, []);
+
+  // Load curated paths from database
+  useEffect(() => {
+    async function loadCuratedPaths() {
+      try {
+        const response = await fetch('/api/learning-paths');
+        if (response.ok) {
+          const data = await response.json();
+          // Map database paths to UI format
+          const mappedPaths = data.map((path: any) => ({
+            id: path.id,
+            name: path.title,
+            icon: getIconForPath(path.pathType),
+            color: getColorForPath(path.pathType),
+            description: path.description,
+            channels: JSON.parse(path.channels || '[]'),
+            difficulty: path.difficulty.charAt(0).toUpperCase() + path.difficulty.slice(1),
+            duration: `${path.estimatedHours}h`,
+            totalQuestions: JSON.parse(path.questionIds || '[]').length,
+            jobs: path.learningObjectives ? JSON.parse(path.learningObjectives).slice(0, 3) : [],
+            skills: JSON.parse(path.tags || '[]').slice(0, 5),
+            salary: getSalaryRange(path.targetJobTitle),
+            pathType: path.pathType,
+            targetCompany: path.targetCompany,
+            milestones: JSON.parse(path.milestones || '[]')
+          }));
+          setCuratedPaths(mappedPaths);
+        }
+      } catch (e) {
+        console.error('Failed to load curated paths:', e);
+        // Fallback to empty array
+        setCuratedPaths([]);
+      }
+    }
+    loadCuratedPaths();
+  }, []);
+
+  // Helper functions for path mapping
+  const getIconForPath = (pathType: string) => {
+    const iconMap: Record<string, any> = {
+      'job-title': Code,
+      'company': Building2,
+      'skill': Brain,
+      'certification': Award
+    };
+    return iconMap[pathType] || Rocket;
+  };
+
+  const getColorForPath = (pathType: string) => {
+    const colorMap: Record<string, string> = {
+      'job-title': 'from-blue-500 to-cyan-500',
+      'company': 'from-green-500 to-emerald-500',
+      'skill': 'from-purple-500 to-pink-500',
+      'certification': 'from-orange-500 to-red-500'
+    };
+    return colorMap[pathType] || 'from-indigo-500 to-purple-500';
+  };
+
+  const getSalaryRange = (jobTitle: string | null) => {
+    const salaryMap: Record<string, string> = {
+      'frontend-engineer': '$80k - $120k',
+      'backend-engineer': '$90k - $140k',
+      'fullstack-engineer': '$100k - $160k',
+      'devops-engineer': '$110k - $170k',
+      'data-engineer': '$95k - $150k',
+      'mobile-developer': '$85k - $130k'
+    };
+    return jobTitle ? salaryMap[jobTitle] || '$80k - $150k' : '';
+  };
 
   // Get active paths
   const activePaths = (() => {

@@ -3,343 +3,602 @@
 /**
  * Generate Curated Learning Paths
  * 
- * This script analyzes available channels and certifications to automatically
- * generate curated learning paths. Runs as part of daily batch pipeline.
- * 
- * Usage: node script/generate-curated-paths.js
+ * Analyzes existing questions and creates realistic learning paths based on:
+ * - Available content in each channel
+ * - Question difficulty distribution
+ * - Company interview patterns
+ * - Job title requirements
+ * - Certification mappings
  */
 
-import Database from 'better-sqlite3';
-import { getAllChannels } from '../client/src/lib/data.js';
+import 'dotenv/config';
+import { dbClient } from './utils.js';
 
-const db = new Database('questions.db');
+const db = dbClient;
 
-// Path templates based on career goals and skill levels
-const PATH_TEMPLATES = [
-  {
-    id: 'full-stack-beginner',
-    name: 'Full-Stack Developer (Beginner)',
-    description: 'Start your journey as a full-stack developer',
-    icon: '🚀',
-    level: 'beginner',
-    requiredChannels: ['html', 'css', 'javascript', 'react'],
-    optionalChannels: ['nodejs', 'express'],
-    requiredCerts: [],
-    estimatedWeeks: 12
-  },
-  {
-    id: 'cloud-engineer',
-    name: 'Cloud Engineer Path',
-    description: 'Master cloud technologies and DevOps',
-    icon: '☁️',
-    level: 'intermediate',
-    requiredChannels: ['aws', 'docker', 'kubernetes'],
-    optionalChannels: ['terraform', 'linux'],
-    requiredCerts: ['aws-solutions-architect'],
-    estimatedWeeks: 16
-  },
-  {
-    id: 'data-structures-master',
-    name: 'Data Structures & Algorithms Master',
-    description: 'Ace technical interviews at top companies',
-    icon: '🧠',
-    level: 'intermediate',
-    requiredChannels: ['data-structures', 'algorithms'],
-    optionalChannels: ['system-design'],
-    requiredCerts: [],
-    estimatedWeeks: 20
-  },
-  {
-    id: 'frontend-specialist',
-    name: 'Frontend Specialist',
-    description: 'Become an expert in modern frontend development',
-    icon: '🎨',
-    level: 'intermediate',
-    requiredChannels: ['react', 'javascript', 'css', 'html'],
-    optionalChannels: ['typescript', 'nextjs', 'vue'],
-    requiredCerts: [],
-    estimatedWeeks: 14
-  },
-  {
-    id: 'backend-engineer',
-    name: 'Backend Engineer',
-    description: 'Build scalable server-side applications',
-    icon: '⚙️',
-    level: 'intermediate',
-    requiredChannels: ['nodejs', 'express', 'databases', 'api-design'],
-    optionalChannels: ['graphql', 'microservices'],
-    requiredCerts: [],
-    estimatedWeeks: 16
-  },
-  {
-    id: 'devops-specialist',
-    name: 'DevOps Specialist',
-    description: 'Master CI/CD, infrastructure, and automation',
-    icon: '🔧',
-    level: 'advanced',
-    requiredChannels: ['docker', 'kubernetes', 'aws', 'linux'],
-    optionalChannels: ['terraform', 'jenkins', 'monitoring'],
-    requiredCerts: ['aws-solutions-architect', 'kubernetes-admin'],
-    estimatedWeeks: 18
-  },
-  {
-    id: 'security-engineer',
-    name: 'Security Engineer',
-    description: 'Protect applications and infrastructure',
-    icon: '🔒',
-    level: 'advanced',
-    requiredChannels: ['security', 'networking', 'cryptography'],
-    optionalChannels: ['penetration-testing', 'compliance'],
-    requiredCerts: ['security-plus'],
-    estimatedWeeks: 20
-  },
-  {
-    id: 'mobile-developer',
-    name: 'Mobile Developer',
-    description: 'Build native and cross-platform mobile apps',
-    icon: '📱',
-    level: 'intermediate',
-    requiredChannels: ['react-native', 'javascript', 'mobile-design'],
-    optionalChannels: ['flutter', 'swift', 'kotlin'],
-    requiredCerts: [],
-    estimatedWeeks: 14
-  },
-  {
-    id: 'ai-ml-engineer',
-    name: 'AI/ML Engineer',
-    description: 'Build intelligent systems with machine learning',
-    icon: '🤖',
-    level: 'advanced',
-    requiredChannels: ['python', 'machine-learning', 'data-science'],
-    optionalChannels: ['deep-learning', 'nlp', 'computer-vision'],
-    requiredCerts: [],
-    estimatedWeeks: 24
-  },
-  {
-    id: 'interview-prep',
-    name: 'Interview Preparation Bootcamp',
-    description: 'Get ready for FAANG interviews',
-    icon: '💼',
-    level: 'intermediate',
-    requiredChannels: ['data-structures', 'algorithms', 'system-design'],
-    optionalChannels: ['behavioral-interview', 'coding-patterns'],
-    requiredCerts: [],
-    estimatedWeeks: 12
-  }
-];
-
-/**
- * Get all available channels from database
- */
-function getAvailableChannels() {
-  try {
-    const channels = getAllChannels();
-    const channelIds = channels.map(c => c.id);
-    
-    // Get question counts per channel
-    const channelCounts = {};
-    for (const channelId of channelIds) {
-      const result = db.prepare('SELECT COUNT(*) as count FROM questions WHERE channel = ?').get(channelId);
-      channelCounts[channelId] = result?.count || 0;
-    }
-    
-    return { channelIds, channelCounts };
-  } catch (error) {
-    console.error('Error getting channels:', error);
-    return { channelIds: [], channelCounts: {} };
-  }
+// Get all questions with their metadata
+async function getAllQuestions() {
+  const result = await db.execute(`
+    SELECT id, question, channel, sub_channel, difficulty, tags, companies
+    FROM questions
+    WHERE status = 'active'
+  `);
+  return result.rows;
 }
 
-/**
- * Get all available certifications from database
- */
-function getAvailableCertifications() {
+// Get question count by channel
+async function getChannelStats() {
+  const result = await db.execute(`
+    SELECT 
+      channel,
+      COUNT(*) as total,
+      SUM(CASE WHEN difficulty = 'beginner' THEN 1 ELSE 0 END) as beginner,
+      SUM(CASE WHEN difficulty = 'intermediate' THEN 1 ELSE 0 END) as intermediate,
+      SUM(CASE WHEN difficulty = 'advanced' THEN 1 ELSE 0 END) as advanced
+    FROM questions
+    WHERE status = 'active'
+    GROUP BY channel
+  `);
+  return result.rows;
+}
+
+// Get questions by company
+async function getQuestionsByCompany(company) {
+  const result = await db.execute({
+    sql: `
+      SELECT id, channel, difficulty
+      FROM questions
+      WHERE status = 'active' 
+      AND companies LIKE ?
+    `,
+    args: [`%"${company}"%`]
+  });
+  return result.rows;
+}
+
+// Parse JSON fields safely
+function parseJSON(field) {
+  if (!field) return [];
   try {
-    const certs = db.prepare('SELECT DISTINCT id, name FROM certifications').all();
-    return certs.map(c => c.id);
-  } catch (error) {
-    console.error('Error getting certifications:', error);
+    return JSON.parse(field);
+  } catch {
     return [];
   }
 }
 
-/**
- * Check if a path template can be created based on available content
- */
-function canCreatePath(template, availableChannels, availableCerts) {
-  const { channelIds, channelCounts } = availableChannels;
-  
-  // Check if required channels exist and have content
-  const hasRequiredChannels = template.requiredChannels.every(ch => {
-    const exists = channelIds.includes(ch);
-    const hasContent = channelCounts[ch] > 0;
-    return exists && hasContent;
-  });
-  
-  if (!hasRequiredChannels) return false;
-  
-  // Check if required certifications exist
-  if (template.requiredCerts.length > 0) {
-    const hasRequiredCerts = template.requiredCerts.every(cert => 
-      availableCerts.includes(cert)
-    );
-    if (!hasRequiredCerts) return false;
-  }
-  
-  return true;
+// Generate path ID
+function generatePathId(type, name) {
+  return `${type}-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 }
 
-/**
- * Generate a curated path from template
- */
-function generatePath(template, availableChannels) {
-  const { channelIds, channelCounts } = availableChannels;
-  
-  // Filter optional channels to only include those with content
-  const optionalChannels = template.optionalChannels.filter(ch => 
-    channelIds.includes(ch) && channelCounts[ch] > 0
-  );
-  
-  // Calculate total questions
-  const totalQuestions = [
-    ...template.requiredChannels,
-    ...optionalChannels
-  ].reduce((sum, ch) => sum + (channelCounts[ch] || 0), 0);
-  
-  return {
-    id: template.id,
-    name: template.name,
-    description: template.description,
-    icon: template.icon,
-    level: template.level,
-    channels: template.requiredChannels,
-    optionalChannels,
-    certifications: template.requiredCerts,
-    estimatedWeeks: template.estimatedWeeks,
-    totalQuestions,
-    createdAt: new Date().toISOString(),
-    type: 'curated'
+// Create a balanced question selection
+function selectQuestions(questions, targetCount, difficultyMix) {
+  const selected = [];
+  const byDifficulty = {
+    beginner: questions.filter(q => q.difficulty === 'beginner'),
+    intermediate: questions.filter(q => q.difficulty === 'intermediate'),
+    advanced: questions.filter(q => q.difficulty === 'advanced'),
   };
+
+  // Select based on difficulty mix
+  for (const [difficulty, percentage] of Object.entries(difficultyMix)) {
+    const count = Math.floor(targetCount * percentage);
+    const available = byDifficulty[difficulty] || [];
+    const shuffled = available.sort(() => Math.random() - 0.5);
+    selected.push(...shuffled.slice(0, count).map(q => q.id));
+  }
+
+  return selected;
 }
 
-/**
- * Save curated paths to database
- */
-function savePaths(paths) {
-  try {
-    // Create table if not exists
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS learning_paths (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        description TEXT,
-        icon TEXT,
-        level TEXT,
-        channels TEXT,
-        optional_channels TEXT,
-        certifications TEXT,
-        estimated_weeks INTEGER,
-        total_questions INTEGER,
-        created_at TEXT,
-        type TEXT DEFAULT 'curated'
-      )
-    `);
+// Generate career-focused paths based on actual content
+async function generateCareerPaths(questions, channelStats) {
+  const paths = [];
+
+  // Frontend Developer Path
+  const frontendQuestions = questions.filter(q => 
+    ['frontend', 'react-native', 'javascript', 'css', 'html'].includes(q.channel)
+  );
+  if (frontendQuestions.length >= 50) {
+    paths.push({
+      id: generatePathId('career', 'frontend-developer'),
+      title: 'Frontend Developer',
+      description: 'Master React, JavaScript, and modern web development',
+      pathType: 'job-title',
+      targetJobTitle: 'frontend-engineer',
+      difficulty: 'beginner',
+      estimatedHours: Math.ceil(frontendQuestions.length * 0.15),
+      questionIds: JSON.stringify(selectQuestions(frontendQuestions, 100, {
+        beginner: 0.4,
+        intermediate: 0.4,
+        advanced: 0.2
+      })),
+      channels: JSON.stringify(['frontend', 'react-native', 'javascript']),
+      tags: JSON.stringify(['react', 'javascript', 'css', 'html', 'typescript']),
+      learningObjectives: JSON.stringify([
+        'Build responsive web applications',
+        'Master React hooks and state management',
+        'Understand modern JavaScript (ES6+)',
+        'Implement component-based architecture'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'JavaScript Fundamentals', questionCount: 25 },
+        { title: 'React Basics', questionCount: 25 },
+        { title: 'Advanced React Patterns', questionCount: 25 },
+        { title: 'Performance & Optimization', questionCount: 25 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  // Backend Engineer Path
+  const backendQuestions = questions.filter(q => 
+    ['backend', 'database', 'api', 'microservices', 'nodejs'].includes(q.channel)
+  );
+  if (backendQuestions.length >= 50) {
+    paths.push({
+      id: generatePathId('career', 'backend-engineer'),
+      title: 'Backend Engineer',
+      description: 'Build scalable APIs and microservices',
+      pathType: 'job-title',
+      targetJobTitle: 'backend-engineer',
+      difficulty: 'intermediate',
+      estimatedHours: Math.ceil(backendQuestions.length * 0.15),
+      questionIds: JSON.stringify(selectQuestions(backendQuestions, 120, {
+        beginner: 0.3,
+        intermediate: 0.5,
+        advanced: 0.2
+      })),
+      channels: JSON.stringify(['backend', 'database', 'api']),
+      tags: JSON.stringify(['nodejs', 'python', 'sql', 'rest-api', 'microservices']),
+      learningObjectives: JSON.stringify([
+        'Design RESTful APIs',
+        'Implement database schemas',
+        'Build microservices architecture',
+        'Handle authentication and authorization'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'API Design', questionCount: 30 },
+        { title: 'Database Management', questionCount: 30 },
+        { title: 'Microservices', questionCount: 30 },
+        { title: 'Security & Scaling', questionCount: 30 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  // Full Stack Developer Path
+  const fullStackQuestions = questions.filter(q => 
+    ['frontend', 'backend', 'database', 'devops', 'system-design'].includes(q.channel)
+  );
+  if (fullStackQuestions.length >= 100) {
+    paths.push({
+      id: generatePathId('career', 'fullstack-developer'),
+      title: 'Full Stack Developer',
+      description: 'End-to-end application development',
+      pathType: 'job-title',
+      targetJobTitle: 'fullstack-engineer',
+      difficulty: 'advanced',
+      estimatedHours: Math.ceil(fullStackQuestions.length * 0.12),
+      questionIds: JSON.stringify(selectQuestions(fullStackQuestions, 150, {
+        beginner: 0.25,
+        intermediate: 0.5,
+        advanced: 0.25
+      })),
+      channels: JSON.stringify(['frontend', 'backend', 'database', 'devops']),
+      tags: JSON.stringify(['react', 'nodejs', 'sql', 'aws', 'system-design']),
+      learningObjectives: JSON.stringify([
+        'Build complete web applications',
+        'Implement both frontend and backend',
+        'Deploy and maintain applications',
+        'Design scalable architectures'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'Frontend Mastery', questionCount: 40 },
+        { title: 'Backend Development', questionCount: 40 },
+        { title: 'Database & APIs', questionCount: 35 },
+        { title: 'DevOps & Deployment', questionCount: 35 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  // DevOps Engineer Path
+  const devopsQuestions = questions.filter(q => 
+    ['devops', 'kubernetes', 'aws', 'terraform', 'docker', 'ci-cd'].includes(q.channel)
+  );
+  if (devopsQuestions.length >= 40) {
+    paths.push({
+      id: generatePathId('career', 'devops-engineer'),
+      title: 'DevOps Engineer',
+      description: 'Infrastructure, CI/CD, and cloud platforms',
+      pathType: 'job-title',
+      targetJobTitle: 'devops-engineer',
+      difficulty: 'advanced',
+      estimatedHours: Math.ceil(devopsQuestions.length * 0.18),
+      questionIds: JSON.stringify(selectQuestions(devopsQuestions, 100, {
+        beginner: 0.2,
+        intermediate: 0.5,
+        advanced: 0.3
+      })),
+      channels: JSON.stringify(['devops', 'kubernetes', 'aws', 'terraform']),
+      tags: JSON.stringify(['kubernetes', 'docker', 'aws', 'terraform', 'ci-cd']),
+      learningObjectives: JSON.stringify([
+        'Manage cloud infrastructure',
+        'Implement CI/CD pipelines',
+        'Orchestrate containers with Kubernetes',
+        'Automate infrastructure with IaC'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'Cloud Fundamentals', questionCount: 25 },
+        { title: 'Container Orchestration', questionCount: 25 },
+        { title: 'CI/CD Pipelines', questionCount: 25 },
+        { title: 'Infrastructure as Code', questionCount: 25 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  // Data Engineer Path
+  const dataQuestions = questions.filter(q => 
+    ['data-engineering', 'database', 'python', 'sql', 'etl'].includes(q.channel)
+  );
+  if (dataQuestions.length >= 40) {
+    paths.push({
+      id: generatePathId('career', 'data-engineer'),
+      title: 'Data Engineer',
+      description: 'Data pipelines, warehousing, and analytics',
+      pathType: 'job-title',
+      targetJobTitle: 'data-engineer',
+      difficulty: 'advanced',
+      estimatedHours: Math.ceil(dataQuestions.length * 0.18),
+      questionIds: JSON.stringify(selectQuestions(dataQuestions, 100, {
+        beginner: 0.2,
+        intermediate: 0.5,
+        advanced: 0.3
+      })),
+      channels: JSON.stringify(['data-engineering', 'database', 'python']),
+      tags: JSON.stringify(['python', 'sql', 'spark', 'airflow', 'data-modeling']),
+      learningObjectives: JSON.stringify([
+        'Design data pipelines',
+        'Build data warehouses',
+        'Implement ETL processes',
+        'Optimize query performance'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'SQL Mastery', questionCount: 25 },
+        { title: 'Data Pipeline Design', questionCount: 25 },
+        { title: 'Big Data Processing', questionCount: 25 },
+        { title: 'Data Warehousing', questionCount: 25 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  // System Design Path
+  const systemDesignQuestions = questions.filter(q => 
+    q.channel === 'system-design' || parseJSON(q.tags).includes('system-design')
+  );
+  if (systemDesignQuestions.length >= 30) {
+    paths.push({
+      id: generatePathId('skill', 'system-design'),
+      title: 'System Design Mastery',
+      description: 'Design scalable distributed systems',
+      pathType: 'skill',
+      difficulty: 'advanced',
+      estimatedHours: Math.ceil(systemDesignQuestions.length * 0.25),
+      questionIds: JSON.stringify(selectQuestions(systemDesignQuestions, 80, {
+        beginner: 0.2,
+        intermediate: 0.4,
+        advanced: 0.4
+      })),
+      channels: JSON.stringify(['system-design']),
+      tags: JSON.stringify(['scalability', 'distributed-systems', 'architecture', 'design-patterns']),
+      learningObjectives: JSON.stringify([
+        'Design scalable architectures',
+        'Understand distributed systems',
+        'Apply design patterns',
+        'Handle system trade-offs'
+      ]),
+      milestones: JSON.stringify([
+        { title: 'Fundamentals', questionCount: 20 },
+        { title: 'Scalability Patterns', questionCount: 20 },
+        { title: 'Distributed Systems', questionCount: 20 },
+        { title: 'Real-world Systems', questionCount: 20 }
+      ]),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      lastGenerated: new Date().toISOString()
+    });
+  }
+
+  return paths;
+}
+
+// Generate company-specific paths
+async function generateCompanyPaths(questions) {
+  const paths = [];
+  const topCompanies = ['Google', 'Amazon', 'Meta', 'Microsoft', 'Apple'];
+
+  for (const company of topCompanies) {
+    const companyQuestions = await getQuestionsByCompany(company);
     
-    // Clear existing curated paths
-    db.prepare('DELETE FROM learning_paths WHERE type = ?').run('curated');
-    
-    // Insert new paths
-    const insert = db.prepare(`
-      INSERT INTO learning_paths (
-        id, name, description, icon, level, channels, optional_channels,
-        certifications, estimated_weeks, total_questions, created_at, type
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    for (const path of paths) {
-      insert.run(
-        path.id,
-        path.name,
-        path.description,
-        path.icon,
-        path.level,
-        JSON.stringify(path.channels),
-        JSON.stringify(path.optionalChannels),
-        JSON.stringify(path.certifications),
-        path.estimatedWeeks,
-        path.totalQuestions,
-        path.createdAt,
-        path.type
-      );
+    if (companyQuestions.length >= 30) {
+      paths.push({
+        id: generatePathId('company', company),
+        title: `${company} Interview Prep`,
+        description: `Prepare for ${company} technical interviews with real questions`,
+        pathType: 'company',
+        targetCompany: company,
+        difficulty: 'intermediate',
+        estimatedHours: Math.ceil(companyQuestions.length * 0.2),
+        questionIds: JSON.stringify(companyQuestions.slice(0, 80).map(q => q.id)),
+        channels: JSON.stringify([...new Set(companyQuestions.map(q => q.channel))]),
+        tags: JSON.stringify([company.toLowerCase(), 'interview-prep', 'faang']),
+        learningObjectives: JSON.stringify([
+          `Understand ${company}'s interview process`,
+          'Practice company-specific questions',
+          'Learn common patterns and approaches',
+          'Build confidence for the interview'
+        ]),
+        milestones: JSON.stringify([
+          { title: 'Easy Questions', questionCount: Math.ceil(companyQuestions.length * 0.3) },
+          { title: 'Medium Questions', questionCount: Math.ceil(companyQuestions.length * 0.4) },
+          { title: 'Hard Questions', questionCount: Math.ceil(companyQuestions.length * 0.3) }
+        ]),
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        lastGenerated: new Date().toISOString()
+      });
     }
+  }
+
+  return paths;
+}
+
+// Get all active certifications
+async function getAllCertifications() {
+  const result = await db.execute(`
+    SELECT id, name, provider, difficulty, category, channel_mappings, estimated_hours
+    FROM certifications
+    WHERE status = 'active'
+  `);
+  return result.rows;
+}
+
+// Get questions for a certification based on channel mappings
+async function getQuestionsForCertification(cert, allQuestions) {
+  // First try channel mappings if they exist
+  const channelMappings = parseJSON(cert.channel_mappings);
+  if (channelMappings && channelMappings.length > 0) {
+    const certQuestions = allQuestions.filter(q => {
+      return channelMappings.some(mapping => {
+        if (mapping.channel === q.channel) {
+          // If subChannel is specified, match it too
+          if (mapping.subChannel) {
+            return mapping.subChannel === q.sub_channel;
+          }
+          return true;
+        }
+        return false;
+      });
+    });
+    return certQuestions;
+  }
+
+  // Fallback: Use certification ID as channel name
+  // Many certifications have questions in channels named after the cert ID
+  const certQuestions = allQuestions.filter(q => q.channel === cert.id);
+  return certQuestions;
+}
+
+// Generate certification-based paths
+async function generateCertificationPaths(questions) {
+  const paths = [];
+  const certifications = await getAllCertifications();
+
+  console.log(`📜 Found ${certifications.length} active certifications\n`);
+
+  for (const cert of certifications) {
+    const certQuestions = await getQuestionsForCertification(cert, questions);
     
-    console.log(`✅ Saved ${paths.length} curated learning paths to database`);
-  } catch (error) {
-    console.error('Error saving paths:', error);
+    // Only create path if we have enough questions (at least 20)
+    if (certQuestions.length >= 20) {
+      // Determine difficulty mix based on cert difficulty
+      let difficultyMix;
+      if (cert.difficulty === 'beginner') {
+        difficultyMix = { beginner: 0.6, intermediate: 0.3, advanced: 0.1 };
+      } else if (cert.difficulty === 'intermediate') {
+        difficultyMix = { beginner: 0.3, intermediate: 0.5, advanced: 0.2 };
+      } else if (cert.difficulty === 'advanced' || cert.difficulty === 'expert') {
+        difficultyMix = { beginner: 0.1, intermediate: 0.4, advanced: 0.5 };
+      } else {
+        difficultyMix = { beginner: 0.3, intermediate: 0.4, advanced: 0.3 };
+      }
+
+      // Select questions based on difficulty mix
+      const targetCount = Math.min(certQuestions.length, 100);
+      const selectedQuestions = selectQuestions(certQuestions, targetCount, difficultyMix);
+
+      // Get unique channels covered
+      const channels = [...new Set(certQuestions.map(q => q.channel))];
+
+      paths.push({
+        id: generatePathId('certification', cert.id),
+        title: `${cert.name} Prep`,
+        description: `Prepare for ${cert.name} certification exam with targeted practice questions`,
+        pathType: 'certification',
+        targetCompany: null,
+        targetJobTitle: null,
+        difficulty: cert.difficulty === 'expert' ? 'advanced' : cert.difficulty,
+        estimatedHours: cert.estimated_hours || Math.ceil(selectedQuestions.length * 0.15),
+        questionIds: JSON.stringify(selectedQuestions),
+        channels: JSON.stringify(channels),
+        tags: JSON.stringify([cert.provider.toLowerCase().replace(/\s+/g, '-'), cert.category, 'certification', 'exam-prep']),
+        learningObjectives: JSON.stringify([
+          `Master ${cert.name} exam topics`,
+          'Practice with real-world scenarios',
+          'Understand key concepts and services',
+          'Build confidence for certification exam'
+        ]),
+        milestones: JSON.stringify([
+          { title: 'Foundation', questionCount: Math.ceil(selectedQuestions.length * 0.25) },
+          { title: 'Core Concepts', questionCount: Math.ceil(selectedQuestions.length * 0.35) },
+          { title: 'Advanced Topics', questionCount: Math.ceil(selectedQuestions.length * 0.25) },
+          { title: 'Exam Readiness', questionCount: Math.ceil(selectedQuestions.length * 0.15) }
+        ]),
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        lastGenerated: new Date().toISOString()
+      });
+    }
   }
+
+  return paths;
 }
 
-/**
- * Generate JSON file for frontend consumption
- */
-function generateJSON(paths) {
-  const fs = await import('fs');
-  const path = await import('path');
-  
-  const outputPath = path.join(process.cwd(), 'client/public/data/curated-paths.json');
-  
-  // Ensure directory exists
-  const dir = path.dirname(outputPath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  
-  fs.writeFileSync(outputPath, JSON.stringify(paths, null, 2));
-  console.log(`✅ Generated curated-paths.json with ${paths.length} paths`);
-}
-
-/**
- * Main execution
- */
+// Main function
 async function main() {
-  console.log('🚀 Starting curated learning paths generation...\n');
-  
-  // Get available content
-  const availableChannels = getAvailableChannels();
-  const availableCerts = getAvailableCertifications();
-  
-  console.log(`📊 Found ${availableChannels.channelIds.length} channels`);
-  console.log(`📜 Found ${availableCerts.length} certifications\n`);
-  
-  // Generate paths from templates
-  const generatedPaths = [];
-  
-  for (const template of PATH_TEMPLATES) {
-    if (canCreatePath(template, availableChannels, availableCerts)) {
-      const path = generatePath(template, availableChannels);
-      generatedPaths.push(path);
-      console.log(`✓ Generated: ${path.name} (${path.totalQuestions} questions)`);
+  console.log('🚀 Generating curated learning paths...\n');
+
+  const questions = await getAllQuestions();
+  const channelStats = await getChannelStats();
+
+  console.log(`📊 Found ${questions.length} active questions across ${channelStats.length} channels\n`);
+
+  // Generate paths
+  const careerPaths = await generateCareerPaths(questions, channelStats);
+  const companyPaths = await generateCompanyPaths(questions);
+  const certificationPaths = await generateCertificationPaths(questions);
+  const allPaths = [...careerPaths, ...companyPaths, ...certificationPaths];
+
+  console.log(`✨ Generated ${allPaths.length} curated paths:`);
+  console.log(`   - ${careerPaths.length} career paths`);
+  console.log(`   - ${companyPaths.length} company paths`);
+  console.log(`   - ${certificationPaths.length} certification paths\n`);
+
+  // Get existing paths from database
+  const existingResult = await db.execute('SELECT id, last_generated FROM learning_paths');
+  const existingPaths = new Map(existingResult.rows.map(row => [row.id, row]));
+
+  let created = 0;
+  let updated = 0;
+  let unchanged = 0;
+
+  // Insert or update paths incrementally
+  for (const path of allPaths) {
+    const existing = existingPaths.get(path.id);
+    
+    if (!existing) {
+      // New path - insert
+      await db.execute({
+        sql: `
+          INSERT INTO learning_paths (
+            id, title, description, path_type, target_company, target_job_title,
+            difficulty, estimated_hours, question_ids, channels, tags,
+            learning_objectives, milestones, status, created_at, last_updated, last_generated
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
+        args: [
+          path.id, 
+          path.title, 
+          path.description, 
+          path.pathType, 
+          path.targetCompany || null, 
+          path.targetJobTitle || null,
+          path.difficulty, 
+          path.estimatedHours, 
+          path.questionIds, 
+          path.channels, 
+          path.tags || '[]',
+          path.learningObjectives || '[]', 
+          path.milestones || '[]', 
+          path.status, 
+          path.createdAt, 
+          path.lastUpdated || null, 
+          path.lastGenerated || null
+        ]
+      });
+      const questionCount = JSON.parse(path.questionIds).length;
+      console.log(`  ✨ NEW: ${path.title} (${questionCount} questions, ${path.estimatedHours}h)`);
+      created++;
     } else {
-      console.log(`✗ Skipped: ${template.name} (missing required content)`);
+      // Existing path - update with fresh questions
+      await db.execute({
+        sql: `
+          UPDATE learning_paths 
+          SET 
+            title = ?,
+            description = ?,
+            difficulty = ?,
+            estimated_hours = ?,
+            question_ids = ?,
+            channels = ?,
+            tags = ?,
+            learning_objectives = ?,
+            milestones = ?,
+            last_updated = ?,
+            last_generated = ?
+          WHERE id = ?
+        `,
+        args: [
+          path.title,
+          path.description,
+          path.difficulty,
+          path.estimatedHours,
+          path.questionIds,
+          path.channels,
+          path.tags || '[]',
+          path.learningObjectives || '[]',
+          path.milestones || '[]',
+          new Date().toISOString(),
+          new Date().toISOString(),
+          path.id
+        ]
+      });
+      const questionCount = JSON.parse(path.questionIds).length;
+      console.log(`  🔄 UPDATED: ${path.title} (${questionCount} questions, ${path.estimatedHours}h)`);
+      updated++;
     }
   }
-  
-  console.log(`\n📦 Generated ${generatedPaths.length} curated paths\n`);
-  
-  // Save to database
-  savePaths(generatedPaths);
-  
-  // Generate JSON file
-  await generateJSON(generatedPaths);
-  
-  console.log('\n✨ Curated paths generation complete!');
-  
-  db.close();
+
+  // Check for paths that no longer have enough questions (mark as archived, don't delete)
+  const generatedIds = new Set(allPaths.map(p => p.id));
+  for (const [existingId, existingPath] of existingPaths) {
+    if (!generatedIds.has(existingId)) {
+      // Path no longer meets criteria - archive it instead of deleting
+      await db.execute({
+        sql: `UPDATE learning_paths SET status = 'archived', last_updated = ? WHERE id = ?`,
+        args: [new Date().toISOString(), existingId]
+      });
+      console.log(`  📦 ARCHIVED: ${existingId} (insufficient questions)`);
+    } else {
+      unchanged++;
+    }
+  }
+
+  console.log(`\n✅ Pipeline complete!`);
+  console.log(`   📊 Summary: ${created} created, ${updated} updated, ${unchanged - updated} unchanged`);
+  console.log(`\n💡 Paths are stored in database and will be enhanced on next run.`);
+  console.log(`   Run this script daily to keep paths fresh with latest content.`);
 }
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
-}
-
-export { generatePath, canCreatePath, PATH_TEMPLATES };
+main().catch(console.error);

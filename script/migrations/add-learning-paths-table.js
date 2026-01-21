@@ -5,14 +5,15 @@
  * Creates the learning_paths table for storing dynamically generated learning paths
  */
 
-import { client } from '../../server/db.js';
+import 'dotenv/config';
+import { dbClient } from '../utils.js';
 
 async function migrate() {
   console.log('🔄 Running migration: Add learning_paths table...\n');
 
   try {
     // Create learning_paths table
-    await client.execute(`
+    await dbClient.execute(`
       CREATE TABLE IF NOT EXISTS learning_paths (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -42,37 +43,37 @@ async function migrate() {
     console.log('✅ Created learning_paths table');
 
     // Create indexes for better query performance
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_type 
       ON learning_paths(path_type)
     `);
     console.log('✅ Created index on path_type');
 
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_difficulty 
       ON learning_paths(difficulty)
     `);
     console.log('✅ Created index on difficulty');
 
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_company 
       ON learning_paths(target_company)
     `);
     console.log('✅ Created index on target_company');
 
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_job_title 
       ON learning_paths(target_job_title)
     `);
     console.log('✅ Created index on target_job_title');
 
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_status 
       ON learning_paths(status)
     `);
     console.log('✅ Created index on status');
 
-    await client.execute(`
+    await dbClient.execute(`
       CREATE INDEX IF NOT EXISTS idx_learning_paths_popularity 
       ON learning_paths(popularity DESC)
     `);

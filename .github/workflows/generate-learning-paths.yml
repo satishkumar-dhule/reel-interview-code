@@ -1,8 +1,8 @@
-name: Generate Learning Paths
+name: Generate Curated Learning Paths
 
 on:
   schedule:
-    # Run daily at 2 AM UTC
+    # Run daily at 2 AM UTC to enhance paths with latest content
     - cron: '0 2 * * *'
   workflow_dispatch: # Allow manual trigger
 
@@ -34,17 +34,17 @@ jobs:
         run: |
           echo "Database URL configured"
 
-      - name: Generate learning paths
+      - name: Generate curated learning paths
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TURSO_WRITE_MODE: "true"
         run: |
-          node script/generate-learning-paths.js
+          node script/generate-curated-paths.js
 
       - name: Commit and push if changed
         run: |
-          git config --global user.name 'Learning Path Bot'
+          git config --global user.name 'Curated Paths Bot'
           git config --global user.email 'bot@github-actions'
           git add -A
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🎓 Update learning paths [automated]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🎓 Update curated learning paths [automated]" && git push)
