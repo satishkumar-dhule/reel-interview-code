@@ -102,7 +102,7 @@ export function YouTubePlayer({ shortVideo, longVideo }: YouTubePlayerProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 lg:p-12"
+              className="fixed inset-0 z-[99999] bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 lg:p-12"
               onClick={closePlayer}
             >
               <motion.div
@@ -115,14 +115,14 @@ export function YouTubePlayer({ shortVideo, longVideo }: YouTubePlayerProps) {
                 {/* Close Button - positioned outside video */}
                 <button
                   onClick={closePlayer}
-                  className="absolute -top-12 right-0 z-20 p-2 text-white hover:text-white/80 transition-colors"
+                  className="absolute -top-12 right-0 z-20 p-2 text-foreground hover:text-foreground/80 transition-colors"
                 >
                   <X className="w-6 h-6" />
                   <span className="sr-only">Close</span>
                 </button>
 
                 {/* Video Container - proper aspect ratio */}
-                <div className={`relative bg-black rounded-lg overflow-hidden border border-white/20 shadow-2xl ${
+                <div className={`relative bg-background rounded-lg overflow-hidden border border-white/20 shadow-2xl ${
                   activeVideo === 'short' && isYouTubeShort(shortVideo || '')
                     ? 'max-w-sm mx-auto aspect-[9/16]'
                     : 'w-full aspect-video'
@@ -141,7 +141,7 @@ export function YouTubePlayer({ shortVideo, longVideo }: YouTubePlayerProps) {
 
                 {/* Video Type Label */}
                 <div className="mt-4 text-center">
-                  <span className="text-xs font-bold uppercase tracking-widest text-white/50">
+                  <span className="text-xs font-bold uppercase tracking-widest text-foreground/50">
                     {activeVideo === 'short' ? '⚡ Quick Explanation' : '📚 Deep Dive'}
                   </span>
                 </div>

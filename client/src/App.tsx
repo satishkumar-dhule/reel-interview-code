@@ -32,8 +32,8 @@ const CertificationPractice = React.lazy(() => import("@/pages/CertificationPrac
 const CertificationExam = React.lazy(() => import("@/pages/CertificationExamGenZ"));
 const Documentation = React.lazy(() => import("@/pages/Documentation"));
 const ExtremeQuestionViewer = React.lazy(() => import("@/pages/ExtremeQuestionViewer"));
-const LearningPaths = React.lazy(() => import("@/pages/LearningPathsGenZ"));
-const MyPath = React.lazy(() => import("@/pages/MyPathGenZ"));
+const LearningPaths = React.lazy(() => import("@/pages/UnifiedLearningPathsGenZ"));
+const MyPath = React.lazy(() => import("@/pages/UnifiedLearningPathsGenZ"));
 const PersonalizedPath = React.lazy(() => import("@/pages/PersonalizedPath"));
 import { ProgressiveOnboarding } from "./components/ProgressiveOnboarding";
 import { ThemeProvider } from "./context/ThemeContext";

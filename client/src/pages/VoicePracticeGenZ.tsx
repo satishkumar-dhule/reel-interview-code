@@ -254,12 +254,12 @@ export default function VoicePracticeGenZ() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#00ff88]/20 flex items-center justify-center mx-auto mb-4">
-            <div className="w-8 h-8 border-3 border-[#00ff88] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
-          <p className="text-[#a0a0a0]">Loading questions...</p>
+          <p className="text-muted-foreground">Loading questions...</p>
         </div>
       </div>
     );
@@ -267,13 +267,13 @@ export default function VoicePracticeGenZ() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-6">
-            <BookOpen className="w-10 h-10 text-[#a0a0a0]" />
+          <div className="w-20 h-20 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="w-10 h-10 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">No Questions Available</h2>
-          <p className="text-[#a0a0a0] mb-6">Subscribe to channels to access practice questions</p>
+          <h2 className="text-xl font-bold text-foreground mb-2">No Questions Available</h2>
+          <p className="text-muted-foreground mb-6">Subscribe to channels to access practice questions</p>
           <GenZButton onClick={() => setLocation('/channels')}>
             Browse Channels
           </GenZButton>
@@ -284,10 +284,10 @@ export default function VoicePracticeGenZ() {
 
   if (!isSpeechSupported) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold text-white mb-3">Browser Not Supported</h1>
-          <p className="text-[#a0a0a0] mb-6">
+          <h1 className="text-2xl font-bold text-foreground mb-3">Browser Not Supported</h1>
+          <p className="text-muted-foreground mb-6">
             Voice practice requires the Web Speech API. Please use Chrome, Edge, or Safari.
           </p>
           <GenZButton onClick={() => setLocation('/')}>
@@ -309,20 +309,20 @@ export default function VoicePracticeGenZ() {
       />
 
       <AppLayout fullWidth hideNav>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           {/* Header */}
-          <header className="sticky top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-md">
+          <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
             <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setLocation('/')}
-                  className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-muted rounded-lg transition-colors"
                 >
-                  <ArrowLeft className="w-4 h-4 text-[#a0a0a0]" />
+                  <ArrowLeft className="w-4 h-4 text-muted-foreground" />
                 </button>
                 <div>
-                  <h1 className="font-semibold text-white text-sm">Voice Practice</h1>
-                  <p className="text-[10px] text-[#a0a0a0]">
+                  <h1 className="font-semibold text-foreground text-sm">Voice Practice</h1>
+                  <p className="text-[10px] text-muted-foreground">
                     Q{currentIndex + 1}/{questions.length}
                   </p>
                 </div>
@@ -357,40 +357,40 @@ export default function VoicePracticeGenZ() {
                 <GenZCard className="p-6" neonBorder>
                   <div className="flex items-start gap-4 mb-4">
                     <div className="p-2.5 rounded-xl bg-[#00ff88]/10 flex-shrink-0">
-                      <Sparkles className="w-5 h-5 text-[#00ff88]" />
+                      <Sparkles className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1">
-                      <h2 className="text-lg font-semibold text-white mb-2">{currentQuestion.question}</h2>
+                      <h2 className="text-lg font-semibold text-foreground mb-2">{currentQuestion.question}</h2>
                       <div className="flex items-center gap-2 text-sm">
                         <span className={`px-2.5 py-1 rounded-lg text-xs font-medium ${
-                          currentQuestion.difficulty === 'beginner' ? 'bg-[#00ff88]/20 text-[#00ff88]' :
+                          currentQuestion.difficulty === 'beginner' ? 'bg-[#00ff88]/20 text-primary' :
                           currentQuestion.difficulty === 'intermediate' ? 'bg-[#ffd700]/20 text-[#ffd700]' :
                           'bg-[#ff0080]/20 text-[#ff0080]'
                         }`}>
                           {currentQuestion.difficulty}
                         </span>
-                        <span className="text-[#a0a0a0]">•</span>
-                        <span className="text-[#a0a0a0]">{currentQuestion.channel}</span>
+                        <span className="text-muted-foreground">•</span>
+                        <span className="text-muted-foreground">{currentQuestion.channel}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Answer Display */}
                   {showAnswer && (
-                    <div className="bg-black/50 rounded-xl p-5 border border-white/10">
+                    <div className="bg-background/50 rounded-xl p-5 border border-border">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <Eye className="w-4 h-4 text-[#00ff88]" />
-                          <span className="text-sm font-semibold text-white">
+                          <Eye className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold text-foreground">
                             {mode === 'training' ? 'Answer to Read' : 'Ideal Answer'}
                           </span>
                         </div>
-                        <span className="text-xs text-[#a0a0a0] px-2 py-1 bg-white/5 rounded-lg">
+                        <span className="text-xs text-muted-foreground px-2 py-1 bg-muted/50 rounded-lg">
                           {targetWords} words
                         </span>
                       </div>
                       <div className="max-h-[500px] overflow-y-auto">
-                        <p className="text-white text-[15px] leading-[1.7] whitespace-pre-wrap">
+                        <p className="text-foreground text-[15px] leading-[1.7] whitespace-pre-wrap">
                           {currentQuestion.answer}
                         </p>
                       </div>
@@ -410,14 +410,14 @@ export default function VoicePracticeGenZ() {
 
                     {/* Transcript */}
                     <div className="w-full">
-                      <div className="bg-black/50 rounded-xl p-4 min-h-[100px] border border-white/10">
+                      <div className="bg-background/50 rounded-xl p-4 min-h-[100px] border border-border">
                         {transcript || interimTranscript ? (
-                          <p className="text-white text-sm whitespace-pre-wrap">
+                          <p className="text-foreground text-sm whitespace-pre-wrap">
                             {transcript}
-                            <span className="text-[#a0a0a0]">{interimTranscript}</span>
+                            <span className="text-muted-foreground">{interimTranscript}</span>
                           </p>
                         ) : (
-                          <p className="text-[#a0a0a0] text-sm italic">
+                          <p className="text-muted-foreground text-sm italic">
                             {recordingState === 'recording' 
                               ? 'Listening... Start speaking'
                               : 'Click the microphone to start'}
@@ -442,10 +442,10 @@ export default function VoicePracticeGenZ() {
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="w-full bg-[#00ff88]/10 border border-[#00ff88]/30 rounded-xl p-4"
+                        className="w-full bg-[#00ff88]/10 border border-primary/30 rounded-xl p-4"
                       >
-                        <p className="text-[#00ff88] font-semibold mb-2">{feedback.message}</p>
-                        <div className="flex items-center gap-4 text-sm text-[#a0a0a0]">
+                        <p className="text-primary font-semibold mb-2">{feedback.message}</p>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span>Words: {feedback.wordsSpoken}/{feedback.targetWords}</span>
                           <span>•</span>
                           <span>Time: {feedback.duration}s</span>

@@ -1,0 +1,808 @@
+/**
+ * Unified Learning Paths - All paths in one place
+ * Shows: Active paths, Custom paths, Curated paths
+ */
+
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AppLayout } from '../components/layout/AppLayout';
+import { SEOHead } from '../components/SEOHead';
+import { allChannelsConfig } from '../lib/channels-config';
+import {
+  Plus, Trash2, Edit, ChevronRight, Brain, Check, Target, Clock, Sparkles, Award,
+  Code, Server, Rocket, X, Search, Star, Zap, Trophy
+} from 'lucide-react';
+
+interface CustomPath {
+  id: string;
+  name: string;
+  channels: string[];
+  certifications: string[];
+  createdAt: string;
+}
+
+interface Certification {
+  id: string;
+  name: string;
+  provider: string;
+  icon: string;
+  category: string;
+}
+
+// Curated paths
+const curatedPaths = [
+  {
+    id: 'frontend',
+    name: 'Frontend Developer',
+    icon: Code,
+    color: 'from-blue-500 to-cyan-500',
+    description: 'Master React, JavaScript, and modern web development',
+    channels: ['frontend', 'react-native', 'javascript', 'algorithms'],
+    difficulty: 'Beginner Friendly',
+    duration: '3-6 months',
+    totalQuestions: 450,
+    jobs: ['Frontend Developer', 'React Developer', 'UI Engineer'],
+    skills: ['React', 'JavaScript', 'CSS', 'HTML', 'TypeScript'],
+    salary: '$80k - $120k'
+  },
+  {
+    id: 'backend',
+    name: 'Backend Engineer',
+    icon: Server,
+    color: 'from-green-500 to-emerald-500',
+    description: 'Build scalable APIs and microservices',
+    channels: ['backend', 'database', 'system-design', 'algorithms'],
+    difficulty: 'Intermediate',
+    duration: '4-8 months',
+    totalQuestions: 520,
+    jobs: ['Backend Engineer', 'API Developer', 'Systems Engineer'],
+    skills: ['Node.js', 'Python', 'SQL', 'REST APIs', 'Microservices'],
+    salary: '$90k - $140k'
+  },
+  {
+    id: 'fullstack',
+    name: 'Full Stack Developer',
+    icon: Rocket,
+    color: 'from-purple-500 to-pink-500',
+    description: 'End-to-end application development',
+    channels: ['frontend', 'backend', 'database', 'devops', 'system-design'],
+    difficulty: 'Advanced',
+    duration: '6-12 months',
+    totalQuestions: 680,
+    jobs: ['Full Stack Developer', 'Software Engineer', 'Tech Lead'],
+    skills: ['React', 'Node.js', 'SQL', 'AWS', 'System Design'],
+    salary: '$100k - $160k'
+  },
+  {
+    id: 'devops',
+    name: 'DevOps Engineer',
+    icon: Target,
+    color: 'from-orange-500 to-red-500',
+    description: 'Infrastructure, CI/CD, and cloud platforms',
+    channels: ['devops', 'kubernetes', 'aws', 'terraform', 'docker'],
+    difficulty: 'Advanced',
+    duration: '4-8 months',
+    totalQuestions: 420,
+    jobs: ['DevOps Engineer', 'SRE', 'Cloud Engineer'],
+    skills: ['Kubernetes', 'Docker', 'AWS', 'Terraform', 'CI/CD'],
+    salary: '$110k - $170k'
+  },
+  {
+    id: 'mobile',
+    name: 'Mobile Developer',
+    icon: Sparkles,
+    color: 'from-pink-500 to-rose-500',
+    description: 'iOS and Android app development',
+    channels: ['react-native', 'ios', 'android', 'frontend'],
+    difficulty: 'Intermediate',
+    duration: '4-6 months',
+    totalQuestions: 380,
+    jobs: ['Mobile Developer', 'iOS Developer', 'Android Developer'],
+    skills: ['React Native', 'Swift', 'Kotlin', 'Mobile UI'],
+    salary: '$85k - $130k'
+  },
+  {
+    id: 'data',
+    name: 'Data Engineer',
+    icon: Brain,
+    color: 'from-indigo-500 to-purple-500',
+    description: 'Data pipelines, warehousing, and analytics',
+    channels: ['data-engineering', 'database', 'python', 'aws'],
+    difficulty: 'Advanced',
+    duration: '6-10 months',
+    totalQuestions: 490,
+    jobs: ['Data Engineer', 'Analytics Engineer', 'ML Engineer'],
+    skills: ['Python', 'SQL', 'Spark', 'Airflow', 'Data Modeling'],
+    salary: '$95k - $150k'
+  }
+];
+
+export default function UnifiedLearningPathsGenZ() {
+  const [, setLocation] = useLocation();
+  const [view, setView] = useState<'all' | 'custom' | 'curated'>('all');
+  const [customPaths, setCustomPaths] = useState<CustomPath[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [showPathModal, setShowPathModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
+  const [selectedPath, setSelectedPath] = useState<any>(null);
+  const [modalTab, setModalTab] = useState<'channels' | 'certifications'>('channels');
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Custom path form
+  const [customForm, setCustomForm] = useState({
+    name: '',
+    channels: [] as string[],
+    certifications: [] as string[]
+  });
+
+  const [editForm, setEditForm] = useState({
+    name: '',
+    channels: [] as string[],
+    certifications: [] as string[]
+  });
+
+  // Load custom paths
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('customLearningPaths');
+      if (saved) {
+        setCustomPaths(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Failed to load custom paths:', e);
+    }
+  }, []);
+
+  // Load certifications
+  useEffect(() => {
+    async function loadCerts() {
+      try {
+        const basePath = import.meta.env.BASE_URL || '/';
+        const response = await fetch(`${basePath}data/certifications.json`);
+        if (response.ok) {
+          const data = await response.json();
+          setCertifications(data);
+        }
+      } catch (e) {
+        console.error('Failed to load certifications:', e);
+      }
+    }
+    loadCerts();
+  }, []);
+
+  // Get active paths
+  const activePaths = (() => {
+    try {
+      const saved = localStorage.getItem('activeLearningPaths');
+      if (saved) {
+        const pathIds = JSON.parse(saved);
+        return pathIds.map((id: string) => {
+          const custom = customPaths.find(p => p.id === id);
+          if (custom) return { ...custom, type: 'custom' };
+          const curated = curatedPaths.find(p => p.id === id);
+          if (curated) return { ...curated, type: 'curated' };
+          return null;
+        }).filter(Boolean);
+      }
+    } catch {}
+    return [];
+  })();
+
+  const activateCustomPath = (pathId: string) => {
+    try {
+      const saved = localStorage.getItem('activeLearningPaths');
+      const current = saved ? JSON.parse(saved) : [];
+      if (!current.includes(pathId)) {
+        current.push(pathId);
+        localStorage.setItem('activeLearningPaths', JSON.stringify(current));
+        window.location.reload();
+      }
+    } catch (e) {
+      console.error('Failed to activate path:', e);
+    }
+  };
+
+  const deactivateCustomPath = (pathId: string) => {
+    try {
+      const saved = localStorage.getItem('activeLearningPaths');
+      const current = saved ? JSON.parse(saved) : [];
+      const updated = current.filter((id: string) => id !== pathId);
+      localStorage.setItem('activeLearningPaths', JSON.stringify(updated));
+      window.location.reload();
+    } catch (e) {
+      console.error('Failed to deactivate path:', e);
+    }
+  };
+
+  const deleteCustomPath = (pathId: string) => {
+    if (!confirm('Delete this path? This cannot be undone.')) return;
+    
+    try {
+      const updated = customPaths.filter(p => p.id !== pathId);
+      localStorage.setItem('customLearningPaths', JSON.stringify(updated));
+      setCustomPaths(updated);
+      deactivateCustomPath(pathId);
+    } catch (e) {
+      console.error('Failed to delete path:', e);
+    }
+  };
+
+  const saveEditedPath = () => {
+    if (!selectedPath || !editForm.name || (editForm.channels.length === 0 && editForm.certifications.length === 0)) {
+      alert('Please enter a name and select at least one channel or certification');
+      return;
+    }
+
+    const updated = customPaths.map(p => 
+      p.id === selectedPath.id 
+        ? { ...p, name: editForm.name, channels: editForm.channels, certifications: editForm.certifications }
+        : p
+    );
+    
+    localStorage.setItem('customLearningPaths', JSON.stringify(updated));
+    setCustomPaths(updated);
+    setShowPathModal(false);
+    setSelectedPath(null);
+    setEditForm({ name: '', channels: [], certifications: [] });
+  };
+
+  const openPathModal = (path: any, mode: 'create' | 'edit' | 'view') => {
+    setModalMode(mode);
+    setSelectedPath(path);
+    setModalTab('channels');
+    
+    if (mode === 'create') {
+      setCustomForm({ name: '', channels: [], certifications: [] });
+    } else if (mode === 'edit') {
+      setEditForm({
+        name: path.name,
+        channels: path.channels || [],
+        certifications: path.certifications || []
+      });
+    }
+    
+    setShowPathModal(true);
+  };
+
+  const closePathModal = () => {
+    setShowPathModal(false);
+    setSelectedPath(null);
+    setModalMode('create');
+    setSearchQuery('');
+  };
+
+  const toggleEditChannel = (channelId: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      channels: prev.channels.includes(channelId)
+        ? prev.channels.filter(id => id !== channelId)
+        : [...prev.channels, channelId]
+    }));
+  };
+
+  const toggleEditCertification = (certId: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      certifications: prev.certifications.includes(certId)
+        ? prev.certifications.filter(id => id !== certId)
+        : [...prev.certifications, certId]
+    }));
+  };
+
+  const saveCustomPath = () => {
+    if (!customForm.name || (customForm.channels.length === 0 && customForm.certifications.length === 0)) {
+      alert('Please enter a name and select at least one channel or certification');
+      return;
+    }
+
+    const newPath: CustomPath = {
+      id: `custom-${Date.now()}`,
+      name: customForm.name,
+      channels: customForm.channels,
+      certifications: customForm.certifications,
+      createdAt: new Date().toISOString()
+    };
+
+    const updated = [...customPaths, newPath];
+    localStorage.setItem('customLearningPaths', JSON.stringify(updated));
+    setCustomPaths(updated);
+    setCustomForm({ name: '', channels: [], certifications: [] });
+    closePathModal();
+    activateCustomPath(newPath.id);
+  };
+
+  const filteredChannels = Object.values(allChannelsConfig).filter(channel =>
+    channel.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCerts = certifications.filter(cert =>
+    cert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    cert.provider.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const isReadonly = modalMode === 'view';
+  const currentChannels = modalMode === 'create' ? customForm.channels : (modalMode === 'edit' ? editForm.channels : selectedPath?.channels || []);
+  const currentCertifications = modalMode === 'create' ? customForm.certifications : (modalMode === 'edit' ? editForm.certifications : selectedPath?.certifications || []);
+
+  return (
+    <>
+      <SEOHead
+        title="Learning Paths - CodeReels"
+        description="Choose your career path and start learning"
+      />
+
+      <AppLayout>
+        <div className="min-h-screen bg-background text-foreground">
+          <div className="max-w-7xl mx-auto px-6 py-12">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-12"
+            >
+              <h1 className="text-6xl md:text-7xl font-black mb-4">
+                Learning
+                <br />
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
+                  Paths
+                </span>
+              </h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400">
+                {activePaths.length > 0 && `${activePaths.length} active • `}
+                {customPaths.length} custom • {curatedPaths.length} curated
+              </p>
+            </motion.div>
+
+            {/* View Tabs */}
+            <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+              {[
+                { id: 'all', label: 'All Paths', icon: Sparkles },
+                { id: 'custom', label: 'My Custom', icon: Brain },
+                { id: 'curated', label: 'Curated', icon: Star }
+              ].map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setView(id as any)}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-[16px] font-bold transition-all whitespace-nowrap ${
+                    view === id
+                      ? 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'
+                      : 'bg-muted/50 text-gray-600 dark:text-gray-400 hover:bg-muted'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Create New Path Button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => openPathModal(null, 'create')}
+              className="w-full p-8 bg-gradient-to-r from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[24px] border-2 border-dashed border-primary/30 hover:border-primary/60 transition-all group mb-8"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-cyan-500 rounded-full flex items-center justify-center">
+                    <Plus className="w-8 h-8 text-primary-foreground" strokeWidth={3} />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-2xl font-bold mb-1">Create Custom Path</h3>
+                    <p className="text-gray-600 dark:text-gray-400">Build your own learning journey</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-8 h-8 text-primary group-hover:translate-x-2 transition-transform" />
+              </div>
+            </motion.button>
+
+            {/* Active Paths Section */}
+            {activePaths.length > 0 && (view === 'all' || view === 'custom') && (
+              <div className="mb-12">
+                <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
+                  <Zap className="w-8 h-8 text-primary" />
+                  Active Paths
+                </h2>
+                <div className="grid gap-6">
+                  {activePaths.map((path: any) => {
+                    const Icon = path.icon || Brain;
+                    const isCustom = path.type === 'custom';
+                    
+                    return (
+                      <motion.div
+                        key={path.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="relative p-6 bg-gradient-to-br from-card to-card/50 backdrop-blur-xl rounded-[24px] border border-primary/30 hover:border-primary/60 transition-all group"
+                      >
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-bold flex items-center gap-1">
+                          <Check className="w-3 h-3" />
+                          Active
+                        </div>
+
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className={`w-16 h-16 bg-gradient-to-br ${path.color || 'from-purple-500 to-pink-500'} rounded-[16px] flex items-center justify-center`}>
+                            <Icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-2xl font-bold mb-1">{path.name}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{path.description || `Created ${new Date(path.createdAt).toLocaleDateString()}`}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setLocation(`/channel/${path.channels[0]}`)}
+                            className="flex-1 py-3 bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground rounded-[16px] font-bold hover:scale-105 transition-all"
+                          >
+                            Continue Learning
+                          </button>
+                          <button
+                            onClick={() => deactivateCustomPath(path.id)}
+                            className="px-4 py-3 bg-muted/50 hover:bg-muted rounded-[16px] transition-all"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Custom Paths Section */}
+            {(view === 'all' || view === 'custom') && customPaths.length > 0 && (
+              <div className="mb-12">
+                <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
+                  <Brain className="w-8 h-8 text-purple-400" />
+                  My Custom Paths
+                </h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {customPaths.map((path) => {
+                    const isActive = activePaths.some((p: any) => p.id === path.id);
+                    
+                    return (
+                      <motion.div
+                        key={path.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-6 bg-white dark:bg-gray-900 backdrop-blur-xl rounded-[24px] border border-gray-200 dark:border-gray-800 hover:border-primary/30 transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <h3 className="text-xl font-bold">{path.name}</h3>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openPathModal(path, 'edit');
+                              }}
+                              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-[8px] transition-all"
+                            >
+                              <Edit className="w-4 h-4 text-primary" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteCustomPath(path.id);
+                              }}
+                              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-[8px] transition-all"
+                            >
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 mb-4">
+                          <div className="text-sm text-gray-600 dark:text-gray-400">
+                            {path.channels.length} channels • {path.certifications.length} certifications
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => isActive ? deactivateCustomPath(path.id) : activateCustomPath(path.id)}
+                          className={`w-full py-3 rounded-[16px] font-bold transition-all ${
+                            isActive
+                              ? 'bg-muted text-foreground'
+                              : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground hover:scale-105'
+                          }`}
+                        >
+                          {isActive ? 'Deactivate' : 'Activate Path'}
+                        </button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Curated Paths Section */}
+            {(view === 'all' || view === 'curated') && (
+              <div>
+                <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
+                  <Star className="w-8 h-8 text-amber-400" />
+                  Curated Career Paths
+                </h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {curatedPaths.map((path) => {
+                    const Icon = path.icon;
+                    const isActive = activePaths.some((p: any) => p.id === path.id);
+                    
+                    return (
+                      <motion.div
+                        key={path.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-6 bg-white dark:bg-gray-900 backdrop-blur-xl rounded-[24px] border border-gray-200 dark:border-gray-800 hover:border-primary/30 transition-all group cursor-pointer"
+                        onClick={() => openPathModal(path, 'view')}
+                      >
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className={`w-16 h-16 bg-gradient-to-br ${path.color} rounded-[16px] flex items-center justify-center`}>
+                            <Icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold mb-1">{path.name}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{path.description}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 mb-4 text-xs text-gray-600 dark:text-gray-400">
+                          <div>
+                            <Clock className="w-3 h-3 inline mr-1" />
+                            {path.duration}
+                          </div>
+                          <div>
+                            <Target className="w-3 h-3 inline mr-1" />
+                            {path.totalQuestions}Q
+                          </div>
+                          <div>
+                            <Trophy className="w-3 h-3 inline mr-1" />
+                            {path.difficulty}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-primary">{path.salary}</span>
+                          {isActive ? (
+                            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-bold">
+                              Active
+                            </span>
+                          ) : (
+                            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Unified Path Modal - Create/Edit/View */}
+        <AnimatePresence>
+          {showPathModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+              onClick={closePathModal}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+              >
+                {/* Header */}
+                <div className="p-8 border-b border-gray-200 dark:border-gray-800">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-3xl font-black">
+                      {modalMode === 'create' ? 'Create Path' : modalMode === 'edit' ? 'Edit Path' : selectedPath?.name}
+                    </h2>
+                    <button
+                      onClick={closePathModal}
+                      className="w-10 h-10 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full flex items-center justify-center transition-all"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {!isReadonly && (
+                    <input
+                      type="text"
+                      placeholder="Path name (e.g., 'My Frontend Journey')"
+                      value={modalMode === 'create' ? customForm.name : editForm.name}
+                      onChange={(e) => {
+                        if (modalMode === 'create') {
+                          setCustomForm(prev => ({ ...prev, name: e.target.value }));
+                        } else {
+                          setEditForm(prev => ({ ...prev, name: e.target.value }));
+                        }
+                      }}
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[16px] text-xl focus:outline-none focus:border-primary transition-all"
+                    />
+                  )}
+
+                  {isReadonly && selectedPath?.description && (
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">{selectedPath.description}</p>
+                  )}
+                </div>
+
+                {/* Tabs */}
+                <div className="flex border-b border-gray-200 dark:border-gray-800 px-8">
+                  <button
+                    onClick={() => setModalTab('channels')}
+                    className={`flex-1 py-4 text-sm font-bold transition-colors relative ${
+                      modalTab === 'channels'
+                        ? 'text-primary'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-foreground'
+                    }`}
+                  >
+                    Channels ({currentChannels.length})
+                    {modalTab === 'channels' && (
+                      <motion.div
+                        layoutId="modal-tab-indicator"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                      />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setModalTab('certifications')}
+                    className={`flex-1 py-4 text-sm font-bold transition-colors relative ${
+                      modalTab === 'certifications'
+                        ? 'text-primary'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-foreground'
+                    }`}
+                  >
+                    Certifications ({currentCertifications.length})
+                    {modalTab === 'certifications' && (
+                      <motion.div
+                        layoutId="modal-tab-indicator"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                      />
+                    )}
+                  </button>
+                </div>
+
+                {/* Search */}
+                {!isReadonly && (
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 dark:text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder={`Search ${modalTab}...`}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[12px] focus:outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-8">
+                  {modalTab === 'channels' ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      {(isReadonly ? 
+                        Object.values(allChannelsConfig).filter(c => currentChannels.includes(c.id)) :
+                        filteredChannels
+                      ).map((channel) => {
+                        const isSelected = currentChannels.includes(channel.id);
+                        return (
+                          <button
+                            key={channel.id}
+                            onClick={() => {
+                              if (isReadonly) return;
+                              if (modalMode === 'create') {
+                                setCustomForm(prev => ({
+                                  ...prev,
+                                  channels: isSelected
+                                    ? prev.channels.filter(id => id !== channel.id)
+                                    : [...prev.channels, channel.id]
+                                }));
+                              } else {
+                                toggleEditChannel(channel.id);
+                              }
+                            }}
+                            disabled={isReadonly}
+                            className={`p-4 rounded-[12px] border text-left transition-all ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : isReadonly
+                                  ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary/30 cursor-pointer'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold">{channel.name}</span>
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      {(isReadonly ?
+                        certifications.filter(c => currentCertifications.includes(c.id)) :
+                        filteredCerts
+                      ).map((cert) => {
+                        const isSelected = currentCertifications.includes(cert.id);
+                        return (
+                          <button
+                            key={cert.id}
+                            onClick={() => {
+                              if (isReadonly) return;
+                              if (modalMode === 'create') {
+                                setCustomForm(prev => ({
+                                  ...prev,
+                                  certifications: isSelected
+                                    ? prev.certifications.filter(id => id !== cert.id)
+                                    : [...prev.certifications, cert.id]
+                                }));
+                              } else {
+                                toggleEditCertification(cert.id);
+                              }
+                            }}
+                            disabled={isReadonly}
+                            className={`p-4 rounded-[12px] border text-left transition-all ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : isReadonly
+                                  ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary/30 cursor-pointer'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">{cert.provider}</div>
+                                <div className="font-semibold text-sm">{cert.name}</div>
+                              </div>
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="p-8 border-t border-gray-200 dark:border-gray-800">
+                  {isReadonly ? (
+                    <button
+                      onClick={() => {
+                        activateCustomPath(selectedPath.id);
+                        closePathModal();
+                      }}
+                      className="w-full py-4 bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground rounded-[16px] font-bold text-xl hover:scale-105 transition-all"
+                    >
+                      Activate This Path
+                    </button>
+                  ) : (
+                    <button
+                      onClick={modalMode === 'create' ? saveCustomPath : saveEditedPath}
+                      disabled={
+                        (modalMode === 'create' && (!customForm.name || (customForm.channels.length === 0 && customForm.certifications.length === 0))) ||
+                        (modalMode === 'edit' && (!editForm.name || (editForm.channels.length === 0 && editForm.certifications.length === 0)))
+                      }
+                      className="w-full py-4 bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground rounded-[16px] font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
+                    >
+                      {modalMode === 'create' ? 'Create Path' : 'Save Changes'}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </AppLayout>
+    </>
+  );
+}

@@ -1,19 +1,21 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-// Single premium dark theme - matching the blog design
+// Gen Z themes - Dark and Light modes
 export const themes = [
-  { id: "premium-dark", name: "Premium Dark", category: "modern", description: "Premium dark theme" },
+  { id: "genz-dark", name: "Gen Z Dark", category: "genz", description: "Pure black with neon accents" },
+  { id: "genz-light", name: "Gen Z Light", category: "genz", description: "Pure white with vibrant accents" },
 ] as const;
 
 export type Theme = typeof themes[number]["id"];
 
 export const themeCategories = [
-  { id: "modern", name: "Modern" },
+  { id: "genz", name: "Gen Z" },
 ];
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
   cycleTheme: () => void;
   themes: typeof themes;
   themeCategories: typeof themeCategories;
@@ -24,27 +26,59 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme: Theme = "premium-dark";
+  // Load theme from localStorage or default to dark
+  const [theme, setThemeState] = useState<Theme>(() => {
+    const saved = localStorage.getItem('theme');
+    return (saved === 'genz-dark' || saved === 'genz-light') ? saved : 'genz-dark';
+  });
 
-  // Apply theme to DOM
+  const [autoRotate, setAutoRotate] = useState(false);
+
+  // Apply theme to DOM and save to localStorage
   useEffect(() => {
     const root = window.document.documentElement;
+    
+    // Remove old theme classes
+    root.classList.remove('genz-dark', 'genz-light', 'dark', 'light');
+    
+    // Add new theme class
+    root.classList.add(theme);
     root.setAttribute("data-theme", theme);
-  }, []);
+    
+    // Also set dark/light for compatibility
+    if (theme === 'genz-dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.add('light');
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
-  // No-op functions since we only have one theme
-  const setTheme = () => {};
-  const cycleTheme = () => {};
-  const setAutoRotate = () => {};
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+  };
+
+  const toggleTheme = () => {
+    setThemeState(current => current === 'genz-dark' ? 'genz-light' : 'genz-dark');
+  };
+
+  const cycleTheme = () => {
+    const currentIndex = themes.findIndex(t => t.id === theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setThemeState(themes[nextIndex].id);
+  };
 
   return (
     <ThemeContext.Provider value={{ 
       theme, 
       setTheme, 
+      toggleTheme,
       cycleTheme, 
       themes, 
       themeCategories,
-      autoRotate: false,
+      autoRotate,
       setAutoRotate
     }}>
       {children}

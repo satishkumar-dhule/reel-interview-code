@@ -32,45 +32,45 @@ export function GenZSidebar() {
   const level = Math.floor(balance / 100);
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-black border-r border-white/10 flex flex-col z-50 hidden lg:flex">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-border flex flex-col z-50 hidden lg:flex">
       {/* Logo - Clickable to go home */}
       <button 
         onClick={() => setLocation('/')}
-        className="p-6 border-b border-white/10 hover:bg-white/5 transition-colors cursor-pointer"
+        className="p-6 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-[12px] flex items-center justify-center">
-            <Brain className="w-6 h-6 text-black" strokeWidth={2.5} />
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-cyan-500 rounded-[12px] flex items-center justify-center">
+            <Brain className="w-6 h-6 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div>
-            <div className="font-black text-lg">CodeReels</div>
-            <div className="text-xs text-[#666]">Interview Prep</div>
+            <div className="font-black text-lg text-foreground">CodeReels</div>
+            <div className="text-xs text-muted-foreground">Interview Prep</div>
           </div>
         </div>
       </button>
 
       {/* Stats Bar */}
-      <div className="p-4 border-b border-white/10 space-y-2">
+      <div className="p-4 border-b border-border space-y-2">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
             <Flame className="w-4 h-4 text-orange-500" />
-            <span className="text-[#a0a0a0]">Streak</span>
+            <span className="text-muted-foreground">Streak</span>
           </div>
-          <span className="font-bold">0</span>
+          <span className="font-bold text-foreground">0</span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#00ff88]" />
-            <span className="text-[#a0a0a0]">XP</span>
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">XP</span>
           </div>
-          <span className="font-bold">{balance}</span>
+          <span className="font-bold text-foreground">{balance}</span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4 text-purple-400" />
-            <span className="text-[#a0a0a0]">Level</span>
+            <span className="text-muted-foreground">Level</span>
           </div>
-          <span className="font-bold">{level}</span>
+          <span className="font-bold text-foreground">{level}</span>
         </div>
       </div>
 
@@ -89,8 +89,8 @@ export function GenZSidebar() {
               onClick={() => setLocation(item.path)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border border-[#00ff88]/30 text-white'
-                  : 'hover:bg-white/5 text-[#a0a0a0] hover:text-white'
+                  ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border border-primary/30 text-foreground'
+                  : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
               }`}
             >
               <Icon className="w-5 h-5" strokeWidth={2} />
@@ -101,7 +101,7 @@ export function GenZSidebar() {
 
         {/* Learn Section */}
         <div>
-          <div className="text-xs font-bold text-[#666] uppercase mb-2 px-2">Learn</div>
+          <div className="text-xs font-bold text-muted-foreground uppercase mb-2 px-2">Learn</div>
           <div className="space-y-1">
             {navItems.filter(item => item.section === 'learn').map((item) => {
               const isActive = location === item.path;
@@ -115,14 +115,14 @@ export function GenZSidebar() {
                   onClick={() => setLocation(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border border-[#00ff88]/30 text-white'
-                      : 'hover:bg-white/5 text-[#a0a0a0] hover:text-white'
+                      ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border border-primary/30 text-foreground'
+                      : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Icon className="w-5 h-5" strokeWidth={2} />
                   <span className="font-semibold">{item.label}</span>
                   {item.badge && (
-                    <span className="ml-auto px-2 py-0.5 bg-[#00ff88] text-black text-xs font-bold rounded-full">
+                    <span className="ml-auto px-2 py-0.5 bg-primary text-primary-foreground text-xs font-bold rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -134,7 +134,7 @@ export function GenZSidebar() {
 
         {/* Practice Section */}
         <div>
-          <div className="text-xs font-bold text-[#666] uppercase mb-2 px-2">Practice</div>
+          <div className="text-xs font-bold text-muted-foreground uppercase mb-2 px-2">Practice</div>
           <div className="space-y-1">
             {navItems.filter(item => item.section === 'practice').map((item) => {
               const isActive = location === item.path;
@@ -148,8 +148,8 @@ export function GenZSidebar() {
                   onClick={() => setLocation(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border border-[#00ff88]/30 text-white'
-                      : 'hover:bg-white/5 text-[#a0a0a0] hover:text-white'
+                      ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border border-primary/30 text-foreground'
+                      : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Icon className="w-5 h-5" strokeWidth={2} />
@@ -167,7 +167,7 @@ export function GenZSidebar() {
 
         {/* Progress Section */}
         <div>
-          <div className="text-xs font-bold text-[#666] uppercase mb-2 px-2">Progress</div>
+          <div className="text-xs font-bold text-muted-foreground uppercase mb-2 px-2">Progress</div>
           <div className="space-y-1">
             {navItems.filter(item => item.section === 'progress').map((item) => {
               const isActive = location === item.path;
@@ -181,8 +181,8 @@ export function GenZSidebar() {
                   onClick={() => setLocation(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border border-[#00ff88]/30 text-white'
-                      : 'hover:bg-white/5 text-[#a0a0a0] hover:text-white'
+                      ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border border-primary/30 text-foreground'
+                      : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Icon className="w-5 h-5" strokeWidth={2} />
@@ -202,11 +202,11 @@ export function GenZSidebar() {
         className="m-4 p-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/30 rounded-[16px] flex items-center gap-3"
       >
         <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full flex items-center justify-center">
-          <Coins className="w-5 h-5 text-black" strokeWidth={2.5} />
+          <Coins className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
         </div>
         <div className="flex-1 text-left">
-          <div className="text-xs text-[#a0a0a0]">Credits</div>
-          <div className="font-bold">{formatCredits(balance)}</div>
+          <div className="text-xs text-muted-foreground">Credits</div>
+          <div className="font-bold text-foreground">{formatCredits(balance)}</div>
         </div>
       </motion.button>
     </aside>

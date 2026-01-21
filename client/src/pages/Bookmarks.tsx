@@ -244,7 +244,7 @@ export default function Bookmarks() {
                         </div>
 
                         {/* Question text */}
-                        <h3 className="font-medium text-sm sm:text-base line-clamp-2 mb-2">
+                        <h3 className="font-medium text-foreground text-sm sm:text-base line-clamp-2 mb-2">
                           {question.question}
                         </h3>
 

@@ -175,9 +175,9 @@ export function GenZHomePage() {
   // Onboarding for new users - show path selection
   if (activePaths.length === 0) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden">
         {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#00ff88]/10 via-transparent to-[#00d4ff]/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-cyan-500/10" />
         <div className="absolute inset-0">
           {[...Array(20)].map((_, i) => (
             <motion.div
@@ -210,9 +210,9 @@ export function GenZHomePage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-            className="w-32 h-32 mx-auto bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-[32px] flex items-center justify-center relative"
+            className="w-32 h-32 mx-auto bg-gradient-to-br from-primary to-cyan-500 rounded-[32px] flex items-center justify-center relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-[32px] blur-2xl opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary to-cyan-500 rounded-[32px] blur-2xl opacity-50" />
             <Brain className="w-16 h-16 text-black relative z-10" strokeWidth={2.5} />
           </motion.div>
 
@@ -222,11 +222,11 @@ export function GenZHomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-6xl md:text-7xl font-black text-white leading-tight"
+              className="text-6xl md:text-7xl font-black text-foreground leading-tight"
             >
               Level up your
               <br />
-              <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                 interview game
               </span>
             </motion.h1>
@@ -234,7 +234,7 @@ export function GenZHomePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-xl text-[#a0a0a0]"
+              className="text-xl text-muted-foreground"
             >
               Practice. Progress. Get hired. No cap. 🚀
             </motion.p>
@@ -248,7 +248,7 @@ export function GenZHomePage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setLocation('/learning-paths')}
-            className="group relative px-12 py-6 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[20px] font-bold text-xl text-black overflow-hidden"
+            className="group relative px-12 py-6 bg-gradient-to-r from-primary to-cyan-500 rounded-[20px] font-bold text-xl text-black overflow-hidden"
           >
             <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
             <div className="relative flex items-center gap-3">
@@ -262,10 +262,10 @@ export function GenZHomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="flex items-center justify-center gap-8 text-sm text-[#666]"
+            className="flex items-center justify-center gap-8 text-sm text-muted-foreground"
           >
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#00ff88]" />
+              <Sparkles className="w-4 h-4 text-primary" />
               <span>12K+ learners</span>
             </div>
             <div className="flex items-center gap-2">
@@ -293,9 +293,9 @@ export function GenZHomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Top Stats Bar - Sticky */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10">
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
@@ -306,17 +306,17 @@ export function GenZHomePage() {
               >
                 <Flame className="w-5 h-5 text-orange-500" />
                 <span className="font-bold text-lg">{streak}</span>
-                <span className="text-sm text-[#a0a0a0]">day streak</span>
+                <span className="text-sm text-muted-foreground">day streak</span>
               </motion.div>
 
               {/* XP */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 rounded-full border border-[#00ff88]/30 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/20 to-cyan-500/20 rounded-full border border-primary/30 cursor-pointer"
               >
-                <Sparkles className="w-5 h-5 text-[#00ff88]" />
+                <Sparkles className="w-5 h-5 text-primary" />
                 <span className="font-bold text-lg">{balance}</span>
-                <span className="text-sm text-[#a0a0a0]">XP</span>
+                <span className="text-sm text-muted-foreground">XP</span>
               </motion.div>
 
               {/* Level */}
@@ -331,14 +331,14 @@ export function GenZHomePage() {
 
             {/* Level Progress */}
             <div className="hidden md:flex items-center gap-3">
-              <div className="w-48 h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="w-48 h-2 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(xpInLevel / xpForNextLevel) * 100}%` }}
-                  className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                  className="h-full bg-gradient-to-r from-primary to-cyan-500"
                 />
               </div>
-              <span className="text-sm text-[#a0a0a0]">{xpInLevel}/{xpForNextLevel} XP</span>
+              <span className="text-sm text-muted-foreground">{xpInLevel}/{xpForNextLevel} XP</span>
             </div>
           </div>
         </div>
@@ -353,13 +353,13 @@ export function GenZHomePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-3xl font-black">Your Active Paths</h2>
-                  <p className="text-[#a0a0a0] mt-1">{activePaths.length} {activePaths.length === 1 ? 'path' : 'paths'} active</p>
+                  <p className="text-muted-foreground mt-1">{activePaths.length} {activePaths.length === 1 ? 'path' : 'paths'} active</p>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setLocation('/learning-paths')}
-                  className="px-6 py-3 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[16px] font-bold text-black flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-primary to-cyan-500 rounded-[16px] font-bold text-black flex items-center gap-2"
                 >
                   <Plus className="w-5 h-5" />
                   Add Path
@@ -374,7 +374,7 @@ export function GenZHomePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="relative p-6 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-[24px] border border-white/20 overflow-hidden"
+                    className="relative p-6 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-[24px] border border-border overflow-hidden"
                   >
                     {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${path.color} opacity-10`} />
@@ -384,12 +384,12 @@ export function GenZHomePage() {
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-14 h-14 bg-gradient-to-br ${path.color} rounded-[16px] flex items-center justify-center flex-shrink-0`}>
-                            <Icon className="w-7 h-7 text-white" strokeWidth={2.5} />
+                            <Icon className="w-7 h-7 text-foreground" strokeWidth={2.5} />
                           </div>
                           <div>
-                            <div className="text-xs text-[#666] mb-0.5">Active Path {index + 1}</div>
+                            <div className="text-xs text-muted-foreground mb-0.5">Active Path {index + 1}</div>
                             <h3 className="text-xl font-black">{path.name}</h3>
-                            <p className="text-sm text-[#a0a0a0] mt-0.5">{path.description}</p>
+                            <p className="text-sm text-muted-foreground mt-0.5">{path.description}</p>
                           </div>
                         </div>
                         <motion.button
@@ -404,37 +404,37 @@ export function GenZHomePage() {
 
                       {/* Progress Stats */}
                       <div className="grid grid-cols-4 gap-3">
-                        <div className="p-3 bg-black/30 rounded-[12px]">
-                          <div className="text-xs text-[#a0a0a0] mb-1">Completed</div>
+                        <div className="p-3 bg-background/30 rounded-[12px]">
+                          <div className="text-xs text-muted-foreground mb-1">Completed</div>
                           <div className="text-lg font-black">{totalCompleted}</div>
-                          <div className="text-[10px] text-[#666]">questions</div>
+                          <div className="text-[10px] text-muted-foreground">questions</div>
                         </div>
-                        <div className="p-3 bg-black/30 rounded-[12px]">
-                          <div className="text-xs text-[#a0a0a0] mb-1">Progress</div>
+                        <div className="p-3 bg-background/30 rounded-[12px]">
+                          <div className="text-xs text-muted-foreground mb-1">Progress</div>
                           <div className="text-lg font-black">{Math.min(Math.round((totalCompleted / 500) * 100), 100)}%</div>
-                          <div className="text-[10px] text-[#666]">of path</div>
+                          <div className="text-[10px] text-muted-foreground">of path</div>
                         </div>
-                        <div className="p-3 bg-black/30 rounded-[12px]">
-                          <div className="text-xs text-[#a0a0a0] mb-1">Streak</div>
+                        <div className="p-3 bg-background/30 rounded-[12px]">
+                          <div className="text-xs text-muted-foreground mb-1">Streak</div>
                           <div className="text-lg font-black flex items-center gap-1">
                             <Flame className="w-4 h-4 text-orange-500" />
                             {streak}
                           </div>
-                          <div className="text-[10px] text-[#666]">days</div>
+                          <div className="text-[10px] text-muted-foreground">days</div>
                         </div>
-                        <div className="p-3 bg-black/30 rounded-[12px]">
-                          <div className="text-xs text-[#a0a0a0] mb-1">Level</div>
+                        <div className="p-3 bg-background/30 rounded-[12px]">
+                          <div className="text-xs text-muted-foreground mb-1">Level</div>
                           <div className="text-lg font-black flex items-center gap-1">
                             <Trophy className="w-4 h-4 text-purple-400" />
                             {level}
                           </div>
-                          <div className="text-[10px] text-[#666]">current</div>
+                          <div className="text-[10px] text-muted-foreground">current</div>
                         </div>
                       </div>
 
                       {/* Channels in Path */}
                       <div>
-                        <div className="text-xs text-[#666] mb-2">Channels in this path</div>
+                        <div className="text-xs text-muted-foreground mb-2">Channels in this path</div>
                         <div className="flex flex-wrap gap-2">
                           {path.channels.slice(0, 4).map((channel: string) => (
                             <motion.button
@@ -442,13 +442,13 @@ export function GenZHomePage() {
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => setLocation(`/channel/${channel}`)}
-                              className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs font-semibold transition-all"
+                              className="px-3 py-1 bg-muted hover:bg-white/20 rounded-full text-xs font-semibold transition-all"
                             >
                               {channel}
                             </motion.button>
                           ))}
                           {path.channels.length > 4 && (
-                            <span className="px-3 py-1 bg-white/5 rounded-full text-xs text-[#666]">
+                            <span className="px-3 py-1 bg-muted/50 rounded-full text-xs text-muted-foreground">
                               +{path.channels.length - 4}
                             </span>
                           )}
@@ -460,7 +460,7 @@ export function GenZHomePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setLocation(`/channel/${path.channels[0]}`)}
-                        className={`w-full py-4 bg-gradient-to-r ${path.color} rounded-[16px] font-bold text-base text-white flex items-center justify-center gap-2`}
+                        className={`w-full py-4 bg-gradient-to-r ${path.color} rounded-[16px] font-bold text-base text-foreground flex items-center justify-center gap-2`}
                       >
                         Continue Learning
                         <ChevronRight className="w-5 h-5" />
@@ -481,7 +481,7 @@ export function GenZHomePage() {
             <h1 className="text-6xl md:text-7xl font-black">
               Ready to
               <br />
-              <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                 level up?
               </span>
             </h1>
@@ -490,7 +490,7 @@ export function GenZHomePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setLocation('/voice-interview')}
-              className="group relative px-12 py-6 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[20px] font-bold text-2xl text-black overflow-hidden inline-flex items-center gap-3"
+              className="group relative px-12 py-6 bg-gradient-to-r from-primary to-cyan-500 rounded-[20px] font-bold text-2xl text-black overflow-hidden inline-flex items-center gap-3"
             >
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
               <Mic className="w-8 h-8" />
@@ -515,12 +515,12 @@ export function GenZHomePage() {
                 whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setLocation(action.path)}
-                className="group relative p-8 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 hover:border-white/20 transition-all overflow-hidden"
+                className="group relative p-8 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border hover:border-border transition-all overflow-hidden"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
                 <div className="relative space-y-4">
                   <div className={`w-16 h-16 bg-gradient-to-br ${action.color} rounded-[16px] flex items-center justify-center`}>
-                    <action.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+                    <action.icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
                   </div>
                   <div className="text-2xl font-bold">{action.label}</div>
                 </div>
@@ -534,19 +534,19 @@ export function GenZHomePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-8 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10"
+              className="p-8 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-full flex items-center justify-center">
-                    <Target className="w-6 h-6 text-black" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-cyan-500 rounded-full flex items-center justify-center">
+                    <Target className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
-                    <div className="text-sm text-[#a0a0a0]">Completed</div>
+                    <div className="text-sm text-muted-foreground">Completed</div>
                     <div className="text-3xl font-black">{totalCompleted}</div>
                   </div>
                 </div>
-                <div className="text-sm text-[#a0a0a0]">questions crushed 💪</div>
+                <div className="text-sm text-muted-foreground">questions crushed 💪</div>
               </div>
             </motion.div>
 
@@ -555,19 +555,19 @@ export function GenZHomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-8 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10"
+              className="p-8 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <Brain className="w-6 h-6 text-white" />
+                    <Brain className="w-6 h-6 text-foreground" />
                   </div>
                   <div>
-                    <div className="text-sm text-[#a0a0a0]">Learning Paths</div>
+                    <div className="text-sm text-muted-foreground">Learning Paths</div>
                     <div className="text-3xl font-black">{learningPaths.length}</div>
                   </div>
                 </div>
-                <div className="text-sm text-[#a0a0a0]">career paths available 🎯</div>
+                <div className="text-sm text-muted-foreground">career paths available 🎯</div>
               </div>
             </motion.div>
 
@@ -581,16 +581,16 @@ export function GenZHomePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-[#ffd700] to-[#ff8c00] rounded-full flex items-center justify-center">
-                    <Trophy className="w-6 h-6 text-black" />
+                    <Trophy className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
-                    <div className="text-sm text-[#a0a0a0]">Rank</div>
+                    <div className="text-sm text-muted-foreground">Rank</div>
                     <div className="text-3xl font-black">Top 15%</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="w-4 h-4 text-[#00ff88]" />
-                  <span className="text-[#00ff88]">+3 this week</span>
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                  <span className="text-primary">+3 this week</span>
                 </div>
               </div>
             </motion.div>
@@ -604,7 +604,7 @@ export function GenZHomePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setLocation('/learning-paths')}
-                className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-[16px] border border-white/10 font-semibold transition-all"
+                className="px-6 py-3 bg-muted/50 hover:bg-muted rounded-[16px] border border-border font-semibold transition-all"
               >
                 View All
               </motion.button>
@@ -623,7 +623,7 @@ export function GenZHomePage() {
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setLocation('/learning-paths')}
-                    className="group relative p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 hover:border-white/20 transition-all text-left overflow-hidden"
+                    className="group relative p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border hover:border-border transition-all text-left overflow-hidden"
                   >
                     {/* Background gradient on hover */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${path.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
@@ -631,17 +631,17 @@ export function GenZHomePage() {
                     <div className="relative space-y-4">
                       {/* Icon */}
                       <div className={`w-16 h-16 bg-gradient-to-br ${path.color} rounded-[16px] flex items-center justify-center`}>
-                        <Icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+                        <Icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
                       </div>
 
                       {/* Content */}
                       <div>
                         <h3 className="text-xl font-bold mb-2">{path.name}</h3>
-                        <p className="text-sm text-[#a0a0a0] mb-4">{path.description}</p>
+                        <p className="text-sm text-muted-foreground mb-4">{path.description}</p>
                       </div>
 
                       {/* Meta */}
-                      <div className="flex items-center gap-4 text-xs text-[#a0a0a0]">
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Target className="w-3 h-3" />
                           <span>{path.difficulty}</span>
@@ -657,7 +657,7 @@ export function GenZHomePage() {
                         {path.jobs.slice(0, 2).map((job) => (
                           <span
                             key={job}
-                            className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium"
+                            className="px-2 py-1 bg-muted/50 rounded-full text-xs font-medium"
                           >
                             {job}
                           </span>
@@ -665,7 +665,7 @@ export function GenZHomePage() {
                       </div>
                     </div>
 
-                    <ChevronRight className="absolute top-6 right-6 w-5 h-5 text-[#666] group-hover:text-white group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="absolute top-6 right-6 w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                   </motion.button>
                 );
               })}
@@ -682,15 +682,15 @@ export function GenZHomePage() {
             <div className="relative space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-[#ff0080] to-[#ff8c00] rounded-full flex items-center justify-center">
-                  <Star className="w-6 h-6 text-white" />
+                  <Star className="w-6 h-6 text-foreground" />
                 </div>
                 <div>
-                  <div className="text-sm text-[#a0a0a0]">Daily Challenge</div>
+                  <div className="text-sm text-muted-foreground">Daily Challenge</div>
                   <div className="text-2xl font-black">System Design Basics</div>
                 </div>
               </div>
               
-              <p className="text-lg text-[#a0a0a0]">Design a URL shortener service</p>
+              <p className="text-lg text-muted-foreground">Design a URL shortener service</p>
               
               <div className="flex items-center gap-4">
                 <motion.button
@@ -703,7 +703,7 @@ export function GenZHomePage() {
                 </motion.button>
                 <div className="flex items-center gap-2 text-sm">
                   <Award className="w-5 h-5 text-[#ffd700]" />
-                  <span className="text-[#a0a0a0]">+50 XP reward</span>
+                  <span className="text-muted-foreground">+50 XP reward</span>
                 </div>
               </div>
             </div>

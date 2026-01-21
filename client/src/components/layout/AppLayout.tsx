@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { GenZSidebar } from './GenZSidebar';
 import { MobileBottomNav, UnifiedMobileHeader } from './UnifiedNav';
 import { UnifiedSearch } from '../UnifiedSearch';
+import { ThemeToggle } from '../ThemeToggle';
 import { cn } from '../../lib/utils';
 
 interface AppLayoutProps {
@@ -39,11 +40,17 @@ export function AppLayout({
   }, []);
 
   if (hideNav) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        {/* Theme Toggle - Always visible */}
+        <ThemeToggle />
+      </>
+    );
   }
 
   return (
-    <div className="min-h-screen min-h-dvh bg-black overflow-x-hidden w-full">
+    <div className="min-h-screen min-h-dvh bg-background overflow-x-hidden w-full">
       {/* Desktop Sidebar - hidden on mobile */}
       <div className="hidden lg:block">
         <GenZSidebar />
@@ -69,6 +76,9 @@ export function AppLayout({
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />
+
+      {/* Theme Toggle - Floating button */}
+      <ThemeToggle />
 
       {/* Search Modal */}
       <UnifiedSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

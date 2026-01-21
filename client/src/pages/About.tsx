@@ -76,12 +76,12 @@ function CodeSnippet({ code, language = 'bash' }: { code: string; language?: str
 
   return (
     <div className="relative group">
-      <pre className="bg-black/80 text-green-400 p-4 rounded-lg text-xs overflow-x-auto font-mono">
+      <pre className="bg-background/80 text-green-400 p-4 rounded-lg text-xs overflow-x-auto font-mono">
         <code>{code}</code>
       </pre>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 bg-white/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 p-1.5 bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity"
       >
         {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
       </button>
@@ -333,7 +333,7 @@ export default function About() {
                   <div className="w-3 h-3 rounded-full bg-yellow-500" />
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                 </div>
-                <button onClick={() => setSoundEnabled(!soundEnabled)} className="p-2 hover:bg-white/10 rounded transition-colors">
+                <button onClick={() => setSoundEnabled(!soundEnabled)} className="p-2 hover:bg-muted rounded transition-colors">
                   {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
               </div>
@@ -383,7 +383,7 @@ export default function About() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setLocation('/voice-interview')}
-                    className="px-6 py-3 bg-gradient-to-r from-primary to-cyan-500 text-white font-bold rounded-lg flex items-center gap-2 shadow-lg shadow-primary/30"
+                    className="px-6 py-3 bg-gradient-to-r from-primary to-cyan-500 text-foreground font-bold rounded-lg flex items-center gap-2 shadow-lg shadow-primary/30"
                   >
                     <Play className="w-4 h-4" /> Start Practicing
                   </motion.button>
@@ -391,7 +391,7 @@ export default function About() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setTerminalOpen(!terminalOpen)}
-                    className="px-6 py-3 bg-black/80 text-green-400 font-bold rounded-lg flex items-center gap-2 border border-green-500/30"
+                    className="px-6 py-3 bg-background/80 text-green-400 font-bold rounded-lg flex items-center gap-2 border border-green-500/30"
                   >
                     <Terminal className="w-4 h-4" /> Open Terminal
                   </motion.button>
@@ -409,7 +409,7 @@ export default function About() {
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="bg-black rounded-xl border border-green-500/30 overflow-hidden">
+                <div className="bg-background rounded-xl border border-green-500/30 overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border-b border-green-500/30">
                     <Terminal className="w-4 h-4 text-green-400" />
                     <span className="text-xs text-green-400 font-mono">code-reels@terminal ~ </span>
@@ -489,7 +489,7 @@ export default function About() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="p-5 border border-border rounded-xl bg-card hover:border-primary/50 transition-colors">
                         <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center mb-4">
-                          <Target className="w-6 h-6 text-white" />
+                          <Target className="w-6 h-6 text-foreground" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">The Problem</h3>
                         <p className="text-sm text-muted-foreground">
@@ -499,7 +499,7 @@ export default function About() {
                       </div>
                       <div className="p-5 border border-border rounded-xl bg-card hover:border-primary/50 transition-colors">
                         <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4">
-                          <Sparkles className="w-6 h-6 text-white" />
+                          <Sparkles className="w-6 h-6 text-foreground" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Our Solution</h3>
                         <p className="text-sm text-muted-foreground">
@@ -539,7 +539,7 @@ pnpm dev
                         whileHover={{ scale: 1.02, y: -4 }}
                         className="group p-5 border border-border rounded-xl bg-card hover:border-primary/50 transition-all cursor-pointer"
                       >
-                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br text-white", f.color)}>
+                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br text-foreground", f.color)}>
                           {f.icon}
                         </div>
                         <h3 className="font-bold text-base mb-2 group-hover:text-primary transition-colors">{f.title}</h3>
@@ -662,7 +662,7 @@ pnpm dev
                       className="flex items-center gap-4 p-5 border border-border rounded-xl bg-card hover:border-primary/50 transition-colors group"
                     >
                       <div className="w-12 h-12 bg-gradient-to-br from-primary to-cyan-500 rounded-xl flex items-center justify-center">
-                        <Sparkles className="w-6 h-6 text-white" />
+                        <Sparkles className="w-6 h-6 text-foreground" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold group-hover:text-primary transition-colors">What's New</h3>
@@ -676,7 +676,7 @@ pnpm dev
                       className="flex items-center gap-4 p-5 border border-border rounded-xl bg-card hover:border-primary/50 transition-colors group"
                     >
                       <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                        <Bot className="w-6 h-6 text-white" />
+                        <Bot className="w-6 h-6 text-foreground" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold group-hover:text-primary transition-colors">Bot Activity</h3>
@@ -723,7 +723,7 @@ git push origin feature/awesome-feature`} />
                         className="absolute -bottom-12 sm:-bottom-14 w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-card border-4 border-card flex items-center justify-center shadow-xl z-10"
                       >
                         <div className="w-full h-full rounded-xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center">
-                          <User className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
+                          <User className="w-12 h-12 sm:w-14 sm:h-14 text-foreground" />
                         </div>
                       </motion.div>
                     </div>
@@ -738,7 +738,7 @@ git push origin feature/awesome-feature`} />
                         href="https://satishkumar-dhule.github.io/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-cyan-500 text-white rounded-lg font-bold text-sm hover:opacity-90 transition-opacity shadow-lg"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-cyan-500 text-foreground rounded-lg font-bold text-sm hover:opacity-90 transition-opacity shadow-lg"
                       >
                         <Globe className="w-4 h-4" /> Portfolio
                       </a>
@@ -796,7 +796,7 @@ git push origin feature/awesome-feature`} />
                         href="https://github.com/open-interview/open-interview"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-foreground rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors"
                       >
                         <Award className="w-4 h-4" /> Star on GitHub
                       </a>

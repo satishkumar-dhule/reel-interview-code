@@ -410,9 +410,9 @@ export default function CertificationPractice() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Award className="w-16 h-16 mx-auto mb-4 text-[#a0a0a0]/30" />
+          <Award className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
           <h2 className="text-xl font-semibold mb-2">Certification not found</h2>
-          <p className="text-[#a0a0a0] text-sm">Redirecting to home...</p>
+          <p className="text-muted-foreground text-sm">Redirecting to home...</p>
         </div>
       </div>
     );
@@ -428,14 +428,14 @@ export default function CertificationPractice() {
     if (!showTest) return null;
 
     return (
-      <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 bg-background/90 backdrop-blur-md flex items-center justify-center p-4">
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white/5 border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-muted/50 border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-4 border-b border-white/10 bg-gradient-to-r from-amber-500/10 via-primary/10 to-amber-500/10">
+          <div className="p-4 border-b border-border bg-gradient-to-r from-amber-500/10 via-primary/10 to-amber-500/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -451,7 +451,7 @@ export default function CertificationPractice() {
                   <h3 className="font-bold">
                     {showResults ? (testResults.passed ? '🎉 Passed!' : '❌ Failed') : 'Checkpoint Test'}
                   </h3>
-                  <p className="text-xs text-[#a0a0a0]">
+                  <p className="text-xs text-muted-foreground">
                     {showResults ? `${testResults.correct}/${testResults.total} correct` : `Q${currentTestIndex + 1}/${testQuestions.length} • Tap answer to submit`}
                   </p>
                 </div>
@@ -463,7 +463,7 @@ export default function CertificationPractice() {
                     <div key={i} className={`w-2.5 h-2.5 rounded-full ${
                       i < testAnswers.length
                         ? testAnswers[i]?.isCorrect ? 'bg-green-500' : 'bg-red-500'
-                        : i === currentTestIndex ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]' : 'bg-white/10'
+                        : i === currentTestIndex ? 'bg-gradient-to-r from-primary to-cyan-500' : 'bg-muted'
                     }`} />
                   ))}
                 </div>
@@ -479,7 +479,7 @@ export default function CertificationPractice() {
                 {!testResults.passed && (
                   <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm">
                     <span className="font-medium text-red-500">Need 100% to proceed.</span>
-                    <span className="text-[#a0a0a0] ml-1">Review below, then retry or skip.</span>
+                    <span className="text-muted-foreground ml-1">Review below, then retry or skip.</span>
                   </div>
                 )}
 
@@ -495,7 +495,7 @@ export default function CertificationPractice() {
                     }`}>
                       <button
                         onClick={() => toggleResultExpand(index)}
-                        className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/10/30"
+                        className="w-full p-3 flex items-center gap-3 text-left hover:bg-muted/30"
                       >
                         {answer?.isCorrect ? (
                           <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -512,23 +512,23 @@ export default function CertificationPractice() {
                             initial={{ height: 0 }}
                             animate={{ height: 'auto' }}
                             exit={{ height: 0 }}
-                            className="overflow-hidden border-t border-white/10/50"
+                            className="overflow-hidden border-t border-border/50"
                           >
                             <div className="p-3 space-y-2 text-sm">
                               <div className={`p-2 rounded ${answer?.isCorrect ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
-                                <span className="text-xs text-[#a0a0a0]">Your answer: </span>
+                                <span className="text-xs text-muted-foreground">Your answer: </span>
                                 <span className={answer?.isCorrect ? 'text-green-500' : 'text-red-500'}>{selectedOption?.text}</span>
                               </div>
                               {!answer?.isCorrect && (
                                 <div className="p-2 rounded bg-green-500/10">
-                                  <span className="text-xs text-[#a0a0a0]">Correct: </span>
+                                  <span className="text-xs text-muted-foreground">Correct: </span>
                                   <span className="text-green-500">{correctOption?.text}</span>
                                 </div>
                               )}
                               {q.explanation && (
                                 <div className="p-2 rounded bg-blue-500/10 flex gap-2">
                                   <Lightbulb className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                                  <span className="text-[#a0a0a0]">{q.explanation}</span>
+                                  <span className="text-muted-foreground">{q.explanation}</span>
                                 </div>
                               )}
                             </div>
@@ -571,8 +571,8 @@ export default function CertificationPractice() {
                               ? 'border-green-500 bg-green-500/10'
                               : isSelected
                               ? 'border-red-500 bg-red-500/10'
-                              : 'border-white/10'
-                            : 'border-white/10 hover:border-[#00ff88]/50 hover:bg-white/10/30'
+                              : 'border-border'
+                            : 'border-border hover:border-primary/50 hover:bg-muted/30'
                         } ${showingFeedback ? 'cursor-default' : ''}`}
                       >
                         <div className="flex items-center gap-3">
@@ -581,8 +581,8 @@ export default function CertificationPractice() {
                             showResult && isSelected && !isCorrect ? 'border-red-500 bg-red-500' :
                             'border-muted-foreground/30'
                           }`}>
-                            {showResult && isCorrect && <Check className="w-3 h-3 text-white" />}
-                            {showResult && isSelected && !isCorrect && <X className="w-3 h-3 text-white" />}
+                            {showResult && isCorrect && <Check className="w-3 h-3 text-foreground" />}
+                            {showResult && isSelected && !isCorrect && <X className="w-3 h-3 text-foreground" />}
                           </div>
                           <span className="text-sm">{option.text}</span>
                         </div>
@@ -598,7 +598,7 @@ export default function CertificationPractice() {
                     className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-sm flex gap-2"
                   >
                     <Lightbulb className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-[#a0a0a0]">{currentTestQuestion.explanation}</span>
+                    <span className="text-muted-foreground">{currentTestQuestion.explanation}</span>
                   </motion.div>
                 )}
               </div>
@@ -606,27 +606,27 @@ export default function CertificationPractice() {
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-white/10 bg-white/10/30">
+          <div className="p-4 border-t border-border bg-muted/30">
             {showResults ? (
               <div className="flex gap-3">
                 {testResults.passed ? (
-                  <button onClick={closeTestAndContinue} className="flex-1 py-3 bg-green-500 text-white rounded-xl font-medium flex items-center justify-center gap-2">
+                  <button onClick={closeTestAndContinue} className="flex-1 py-3 bg-green-500 text-foreground rounded-xl font-medium flex items-center justify-center gap-2">
                     <Unlock className="w-5 h-5" /> Continue
                   </button>
                 ) : (
                   <>
-                    <button onClick={retryTest} className="flex-1 py-3 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black rounded-xl font-medium flex items-center justify-center gap-2">
+                    <button onClick={retryTest} className="flex-1 py-3 bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground rounded-xl font-medium flex items-center justify-center gap-2">
                       <RefreshCw className="w-4 h-4" /> Retry
                     </button>
-                    <button onClick={() => setShowSkipConfirm(true)} className="flex-1 py-3 bg-white/10 rounded-xl font-medium flex items-center justify-center gap-2 text-[#a0a0a0]">
+                    <button onClick={() => setShowSkipConfirm(true)} className="flex-1 py-3 bg-muted rounded-xl font-medium flex items-center justify-center gap-2 text-muted-foreground">
                       <SkipForward className="w-4 h-4" /> Skip (-{SKIP_TEST_PENALTY})
                     </button>
                   </>
                 )}
               </div>
             ) : (
-              <div className="flex items-center justify-between text-sm text-[#a0a0a0]">
-                <button onClick={() => setShowSkipConfirm(true)} className="flex items-center gap-1 hover:text-white">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <button onClick={() => setShowSkipConfirm(true)} className="flex items-center gap-1 hover:text-foreground">
                   <SkipForward className="w-4 h-4" /> Skip (-{SKIP_TEST_PENALTY})
                 </button>
                 <span>Tap an answer to submit</span>
@@ -646,34 +646,34 @@ export default function CertificationPractice() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[60] bg-background/80 flex items-center justify-center p-4"
           onClick={() => setShowSkipConfirm(false)}
         >
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.9 }}
-            className="bg-white/5 border border-white/10 rounded-2xl w-full max-w-sm p-5"
+            className="bg-muted/50 border border-border rounded-2xl w-full max-w-sm p-5"
             onClick={e => e.stopPropagation()}
           >
             <div className="text-center">
               <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-amber-500" />
               <h3 className="font-bold mb-2">Skip Test?</h3>
-              <p className="text-sm text-[#a0a0a0] mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Cost: <span className="text-red-500 font-bold">{SKIP_TEST_PENALTY} credits</span>
               </p>
-              <div className="flex items-center justify-center gap-2 mb-4 p-2 bg-white/10/50 rounded-lg text-sm">
+              <div className="flex items-center justify-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg text-sm">
                 <Coins className="w-4 h-4 text-amber-500" />
                 <span>Balance: <b>{formatCredits(balance)}</b></span>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-2.5 bg-white/10 rounded-xl font-medium">
+                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-2.5 bg-muted rounded-xl font-medium">
                   Cancel
                 </button>
                 <button
                   onClick={skipTestWithPenalty}
                   disabled={balance < SKIP_TEST_PENALTY}
-                  className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-medium disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-red-500 text-foreground rounded-xl font-medium disabled:opacity-50"
                 >
                   Skip
                 </button>
@@ -691,26 +691,26 @@ export default function CertificationPractice() {
       <TestModal />
       <SkipConfirmModal />
 
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-background">
         {/* Compact Header - Single row with integrated progress */}
-        <header className="sticky top-0 z-40 bg-black/95 backdrop-blur border-b border-white/10">
+        <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
           <div className="max-w-7xl mx-auto px-3 py-2">
             {/* Main row: Back, Title, Progress, Credits */}
             <div className="flex items-center gap-2">
-              <button onClick={exitSession} className="p-1.5 hover:bg-white/10 rounded-md shrink-0" title="Exit and save progress">
+              <button onClick={exitSession} className="p-1.5 hover:bg-muted rounded-md shrink-0" title="Exit and save progress">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="font-semibold text-sm leading-tight">{certification.name}</h1>
-                  <span className="text-[10px] text-[#a0a0a0] shrink-0">{certification.provider}</span>
+                  <span className="text-[10px] text-muted-foreground shrink-0">{certification.provider}</span>
                 </div>
                 {/* Inline progress bar */}
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] text-[#a0a0a0] tabular-nums">Q{currentIndex + 1}/{totalQuestions}</span>
-                  <div className="relative flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[200px]">
-                    <div className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-full transition-all" style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }} />
+                  <span className="text-[10px] text-muted-foreground tabular-nums">Q{currentIndex + 1}/{totalQuestions}</span>
+                  <div className="relative flex-1 h-1.5 bg-muted rounded-full overflow-hidden max-w-[200px]">
+                    <div className="h-full bg-gradient-to-r from-primary to-cyan-500 rounded-full transition-all" style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }} />
                     {Array.from({ length: Math.floor(totalQuestions / QUESTIONS_PER_TEST) }).map((_, i) => {
                       const idx = (i + 1) * QUESTIONS_PER_TEST;
                       const pos = (idx / totalQuestions) * 100;
@@ -721,7 +721,7 @@ export default function CertificationPractice() {
                       );
                     })}
                   </div>
-                  <span className="text-[10px] text-[#00ff88] font-medium tabular-nums">{progress}%</span>
+                  <span className="text-[10px] text-primary font-medium tabular-nums">{progress}%</span>
                 </div>
               </div>
 
@@ -734,8 +734,8 @@ export default function CertificationPractice() {
                         ? diff === 'beginner' ? 'bg-green-500/20 text-green-500' 
                           : diff === 'intermediate' ? 'bg-yellow-500/20 text-yellow-500'
                           : diff === 'advanced' ? 'bg-red-500/20 text-red-500'
-                          : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black'
-                        : 'bg-white/10/50 text-[#a0a0a0] hover:bg-white/10'
+                          : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'
+                        : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                     }`}>
                     {diff === 'all' ? 'All' : diff === 'beginner' ? 'Easy' : diff === 'intermediate' ? 'Med' : 'Hard'}
                   </button>
@@ -744,7 +744,7 @@ export default function CertificationPractice() {
                   <Coins className="w-3 h-3 text-amber-500" />
                   <span className="text-[10px] font-bold text-amber-500 tabular-nums">{formatCredits(balance)}</span>
                 </div>
-                <button onClick={() => setShowInfo(!showInfo)} className="p-1 hover:bg-white/10 rounded-md">
+                <button onClick={() => setShowInfo(!showInfo)} className="p-1 hover:bg-muted rounded-md">
                   <Info className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -759,8 +759,8 @@ export default function CertificationPractice() {
                       ? diff === 'beginner' ? 'bg-green-500/20 text-green-500' 
                         : diff === 'intermediate' ? 'bg-yellow-500/20 text-yellow-500'
                         : diff === 'advanced' ? 'bg-red-500/20 text-red-500'
-                        : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black'
-                      : 'bg-white/10/50 text-[#a0a0a0]'
+                        : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'
+                      : 'bg-muted/50 text-muted-foreground'
                   }`}>
                   {diff === 'all' ? 'All' : diff === 'beginner' ? 'Easy' : diff === 'intermediate' ? 'Medium' : 'Hard'}
                 </button>
@@ -771,14 +771,14 @@ export default function CertificationPractice() {
 
         {/* Collapsible Info - More compact */}
         {showInfo && (
-          <div className="bg-white/10/30 border-b border-white/10 px-3 py-2">
+          <div className="bg-muted/30 border-b border-border px-3 py-2">
             <div className="max-w-7xl mx-auto flex items-center justify-between text-[10px]">
               <div className="flex items-center gap-4">
-                <span><span className="text-[#a0a0a0]">Level:</span> <span className="font-medium capitalize">{certification.difficulty}</span></span>
-                <span><span className="text-[#a0a0a0]">Time:</span> <span className="font-medium">{certification.estimatedHours}h</span></span>
-                <span><span className="text-[#a0a0a0]">Done:</span> <span className="font-medium">{completedIds.size}/{totalQuestions}</span></span>
+                <span><span className="text-muted-foreground">Level:</span> <span className="font-medium capitalize">{certification.difficulty}</span></span>
+                <span><span className="text-muted-foreground">Time:</span> <span className="font-medium">{certification.estimatedHours}h</span></span>
+                <span><span className="text-muted-foreground">Done:</span> <span className="font-medium">{completedIds.size}/{totalQuestions}</span></span>
               </div>
-              <div className="flex items-center gap-1 text-[#a0a0a0]">
+              <div className="flex items-center gap-1 text-muted-foreground">
                 <Zap className="w-3 h-3 text-amber-500" />
                 <span>Test every {QUESTIONS_PER_TEST}Q • Skip: {SKIP_TEST_PENALTY}cr</span>
               </div>
@@ -789,11 +789,11 @@ export default function CertificationPractice() {
         {/* Content */}
         {loading ? (
           <div className="flex items-center justify-center h-[60vh]">
-            <div className="w-8 h-8 border-2 border-[#00ff88] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : error ? (
           <div className="flex items-center justify-center h-[60vh] text-center">
-            <div><p className="text-red-500 mb-2">{error}</p><button onClick={() => window.location.reload()} className="text-[#00ff88]">Retry</button></div>
+            <div><p className="text-red-500 mb-2">{error}</p><button onClick={() => window.location.reload()} className="text-primary">Retry</button></div>
           </div>
         ) : totalQuestions === 0 ? (
           <ComingSoon 
@@ -806,7 +806,7 @@ export default function CertificationPractice() {
           <>
             {/* Desktop - Optimized split layout */}
             <div className="hidden lg:flex h-[calc(100vh-100px)]">
-              <div className="w-[40%] border-r border-white/10 overflow-y-auto">
+              <div className="w-[40%] border-r border-border overflow-y-auto">
                 {currentQuestion && <QuestionPanel question={currentQuestion} questionNumber={currentIndex + 1} totalQuestions={totalQuestions} isMarked={isMarked} isCompleted={isCompleted} onToggleMark={toggleMark} timerEnabled={false} timeLeft={0} />}
               </div>
               <div className="w-[60%] overflow-y-auto">
@@ -816,9 +816,9 @@ export default function CertificationPractice() {
 
             {/* Mobile */}
             <div className="lg:hidden flex flex-col h-[calc(100vh-140px)]">
-              <div className="flex border-b border-white/10">
-                <button onClick={() => setMobileView('question')} className={`flex-1 py-2 text-sm font-medium ${mobileView === 'question' ? 'text-[#00ff88] border-b-2 border-[#00ff88]' : 'text-[#a0a0a0]'}`}>Question</button>
-                <button onClick={() => setMobileView('answer')} className={`flex-1 py-2 text-sm font-medium ${mobileView === 'answer' ? 'text-[#00ff88] border-b-2 border-[#00ff88]' : 'text-[#a0a0a0]'}`}>Answer</button>
+              <div className="flex border-b border-border">
+                <button onClick={() => setMobileView('question')} className={`flex-1 py-2 text-sm font-medium ${mobileView === 'question' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}>Question</button>
+                <button onClick={() => setMobileView('answer')} className={`flex-1 py-2 text-sm font-medium ${mobileView === 'answer' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}>Answer</button>
               </div>
               <div className="flex-1 overflow-y-auto pb-14" onTouchStart={swipeHandlers.onTouchStart} onTouchMove={swipeHandlers.onTouchMove} onTouchEnd={swipeHandlers.onTouchEnd}>
                 {mobileView === 'question' ? (
@@ -830,15 +830,15 @@ export default function CertificationPractice() {
             </div>
 
             {/* Nav - Minimal */}
-            <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur border-t border-white/10 py-1.5 px-3">
+            <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border py-1.5 px-3">
               <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-                <button onClick={goToPrev} disabled={currentIndex === 0} className="flex items-center gap-1 px-2.5 py-1.5 bg-white/10 rounded-md disabled:opacity-40 text-xs">
+                <button onClick={goToPrev} disabled={currentIndex === 0} className="flex items-center gap-1 px-2.5 py-1.5 bg-muted rounded-md disabled:opacity-40 text-xs">
                   <ChevronLeft className="w-4 h-4" />Prev
                 </button>
-                <button onClick={markCompleted} disabled={isCompleted} className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium ${isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black'}`}>
+                <button onClick={markCompleted} disabled={isCompleted} className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium ${isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'}`}>
                   <Check className="w-3.5 h-3.5" />{isCompleted ? 'Done' : 'Mark Done'}
                 </button>
-                <button onClick={goToNext} disabled={currentIndex === totalQuestions - 1} className="flex items-center gap-1 px-2.5 py-1.5 bg-white/10 rounded-md disabled:opacity-40 text-xs">
+                <button onClick={goToNext} disabled={currentIndex === totalQuestions - 1} className="flex items-center gap-1 px-2.5 py-1.5 bg-muted rounded-md disabled:opacity-40 text-xs">
                   Next<ChevronRight className="w-4 h-4" />
                   {isTestCheckpoint(currentIndex + 1) && !isCheckpointPassed(currentIndex + 1) && <Lock className="w-3 h-3 text-amber-500" />}
                 </button>

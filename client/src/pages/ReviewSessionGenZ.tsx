@@ -214,14 +214,14 @@ function DiagramSection({ diagram }: { diagram: string }) {
   if (renderSuccess === false) return null;
   
   return (
-    <div className="p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10">
+    <div className="p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border">
       <div className="flex items-center gap-2 mb-4">
         <div className="p-2 bg-purple-500/20 rounded-lg">
           <Eye className="w-5 h-5 text-purple-400" />
         </div>
         <span className="text-sm font-bold text-purple-400 uppercase tracking-wider">Diagram</span>
       </div>
-      <div className="bg-black/30 rounded-xl p-4 overflow-x-auto">
+      <div className="bg-background/30 rounded-xl p-4 overflow-x-auto">
         <EnhancedMermaid 
           chart={diagram} 
           onRenderResult={(success) => setRenderSuccess(success)}
@@ -288,14 +288,14 @@ export default function ReviewSessionGenZ() {
   if (!currentCard) {
     return (
       <AppLayout>
-        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
           <div className="text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-3xl font-black mb-2">Review Complete!</h2>
-            <p className="text-[#a0a0a0] mb-6">You've reviewed all cards for today</p>
+            <p className="text-muted-foreground mb-6">You've reviewed all cards for today</p>
             <button
               onClick={() => setLocation('/')}
-              className="px-8 py-4 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[16px] font-bold text-black"
+              className="px-8 py-4 bg-gradient-to-r from-primary to-cyan-500 rounded-[16px] font-bold text-black"
             >
               Back to Home
             </button>
@@ -314,13 +314,13 @@ export default function ReviewSessionGenZ() {
       />
 
       <AppLayout>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-4xl mx-auto px-6 py-8">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <button
                 onClick={() => setLocation('/')}
-                className="flex items-center gap-2 text-[#a0a0a0] hover:text-white transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
                 <span>Back</span>
@@ -332,7 +332,7 @@ export default function ReviewSessionGenZ() {
                   <span className="font-bold">{streak}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-[#00ff88]" />
+                  <Brain className="w-5 h-5 text-primary" />
                   <span className="font-bold">{reviewedCount}/{cards.length}</span>
                 </div>
               </div>
@@ -341,14 +341,14 @@ export default function ReviewSessionGenZ() {
             {/* Progress Bar */}
             <div className="mb-8">
               <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-[#a0a0a0]">Progress</span>
+                <span className="text-muted-foreground">Progress</span>
                 <span className="font-bold">{progress}%</span>
               </div>
-              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
-                  className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                  className="h-full bg-gradient-to-r from-primary to-cyan-500"
                 />
               </div>
             </div>
@@ -364,10 +364,10 @@ export default function ReviewSessionGenZ() {
                 className="relative"
               >
                 {/* Question Card */}
-                <div className="p-8 bg-white/5 backdrop-blur-xl rounded-[32px] border border-white/10 min-h-[400px] flex flex-col">
+                <div className="p-8 bg-muted/50 backdrop-blur-xl rounded-[32px] border border-border min-h-[400px] flex flex-col">
                   {/* Tags */}
                   <div className="flex items-center gap-2 mb-6">
-                    <span className="px-3 py-1 bg-[#00ff88]/20 text-[#00ff88] rounded-full text-xs font-bold uppercase">
+                    <span className="px-3 py-1 bg-[#00ff88]/20 text-primary rounded-full text-xs font-bold uppercase">
                       {currentCard.channel}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
@@ -416,12 +416,12 @@ export default function ReviewSessionGenZ() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.15 }}
-                          className="p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10"
+                          className="p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <Sparkles className="w-5 h-5 text-[#00ff88]" />
-                              <span className="font-bold text-[#00ff88]">Answer</span>
+                              <Sparkles className="w-5 h-5 text-primary" />
+                              <span className="font-bold text-primary">Answer</span>
                             </div>
                             <ListenButton 
                               text={`${currentCard.answer}${currentCard.explanation ? '. ' + currentCard.explanation : ''}`}
@@ -429,7 +429,7 @@ export default function ReviewSessionGenZ() {
                               size="sm"
                             />
                           </div>
-                          <p className="text-lg text-white leading-relaxed">
+                          <p className="text-lg text-foreground leading-relaxed">
                             {currentCard.answer}
                           </p>
                         </motion.div>
@@ -483,13 +483,13 @@ export default function ReviewSessionGenZ() {
                                     return <p className="mb-3 text-[#e0e0e0] leading-relaxed">{children}</p>;
                                   },
                                   h1({ children }) {
-                                    return <h1 className="text-xl font-bold mb-3 mt-4 text-white">{children}</h1>;
+                                    return <h1 className="text-xl font-bold mb-3 mt-4 text-foreground">{children}</h1>;
                                   },
                                   h2({ children }) {
-                                    return <h2 className="text-lg font-bold mb-2 mt-4 text-white">{children}</h2>;
+                                    return <h2 className="text-lg font-bold mb-2 mt-4 text-foreground">{children}</h2>;
                                   },
                                   strong({ children }) {
-                                    return <strong className="font-bold text-white">{children}</strong>;
+                                    return <strong className="font-bold text-foreground">{children}</strong>;
                                   },
                                   ul({ children }) {
                                     return <ul className="space-y-2 mb-3">{children}</ul>;
@@ -530,7 +530,7 @@ export default function ReviewSessionGenZ() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.25 }}
-                            className="p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10"
+                            className="p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border"
                           >
                             <div className="flex items-center gap-2 mb-4">
                               <Brain className="w-5 h-5 text-orange-400" />
@@ -573,13 +573,13 @@ export default function ReviewSessionGenZ() {
                                     return <p className="mb-3 text-[#e0e0e0] leading-relaxed">{children}</p>;
                                   },
                                   h1({ children }) {
-                                    return <h1 className="text-xl font-bold mb-3 mt-4 text-white">{children}</h1>;
+                                    return <h1 className="text-xl font-bold mb-3 mt-4 text-foreground">{children}</h1>;
                                   },
                                   h2({ children }) {
-                                    return <h2 className="text-lg font-bold mb-2 mt-4 text-white">{children}</h2>;
+                                    return <h2 className="text-lg font-bold mb-2 mt-4 text-foreground">{children}</h2>;
                                   },
                                   strong({ children }) {
-                                    return <strong className="font-bold text-white">{children}</strong>;
+                                    return <strong className="font-bold text-foreground">{children}</strong>;
                                   },
                                   ul({ children }) {
                                     return <ul className="space-y-2 mb-3">{children}</ul>;
@@ -587,7 +587,7 @@ export default function ReviewSessionGenZ() {
                                   li({ children }) {
                                     return (
                                       <li className="flex gap-2 text-[#e0e0e0]">
-                                        <span className="text-[#00ff88] mt-1">•</span>
+                                        <span className="text-primary mt-1">•</span>
                                         <span className="flex-1">{children}</span>
                                       </li>
                                     );
@@ -612,7 +612,7 @@ export default function ReviewSessionGenZ() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleRevealAnswer}
-                      className="w-full py-6 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[20px] font-bold text-xl text-black flex items-center justify-center gap-3"
+                      className="w-full py-6 bg-gradient-to-r from-primary to-cyan-500 rounded-[20px] font-bold text-xl text-black flex items-center justify-center gap-3"
                     >
                       <Eye className="w-6 h-6" />
                       Tap to reveal answer
@@ -620,7 +620,7 @@ export default function ReviewSessionGenZ() {
                   ) : (
                     // Confidence Buttons
                     <div className="space-y-3">
-                      <div className="text-center text-sm text-[#a0a0a0] mb-4">
+                      <div className="text-center text-sm text-muted-foreground mb-4">
                         How well did you know this?
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -630,7 +630,7 @@ export default function ReviewSessionGenZ() {
                             whileHover={{ scale: 1.05, y: -4 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleConfidence(level.id)}
-                            className={`p-4 bg-gradient-to-br ${level.color} rounded-[16px] font-bold text-white`}
+                            className={`p-4 bg-gradient-to-br ${level.color} rounded-[16px] font-bold text-foreground`}
                           >
                             <div className="text-2xl mb-1">{level.emoji}</div>
                             <div className="text-sm">{level.label}</div>
@@ -646,7 +646,7 @@ export default function ReviewSessionGenZ() {
                 <div className="mt-4 text-center">
                   <button
                     onClick={handleSkip}
-                    className="text-sm text-[#666] hover:text-white transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Skip this card
                   </button>
@@ -656,17 +656,17 @@ export default function ReviewSessionGenZ() {
 
             {/* Stats Footer */}
             <div className="mt-8 grid grid-cols-3 gap-4">
-              <div className="p-4 bg-white/5 rounded-[16px] text-center">
+              <div className="p-4 bg-muted/50 rounded-[16px] text-center">
                 <div className="text-2xl font-black">{cards.length}</div>
-                <div className="text-xs text-[#a0a0a0]">Total Cards</div>
+                <div className="text-xs text-muted-foreground">Total Cards</div>
               </div>
-              <div className="p-4 bg-white/5 rounded-[16px] text-center">
+              <div className="p-4 bg-muted/50 rounded-[16px] text-center">
                 <div className="text-2xl font-black">{reviewedCount}</div>
-                <div className="text-xs text-[#a0a0a0]">Reviewed</div>
+                <div className="text-xs text-muted-foreground">Reviewed</div>
               </div>
-              <div className="p-4 bg-white/5 rounded-[16px] text-center">
+              <div className="p-4 bg-muted/50 rounded-[16px] text-center">
                 <div className="text-2xl font-black">{cards.length - reviewedCount}</div>
-                <div className="text-xs text-[#a0a0a0]">Remaining</div>
+                <div className="text-xs text-muted-foreground">Remaining</div>
               </div>
             </div>
           </div>

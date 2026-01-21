@@ -15,8 +15,8 @@ export function GenZCard({ children, className, neonBorder, gradient }: GenZCard
   return (
     <div
       className={cn(
-        'bg-white/5 backdrop-blur-xl rounded-[24px] border transition-all',
-        neonBorder ? 'border-[#00ff88]/30 hover:border-[#00ff88]/60' : 'border-white/10',
+        'bg-card/50 backdrop-blur-xl rounded-[24px] border transition-all',
+        neonBorder ? 'border-primary/30 hover:border-primary/60' : 'border-border',
         gradient && `bg-gradient-to-br ${gradient}`,
         className
       )}

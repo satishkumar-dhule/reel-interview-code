@@ -1,11 +1,12 @@
 /**
- * Recent Blog Posts Component
- * Displays tiles linking to recent blog posts on the home page
+ * Recent Blog Posts Component - Gen Z Theme
+ * Pure black background, neon accents, glassmorphism
  */
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { api } from '../services/api.service';
-import { FileText, ExternalLink, ChevronRight, Sparkles } from 'lucide-react';
+import { FileText, ExternalLink, ChevronRight, Sparkles, Zap } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -59,17 +60,17 @@ export function RecentBlogPosts({ limit = 3, className = '' }: RecentBlogPostsPr
   if (isLoading) {
     return (
       <section className={`mb-3 ${className}`}>
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <div className="px-3 py-2 border-b border-border/50">
+        <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm">
+          <div className="px-4 py-3 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-muted-foreground">Recent Articles</span>
+              <Sparkles className="w-4 h-4 text-[#00ff88]" />
+              <span className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider">From the Blog</span>
             </div>
           </div>
           <div className="p-3 space-y-2">
             {[...Array(limit)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-16 bg-muted/30 rounded-lg" />
+                <div className="h-20 bg-white/5 rounded-xl" />
               </div>
             ))}
           </div>
@@ -87,12 +88,16 @@ export function RecentBlogPosts({ limit = 3, className = '' }: RecentBlogPostsPr
 
   return (
     <section className={`mb-3 ${className}`}>
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm"
+      >
         {/* Header */}
-        <div className="px-3 py-2 border-b border-border/50 flex items-center justify-between">
+        <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <Sparkles className="w-4 h-4 text-[#00ff88]" />
+            <span className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider">
               From the Blog
             </span>
           </div>
@@ -100,40 +105,59 @@ export function RecentBlogPosts({ limit = 3, className = '' }: RecentBlogPostsPr
             href={blogBaseUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-primary hover:underline flex items-center gap-1"
+            className="text-[10px] text-[#00d4ff] hover:text-[#00ff88] flex items-center gap-1 transition-colors font-semibold"
           >
             View all <ChevronRight className="w-3 h-3" />
           </a>
         </div>
 
         {/* Blog Post Tiles */}
-        <div className="p-2 space-y-1.5">
-          {posts.map((post) => (
-            <a
+        <div className="p-3 space-y-2">
+          {posts.map((post, idx) => (
+            <motion.a
               key={post.id}
               href={`${blogBaseUrl}${post.url}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-3 rounded-lg bg-muted/20 hover:bg-muted/40 border border-transparent hover:border-primary/20 transition-all group"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="block p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00ff88]/30 transition-all group"
             >
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-violet-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                  <FileText className="w-4 h-4 text-primary" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 border border-[#00ff88]/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <FileText className="w-5 h-5 text-[#00ff88]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                  <h4 className="text-sm font-bold leading-snug line-clamp-2 group-hover:text-[#00ff88] transition-colors mb-1">
                     {post.title}
                   </h4>
-                  <div className="flex items-center gap-1 mt-1 text-[10px] text-muted-foreground">
-                    <span>Read article</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                  <div className="flex items-center gap-1 text-[10px] text-[#a0a0a0] group-hover:text-[#00d4ff] transition-colors">
+                    <span className="font-semibold">Read article</span>
+                    <ExternalLink className="w-3 h-3" />
                   </div>
                 </div>
               </div>
-            </a>
+            </motion.a>
           ))}
         </div>
-      </div>
+
+        {/* Footer CTA */}
+        <div className="px-4 py-3 border-t border-white/10 bg-gradient-to-r from-[#00ff88]/5 to-[#00d4ff]/5">
+          <a
+            href={blogBaseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 text-xs font-bold text-[#00ff88] hover:text-[#00d4ff] transition-colors"
+          >
+            <Zap className="w-3 h-3" />
+            <span>Explore More Articles</span>
+            <ChevronRight className="w-3 h-3" />
+          </a>
+        </div>
+      </motion.div>
     </section>
   );
 }

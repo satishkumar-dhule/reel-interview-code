@@ -156,18 +156,18 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-xl"
+      className="rounded-2xl overflow-hidden border border-border bg-muted/50 shadow-xl"
     >
-      <div className="flex items-center justify-between px-5 py-3 bg-white/3 border-b border-white/10">
+      <div className="flex items-center justify-between px-5 py-3 bg-muted border-b border-border">
         <div className="flex items-center gap-3">
-          <Code2 className="w-5 h-5 text-[#00ff88]" />
-          <span className="text-sm uppercase tracking-wider text-[#00ff88] font-bold">
+          <Code2 className="w-5 h-5 text-primary" />
+          <span className="text-sm uppercase tracking-wider text-primary font-bold">
             {language || 'code'}
           </span>
         </div>
         <motion.button
           onClick={handleCopy}
-          className="flex items-center gap-2 px-4 py-2 text-xs text-[#a0a0a0] hover:text-white hover:bg-white/3/50 rounded-lg transition-all"
+          className="flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -247,7 +247,7 @@ function TabbedMediaPanel({
   if (availableTabs.length === 0 && diagramRenderSuccess === false) return null;
   if (availableTabs.length === 0 && !hasTldr && !hasEli5 && !hasVideo && diagramRenderSuccess === null) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-[#a0a0a0] text-sm backdrop-blur-xl">
+      <div className="rounded-2xl border border-border bg-muted/50 p-6 text-center text-muted-foreground text-sm backdrop-blur-xl">
         Loading media...
       </div>
     );
@@ -265,18 +265,18 @@ function TabbedMediaPanel({
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-xl"
+      className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden shadow-xl"
     >
       {/* Tab Headers - Theme Colors */}
-      <div className="flex border-b border-white/10 bg-white/3/30">
+      <div className="flex border-b border-border bg-muted/30">
         {availableTabs.map((tab) => (
           <motion.button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-bold transition-all relative ${
               activeTab === tab 
-                ? 'text-[#00ff88] bg-[#00ff88]/10' 
-                : 'text-[#a0a0a0] hover:text-white hover:bg-white/3/50'
+                ? 'text-primary bg-primary/10' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
             }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -286,7 +286,7 @@ function TabbedMediaPanel({
             {activeTab === tab && (
               <motion.div
                 layoutId="activeTabIndicator"
-                className="absolute bottom-0 left-0 right-0 h-1 bg-[#00ff88]"
+                className="absolute bottom-0 left-0 right-0 h-1 bg-primary"
               />
             )}
           </motion.button>
@@ -305,8 +305,8 @@ function TabbedMediaPanel({
               transition={{ duration: 0.3 }}
               className="flex items-start gap-4"
             >
-              <Lightbulb className="w-6 h-6 text-[#00ff88] shrink-0 mt-1" />
-              <p className="text-sm sm:text-base text-white leading-relaxed">{renderWithInlineCode(question.answer)}</p>
+              <Lightbulb className="w-6 h-6 text-primary shrink-0 mt-1" />
+              <p className="text-sm sm:text-base text-foreground leading-relaxed">{renderWithInlineCode(question.answer)}</p>
             </motion.div>
           )}
           
@@ -335,7 +335,7 @@ function TabbedMediaPanel({
               className="flex items-start gap-4"
             >
               <span className="text-2xl flex-shrink-0">🧒</span>
-              <p className="text-sm sm:text-base text-white leading-relaxed">{renderWithInlineCode(question.eli5 || '')}</p>
+              <p className="text-sm sm:text-base text-foreground leading-relaxed">{renderWithInlineCode(question.eli5 || '')}</p>
             </motion.div>
           )}
           
@@ -377,15 +377,15 @@ function ExpandableCard({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   const variantStyles = {
-    default: 'bg-white/5 border-white/10',
-    highlight: 'bg-[#00ff88]/10 border-primary/30',
+    default: 'bg-card border-border',
+    highlight: 'bg-primary/10 border-primary/30',
     success: 'bg-green-500/10 border-green-500/30',
     purple: 'bg-purple-500/10 border-purple-500/30',
   };
 
   const iconStyles = {
-    default: 'text-[#a0a0a0]',
-    highlight: 'text-[#00ff88]',
+    default: 'text-muted-foreground',
+    highlight: 'text-primary',
     success: 'text-green-500',
     purple: 'text-purple-500',
   };
@@ -398,14 +398,14 @@ function ExpandableCard({
     >
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/3/30 transition-colors"
+        className="w-full flex items-center justify-between px-5 py-4 hover:bg-muted/30 transition-colors"
         whileHover={{ backgroundColor: 'hsl(var(--muted) / 0.3)' }}
       >
         <div className="flex items-center gap-3">
           <span className={iconStyles[variant]}>{icon}</span>
-          <span className="font-bold text-base text-white">{title}</span>
+          <span className="font-bold text-base text-foreground">{title}</span>
           {badge && (
-            <span className="px-2 py-1 bg-[#00ff88]/20 text-[#00ff88] text-xs font-bold rounded-full border border-primary/30">
+            <span className="px-2 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full border border-primary/30">
               {badge}
             </span>
           )}
@@ -414,7 +414,7 @@ function ExpandableCard({
           animate={{ rotate: isExpanded ? 0 : -90 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-5 h-5 text-[#a0a0a0]" />
+          <ChevronDown className="w-5 h-5 text-muted-foreground" />
         </motion.div>
       </motion.button>
       
@@ -487,19 +487,19 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
             );
           },
           p({ children }) {
-            return <p className="mb-3 leading-relaxed text-white text-sm sm:text-base">{children}</p>;
+            return <p className="mb-3 leading-relaxed text-foreground text-sm sm:text-base">{children}</p>;
           },
           h1({ children }) {
-            return <h1 className="text-lg sm:text-xl font-black mb-3 mt-6 text-white border-b border-white/10 pb-2">{children}</h1>;
+            return <h1 className="text-lg sm:text-xl font-black mb-3 mt-6 text-foreground border-b border-border pb-2">{children}</h1>;
           },
           h2({ children }) {
-            return <h2 className="text-base sm:text-lg font-bold mb-3 mt-5 text-white">{children}</h2>;
+            return <h2 className="text-base sm:text-lg font-bold mb-3 mt-5 text-foreground">{children}</h2>;
           },
           h3({ children }) {
-            return <h3 className="text-sm sm:text-base font-semibold mb-2 mt-4 text-white">{children}</h3>;
+            return <h3 className="text-sm sm:text-base font-semibold mb-2 mt-4 text-foreground">{children}</h3>;
           },
           strong({ children }) {
-            return <strong className="font-bold text-white">{children}</strong>;
+            return <strong className="font-bold text-foreground">{children}</strong>;
           },
           ul({ children, node }) {
             // Check if this is a nested list
@@ -532,8 +532,8 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
             );
             
             return (
-              <li className={`flex gap-3 text-white text-sm sm:text-base [counter-increment:list-counter] ${hasNestedList ? 'flex-col' : ''}`}>
-                <span className="shrink-0 text-[#00ff88] mt-1 font-bold">
+              <li className={`flex gap-3 text-foreground text-sm sm:text-base [counter-increment:list-counter] ${hasNestedList ? 'flex-col' : ''}`}>
+                <span className="shrink-0 text-primary mt-1 font-bold">
                   {isOrdered ? <span className="text-sm before:content-[counter(list-counter)'.']" /> : '•'}
                 </span>
                 <span className={hasNestedList ? 'flex-1 -mt-7 ml-6' : 'flex-1'}>{children}</span>
@@ -542,14 +542,14 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
           },
           a({ href, children }) {
             return (
-              <a href={href} className="text-[#00ff88] hover:text-[#00ff88]/80 underline" target="_blank" rel="noopener noreferrer">
+              <a href={href} className="text-primary hover:text-primary/80 underline" target="_blank" rel="noopener noreferrer">
                 {children}
               </a>
             );
           },
           blockquote({ children }) {
             return (
-              <blockquote className="border-l-4 border-primary/50 pl-4 py-2 my-3 bg-[#00ff88]/5 text-[#a0a0a0] italic text-sm sm:text-base">
+              <blockquote className="border-l-4 border-primary/50 pl-4 py-2 my-3 bg-primary/5 text-muted-foreground italic text-sm sm:text-base">
                 {children}
               </blockquote>
             );
@@ -562,10 +562,10 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
             );
           },
           th({ children }) {
-            return <th className="px-3 py-2 text-left font-bold bg-white/3 border border-white/10 text-xs sm:text-sm text-white">{children}</th>;
+            return <th className="px-3 py-2 text-left font-bold bg-muted border border-border text-xs sm:text-sm text-foreground">{children}</th>;
           },
           td({ children }) {
-            return <td className="px-3 py-2 border border-white/10 text-xs sm:text-sm text-white">{children}</td>;
+            return <td className="px-3 py-2 border border-border text-xs sm:text-sm text-foreground">{children}</td>;
           },
         }}
       >
@@ -610,12 +610,12 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
         <div className="flex items-start gap-3 pt-2">
           {question.tags && question.tags.length > 0 && (
             <>
-              <Tag className="w-4 h-4 text-[#00ff88] mt-1 flex-shrink-0" />
+              <Tag className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
               <div className="flex flex-wrap gap-2">
                 {question.tags.map(tag => (
                   <motion.span 
                     key={tag} 
-                    className="px-3 py-1 bg-white/3 text-[#a0a0a0] text-xs font-mono rounded-lg border border-white/10 backdrop-blur-xl"
+                    className="px-3 py-1 bg-muted text-muted-foreground text-xs font-mono rounded-lg border border-border backdrop-blur-xl"
                     whileHover={{ 
                       scale: 1.05, 
                       borderColor: 'hsl(var(--primary))',
@@ -638,11 +638,11 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
                 href={question.sourceUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/3 border border-white/10 rounded-xl text-sm backdrop-blur-xl transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl text-sm backdrop-blur-xl transition-colors"
                 whileHover={{ scale: 1.05 }}
               >
-                <ExternalLink className="w-4 h-4 text-[#00ff88]" />
-                <span className="text-white font-medium">Source</span>
+                <ExternalLink className="w-4 h-4 text-primary" />
+                <span className="text-foreground font-medium">Source</span>
               </motion.a>
             )}
             {blogPost && (
@@ -650,11 +650,11 @@ export function GenZAnswerPanel({ question, isCompleted }: { question: Question;
                 href={`https://openstackdaily.github.io${blogPost.url}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#00ff88]/10 hover:bg-[#00ff88]/20 border border-primary/30 rounded-xl text-sm backdrop-blur-xl transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 border border-primary/30 rounded-xl text-sm backdrop-blur-xl transition-colors"
                 whileHover={{ scale: 1.05 }}
               >
-                <FileText className="w-4 h-4 text-[#00ff88]" />
-                <span className="text-[#00ff88] font-medium">Read Blog</span>
+                <FileText className="w-4 h-4 text-primary" />
+                <span className="text-primary font-medium">Read Blog</span>
               </motion.a>
             )}
           </div>

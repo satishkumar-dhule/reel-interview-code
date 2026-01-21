@@ -51,7 +51,7 @@ export default function ProfileGenZ() {
       />
 
       <AppLayout>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-4xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -60,31 +60,31 @@ export default function ProfileGenZ() {
               className="text-center space-y-6 mb-12"
             >
               {/* Avatar */}
-              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-full flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-full blur-2xl opacity-50" />
+              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-primary to-cyan-500 rounded-full flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-cyan-500 rounded-full blur-2xl opacity-50" />
                 <User className="w-16 h-16 text-black relative z-10" strokeWidth={2.5} />
               </div>
 
               <div>
                 <h1 className="text-4xl font-black mb-2">Level {level}</h1>
-                <p className="text-[#a0a0a0]">{balance} XP • {totalCompleted} completed</p>
+                <p className="text-muted-foreground">{balance} XP • {totalCompleted} completed</p>
               </div>
 
               {/* Level Progress */}
               <div className="max-w-md mx-auto">
                 <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-[#a0a0a0]">Level {level}</span>
-                  <span className="text-[#a0a0a0]">Level {level + 1}</span>
+                  <span className="text-muted-foreground">Level {level}</span>
+                  <span className="text-muted-foreground">Level {level + 1}</span>
                 </div>
-                <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-3 bg-muted rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${xpInLevel}%` }}
                     transition={{ duration: 1 }}
-                    className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                    className="h-full bg-gradient-to-r from-primary to-cyan-500"
                   />
                 </div>
-                <div className="text-center text-sm text-[#a0a0a0] mt-2">
+                <div className="text-center text-sm text-muted-foreground mt-2">
                   {xpInLevel}/100 XP to next level
                 </div>
               </div>
@@ -96,11 +96,11 @@ export default function ProfileGenZ() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
-                className="p-6 bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 backdrop-blur-xl rounded-[20px] border border-[#00ff88]/30 text-center"
+                className="p-6 bg-gradient-to-br from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[20px] border border-primary/30 text-center"
               >
-                <Zap className="w-8 h-8 text-[#00ff88] mx-auto mb-2" />
+                <Zap className="w-8 h-8 text-primary mx-auto mb-2" />
                 <div className="text-2xl font-black">{balance}</div>
-                <div className="text-xs text-[#a0a0a0]">Total XP</div>
+                <div className="text-xs text-muted-foreground">Total XP</div>
               </motion.div>
 
               <motion.div
@@ -111,7 +111,7 @@ export default function ProfileGenZ() {
               >
                 <Trophy className="w-8 h-8 text-purple-400 mx-auto mb-2" />
                 <div className="text-2xl font-black">{level}</div>
-                <div className="text-xs text-[#a0a0a0]">Level</div>
+                <div className="text-xs text-muted-foreground">Level</div>
               </motion.div>
 
               <motion.div
@@ -122,7 +122,7 @@ export default function ProfileGenZ() {
               >
                 <Target className="w-8 h-8 text-[#ffd700] mx-auto mb-2" />
                 <div className="text-2xl font-black">{totalCompleted}</div>
-                <div className="text-xs text-[#a0a0a0]">Completed</div>
+                <div className="text-xs text-muted-foreground">Completed</div>
               </motion.div>
             </div>
 
@@ -139,24 +139,24 @@ export default function ProfileGenZ() {
               </h2>
 
               {/* Learning Preferences */}
-              <div className="p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 space-y-4">
+              <div className="p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border space-y-4">
                 <h3 className="text-xl font-bold mb-4">Learning Preferences</h3>
 
                 {/* Shuffle Questions */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Shuffle className="w-5 h-5 text-[#00ff88]" />
+                    <Shuffle className="w-5 h-5 text-primary" />
                     <div>
                       <div className="font-semibold">Shuffle Questions</div>
-                      <div className="text-sm text-[#a0a0a0]">Randomize question order</div>
+                      <div className="text-sm text-muted-foreground">Randomize question order</div>
                     </div>
                   </div>
                   <button
                     onClick={() => updatePreferences({ shuffleQuestions: !preferences.shuffleQuestions })}
                     className={`w-14 h-8 rounded-full transition-all ${
                       preferences.shuffleQuestions !== false
-                        ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]'
-                        : 'bg-white/10'
+                        ? 'bg-gradient-to-r from-primary to-cyan-500'
+                        : 'bg-muted'
                     }`}
                   >
                     <div className={`w-6 h-6 bg-white rounded-full transition-transform ${
@@ -168,18 +168,18 @@ export default function ProfileGenZ() {
                 {/* Prioritize Unvisited */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Eye className="w-5 h-5 text-[#00d4ff]" />
+                    <Eye className="w-5 h-5 text-cyan-500" />
                     <div>
                       <div className="font-semibold">Prioritize New</div>
-                      <div className="text-sm text-[#a0a0a0]">Show unvisited questions first</div>
+                      <div className="text-sm text-muted-foreground">Show unvisited questions first</div>
                     </div>
                   </div>
                   <button
                     onClick={() => updatePreferences({ prioritizeUnvisited: !preferences.prioritizeUnvisited })}
                     className={`w-14 h-8 rounded-full transition-all ${
                       preferences.prioritizeUnvisited !== false
-                        ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]'
-                        : 'bg-white/10'
+                        ? 'bg-gradient-to-r from-primary to-cyan-500'
+                        : 'bg-muted'
                     }`}
                   >
                     <div className={`w-6 h-6 bg-white rounded-full transition-transform ${
@@ -194,15 +194,15 @@ export default function ProfileGenZ() {
                     <Volume2 className="w-5 h-5 text-purple-400" />
                     <div>
                       <div className="font-semibold">Auto-play Audio</div>
-                      <div className="text-sm text-[#a0a0a0]">Automatically read questions</div>
+                      <div className="text-sm text-muted-foreground">Automatically read questions</div>
                     </div>
                   </div>
                   <button
                     onClick={() => updatePreferences({ autoPlayTTS: !preferences.autoPlayTTS })}
                     className={`w-14 h-8 rounded-full transition-all ${
                       preferences.autoPlayTTS
-                        ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]'
-                        : 'bg-white/10'
+                        ? 'bg-gradient-to-r from-primary to-cyan-500'
+                        : 'bg-muted'
                     }`}
                   >
                     <div className={`w-6 h-6 bg-white rounded-full transition-transform ${
@@ -222,18 +222,18 @@ export default function ProfileGenZ() {
                 >
                   <Trophy className="w-8 h-8 text-[#ffd700] mb-3" />
                   <div className="font-bold">Achievements</div>
-                  <div className="text-sm text-[#a0a0a0]">View your badges</div>
+                  <div className="text-sm text-muted-foreground">View your badges</div>
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setLocation('/stats')}
-                  className="p-6 bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 backdrop-blur-xl rounded-[20px] border border-[#00ff88]/30 text-left"
+                  className="p-6 bg-gradient-to-br from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[20px] border border-primary/30 text-left"
                 >
-                  <Sparkles className="w-8 h-8 text-[#00ff88] mb-3" />
+                  <Sparkles className="w-8 h-8 text-primary mb-3" />
                   <div className="font-bold">Statistics</div>
-                  <div className="text-sm text-[#a0a0a0]">View your progress</div>
+                  <div className="text-sm text-muted-foreground">View your progress</div>
                 </motion.button>
               </div>
             </motion.div>

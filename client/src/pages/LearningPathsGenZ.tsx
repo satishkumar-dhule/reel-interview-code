@@ -260,7 +260,7 @@ export default function LearningPathsGenZ() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
               onClick={() => setShowCustom(false)}
             >
               <motion.div
@@ -268,15 +268,15 @@ export default function LearningPathsGenZ() {
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-black border border-white/20 rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+                className="bg-background border border-border rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
               >
                 {/* Header */}
-                <div className="p-8 border-b border-white/10">
+                <div className="p-8 border-b border-border">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-3xl font-black">Create Custom Path</h2>
                     <button
                       onClick={() => setShowCustom(false)}
-                      className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-all"
+                      className="w-10 h-10 bg-muted/50 hover:bg-muted rounded-full flex items-center justify-center transition-all"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -288,7 +288,7 @@ export default function LearningPathsGenZ() {
                     placeholder="My Custom Path"
                     value={customPath.name}
                     onChange={(e) => setCustomPath(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[16px] text-xl focus:outline-none focus:border-[#00ff88] transition-all"
+                    className="w-full px-6 py-4 bg-muted/50 border border-border rounded-[16px] text-xl focus:outline-none focus:border-primary transition-all"
                   />
                 </div>
 
@@ -296,20 +296,20 @@ export default function LearningPathsGenZ() {
                 <div className="flex-1 overflow-y-auto p-8 space-y-8">
                   {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
                       placeholder="Search channels and certifications..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-[12px] focus:outline-none focus:border-[#00ff88] transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-muted/50 border border-border rounded-[12px] focus:outline-none focus:border-primary transition-all"
                     />
                   </div>
 
                   {/* Selected Summary */}
                   {(customPath.channels.length > 0 || customPath.certifications.length > 0) && (
-                    <div className="p-4 bg-gradient-to-r from-[#00ff88]/10 to-[#00d4ff]/10 border border-[#00ff88]/30 rounded-[16px]">
-                      <div className="text-sm text-[#a0a0a0] mb-2">Selected:</div>
+                    <div className="p-4 bg-gradient-to-r from-primary/10 to-cyan-500/10 border border-primary/30 rounded-[16px]">
+                      <div className="text-sm text-muted-foreground mb-2">Selected:</div>
                       <div className="flex items-center gap-4 text-sm font-semibold">
                         <span>{customPath.channels.length} channels</span>
                         <span>•</span>
@@ -330,13 +330,13 @@ export default function LearningPathsGenZ() {
                             onClick={() => toggleChannel(channel.id)}
                             className={`p-4 rounded-[12px] border transition-all text-left ${
                               isSelected
-                                ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                                : 'bg-white/5 border-white/10 hover:border-white/20'
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : 'bg-muted/50 border-border hover:border-border'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-semibold">{channel.name}</span>
-                              {isSelected && <Check className="w-5 h-5 text-[#00ff88]" />}
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
                             </div>
                           </button>
                         );
@@ -356,16 +356,16 @@ export default function LearningPathsGenZ() {
                             onClick={() => toggleCertification(cert.id)}
                             className={`p-4 rounded-[12px] border transition-all text-left ${
                               isSelected
-                                ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                                : 'bg-white/5 border-white/10 hover:border-white/20'
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : 'bg-muted/50 border-border hover:border-border'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="text-xs text-[#666] mb-1">{cert.provider}</div>
+                                <div className="text-xs text-muted-foreground mb-1">{cert.provider}</div>
                                 <div className="font-semibold text-sm">{cert.name}</div>
                               </div>
-                              {isSelected && <Check className="w-5 h-5 text-[#00ff88]" />}
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
                             </div>
                           </button>
                         );
@@ -375,11 +375,11 @@ export default function LearningPathsGenZ() {
                 </div>
 
                 {/* Footer */}
-                <div className="p-8 border-t border-white/10">
+                <div className="p-8 border-t border-border">
                   <button
                     onClick={handleCreateCustomPath}
                     disabled={!customPath.name || (customPath.channels.length === 0 && customPath.certifications.length === 0)}
-                    className="w-full py-4 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[16px] font-bold text-xl text-black disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
+                    className="w-full py-4 bg-gradient-to-r from-primary to-cyan-500 rounded-[16px] font-bold text-xl text-black disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
                   >
                     Create Path
                   </button>
@@ -389,7 +389,7 @@ export default function LearningPathsGenZ() {
           )}
         </AnimatePresence>
 
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-7xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -400,11 +400,11 @@ export default function LearningPathsGenZ() {
               <h1 className="text-6xl md:text-7xl font-black">
                 Choose your
                 <br />
-                <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                   career path
                 </span>
               </h1>
-              <p className="text-xl text-[#a0a0a0] max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Curated learning journeys designed to land you your dream job
               </p>
             </motion.div>
@@ -418,19 +418,19 @@ export default function LearningPathsGenZ() {
             >
               <button
                 onClick={() => setShowCustom(!showCustom)}
-                className="w-full p-8 bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 backdrop-blur-xl rounded-[24px] border-2 border-dashed border-[#00ff88]/30 hover:border-[#00ff88]/60 transition-all group"
+                className="w-full p-8 bg-gradient-to-r from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[24px] border-2 border-dashed border-primary/30 hover:border-primary/60 transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-full flex items-center justify-center">
-                      <Plus className="w-8 h-8 text-black" strokeWidth={3} />
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-cyan-500 rounded-full flex items-center justify-center">
+                      <Plus className="w-8 h-8 text-primary-foreground" strokeWidth={3} />
                     </div>
                     <div className="text-left">
                       <h3 className="text-2xl font-bold mb-1">Create Custom Path</h3>
-                      <p className="text-[#a0a0a0]">Build your own learning journey</p>
+                      <p className="text-muted-foreground">Build your own learning journey</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-8 h-8 text-[#00ff88] group-hover:translate-x-2 transition-transform" />
+                  <ChevronRight className="w-8 h-8 text-primary group-hover:translate-x-2 transition-transform" />
                 </div>
               </button>
             </motion.div>
@@ -455,8 +455,8 @@ export default function LearningPathsGenZ() {
                       onClick={() => handleSelectPath(path.id)}
                       className={`group relative p-8 backdrop-blur-xl rounded-[24px] border-2 transition-all text-left overflow-hidden ${
                         isSelected
-                          ? 'bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                          : 'bg-white/5 border-white/10 hover:border-white/30'
+                          ? 'bg-gradient-to-br from-primary/20 to-cyan-500/20 border-primary'
+                          : 'bg-muted/50 border-border hover:border-white/30'
                       }`}
                     >
                       {/* Background gradient on hover */}
@@ -467,11 +467,11 @@ export default function LearningPathsGenZ() {
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-4">
                             <div className={`w-16 h-16 bg-gradient-to-br ${path.color} rounded-[16px] flex items-center justify-center`}>
-                              <Icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+                              <Icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
                             </div>
                             <div>
                               <h3 className="text-2xl font-bold mb-1">{path.name}</h3>
-                              <p className="text-sm text-[#a0a0a0]">{path.description}</p>
+                              <p className="text-sm text-muted-foreground">{path.description}</p>
                             </div>
                           </div>
                           {isSelected && (
@@ -483,22 +483,22 @@ export default function LearningPathsGenZ() {
 
                         {/* Stats */}
                         <div className="grid grid-cols-3 gap-4">
-                          <div className="p-3 bg-white/5 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-muted/50 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Target className="w-3 h-3" />
                               <span>Difficulty</span>
                             </div>
                             <div className="font-bold text-sm">{path.difficulty}</div>
                           </div>
-                          <div className="p-3 bg-white/5 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-muted/50 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Clock className="w-3 h-3" />
                               <span>Duration</span>
                             </div>
                             <div className="font-bold text-sm">{path.duration}</div>
                           </div>
-                          <div className="p-3 bg-white/5 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-muted/50 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Zap className="w-3 h-3" />
                               <span>Questions</span>
                             </div>
@@ -508,12 +508,12 @@ export default function LearningPathsGenZ() {
 
                         {/* Skills */}
                         <div>
-                          <div className="text-xs text-[#a0a0a0] mb-2">Skills you'll learn</div>
+                          <div className="text-xs text-muted-foreground mb-2">Skills you'll learn</div>
                           <div className="flex flex-wrap gap-2">
                             {path.skills.map((skill) => (
                               <span
                                 key={skill}
-                                className="px-3 py-1 bg-white/5 rounded-full text-xs font-medium"
+                                className="px-3 py-1 bg-muted/50 rounded-full text-xs font-medium"
                               >
                                 {skill}
                               </span>
@@ -522,23 +522,23 @@ export default function LearningPathsGenZ() {
                         </div>
 
                         {/* Jobs & Salary */}
-                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                        <div className="flex items-center justify-between pt-4 border-t border-border">
                           <div>
-                            <div className="text-xs text-[#a0a0a0] mb-1">Career outcomes</div>
+                            <div className="text-xs text-muted-foreground mb-1">Career outcomes</div>
                             <div className="font-bold">{path.jobs[0]}</div>
                           </div>
                           <div className="text-right">
-                            <div className="text-xs text-[#a0a0a0] mb-1">Avg. salary</div>
-                            <div className="font-bold text-[#00ff88]">{path.salary}</div>
+                            <div className="text-xs text-muted-foreground mb-1">Avg. salary</div>
+                            <div className="font-bold text-primary">{path.salary}</div>
                           </div>
                         </div>
 
                         {/* CTA */}
                         <div className="flex items-center justify-between pt-2">
-                          <span className="text-sm font-semibold text-[#00ff88]">
+                          <span className="text-sm font-semibold text-primary">
                             {isSelected ? 'Selected!' : 'Select Path'}
                           </span>
-                          <ChevronRight className="w-5 h-5 text-[#666] group-hover:text-white group-hover:translate-x-1 transition-all" />
+                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
                     </motion.button>
@@ -556,25 +556,25 @@ export default function LearningPathsGenZ() {
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Star className="w-6 h-6 text-white" />
+                  <Star className="w-6 h-6 text-foreground" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Why choose a learning path?</h3>
-                  <ul className="space-y-2 text-[#a0a0a0]">
+                  <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-[#00ff88] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>Structured curriculum designed by industry experts</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-[#00ff88] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>Clear progression from beginner to job-ready</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-[#00ff88] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>Focus on skills that actually get you hired</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-[#00ff88] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>Track your progress and stay motivated</span>
                     </li>
                   </ul>

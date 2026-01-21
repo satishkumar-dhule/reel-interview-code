@@ -25,10 +25,10 @@ export function GenZButton({
   type = 'button',
 }: GenZButtonProps) {
   const variants = {
-    primary: 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black font-bold',
-    secondary: 'bg-white/10 border border-white/20 text-white hover:bg-white/20',
+    primary: 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground font-bold',
+    secondary: 'bg-muted/50 border border-border text-foreground hover:bg-muted',
     danger: 'bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold',
-    ghost: 'bg-transparent text-white hover:bg-white/10',
+    ghost: 'bg-transparent text-foreground hover:bg-muted/50',
   };
 
   const sizes = {

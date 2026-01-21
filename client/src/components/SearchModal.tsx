@@ -252,7 +252,7 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
           <button
             key={term}
             onClick={() => setQuery(term)}
-            className="px-4 py-2 text-sm bg-muted hover:bg-muted/80 border border-border rounded-full transition-colors active:scale-95"
+            className="px-4 py-2 text-sm text-foreground bg-muted hover:bg-muted/80 border border-border rounded-full transition-colors active:scale-95"
           >
             {term}
           </button>
@@ -280,26 +280,26 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-xl flex flex-col"
+            className="lg:hidden fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex flex-col"
             style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'fixed' }}
             data-testid="search-modal-mobile"
           >
             {/* Mobile Header */}
-            <div className="flex items-center justify-between px-4 h-14 border-b border-white/10 flex-shrink-0">
-              <h2 className="font-semibold text-lg text-white">Search</h2>
+            <div className="flex items-center justify-between px-4 h-14 border-b border-border flex-shrink-0">
+              <h2 className="font-semibold text-lg text-foreground">Search</h2>
               <button 
                 onClick={onClose} 
-                className="p-2 -mr-2 hover:bg-white/10 rounded-xl transition-colors"
+                className="p-2 -mr-2 hover:bg-muted rounded-xl transition-colors"
                 data-testid="search-close-btn"
               >
-                <X className="w-5 h-5 text-white/70" />
+                <X className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
 
             {/* Mobile Search Input */}
             <div className="px-4 py-3 flex-shrink-0">
-              <div className="flex items-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl">
-                <Search className="w-5 h-5 text-white/50 flex-shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-3 bg-muted border border-border rounded-2xl">
+                <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                 <input
                   ref={mobileInputRef}
                   type="text"
@@ -307,14 +307,14 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
                   onChange={e => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Search questions..."
-                  className="flex-1 bg-transparent text-white text-base outline-none placeholder:text-white/30"
+                  className="flex-1 bg-transparent text-foreground text-base outline-none placeholder:text-muted-foreground"
                   autoComplete="off"
                   spellCheck={false}
                   data-testid="search-input-mobile"
                 />
                 {query && (
-                  <button onClick={() => setQuery('')} className="p-1.5 hover:bg-white/10 rounded-full flex-shrink-0">
-                    <X className="w-4 h-4 text-white/50" />
+                  <button onClick={() => setQuery('')} className="p-1.5 hover:bg-muted/80 rounded-full flex-shrink-0">
+                    <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 )}
               </div>
@@ -332,10 +332,10 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
                       disabled={count === 0 && filter.id !== 'all'}
                       className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full transition-all flex-shrink-0 ${
                         activeFilter === filter.id 
-                          ? 'bg-primary text-white font-semibold' 
+                          ? 'bg-primary text-primary-foreground font-semibold' 
                           : count > 0 
-                            ? 'bg-white/10 text-white/70' 
-                            : 'bg-white/5 text-white/30'
+                            ? 'bg-muted text-foreground' 
+                            : 'bg-muted/50 text-muted-foreground/50'
                       }`}
                     >
                       {filter.icon} {filter.label} ({count})
@@ -361,10 +361,10 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
 
             {/* Mobile Footer */}
             <div 
-              className="px-4 py-3 border-t border-white/10 flex-shrink-0"
+              className="px-4 py-3 border-t border-border flex-shrink-0"
               style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}
             >
-              <p className="text-sm text-white/40 text-center">
+              <p className="text-sm text-muted-foreground text-center">
                 {filteredResults.length > 0 ? `${filteredResults.length} results` : 'Tap to search'}
               </p>
             </div>
@@ -375,7 +375,7 @@ export function SearchModal({ isOpen, onClose, initialQuery }: SearchModalProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="hidden lg:flex fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm items-start justify-center pt-[10vh] px-4"
+            className="hidden lg:flex fixed inset-0 z-[200] bg-background/80 backdrop-blur-sm items-start justify-center pt-[10vh] px-4"
             onClick={onClose}
             data-testid="search-modal-desktop"
           >

@@ -132,8 +132,8 @@ export default function CertificationsGenZ() {
   if (loading) {
     return (
       <AppLayout>
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <Loader2 className="w-12 h-12 text-[#00ff88] animate-spin" />
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
         </div>
       </AppLayout>
     );
@@ -148,7 +148,7 @@ export default function CertificationsGenZ() {
       />
 
       <AppLayout>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-7xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -159,11 +159,11 @@ export default function CertificationsGenZ() {
               <h1 className="text-6xl md:text-7xl font-black">
                 Get
                 <br />
-                <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                   certified
                 </span>
               </h1>
-              <p className="text-xl text-[#a0a0a0]">
+              <p className="text-xl text-muted-foreground">
                 {filteredCerts.length} certifications to master
               </p>
             </motion.div>
@@ -176,13 +176,13 @@ export default function CertificationsGenZ() {
               className="max-w-2xl mx-auto mb-8"
             >
               <div className="relative">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#666]" />
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Search certifications..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-16 pr-6 py-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[24px] text-xl focus:outline-none focus:border-[#00ff88] transition-all"
+                  className="w-full pl-16 pr-6 py-6 bg-muted/50 backdrop-blur-xl border border-border rounded-[24px] text-xl focus:outline-none focus:border-primary transition-all"
                 />
               </div>
             </motion.div>
@@ -198,8 +198,8 @@ export default function CertificationsGenZ() {
                 onClick={() => setSelectedCategory(null)}
                 className={`px-6 py-3 rounded-full font-semibold transition-all ${
                   !selectedCategory
-                    ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black'
-                    : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'
+                    : 'bg-muted/50 border border-border hover:bg-muted'
                 }`}
               >
                 All
@@ -210,8 +210,8 @@ export default function CertificationsGenZ() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-6 py-3 rounded-full font-semibold transition-all ${
                     selectedCategory === cat.id
-                      ? 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black'
-                      : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                      ? 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground'
+                      : 'bg-muted/50 border border-border hover:bg-muted'
                   }`}
                 >
                   {cat.name}
@@ -231,44 +231,44 @@ export default function CertificationsGenZ() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                    className="group relative p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 hover:border-white/20 transition-all overflow-hidden"
+                    className="group relative p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border hover:border-border transition-all overflow-hidden"
                   >
                     {/* Background gradient on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#00ff88]/10 to-[#00d4ff]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                     <div className="relative space-y-4">
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-4 flex-1">
                           {/* Icon */}
-                          <div className="w-14 h-14 bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 rounded-[16px] flex items-center justify-center flex-shrink-0 border border-[#00ff88]/30">
-                            <IconComponent className="w-7 h-7 text-[#00ff88]" strokeWidth={2} />
+                          <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-cyan-500/20 rounded-[16px] flex items-center justify-center flex-shrink-0 border border-primary/30">
+                            <IconComponent className="w-7 h-7 text-primary" strokeWidth={2} />
                           </div>
                           <div>
-                            <div className="text-xs text-[#666] mb-1">{cert.provider}</div>
+                            <div className="text-xs text-muted-foreground mb-1">{cert.provider}</div>
                             <h3 className="text-xl font-bold leading-tight">{cert.name}</h3>
                           </div>
                         </div>
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-[#a0a0a0] line-clamp-2">{cert.description}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{cert.description}</p>
 
                       {/* Stats */}
                       <div className="flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-[#00ff88]" />
-                          <span className="text-[#a0a0a0]">{cert.questionCount} questions</span>
+                          <Sparkles className="w-4 h-4 text-primary" />
+                          <span className="text-muted-foreground">{cert.questionCount} questions</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-[#00d4ff]" />
-                          <span className="text-[#a0a0a0]">{cert.estimatedHours}h</span>
+                          <Clock className="w-4 h-4 text-cyan-500" />
+                          <span className="text-muted-foreground">{cert.estimatedHours}h</span>
                         </div>
                       </div>
 
                       {/* Difficulty Badge */}
                       <div className="flex items-center gap-2">
-                        <Target className="w-4 h-4 text-[#666]" />
+                        <Target className="w-4 h-4 text-muted-foreground" />
                         <span className={`text-xs font-semibold uppercase ${
                           cert.difficulty === 'beginner' ? 'text-green-500' :
                           cert.difficulty === 'intermediate' ? 'text-yellow-500' :
@@ -285,8 +285,8 @@ export default function CertificationsGenZ() {
                           onClick={() => toggleStarted(cert.id)}
                           className={`flex-1 px-6 py-3 rounded-[16px] font-bold transition-all ${
                             isStarted
-                              ? 'bg-white/10 border border-white/20 hover:bg-white/20'
-                              : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black hover:scale-105'
+                              ? 'bg-muted border border-border hover:bg-white/20'
+                              : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground hover:scale-105'
                           }`}
                         >
                           {isStarted ? (
@@ -305,7 +305,7 @@ export default function CertificationsGenZ() {
                         {isStarted && (
                           <button
                             onClick={() => navigate(`/certification/${cert.id}`)}
-                            className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-[16px] border border-white/10 transition-all"
+                            className="px-6 py-3 bg-muted/50 hover:bg-muted rounded-[16px] border border-border transition-all"
                           >
                             <ChevronRight className="w-5 h-5" />
                           </button>
@@ -326,7 +326,7 @@ export default function CertificationsGenZ() {
               >
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="text-2xl font-bold mb-2">No certifications found</h3>
-                <p className="text-[#a0a0a0]">Try a different search or category</p>
+                <p className="text-muted-foreground">Try a different search or category</p>
               </motion.div>
             )}
           </div>

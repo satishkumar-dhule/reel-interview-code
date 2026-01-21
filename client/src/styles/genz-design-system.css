@@ -1,35 +1,36 @@
 /**
  * Gen Z Design System - Global Styles
- * Pure black, neon accents, glassmorphism
+ * Theme-aware design system
  */
 
+/* Legacy variables - kept for compatibility but now theme-aware */
 :root {
-  /* Base Colors */
-  --bg-black: #000000;
-  --bg-dark: #0a0a0a;
-  --bg-elevated: #141414;
-  --bg-hover: #1a1a1a;
+  /* Base Colors - use theme variables */
+  --bg-black: var(--background);
+  --bg-dark: var(--card);
+  --bg-elevated: var(--card);
+  --bg-hover: var(--muted);
   
   /* Glass Effect */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: var(--muted);
+  --glass-border: var(--border);
   --glass-blur: 20px;
   
-  /* Neon Accents */
-  --neon-green: #00ff88;
-  --neon-cyan: #00d4ff;
-  --neon-pink: #ff0080;
-  --neon-gold: #ffd700;
-  --neon-purple: #a855f7;
-  --neon-orange: #ff8c00;
+  /* Neon Accents - use theme primary */
+  --neon-green: var(--primary);
+  --neon-cyan: hsl(190 100% 50%);
+  --neon-pink: hsl(340 100% 50%);
+  --neon-gold: hsl(45 100% 50%);
+  --neon-purple: hsl(270 100% 65%);
+  --neon-orange: hsl(25 100% 50%);
   
-  /* Text */
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-  --text-tertiary: #666666;
+  /* Text - use theme variables */
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --text-tertiary: var(--muted-foreground);
   
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--neon-cyan));
   --gradient-secondary: linear-gradient(135deg, var(--neon-pink), var(--neon-orange));
   --gradient-gold: linear-gradient(135deg, var(--neon-gold), var(--neon-orange));
   --gradient-purple: linear-gradient(135deg, var(--neon-purple), #ec4899);
@@ -40,9 +41,10 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* Body uses theme variables */
 body {
-  background: var(--bg-black);
-  color: var(--text-primary);
+  background: var(--background);
+  color: var(--foreground);
 }
 
 /* Glass Card */
@@ -304,3 +306,4 @@ body {
     font-size: 24px;
   }
 }
+/* Cache bust: 1768965554 */

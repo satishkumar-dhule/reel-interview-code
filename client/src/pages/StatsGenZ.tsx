@@ -73,7 +73,7 @@ export default function StatsGenZ() {
       />
 
       <AppLayout>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-7xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -84,11 +84,11 @@ export default function StatsGenZ() {
               <h1 className="text-6xl md:text-7xl font-black">
                 Your
                 <br />
-                <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                   progress
                 </span>
               </h1>
-              <p className="text-xl text-[#a0a0a0]">
+              <p className="text-xl text-muted-foreground">
                 Keep crushing it 💪
               </p>
             </motion.div>
@@ -104,7 +104,7 @@ export default function StatsGenZ() {
               >
                 <Flame className="w-12 h-12 text-orange-500 mb-4" />
                 <div className="text-5xl font-black mb-2">{streak}</div>
-                <div className="text-sm text-[#a0a0a0]">day streak</div>
+                <div className="text-sm text-muted-foreground">day streak</div>
               </motion.div>
 
               {/* XP */}
@@ -112,11 +112,11 @@ export default function StatsGenZ() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="p-8 bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 backdrop-blur-xl rounded-[24px] border border-[#00ff88]/30"
+                className="p-8 bg-gradient-to-br from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[24px] border border-primary/30"
               >
-                <Zap className="w-12 h-12 text-[#00ff88] mb-4" />
+                <Zap className="w-12 h-12 text-primary mb-4" />
                 <div className="text-5xl font-black mb-2">{balance}</div>
-                <div className="text-sm text-[#a0a0a0]">total XP</div>
+                <div className="text-sm text-muted-foreground">total XP</div>
               </motion.div>
 
               {/* Level */}
@@ -128,7 +128,7 @@ export default function StatsGenZ() {
               >
                 <Trophy className="w-12 h-12 text-purple-400 mb-4" />
                 <div className="text-5xl font-black mb-2">{level}</div>
-                <div className="text-sm text-[#a0a0a0]">level</div>
+                <div className="text-sm text-muted-foreground">level</div>
               </motion.div>
 
               {/* Completed */}
@@ -140,7 +140,7 @@ export default function StatsGenZ() {
               >
                 <Target className="w-12 h-12 text-[#ffd700] mb-4" />
                 <div className="text-5xl font-black mb-2">{totalCompleted}</div>
-                <div className="text-sm text-[#a0a0a0]">completed</div>
+                <div className="text-sm text-muted-foreground">completed</div>
               </motion.div>
             </div>
 
@@ -149,18 +149,18 @@ export default function StatsGenZ() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="p-8 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 mb-12"
+              className="p-8 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border mb-12"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold">Level {level}</h2>
-                <span className="text-[#a0a0a0]">{xpInLevel}/100 XP</span>
+                <span className="text-muted-foreground">{xpInLevel}/100 XP</span>
               </div>
-              <div className="h-4 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-4 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${xpInLevel}%` }}
                   transition={{ duration: 1, delay: 0.6 }}
-                  className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                  className="h-full bg-gradient-to-r from-primary to-cyan-500"
                 />
               </div>
             </motion.div>
@@ -184,7 +184,7 @@ export default function StatsGenZ() {
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setLocation(`/channel/${mod.id}`)}
-                    className="p-6 bg-white/5 backdrop-blur-xl rounded-[20px] border border-white/10 hover:border-white/20 transition-all text-left"
+                    className="p-6 bg-muted/50 backdrop-blur-xl rounded-[20px] border border-border hover:border-border transition-all text-left"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-xl font-bold">{mod.name}</h3>
@@ -197,15 +197,15 @@ export default function StatsGenZ() {
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-[#a0a0a0]">{mod.completed}/{mod.total}</span>
+                        <span className="text-muted-foreground">{mod.completed}/{mod.total}</span>
                         <span className="font-bold">{mod.pct}%</span>
                       </div>
-                      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${mod.pct}%` }}
                           transition={{ duration: 1, delay: 0.8 + i * 0.1 }}
-                          className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                          className="h-full bg-gradient-to-r from-primary to-cyan-500"
                         />
                       </div>
                     </div>
@@ -219,18 +219,18 @@ export default function StatsGenZ() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
-              className="mt-12 p-8 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10"
+              className="mt-12 p-8 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border"
             >
               <div className="flex items-center gap-3 mb-6">
-                <Calendar className="w-6 h-6 text-[#00ff88]" />
+                <Calendar className="w-6 h-6 text-primary" />
                 <h2 className="text-2xl font-bold">Activity Heatmap</h2>
-                <span className="text-sm text-[#a0a0a0] ml-auto">Last 13 weeks</span>
+                <span className="text-sm text-muted-foreground ml-auto">Last 13 weeks</span>
               </div>
               
               <div className="space-y-2">
                 {/* Day labels */}
                 <div className="grid grid-cols-[auto_1fr] gap-4">
-                  <div className="flex flex-col gap-2 text-xs text-[#666] justify-around py-1">
+                  <div className="flex flex-col gap-2 text-xs text-muted-foreground justify-around py-1">
                     <div>Mon</div>
                     <div>Wed</div>
                     <div>Fri</div>
@@ -252,8 +252,8 @@ export default function StatsGenZ() {
                           transition={{ delay: 1 + (i * 0.002) }}
                           className={`aspect-square rounded-md transition-all hover:scale-110 ${
                             hasActivity
-                              ? 'bg-gradient-to-br from-[#00ff88] to-[#00d4ff] shadow-lg shadow-[#00ff88]/20'
-                              : 'bg-white/5 hover:bg-white/10'
+                              ? 'bg-gradient-to-br from-primary to-cyan-500 shadow-lg shadow-[#00ff88]/20'
+                              : 'bg-muted/50 hover:bg-muted'
                           }`}
                           title={`${date.toLocaleDateString()}${hasActivity ? ' - Active' : ''}`}
                         />
@@ -263,13 +263,13 @@ export default function StatsGenZ() {
                 </div>
                 
                 {/* Legend */}
-                <div className="flex items-center gap-4 justify-end pt-4 text-xs text-[#a0a0a0]">
+                <div className="flex items-center gap-4 justify-end pt-4 text-xs text-muted-foreground">
                   <span>Less</span>
                   <div className="flex gap-1">
-                    <div className="w-4 h-4 bg-white/5 rounded-sm" />
+                    <div className="w-4 h-4 bg-muted/50 rounded-sm" />
                     <div className="w-4 h-4 bg-[#00ff88]/30 rounded-sm" />
                     <div className="w-4 h-4 bg-[#00ff88]/60 rounded-sm" />
-                    <div className="w-4 h-4 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-sm" />
+                    <div className="w-4 h-4 bg-gradient-to-br from-primary to-cyan-500 rounded-sm" />
                   </div>
                   <span>More</span>
                 </div>

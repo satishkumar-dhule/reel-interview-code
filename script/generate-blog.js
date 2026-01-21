@@ -986,7 +986,7 @@ function generateHead(title, description, includeMermaid = false) {
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
 </head>
-<body>`;
+<body data-theme="dark">`;
 }
 
 function generateHeader() {
@@ -998,7 +998,13 @@ function generateHeader() {
       <button class="search-btn" onclick="openSearch()"><i data-lucide="search"></i> Search<kbd>⌘K</kbd></button>
       <a href="https://open-interview.github.io" target="_blank" class="nav-cta"><i data-lucide="play"></i> Practice</a>
     </nav>
-  </div></header>`;
+  </div></header>
+
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <i data-lucide="sun" class="theme-icon-light"></i>
+  <i data-lucide="moon" class="theme-icon-dark"></i>
+</button>`;
 }
 
 function generateFooter(articles = []) {
@@ -1127,6 +1133,44 @@ document.querySelectorAll('.article-content table').forEach(table => {
       }
     });
   });
+});
+
+// Theme Toggle Functionality
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  
+  // Update theme toggle icon
+  updateThemeIcon(newTheme);
+  
+  // Add transition effect
+  document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+}
+
+function updateThemeIcon(theme) {
+  const lightIcon = document.querySelector('.theme-icon-light');
+  const darkIcon = document.querySelector('.theme-icon-dark');
+  
+  if (lightIcon && darkIcon) {
+    if (theme === 'dark') {
+      lightIcon.style.display = 'block';
+      darkIcon.style.display = 'none';
+    } else {
+      lightIcon.style.display = 'none';
+      darkIcon.style.display = 'block';
+    }
+  }
+}
+
+// Load saved theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
 });
 
 // Initialize Lucide icons

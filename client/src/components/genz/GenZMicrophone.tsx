@@ -70,15 +70,15 @@ export function GenZMicrophone({
           ${
             isRecording
               ? 'bg-gradient-to-r from-red-500 to-pink-500'
-              : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]'
+              : 'bg-gradient-to-r from-primary to-cyan-500'
           }
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_30px_rgba(0,255,136,0.5)]'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_30px_var(--shadow-glow)]'}
         `}
       >
         {isRecording ? (
           <Square className="w-12 h-12 text-white" strokeWidth={3} />
         ) : (
-          <Mic className="w-12 h-12 text-black" strokeWidth={2.5} />
+          <Mic className="w-12 h-12 text-primary-foreground" strokeWidth={2.5} />
         )}
       </motion.button>
 

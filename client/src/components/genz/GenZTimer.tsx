@@ -59,17 +59,17 @@ export function GenZTimer({ duration, onComplete, showProgress = true }: GenZTim
             ? 'bg-red-500/20 border-red-500/50'
             : isLowTime
             ? 'bg-orange-500/20 border-orange-500/50'
-            : 'bg-white/10 border-white/20'
+            : 'bg-muted/50 border-border'
         }`}
       >
-        <Clock className={`w-5 h-5 ${isCritical ? 'text-red-500' : isLowTime ? 'text-orange-500' : 'text-[#00ff88]'}`} />
-        <span className={`font-mono text-xl font-bold ${isCritical ? 'text-red-500' : isLowTime ? 'text-orange-500' : 'text-white'}`}>
+        <Clock className={`w-5 h-5 ${isCritical ? 'text-red-500' : isLowTime ? 'text-orange-500' : 'text-primary'}`} />
+        <span className={`font-mono text-xl font-bold ${isCritical ? 'text-red-500' : isLowTime ? 'text-orange-500' : 'text-foreground'}`}>
           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
         </span>
       </motion.div>
 
       {showProgress && (
-        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
             animate={{ width: `${percentage}%` }}
             className={`h-full ${
@@ -77,7 +77,7 @@ export function GenZTimer({ duration, onComplete, showProgress = true }: GenZTim
                 ? 'bg-gradient-to-r from-red-500 to-pink-500'
                 : isLowTime
                 ? 'bg-gradient-to-r from-orange-500 to-yellow-500'
-                : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff]'
+                : 'bg-gradient-to-r from-primary to-cyan-500'
             }`}
           />
         </div>

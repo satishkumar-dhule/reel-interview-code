@@ -58,7 +58,7 @@ export default function TestsGenZ() {
       />
 
       <AppLayout>
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-7xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -69,11 +69,11 @@ export default function TestsGenZ() {
               <h1 className="text-6xl md:text-7xl font-black">
                 Test your
                 <br />
-                <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                   knowledge
                 </span>
               </h1>
-              <p className="text-xl text-[#a0a0a0]">
+              <p className="text-xl text-muted-foreground">
                 Prove what you know 💪
               </p>
             </motion.div>
@@ -86,13 +86,13 @@ export default function TestsGenZ() {
               className="max-w-2xl mx-auto mb-12"
             >
               <div className="relative">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Search tests..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[20px] text-white placeholder:text-[#666] focus:outline-none focus:border-[#00ff88] transition-colors"
+                  className="w-full pl-14 pr-6 py-4 bg-muted/50 backdrop-blur-xl border border-border rounded-[20px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
             </motion.div>
@@ -107,7 +107,7 @@ export default function TestsGenZ() {
               >
                 <Trophy className="w-8 h-8 text-green-500 mb-2" />
                 <div className="text-3xl font-black">{passedCount}</div>
-                <div className="text-sm text-[#a0a0a0]">Passed</div>
+                <div className="text-sm text-muted-foreground">Passed</div>
               </motion.div>
 
               <motion.div
@@ -118,7 +118,7 @@ export default function TestsGenZ() {
               >
                 <Target className="w-8 h-8 text-blue-500 mb-2" />
                 <div className="text-3xl font-black">{stats.totalAttempts}</div>
-                <div className="text-sm text-[#a0a0a0]">Attempts</div>
+                <div className="text-sm text-muted-foreground">Attempts</div>
               </motion.div>
 
               <motion.div
@@ -129,7 +129,7 @@ export default function TestsGenZ() {
               >
                 <Star className="w-8 h-8 text-purple-500 mb-2" />
                 <div className="text-3xl font-black">{stats.averageScore}%</div>
-                <div className="text-sm text-[#a0a0a0]">Avg Score</div>
+                <div className="text-sm text-muted-foreground">Avg Score</div>
               </motion.div>
 
               <motion.div
@@ -140,7 +140,7 @@ export default function TestsGenZ() {
               >
                 <Zap className="w-8 h-8 text-amber-500 mb-2" />
                 <div className="text-3xl font-black">{formatCredits(balance)}</div>
-                <div className="text-sm text-[#a0a0a0]">Credits</div>
+                <div className="text-sm text-muted-foreground">Credits</div>
               </motion.div>
             </div>
 
@@ -148,7 +148,7 @@ export default function TestsGenZ() {
             {loading ? (
               <div className="text-center py-20">
                 <div className="text-4xl mb-4">⏳</div>
-                <p className="text-[#a0a0a0]">Loading tests...</p>
+                <p className="text-muted-foreground">Loading tests...</p>
               </div>
             ) : filteredTests.length === 0 ? (
               <motion.div
@@ -158,7 +158,7 @@ export default function TestsGenZ() {
               >
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="text-2xl font-bold mb-2">No tests found</h3>
-                <p className="text-[#a0a0a0]">Try a different search term</p>
+                <p className="text-muted-foreground">Try a different search term</p>
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -176,20 +176,20 @@ export default function TestsGenZ() {
                       whileHover={{ scale: 1.02, y: -4 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setLocation(`/test/${test.channelId}`)}
-                      className="group relative p-6 bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 hover:border-white/20 transition-all text-left overflow-hidden"
+                      className="group relative p-6 bg-muted/50 backdrop-blur-xl rounded-[24px] border border-border hover:border-border transition-all text-left overflow-hidden"
                     >
                       {/* Background gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#00ff88]/10 to-[#00d4ff]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                       <div className="relative space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <div className="text-xs font-semibold text-[#00ff88] mb-1 uppercase tracking-wider">
+                            <div className="text-xs font-semibold text-primary mb-1 uppercase tracking-wider">
                               {test.channelName}
                             </div>
                             <h3 className="text-xl font-bold mb-2">{test.title}</h3>
-                            <div className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <Clock className="w-4 h-4" />
                               <span>{test.questions.length} questions</span>
                             </div>
@@ -197,13 +197,13 @@ export default function TestsGenZ() {
 
                           {isPassed && (
                             <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                              <CheckCircle className="w-5 h-5 text-white" />
+                              <CheckCircle className="w-5 h-5 text-foreground" />
                             </div>
                           )}
 
                           {isExpired && (
                             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                              <AlertTriangle className="w-5 h-5 text-white" />
+                              <AlertTriangle className="w-5 h-5 text-foreground" />
                             </div>
                           )}
                         </div>
@@ -212,12 +212,12 @@ export default function TestsGenZ() {
                         {testProgress && (
                           <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
-                              <span className="text-[#a0a0a0]">Best Score</span>
+                              <span className="text-muted-foreground">Best Score</span>
                               <span className="font-bold">{testProgress.bestScore}%</span>
                             </div>
-                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
                               <div
-                                className="h-full bg-gradient-to-r from-[#00ff88] to-[#00d4ff]"
+                                className="h-full bg-gradient-to-r from-primary to-cyan-500"
                                 style={{ width: `${testProgress.bestScore}%` }}
                               />
                             </div>
@@ -226,10 +226,10 @@ export default function TestsGenZ() {
 
                         {/* CTA */}
                         <div className="flex items-center justify-between pt-2">
-                          <span className="text-sm font-semibold text-[#00ff88]">
+                          <span className="text-sm font-semibold text-primary">
                             {isPassed ? 'Retake Test' : isExpired ? 'Retake (Expired)' : 'Start Test'}
                           </span>
-                          <ChevronRight className="w-5 h-5 text-[#666] group-hover:text-white group-hover:translate-x-1 transition-all" />
+                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
                     </motion.button>

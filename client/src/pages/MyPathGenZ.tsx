@@ -337,7 +337,7 @@ export default function MyPathGenZ() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
               onClick={() => setShowEditModal(false)}
             >
               <motion.div
@@ -345,15 +345,15 @@ export default function MyPathGenZ() {
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-black border border-white/20 rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+                className="bg-background border border-border rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
               >
                 {/* Header */}
-                <div className="p-8 border-b border-white/10">
+                <div className="p-8 border-b border-border">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-3xl font-black">Edit Path</h2>
                     <button
                       onClick={() => setShowEditModal(false)}
-                      className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-all"
+                      className="w-10 h-10 bg-muted/50 hover:bg-muted rounded-full flex items-center justify-center transition-all"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -365,7 +365,7 @@ export default function MyPathGenZ() {
                     placeholder="Path Name"
                     value={editForm.name}
                     onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[16px] text-xl focus:outline-none focus:border-[#00ff88] transition-all"
+                    className="w-full px-6 py-4 bg-muted/50 border border-border rounded-[16px] text-xl focus:outline-none focus:border-primary transition-all"
                   />
                 </div>
 
@@ -373,20 +373,20 @@ export default function MyPathGenZ() {
                 <div className="flex-1 overflow-y-auto p-8 space-y-8">
                   {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
                       placeholder="Search channels and certifications..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-[12px] focus:outline-none focus:border-[#00ff88] transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-muted/50 border border-border rounded-[12px] focus:outline-none focus:border-primary transition-all"
                     />
                   </div>
 
                   {/* Selected Summary */}
                   {(editForm.channels.length > 0 || editForm.certifications.length > 0) && (
-                    <div className="p-4 bg-gradient-to-r from-[#00ff88]/10 to-[#00d4ff]/10 border border-[#00ff88]/30 rounded-[16px]">
-                      <div className="text-sm text-[#a0a0a0] mb-2">Selected:</div>
+                    <div className="p-4 bg-gradient-to-r from-primary/10 to-cyan-500/10 border border-primary/30 rounded-[16px]">
+                      <div className="text-sm text-muted-foreground mb-2">Selected:</div>
                       <div className="flex items-center gap-4 text-sm font-semibold">
                         <span>{editForm.channels.length} channels</span>
                         <span>•</span>
@@ -407,13 +407,13 @@ export default function MyPathGenZ() {
                             onClick={() => toggleEditChannel(channel.id)}
                             className={`p-4 rounded-[12px] border transition-all text-left ${
                               isSelected
-                                ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                                : 'bg-white/5 border-white/10 hover:border-white/20'
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : 'bg-muted/50 border-border hover:border-border'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-semibold">{channel.name}</span>
-                              {isSelected && <Check className="w-5 h-5 text-[#00ff88]" />}
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
                             </div>
                           </button>
                         );
@@ -433,16 +433,16 @@ export default function MyPathGenZ() {
                             onClick={() => toggleEditCertification(cert.id)}
                             className={`p-4 rounded-[12px] border transition-all text-left ${
                               isSelected
-                                ? 'bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                                : 'bg-white/5 border-white/10 hover:border-white/20'
+                                ? 'bg-gradient-to-r from-primary/20 to-cyan-500/20 border-primary'
+                                : 'bg-muted/50 border-border hover:border-border'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="text-xs text-[#666] mb-1">{cert.provider}</div>
+                                <div className="text-xs text-muted-foreground mb-1">{cert.provider}</div>
                                 <div className="font-semibold text-sm">{cert.name}</div>
                               </div>
-                              {isSelected && <Check className="w-5 h-5 text-[#00ff88]" />}
+                              {isSelected && <Check className="w-5 h-5 text-primary" />}
                             </div>
                           </button>
                         );
@@ -452,11 +452,11 @@ export default function MyPathGenZ() {
                 </div>
 
                 {/* Footer */}
-                <div className="p-8 border-t border-white/10">
+                <div className="p-8 border-t border-border">
                   <button
                     onClick={saveEditedPath}
                     disabled={!editForm.name || (editForm.channels.length === 0 && editForm.certifications.length === 0)}
-                    className="w-full py-4 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] rounded-[16px] font-bold text-xl text-black disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
+                    className="w-full py-4 bg-gradient-to-r from-primary to-cyan-500 rounded-[16px] font-bold text-xl text-black disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
                   >
                     Save Changes
                   </button>
@@ -466,7 +466,7 @@ export default function MyPathGenZ() {
           )}
         </AnimatePresence>
 
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
           <div className="max-w-7xl mx-auto px-6 py-12">
             {/* Header */}
             <motion.div
@@ -477,11 +477,11 @@ export default function MyPathGenZ() {
               <h1 className="text-6xl md:text-7xl font-black mb-4">
                 My
                 <br />
-                <span className="bg-gradient-to-r from-[#00ff88] to-[#00d4ff] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
                   custom paths
                 </span>
               </h1>
-              <p className="text-xl text-[#a0a0a0]">
+              <p className="text-xl text-muted-foreground">
                 {customPaths.length} custom {customPaths.length === 1 ? 'path' : 'paths'} created
               </p>
             </motion.div>
@@ -494,19 +494,19 @@ export default function MyPathGenZ() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setLocation('/learning-paths')}
-              className="w-full p-8 bg-gradient-to-r from-[#00ff88]/20 to-[#00d4ff]/20 backdrop-blur-xl rounded-[24px] border-2 border-dashed border-[#00ff88]/30 hover:border-[#00ff88]/60 transition-all group mb-8"
+              className="w-full p-8 bg-gradient-to-r from-primary/20 to-cyan-500/20 backdrop-blur-xl rounded-[24px] border-2 border-dashed border-primary/30 hover:border-primary/60 transition-all group mb-8"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#00ff88] to-[#00d4ff] rounded-full flex items-center justify-center">
-                    <Plus className="w-8 h-8 text-black" strokeWidth={3} />
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-cyan-500 rounded-full flex items-center justify-center">
+                    <Plus className="w-8 h-8 text-primary-foreground" strokeWidth={3} />
                   </div>
                   <div className="text-left">
                     <h3 className="text-2xl font-bold mb-1">Create New Path</h3>
-                    <p className="text-[#a0a0a0]">Build your own learning journey</p>
+                    <p className="text-muted-foreground">Build your own learning journey</p>
                   </div>
                 </div>
-                <ChevronRight className="w-8 h-8 text-[#00ff88] group-hover:translate-x-2 transition-transform" />
+                <ChevronRight className="w-8 h-8 text-primary group-hover:translate-x-2 transition-transform" />
               </div>
             </motion.button>
 
@@ -524,13 +524,13 @@ export default function MyPathGenZ() {
                       transition={{ delay: 0.2 + i * 0.05 }}
                       className={`group relative p-6 backdrop-blur-xl rounded-[24px] border-2 transition-all overflow-hidden ${
                         isActive
-                          ? 'bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                          ? 'bg-gradient-to-br from-primary/20 to-cyan-500/20 border-primary'
+                          : 'bg-muted/50 border-border hover:border-border'
                       }`}
                     >
                       {/* Active Badge */}
                       {isActive && (
-                        <div className="absolute top-4 right-4 px-3 py-1 bg-[#00ff88] text-black rounded-full text-xs font-bold flex items-center gap-1">
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-bold flex items-center gap-1">
                           <Check className="w-3 h-3" />
                           Active
                         </div>
@@ -540,11 +540,11 @@ export default function MyPathGenZ() {
                         {/* Header */}
                         <div className="flex items-start gap-4">
                           <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-[16px] flex items-center justify-center flex-shrink-0">
-                            <Brain className="w-8 h-8 text-white" strokeWidth={2.5} />
+                            <Brain className="w-8 h-8 text-foreground" strokeWidth={2.5} />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-2xl font-bold mb-1">{path.name}</h3>
-                            <p className="text-sm text-[#666]">
+                            <p className="text-sm text-muted-foreground">
                               Created {new Date(path.createdAt).toLocaleDateString()}
                             </p>
                           </div>
@@ -552,15 +552,15 @@ export default function MyPathGenZ() {
 
                         {/* Stats */}
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-black/30 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-background/30 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Target className="w-3 h-3" />
                               <span>Channels</span>
                             </div>
                             <div className="font-bold">{path.channels.length}</div>
                           </div>
-                          <div className="p-3 bg-black/30 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-background/30 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Award className="w-3 h-3" />
                               <span>Certifications</span>
                             </div>
@@ -571,18 +571,18 @@ export default function MyPathGenZ() {
                         {/* Channels Preview */}
                         {path.channels.length > 0 && (
                           <div>
-                            <div className="text-xs text-[#666] mb-2">Channels</div>
+                            <div className="text-xs text-muted-foreground mb-2">Channels</div>
                             <div className="flex flex-wrap gap-2">
                               {path.channels.slice(0, 3).map((channel) => (
                                 <span
                                   key={channel}
-                                  className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium"
+                                  className="px-2 py-1 bg-muted/50 rounded-full text-xs font-medium"
                                 >
                                   {channel}
                                 </span>
                               ))}
                               {path.channels.length > 3 && (
-                                <span className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium text-[#666]">
+                                <span className="px-2 py-1 bg-muted/50 rounded-full text-xs font-medium text-muted-foreground">
                                   +{path.channels.length - 3} more
                                 </span>
                               )}
@@ -596,8 +596,8 @@ export default function MyPathGenZ() {
                             onClick={() => togglePathActivation(path)}
                             className={`flex-1 px-6 py-3 rounded-[16px] font-bold transition-all ${
                               isActive
-                                ? 'bg-white/10 border border-white/20 hover:bg-white/20'
-                                : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black hover:scale-105'
+                                ? 'bg-muted border border-border hover:bg-white/20'
+                                : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground hover:scale-105'
                             }`}
                           >
                             {isActive ? 'Deactivate' : 'Activate'}
@@ -632,14 +632,14 @@ export default function MyPathGenZ() {
                 transition={{ delay: 0.2 }}
                 className="text-center py-20"
               >
-                <div className="w-24 h-24 bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Brain className="w-12 h-12 text-[#00ff88]" />
+                <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Brain className="w-12 h-12 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">No custom paths yet</h3>
-                <p className="text-[#a0a0a0] mb-6">Create your first custom learning path to get started</p>
+                <p className="text-muted-foreground mb-6">Create your first custom learning path to get started</p>
                 <button
                   onClick={() => setLocation('/learning-paths')}
-                  className="px-8 py-4 bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black rounded-[16px] font-bold hover:scale-105 transition-all"
+                  className="px-8 py-4 bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground rounded-[16px] font-bold hover:scale-105 transition-all"
                 >
                   Create Your First Path
                 </button>
@@ -655,7 +655,7 @@ export default function MyPathGenZ() {
                 className="mb-8"
               >
                 <h2 className="text-4xl font-black mb-2">Curated Paths</h2>
-                <p className="text-[#a0a0a0]">Pre-built learning journeys for popular career paths</p>
+                <p className="text-muted-foreground">Pre-built learning journeys for popular career paths</p>
               </motion.div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -671,8 +671,8 @@ export default function MyPathGenZ() {
                       transition={{ delay: 0.4 + i * 0.05 }}
                       className={`group relative p-6 backdrop-blur-xl rounded-[24px] border-2 transition-all overflow-hidden ${
                         isActive
-                          ? 'bg-gradient-to-br from-[#00ff88]/20 to-[#00d4ff]/20 border-[#00ff88]'
-                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                          ? 'bg-gradient-to-br from-primary/20 to-cyan-500/20 border-primary'
+                          : 'bg-muted/50 border-border hover:border-border'
                       }`}
                     >
                       {/* Background gradient on hover */}
@@ -680,7 +680,7 @@ export default function MyPathGenZ() {
 
                       {/* Active Badge */}
                       {isActive && (
-                        <div className="absolute top-4 right-4 px-3 py-1 bg-[#00ff88] text-black rounded-full text-xs font-bold flex items-center gap-1">
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-bold flex items-center gap-1">
                           <Check className="w-3 h-3" />
                           Active
                         </div>
@@ -690,25 +690,25 @@ export default function MyPathGenZ() {
                         {/* Header */}
                         <div className="flex items-start gap-4">
                           <div className={`w-16 h-16 bg-gradient-to-br ${path.color} rounded-[16px] flex items-center justify-center flex-shrink-0`}>
-                            <Icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+                            <Icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold mb-1">{path.name}</h3>
-                            <p className="text-sm text-[#a0a0a0] line-clamp-2">{path.description}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{path.description}</p>
                           </div>
                         </div>
 
                         {/* Stats */}
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-black/30 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-background/30 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Target className="w-3 h-3" />
                               <span>Difficulty</span>
                             </div>
                             <div className="font-bold text-sm">{path.difficulty}</div>
                           </div>
-                          <div className="p-3 bg-black/30 rounded-[12px]">
-                            <div className="flex items-center gap-2 text-xs text-[#a0a0a0] mb-1">
+                          <div className="p-3 bg-background/30 rounded-[12px]">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Clock className="w-3 h-3" />
                               <span>Duration</span>
                             </div>
@@ -718,18 +718,18 @@ export default function MyPathGenZ() {
 
                         {/* Channels Preview */}
                         <div>
-                          <div className="text-xs text-[#666] mb-2">Channels ({path.channels.length})</div>
+                          <div className="text-xs text-muted-foreground mb-2">Channels ({path.channels.length})</div>
                           <div className="flex flex-wrap gap-2">
                             {path.channels.slice(0, 3).map((channel) => (
                               <span
                                 key={channel}
-                                className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium"
+                                className="px-2 py-1 bg-muted/50 rounded-full text-xs font-medium"
                               >
                                 {channel}
                               </span>
                             ))}
                             {path.channels.length > 3 && (
-                              <span className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium text-[#666]">
+                              <span className="px-2 py-1 bg-muted/50 rounded-full text-xs font-medium text-muted-foreground">
                                 +{path.channels.length - 3} more
                               </span>
                             )}
@@ -737,9 +737,9 @@ export default function MyPathGenZ() {
                         </div>
 
                         {/* Salary */}
-                        <div className="pt-2 border-t border-white/10">
-                          <div className="text-xs text-[#666] mb-1">Avg. salary</div>
-                          <div className="font-bold text-[#00ff88]">{path.salary}</div>
+                        <div className="pt-2 border-t border-border">
+                          <div className="text-xs text-muted-foreground mb-1">Avg. salary</div>
+                          <div className="font-bold text-primary">{path.salary}</div>
                         </div>
 
                         {/* Actions */}
@@ -748,8 +748,8 @@ export default function MyPathGenZ() {
                             onClick={() => toggleCuratedPathActivation(path)}
                             className={`w-full px-6 py-3 rounded-[16px] font-bold transition-all ${
                               isActive
-                                ? 'bg-white/10 border border-white/20 hover:bg-white/20'
-                                : 'bg-gradient-to-r from-[#00ff88] to-[#00d4ff] text-black hover:scale-105'
+                                ? 'bg-muted border border-border hover:bg-white/20'
+                                : 'bg-gradient-to-r from-primary to-cyan-500 text-primary-foreground hover:scale-105'
                             }`}
                           >
                             {isActive ? 'Deactivate' : 'Activate Path'}

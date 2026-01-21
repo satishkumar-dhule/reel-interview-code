@@ -155,10 +155,10 @@ export default function TestSessionGenZ() {
 
   if (sessionState === 'loading' || !test) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-[#00ff88] border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-[#a0a0a0]">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-muted-foreground">
             {!test ? 'No test available for this channel yet' : 'Loading test...'}
           </p>
           <GenZButton onClick={() => setLocation('/')} className="mt-4">
@@ -178,7 +178,7 @@ export default function TestSessionGenZ() {
       />
 
       <DesktopSidebarWrapper>
-      <div className="min-h-screen bg-black text-white">
+      <div className="min-h-screen bg-background text-foreground">
         {sessionState === 'ready' && (
           <div className="min-h-screen flex items-center justify-center p-4">
             <motion.div
@@ -188,26 +188,26 @@ export default function TestSessionGenZ() {
             >
               <GenZCard className="p-6">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#00ff88] to-[#00d4ff] flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">{theme.icon}</span>
                   </div>
-                  <h1 className="text-xl font-bold mb-2 text-white">{test.title}</h1>
-                  <p className="text-sm text-[#a0a0a0]">{test.description}</p>
+                  <h1 className="text-xl font-bold mb-2 text-foreground">{test.title}</h1>
+                  <p className="text-sm text-muted-foreground">{test.description}</p>
                 </div>
 
                 <div className="space-y-3 mb-6 text-sm">
-                  <div className="flex justify-between p-2 rounded bg-white/5">
-                    <span className="text-[#a0a0a0]">Questions</span>
+                  <div className="flex justify-between p-2 rounded bg-muted/50">
+                    <span className="text-muted-foreground">Questions</span>
                     <span className="font-bold">15 (random from {test.questions.length})</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded bg-white/5">
-                    <span className="text-[#a0a0a0]">Passing Score</span>
+                  <div className="flex justify-between p-2 rounded bg-muted/50">
+                    <span className="text-muted-foreground">Passing Score</span>
                     <span className="font-bold">{test.passingScore}%</span>
                   </div>
                   {progress && !isExpired && (
-                    <div className="flex justify-between p-2 bg-[#00ff88]/10 rounded border border-[#00ff88]/30">
-                      <span className="text-[#a0a0a0]">Your Best</span>
-                      <span className="font-bold text-[#00ff88]">{progress.bestScore}%</span>
+                    <div className="flex justify-between p-2 bg-[#00ff88]/10 rounded border border-primary/30">
+                      <span className="text-muted-foreground">Your Best</span>
+                      <span className="font-bold text-primary">{progress.bestScore}%</span>
                     </div>
                   )}
                 </div>
@@ -231,18 +231,18 @@ export default function TestSessionGenZ() {
 
         {sessionState === 'in-progress' && currentQuestion && (
           <div className="min-h-screen flex flex-col">
-            <header className="border-b border-white/10 p-2.5 flex items-center justify-between gap-2">
+            <header className="border-b border-border p-2.5 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setLocation('/')}
-                  className="flex items-center gap-1 px-2 py-1 text-xs text-[#a0a0a0] hover:text-white transition-colors"
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Home className="w-3.5 h-3.5" />
                 </button>
-                <span className="text-xs text-[#a0a0a0]">
+                <span className="text-xs text-muted-foreground">
                   {currentIndex + 1}/{questions.length}
                 </span>
-                <div className="h-1 w-20 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-1 w-20 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#00ff88] transition-all"
                     style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
@@ -250,7 +250,7 @@ export default function TestSessionGenZ() {
                 </div>
               </div>
               
-              <span className="text-xs text-[#a0a0a0]">
+              <span className="text-xs text-muted-foreground">
                 {answeredCount}/{questions.length}
               </span>
             </header>
@@ -268,12 +268,12 @@ export default function TestSessionGenZ() {
                       <span className={`px-2 py-0.5 text-[10px] uppercase rounded ${
                         currentQuestion.type === 'multiple' 
                           ? 'bg-[#ff0080]/20 text-[#ff0080]' 
-                          : 'bg-[#00d4ff]/20 text-[#00d4ff]'
+                          : 'bg-[#00d4ff]/20 text-cyan-500'
                       }`}>
                         {currentQuestion.type === 'multiple' ? 'Select all that apply' : 'Single choice'}
                       </span>
                       <span className={`px-2 py-0.5 text-[10px] uppercase rounded ${
-                        currentQuestion.difficulty === 'beginner' ? 'bg-[#00ff88]/20 text-[#00ff88]' :
+                        currentQuestion.difficulty === 'beginner' ? 'bg-[#00ff88]/20 text-primary' :
                         currentQuestion.difficulty === 'intermediate' ? 'bg-[#ffd700]/20 text-[#ffd700]' :
                         'bg-[#ff0080]/20 text-[#ff0080]'
                       }`}>
@@ -297,26 +297,26 @@ export default function TestSessionGenZ() {
                             disabled={showFeedback !== null}
                             className={`w-full p-4 text-left border rounded-lg transition-all ${
                               showCorrect
-                                ? 'border-[#00ff88] bg-[#00ff88]/20'
+                                ? 'border-primary bg-[#00ff88]/20'
                                 : showWrong
                                 ? 'border-[#ff0080] bg-[#ff0080]/20'
                                 : isSelected
-                                ? 'border-[#00ff88] bg-[#00ff88]/10'
-                                : 'border-white/10 hover:border-[#00ff88]/50'
+                                ? 'border-primary bg-[#00ff88]/10'
+                                : 'border-border hover:border-primary/50'
                             } ${showFeedback ? 'cursor-default' : ''}`}
                           >
                             <div className="flex items-start gap-3">
                               <div className={`w-6 h-6 ${isMultiple ? 'rounded-md' : 'rounded-full'} border-2 flex items-center justify-center flex-shrink-0 ${
                                 showCorrect
-                                  ? 'border-[#00ff88] bg-[#00ff88]'
+                                  ? 'border-primary bg-[#00ff88]'
                                   : showWrong
                                   ? 'border-[#ff0080] bg-[#ff0080]'
                                   : isSelected 
-                                  ? 'border-[#00ff88] bg-[#00ff88]' 
+                                  ? 'border-primary bg-[#00ff88]' 
                                   : 'border-white/30'
                               }`}>
                                 {showCorrect && <Check className="w-4 h-4 text-black" />}
-                                {showWrong && <X className="w-4 h-4 text-white" />}
+                                {showWrong && <X className="w-4 h-4 text-foreground" />}
                                 {!showFeedback && isSelected && <Check className="w-4 h-4 text-black" />}
                               </div>
                               <span className="text-sm">{option.text}</span>
@@ -327,7 +327,7 @@ export default function TestSessionGenZ() {
                     </div>
                     
                     {currentQuestion.type === 'multiple' && !showFeedback && (
-                      <p className="mt-3 text-xs text-[#a0a0a0] text-center">
+                      <p className="mt-3 text-xs text-muted-foreground text-center">
                         Select all correct answers, then click "Confirm" to continue
                       </p>
                     )}
@@ -336,7 +336,7 @@ export default function TestSessionGenZ() {
               </div>
             </div>
 
-            <footer className="border-t border-white/10 p-2">
+            <footer className="border-t border-border p-2">
               <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
                 <GenZButton
                   size="sm"
@@ -348,8 +348,8 @@ export default function TestSessionGenZ() {
                   Prev
                 </GenZButton>
 
-                <div className="flex items-center gap-1.5 text-xs text-[#a0a0a0]">
-                  <span className="font-medium text-white">{currentIndex + 1}</span>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">{currentIndex + 1}</span>
                   <span>/</span>
                   <span>{questions.length}</span>
                 </div>
@@ -407,25 +407,25 @@ export default function TestSessionGenZ() {
                     result.passed ? 'bg-[#00ff88]/20' : 'bg-[#ff0080]/20'
                   }`}>
                     {result.passed ? (
-                      <Trophy className="w-12 h-12 text-[#00ff88]" />
+                      <Trophy className="w-12 h-12 text-primary" />
                     ) : (
                       <XCircle className="w-12 h-12 text-[#ff0080]" />
                     )}
                   </div>
                   
-                  <div className="text-6xl font-black text-white mb-2">{result.score}%</div>
-                  <p className={`text-xl font-semibold mb-8 ${result.passed ? 'text-[#00ff88]' : 'text-[#ff0080]'}`}>
+                  <div className="text-6xl font-black text-foreground mb-2">{result.score}%</div>
+                  <p className={`text-xl font-semibold mb-8 ${result.passed ? 'text-primary' : 'text-[#ff0080]'}`}>
                     {result.passed ? 'Passed!' : 'Not Passed'}
                   </p>
                   
                   <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className="bg-black/50 rounded-xl p-4">
-                      <div className="text-2xl font-bold text-[#00ff88]">{result.correct}</div>
-                      <div className="text-xs text-[#a0a0a0]">Correct</div>
+                    <div className="bg-background/50 rounded-xl p-4">
+                      <div className="text-2xl font-bold text-primary">{result.correct}</div>
+                      <div className="text-xs text-muted-foreground">Correct</div>
                     </div>
-                    <div className="bg-black/50 rounded-xl p-4">
+                    <div className="bg-background/50 rounded-xl p-4">
                       <div className="text-2xl font-bold text-[#ff0080]">{result.total - result.correct}</div>
-                      <div className="text-xs text-[#a0a0a0]">Incorrect</div>
+                      <div className="text-xs text-muted-foreground">Incorrect</div>
                     </div>
                   </div>
 

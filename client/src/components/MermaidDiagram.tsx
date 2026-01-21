@@ -181,7 +181,7 @@ export function MermaidDiagram({ content, className = '' }: MermaidDiagramProps)
       {status === 'loading' && (
         <div className="flex flex-col items-center justify-center p-8 gap-3">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00ff88]"></div>
-          <p className="text-xs text-[#a0a0a0]">Rendering diagram...</p>
+          <p className="text-xs text-muted-foreground">Rendering diagram...</p>
         </div>
       )}
       
@@ -201,7 +201,7 @@ export function MermaidDiagram({ content, className = '' }: MermaidDiagramProps)
           <summary className="text-sm text-red-400 cursor-pointer hover:text-red-300">
             Show diagram code
           </summary>
-          <pre className="mt-2 text-xs text-[#00d4ff] overflow-x-auto p-2 bg-black/30 rounded">
+          <pre className="mt-2 text-xs text-[#00d4ff] overflow-x-auto p-2 bg-background/30 rounded">
             {content}
           </pre>
         </details>
