@@ -304,7 +304,7 @@ export default function CertificationsGenZ() {
 
                         {isStarted && (
                           <button
-                            onClick={() => navigate(`/certification/${cert.id}`)}
+                            onClick={() => navigate(`/channel/${cert.id}`)}
                             className="px-6 py-3 bg-muted/50 hover:bg-muted rounded-[16px] border border-border transition-all"
                           >
                             <ChevronRight className="w-5 h-5" />

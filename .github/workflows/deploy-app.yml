@@ -30,6 +30,9 @@ jobs:
         run: |
           node script/fetch-questions-for-build.js
           node script/fetch-question-history.js
+          node script/generate-curated-paths.js
+          node script/generate-rss.js
+          node script/generate-sitemap.js
           node script/fetch-bot-monitor-data.js
         env:
           TURSO_DATABASE_URL_RO: ${{ secrets.TURSO_DATABASE_URL_RO }}

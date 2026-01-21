@@ -169,22 +169,34 @@ export default function CertificationPractice() {
         const allQuestions: Question[] = [];
         const channelIds: string[] = [];
         
+        console.log(`Loading questions for ${certification.name}...`);
+        console.log(`Channel mappings:`, certification.channelMappings);
+        
         for (const mapping of certification.channelMappings) {
           try {
+            console.log(`Fetching channel: ${mapping.channelId}`);
             const data = await ChannelService.getData(mapping.channelId);
             let channelQuestions = data.questions;
             channelIds.push(mapping.channelId);
+            
+            console.log(`Found ${channelQuestions.length} questions in ${mapping.channelId}`);
             
             if (mapping.subChannels && mapping.subChannels.length > 0) {
               channelQuestions = channelQuestions.filter((q: Question) => 
                 mapping.subChannels!.includes(q.subChannel)
               );
+              console.log(`After subchannel filter: ${channelQuestions.length} questions`);
             }
             
             const count = Math.ceil(channelQuestions.length * (mapping.weight / 100));
+            console.log(`Taking ${count} questions (${mapping.weight}% weight)`);
             allQuestions.push(...channelQuestions.slice(0, count));
-          } catch {}
+          } catch (err) {
+            console.error(`Failed to load channel ${mapping.channelId}:`, err);
+          }
         }
+
+        console.log(`Total questions loaded: ${allQuestions.length}`);
 
         const allTests = await loadTests();
         setAvailableTests(allTests.filter(t => channelIds.includes(t.channelId)));
@@ -196,7 +208,12 @@ export default function CertificationPractice() {
         // Use progressive RAG-based selection instead of random shuffle
         const progressiveQuestions = generateProgressiveSequence(uniqueQuestions, uniqueQuestions.length);
         setQuestions(progressiveQuestions);
+        
+        if (progressiveQuestions.length === 0) {
+          console.warn(`No questions found for ${certification.name}`);
+        }
       } catch (err) {
+        console.error('Failed to load certification questions:', err);
         setError('Failed to load certification questions');
       } finally {
         setLoading(false);

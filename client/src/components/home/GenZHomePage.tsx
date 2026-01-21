@@ -472,7 +472,7 @@ export function GenZHomePage() {
                       <div className="grid grid-cols-4 gap-3">
                         <div className="p-3 bg-background/30 rounded-[12px]">
                           <div className="text-xs text-muted-foreground mb-1">Completed</div>
-                          <div className="text-lg font-black">{pathCompletedCount}</div>
+                          <div className="text-lg font-black">{pathCompletedCount} / {pathTotalQuestions}</div>
                           <div className="text-[10px] text-muted-foreground">questions</div>
                         </div>
                         <div className="p-3 bg-background/30 rounded-[12px]">

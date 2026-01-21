@@ -676,31 +676,65 @@ async function main() {
     const certsResult = await client.execute(`
       SELECT id, name, provider, description, icon, color, difficulty, category,
              estimated_hours, exam_code, official_url, domains, prerequisites,
-             status, question_count, passing_score, exam_duration, created_at, last_updated
+             status, question_count, passing_score, exam_duration, created_at, last_updated,
+             channel_mappings
       FROM certifications
       WHERE status = 'active'
       ORDER BY name
     `);
 
-    const certifications = certsResult.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      provider: row.provider,
-      description: row.description,
-      icon: row.icon || 'award',
-      color: row.color || 'text-primary',
-      difficulty: row.difficulty,
-      category: row.category,
-      estimatedHours: row.estimated_hours || 40,
-      examCode: row.exam_code,
-      officialUrl: row.official_url,
-      domains: row.domains ? JSON.parse(row.domains) : [],
-      prerequisites: row.prerequisites ? JSON.parse(row.prerequisites) : [],
-      questionCount: row.question_count || 0,
-      passingScore: row.passing_score || 70,
-      examDuration: row.exam_duration || 90,
-      createdAt: row.created_at,
-      lastUpdated: row.last_updated
+    // Calculate actual question counts for each certification
+    const certifications = await Promise.all(certsResult.rows.map(async (row) => {
+      // Get question count by checking channel mappings or certification ID as channel
+      let questionCount = 0;
+      
+      try {
+        // First try: Use channel_mappings if they exist
+        if (row.channel_mappings) {
+          const channelMappings = JSON.parse(row.channel_mappings);
+          for (const mapping of channelMappings) {
+            const countResult = await client.execute({
+              sql: mapping.subChannel 
+                ? `SELECT COUNT(*) as count FROM questions WHERE channel = ? AND sub_channel = ? AND status = 'active'`
+                : `SELECT COUNT(*) as count FROM questions WHERE channel = ? AND status = 'active'`,
+              args: mapping.subChannel ? [mapping.channel, mapping.subChannel] : [mapping.channel]
+            });
+            questionCount += countResult.rows[0]?.count || 0;
+          }
+        }
+        
+        // Fallback: Check if certification ID matches a channel name
+        if (questionCount === 0) {
+          const countResult = await client.execute({
+            sql: `SELECT COUNT(*) as count FROM questions WHERE channel = ? AND status = 'active'`,
+            args: [row.id]
+          });
+          questionCount = countResult.rows[0]?.count || 0;
+        }
+      } catch (e) {
+        console.log(`   ⚠️ Could not calculate question count for ${row.id}: ${e.message}`);
+      }
+      
+      return {
+        id: row.id,
+        name: row.name,
+        provider: row.provider,
+        description: row.description,
+        icon: row.icon || 'award',
+        color: row.color || 'text-primary',
+        difficulty: row.difficulty,
+        category: row.category,
+        estimatedHours: row.estimated_hours || 40,
+        examCode: row.exam_code,
+        officialUrl: row.official_url,
+        domains: row.domains ? JSON.parse(row.domains) : [],
+        prerequisites: row.prerequisites ? JSON.parse(row.prerequisites) : [],
+        questionCount: questionCount,
+        passingScore: row.passing_score || 70,
+        examDuration: row.exam_duration || 90,
+        createdAt: row.created_at,
+        lastUpdated: row.last_updated
+      };
     }));
 
     const certificationsFile = path.join(OUTPUT_DIR, 'certifications.json');
